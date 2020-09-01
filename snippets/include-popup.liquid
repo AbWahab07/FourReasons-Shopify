@@ -1,0 +1,154 @@
+{%- assign __body_box_fixed = settings.body_box_fixed | strip -%}
+
+{%- if __body_box_fixed != blank and __body_box_fixed != '0' -%}
+  <div id="body-fixed-border-top"></div>
+  <div id="body-fixed-border-right"></div>
+  <div id="body-fixed-border-bottom"></div>
+  <div id="body-fixed-border-left"></div>
+{%- endif -%}
+
+{%- if settings.show_back_to_top -%}
+  <div id="scroll-to-top" title="Back To Top"><a href="javascript:;"></a></div>
+{%- endif -%}
+
+{%- include 'layer-search-modal' -%}
+{%- include 'currencies' ,type: 'popup' -%}
+
+{%- if settings.use_quick_view -%}
+  {%- include 'quick-shop' -%}
+{%- endif -%}
+
+{%- if settings.lang_type == 'google' -%}<div id="google_translate_element" class="gg-translate d-none" style="display: none;"></div>{%- endif -%}
+
+{%- if settings.lang_type != 'none' -%}
+  <div class="modal fade modal-ui-element" id="popup_languages" tabindex="-1" role="dialog" aria-labelledby="popup_languages" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <p class="modal-title topbar-title h3">{{'general.popup.languages'| t }}:</p>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">
+              <span class="topbar-popup-close"><i class="demo-icon icon-delete"></i></span>
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">{% include 'include-translate', trans_type: 'list' %}</div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+
+{%- if settings.enable_preview_demos -%}
+  {%- assign demos_counting = 68 -%}
+  <div id="preview_demos">
+    <a href="https://landing.arenacommerce.com/xstore/" target="_blank" rel="noopener" class="d-flex fw-400 align-items-center">
+      <span class="preview_text">DEMOS</span>
+      <span class="preview_counting">
+        <span class="preview_count shakeshake">{{ demos_counting }}</span>
+        <span class="preview_icon">
+          {%- include 'icons', type: 'icon_free' ,name: 'icon-uniE910-1'-%}
+        </span>
+        {%- capture block_css -%}
+          {{- -}}#preview_demos .preview_count.shakeshake{animation: shakeshake 3.72s ease infinite;transform-origin: 50% 50%;}
+          {{- -}}@keyframes shakeshake{
+          {{- -}}0% {transform:translate(0,0)}
+          {{- -}}3.22581% {transform:translate(5px,0)}
+          {{- -}}6.45161% {transform:translate(0,0)}
+          {{- -}}9.67742% {transform:translate(5px,0)}
+          {{- -}}12.90323% {transform:translate(0,0)}
+          {{- -}}16.12903% {transform:translate(5px,0)}
+          {{- -}}19.35484% {transform:translate(0,0)}
+          {{- -}}100% {transform:translate(0,0)}
+        {%- endcapture -%}
+        {%- assign section_css = section_css | append: block_css -%}
+      </span>
+    </a>
+  </div>
+  <div id="purchase_popup">
+    <div class="purchase_popup-content">
+      <div class="purchase_popup-row">
+        <p>Buy XStore theme!</p>
+        <span>Get {{ demos_counting }}+ ready to use outstanding layouts in one package for only $59. Lifetime updates, top seller plugins compatibility and much more.</span>
+        <a href="#">BUY XSTORE FOR $59</a>
+      </div>
+      <div class="purchase_popup-row">
+        <p>Need more licenses?</p>
+        <span>Buy multiple licenses and get a discount!<br>The more you buy the more you save.</span>
+        <a href="#">Contact Us</a>
+      </div>
+    </div>
+    <a href="https://themeforest.net/user/arenacommerce/portfolio" target="_blank" rel="noopener"></a>
+    <script>
+      jQuery(document).ready(function($) {
+        $('#purchase_popup').hover(function() {
+          $('.purchase_popup-content').addClass('show');
+        }, function() {
+          $('.purchase_popup-content').removeClass('show');
+        });
+      });
+    </script>
+  </div>
+{%- endif -%}
+
+{%- unless section_css == blank -%}
+  <style>{{section_css}}</style>
+{%- endunless -%}
+
+{% comment %}
+<div class="account-drawer">
+  <div class="account-drawer-body">
+
+    {%- form 'customer_login' -%}
+      <input type="hidden" name="checkout_url" value="/account" />
+      <input type="hidden" name="token" id="token" value=""/>
+
+      {%- if form.errors -%}
+        <script>
+          $('#error-content').html('{{ form.errors | default_errors }}').parents('#login-error').removeClass('hide');
+        </script>
+      {%- endif -%}
+
+      <div class="control-wrapper">
+        <label for="customer_email">{{ 'customer.login.email' | t }}<span class="req">*</span></label>
+        <input type="email" required name="customer[email]" id="customer_email" autofocus/>
+      </div>
+
+      {%- if form.password_needed -%}
+        <div class="control-wrapper">
+          <label for="customer_password">{{ 'customer.login.password' | t }}<span class="req">*</span></label>
+          <input type="password" required name="customer[password]" id="customer_password" class="password" />
+        </div>
+      {%- endif -%}
+
+      <div class="control-wrapper last">
+        <a class="forgot-pass" href="javascript:;" onclick="showRecoverPasswordForm()">{{ 'customer.login.forgot_password' | t }}</a>
+        <button class="btn btn-1" type="submit">{{ 'customer.login.sign_in' | t }}</button>
+      </div>
+    {%- endform -%}
+  </div>
+  <style>
+    .account-drawer{
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 999;
+      background: rgba(0,0,0,0.4);
+      display: none;
+    }
+    body.account-drawer--showing .account-drawer{
+      display: block;
+    }
+    .account-drawer >div{
+      width: 320px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      height: 100%;
+      margin: 0 0 auto auto;
+      background: #fff;
+    }
+  </style>
+</div>{% endcomment %}

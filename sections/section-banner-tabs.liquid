@@ -1,0 +1,923 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- if section.settings.carousel_layout -%}{%- assign _type = 'carousel' -%}{%- else -%}{%- assign _type = 'row' -%}{%- endif -%}
+{%- assign _s_type    				      = 'banner-tabs' -%}
+{%- assign _lazyload  				      = settings.use_lazyload -%}
+{%- assign _padding   				      = section.settings.section_padding -%}
+{%- assign _bg_color  				      = section.settings.section_bg_color -%}
+{%- assign _bg_image  				      = section.settings.section_bg_image -%}
+{%- assign _spacing_item 			      = section.settings.padding_item -%}
+{%- assign _number_active 			    = section.settings.number_active -%}
+{%- assign _text_align        		  = section.settings.text_align -%}
+{%- assign _tab_title_color   		  = section.settings.tab_title_color -%}
+{%- assign _tab_title_align         = section.settings.text_align_title -%}
+{%- assign _spacing_title     		  = section.settings.spacing_tab_title -%}
+{%- assign _tab_title_style     	  = section.settings.tab_title_style -%}
+{%- assign _tab_i_heading_color     = section.settings.item_heading_color -%}
+{%- assign _tab_i_subheading_color  = section.settings.item_subheading_color -%}
+{%- assign _tab_i_content_color     = section.settings.item_content_color -%}
+{%- assign _tabTit_bgColor          = section.settings.tab_title_bg_color -%}
+{%- assign _tabTit_bgCustom         = section.settings.tab_title_bg_custom -%}
+{%- assign _big_image               = section.settings.big_image -%}
+{%- assign _img_hover               = section.settings.img_effect -%}
+{%- assign _tab_title_active_color  = section.settings.tab_title_active_color | default: 'rgba(0,0,0,0)' -%}
+
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+
+{%- include 'include-item-per-row' -%}
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+<div class="home-banner-tabs layout-{{_layout }} section-show-{{section.id}}{% if _big_image != blank %} has-big-image{% endif %}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="{{_s_type}}" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    {%- unless _big_image == blank -%}
+      <div class="row">
+        <div class="col-md-6 col-12">
+    {%- endunless -%}
+
+    {%- include 'head-title' -%}
+    <div class="banner-tabs-content">
+    	<div class="banner-tabs-inner">
+
+  		  <!-- Begin nav tabs -->
+  		  <div class="nav-tab-wrapper">
+  		  	<ul class="nav nav-tabs tab-heading text-{{ _tab_title_align }} title-style-{{_tab_title_style}}" role="tablist">
+  		  		{%- if section.blocks.size > 0 -%}
+  		  			{%- assign tab_title_index		= '' -%}
+  		  			{%- assign title_active_index = 0 -%}
+  			  		{%- for block in section.blocks -%}
+
+  				  		{%- if block.type == 'tab' -%}
+  				  			{%- assign tab_title_index 			= tab_title_index | append: ',' | append: forloop.index0 -%}
+  				  			{%- assign title_active_index 	= title_active_index | plus: 1 -%}
+
+  				  			{%- assign _title 		= block.settings.title -%}
+  				  			{%- assign _image_tab	= block.settings.image_tab -%}
+  					  			<li class="tab-title nav-item" data-href="#hp-tabs-{{ section.id }}-{{ forloop.index0 }}"{{ block.shopify_attributes }}>
+  					  				<a class="nav-link{% if _number_active == title_active_index %} active{% endif %}" href="#hp-tabs-{{ section.id }}-{{ forloop.index0 }}" aria-controls="hp-tabs-{{ section.id }}-{{ forloop.index0 }}" role="tab" data-toggle="tab">
+  					  					{%- unless _image_tab == blank -%}
+  					  						<span class="tab-title-image">{%- include 'image-style', image: _image_tab -%}</span>
+  					  					{%- endunless -%}
+  					  					<span class="tab-title-text">
+  					  						{%- unless _title == blank -%}{{_title}}
+  					  						{%- elsif _image_tab == blank -%}{{- 'homepage.onboarding.tab_title' | t -}}
+  					  						{%- endunless -%}
+  					  					</span>
+  					  				</a>
+  					  			</li>
+  				  		{%- endif -%}
+  			  		{%- endfor -%}
+  		  		{%- else -%}
+
+  			  		{%- for i in (1..3) -%}
+  				  		<li class="tab-title nav-item">
+  				  			<a class="nav-link{% if _number_active == forloop.index %} active {% endif %}" href="#hp-tabs-{{ section.id }}-{{forloop.index}}" aria-controls="hp-tabs-{{ section.id }}-{{forloop.index}}" role="tab" data-toggle="tab">
+                    {% cycle 'Collections', 'Products', 'Images' %}
+  				  			</a>
+  				  		</li>
+  			  		{%- endfor -%}
+  		  		{%- endif -%}
+  		  	</ul>
+  		  </div>
+
+  		  <!-- Begin tab content -->
+  		  <div class="tab-content{% if _img_hover != '1' %} img-hover-{{_img_hover}}{% endif %}">
+    			{%- if section.blocks.size > 0 -%}
+    				{%- assign ar_tabTitle = tab_title_index | remove_first: ',' | split: ',' -%}
+
+    			  	{%- for tabTitle in ar_tabTitle -%}
+
+    					{%- if tabTitle != '' -%}
+    						{%- assign tabContent = tabTitle | plus: 1 -%}
+
+  					  	<div id="hp-tabs-{{ section.id }}-{{ tabTitle }}" class="tab-pane{% if _number_active == forloop.index %} show active{% endif %}" role="tabpanel">
+  					  		<div class="hp-tabs-list{% unless _spacing_item %} no-padding{% endunless %}{% if _type == 'row' %} row{% else %} tabs-list-carousel owl-carousel{% endif %}"{%- include 'include-carousel-attr' -%}>
+  								{%- if section.blocks[tabContent].type != 'tab' -%}
+  									{%- for block in section.blocks offset: tabContent -%}
+  										{%- if block.type == 'tab' -%}{% break %}{%- endif -%}
+
+  										<div class="tab-item{% if _type == 'row' %} {{items_class}}{% endif %}"{{ block.shopify_attributes }}>
+  											<div class="tab-content-inner tab-type-{{block.type}} tab-{{block.id}}">
+
+  												{%- case block.type -%}
+
+                            {%- when 'single_image' -%}
+                              {%- assign _img         = block.settings.image -%}
+                                <div class="tab-item-image">{%- include 'image-style', image: _img -%}</div>
+
+                            {%- when 'image' -%}
+  												  	{%- assign _img_layout_style   	= block.settings.layout_style -%}
+  												  	{%- assign _img 				= block.settings.image -%}
+  												  	{%- assign _t_heading_image 	= block.settings.heading_image -%}
+  												  	{%- assign _t_heading 			= block.settings.heading -%}
+  												  	{%- assign _t_subheading 		= block.settings.subheading -%}
+  												  	{%- assign _t_content 			= block.settings.content -%}
+  												  	{%- assign _t_bg_color       = block.settings.background_color | default: 'rgba(0,0,0,0)'  -%}
+  												  	<div class="tab-item-style-{{_img_layout_style}}">
+                                {%- unless _img_layout_style == '3' -%}
+                                  <div class="tab-item-image">{%- include 'image-style', image: _img -%}</div>
+                                {%- endunless -%}
+    														<div class="tab-image-text" style="background-color:{{_t_bg_color}};">
+    															{%- unless _t_heading_image == blank -%}
+    																<div class="text-image">{%- include 'image-style', image: _t_heading_image, image_width: '[100,200,300]' -%}</div>{%- endunless -%}
+    															{%- unless _t_heading == blank -%}
+    																<div class="text-heading">{{_t_heading}}</div>{%- endunless -%}
+    															{%- unless _t_subheading == blank -%}
+    																<div class="text-subheading">{{_t_subheading}}</div>{%- endunless -%}
+    															{%- unless _t_content == blank -%}
+    																<div class="text-content">{{_t_content}}</div>{%- endunless -%}
+    														</div>
+                                {%- if _img_layout_style == '3' -%}
+                                  <div class="tab-item-image">{%- include 'image-style', image: _img -%}</div>
+                                {%- endif -%}
+    													</div>
+
+  												  {%- when 'text' -%}
+
+  												  	{%- assign _txt_bg_color = block.settings.background_color | default: 'rgba(0,0,0,0)' -%}
+  												  	<div class="text-content-inner tab-text_container" style="background-color: {{_txt_bg_color}};">
+  												  		{%- for i in (1..2) -%}
+  															{%- assign _h = 'heading_text_' | append: i -%}
+  															{%- assign _s = 'heading_size_' | append: i -%}
+  															{%- assign _c = 'content_' 		| append: i -%}
+  															{%- assign _heading = block.settings[_h] -%}
+  															{%- assign _content = block.settings[_c] -%}
+  															{%- assign _h_size  = block.settings[_s] -%}
+
+  															{%- unless _heading == blank and _content == blank -%}
+  																<div class="text-content text-content-{{i}}">
+  																	{%- unless _heading == blank -%}<div class="text-heading h{{_h_size}}">{{_heading}}</div>{%- endunless -%}
+  																	{%- unless _content == blank -%}<div class="text-content">{{_content}}</div>{%- endunless -%}
+  																</div>
+  															{%- endunless -%}
+
+  												  		{%- endfor -%}
+  												  	</div>
+
+  												  {%- when 'text_extend' -%}
+
+
+  														{%- assign te_background_color  = block.settings.background_color | default: 'rgba(0,0,0,0)' -%}
+
+                              <div class="text-extended-inner tab-text_container" style="background-color: {{te_background_color}};">
+                                {%- assign te_heading          = block.settings.heading -%}
+                                {%- assign te_subheading       = block.settings.subheading -%}
+                                {%- assign te_content          = block.settings.content -%}
+                                {%- assign te_button           = block.settings.button -%}
+                                {%- assign te_btn_link         = block.settings.button_link | default: 'javascript:void(0);' -%}
+                                {%- assign te_btn_corner       = block.settings.button_rd -%}
+                                {%- assign te_btn_inherit      = block.settings.button_inherit_style -%}
+                                {%- assign te_hea_size         = block.settings.heading_size -%}
+                                {%- assign te_sub_size         = block.settings.subheading_size -%}
+                                {%- assign te_banner_img       = block.settings.banner_img -%}
+
+                                <div class="text-extended">
+                                  {%- unless te_heading     == blank -%}<div class="text-heading h{{te_hea_size}}">{{te_heading}}</div>{%- endunless -%}
+                                  {%- unless te_subheading  == blank -%}<div class="text-subheading h{{te_sub_size}}">{{te_subheading}}</div>{%- endunless -%}
+                                  {%- unless te_content     == blank -%}<div class="text-content">{{te_content}}</div>{%- endunless -%}
+                                  {%- unless te_banner_img  == blank -%}<div class="text-extended--image-block">{%- include 'image-style', image: te_banner_img -%}</div>{%- endunless -%}
+                                  
+                                  {%- unless te_button == blank -%}
+                                    <div class="text-button">
+                                      <a class="btn btn-{{te_btn_inherit}}" href="{{te_btn_link}}">{{te_button}}</a>
+                                      {%- if te_btn_inherit == 0 -%}
+                                        {%- capture textID -%}.section-show-{{section.id}} .tab-{{block.id}} .text-button a.btn-0{%- endcapture -%}
+                                        {%- assign te_btn_color 		= block.settings.button_color      | default: 'rgba(0,0,0,0)' -%}
+                                        {%- assign te_btn_border 		= block.settings.button_border     | default: 'rgba(0,0,0,0)' -%}
+                                        {%- assign te_btn_bg_color 	= block.settings.button_bg_color   | default: 'rgba(0,0,0,0)' -%}
+                                        {%- capture block_css -%}
+                                          {{-  textID}}{color: {{te_btn_color}};border: 1px solid {{te_btn_border}};background-color: {{te_btn_bg_color}};}
+                                          {%- include 'css-responsive', classID: textID, css_value: te_btn_corner ,css_property: 'border-radius' -%}
+                                        {%- endcapture -%}
+                                        {%- assign section_css = section_css | append: block_css -%}
+                                      {%- endif -%}
+                                    </div>
+                                  {%- endunless -%}
+                                </div>
+
+                              </div>
+
+  												{%- endcase -%}
+
+                          {%- unless block.settings.content_padding == blank -%}
+                            {%- capture tabItemID -%}.tab-type-{{block.type}}.tab-{{block.id}} .tab-text_container{%- endcapture -%}
+                            {%- capture block_css -%}
+                              {%- include 'css-responsive', classID: tabItemID, css_value: block.settings.content_padding -%}
+                            {%- endcapture -%}
+                            {%- assign section_css = section_css | append: block_css -%}
+                          {%- endunless -%}
+  											</div>
+  										</div>
+  									{%- endfor -%}
+
+  								{%- endif -%}
+
+
+  					  		</div>
+  					  	</div>
+    					{%- endif -%}
+    			  	{%- endfor -%}
+    			{%- else -%}
+    				{%- for i in (1..3) -%}
+    				<div id="hp-tabs-{{ section.id }}-{{i}}" class="tab-pane{% if _number_active == forloop.index %} show active{% endif %}" role="tabpanel" aria-labelledby="">
+    					<div class="hp-tabs-list row{% unless _spacing_item %} no-padding{% endunless %}">
+    						{%- capture _type -%}{% cycle 'collection', 'product', 'image' %}{%- endcapture -%}
+    						{%- for j in (1..3) -%}
+    							<div class="{{items_class}}">{%- include 'svgset', type: _type -%}</div>
+    						{%- endfor -%}
+    					</div>
+    				</div>
+    				{%- endfor -%}
+
+    			{%- endif -%}
+  		  </div>
+      </div>
+    </div>
+
+    {%- unless _big_image == blank -%}
+      </div>
+        <div class="col-md-6 col-12">
+          <div class="big-image">
+            {%- include 'image-style', image: _big_image -%}
+          </div>
+        </div>
+      </div>
+    {%- endunless -%}
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+  {%- capture sectionCSS -%}
+    {{- section_css -}}
+    {%- include 'section-general-css' -%}
+    {%- if _tab_title_style == '4' -%}
+      .section-show-{{section.id}} .banner-tabs-content .nav-tab-wrapper .nav-tabs li a.nav-link.active,
+      {{- _secionID}} .banner-tabs-content .nav-tab-wrapper .nav-tabs li a.nav-link:hover{background: {%- unless _tabTit_bgCustom == blank -%}{{_tabTit_bgCustom}}{%- else -%}{{_tabTit_bgColor}}{%- endunless -%}}
+    {%- endif -%}
+    {{- _secionID}} .nav-tab-wrapper ul.nav-tabs > li a:not(.active){color: {{_tab_title_color}};}
+    {%- unless _tab_title_active_color == 'rgba(0,0,0,0)' -%}
+    {{- _secionID}} .nav-tab-wrapper ul.nav-tabs > li a.active{color: {{_tab_title_active_color}};}
+    {%- endunless -%}
+    {{- _secionID}} .text-heading{color:{{_tab_i_heading_color}};}
+    {{- _secionID}} .text-subheading{color:{{_tab_i_subheading_color}};}
+    {{- _secionID}} .text-content{color:{{_tab_i_content_color}};}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .tab-content',css_value: section.settings.tab_content_margin ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' ul.nav-tabs > li:not(:last-child)',css_value: _spacing_title ,css_property: 'margin-right' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' ul.nav-tabs a.nav-link',css_value: section.settings.tab_title_lsp ,css_property: 'letter-spacing' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .tab-item',css_value: section.settings.item_padding -%}
+  {%- endcapture -%}
+  <style>{{sectionCSS}}</style>
+</div>
+{% schema %}
+{
+  "name": "Banner Tabs",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Created by 'Banner Tabs' section"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Label [:id]","default": "Banner tab"
+    },
+    {
+      "type": "header",
+      "content": "LAYOUT"
+    },
+    {
+      "type": "checkbox",
+      "id": "boxed_layout",
+      "label": "Boxed layout",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "section_padding",
+      "label": "Section Padding",
+      "placeholder": "E.g: 5px 20px 5px 20px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "select",
+      "id": "section_bg_size",
+      "label": "Background Size",
+      "default": "cover",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_repeat",
+      "label": "Background Image Repeat:",
+      "default": "no-repeat",
+      "options": [
+        {
+          "value": "no-repeat",
+          "label": "No Repeat"
+        },
+        {
+          "value": "repeat",
+          "label": "Repeat"
+        },
+        {
+          "value": "repeat-x",
+          "label": "Repeat X"
+        },
+        {
+          "value": "repeat-y",
+          "label": "Repeat Y"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_position",
+      "label": "Background Image Position:",
+      "default": "center center",
+      "options": [
+        {
+          "value": "left top",
+          "label": "Left Top"
+        },
+        {
+          "value": "center top",
+          "label": "Center Top"
+        },
+        {
+          "value": "right top",
+          "label": "Right Top"
+        },
+        {
+          "value": "left center",
+          "label": "Left Center"
+        },
+        {
+          "value": "center center",
+          "label": "Center Center"
+        },
+        {
+          "value": "right center",
+          "label": "Right Center"
+        },
+        {
+          "value": "left bottom",
+          "label": "Left Bottom"
+        },
+        {
+          "value": "center bottom",
+          "label": "Center Bottom"
+        },
+        {
+          "value": "right bottom",
+          "label": "Right Bottom"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Tab title settings"
+    },
+    {
+      "type": "select",
+      "id": "tab_title_style",
+      "label": "Tab title style",
+      "options": [
+        {
+          "value": "1",
+          "label": "#1"
+        },
+        {
+          "value": "2",
+          "label": "#2"
+        },
+        {
+          "value": "3",
+          "label": "#3"
+        },
+        {
+          "value": "4",
+          "label": "#4"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "select",
+      "id": "text_align_title",
+      "label": "Tab title alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "text",
+      "id": "spacing_tab_title",
+      "label": "Spacing between Tab title",
+      "default": "8px"
+    },
+    {
+      "type": "text",
+      "id": "tab_title_lsp",
+      "label": "Tab title letter spacing"
+    },
+    {
+      "type": "range",
+      "id": "number_active",
+      "label": "Set active tab by default",
+      "info": "Value is the tab order number.",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "tab_title_color",
+      "label": "Tab title color",
+      "default": "#000000"
+    },
+    {
+       "type":"color",
+       "id":"tab_title_active_color",
+       "label":"Tab title active color"
+    },
+    {
+      "type": "color",
+      "id": "tab_title_bg_color",
+      "label": "Tab title background color",
+      "default": "#ffffff",
+      "info": "Only for title style 4"
+    },
+    {
+      "type": "text",
+      "id": "tab_title_bg_custom",
+      "label": "Tab title background color custom",
+      "info": "Only for title style 4"
+    },
+    {
+      "type": "header",
+      "content": "Tab content settings"
+    },
+    {
+      "type": "text",
+      "id": "items_resp",
+      "label": "Max number of items per row",
+      "placeholder": "xl,lg,md,sm,xs,xxs",
+      "info": "E.g: 4,3,2",
+      "default": "3,1"
+    },
+    {
+      "type": "checkbox",
+      "id": "padding_item",
+      "label": "Spacing items",
+      "default": true
+    },
+    {
+       "type":"text",
+       "id"   :"tab_content_margin",
+       "label":"Tab content margin",
+       "placeholder":"E.g: 5px 20px 5px 20px",
+       "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type": "text",
+      "id": "item_padding",
+      "label": "Items Padding",
+      "placeholder": "E.g: 5px 20px 5px 20px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "color",
+      "id": "item_heading_color",
+      "label": "Item Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "item_subheading_color",
+      "label": "Item Subheading color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "item_content_color",
+      "label": "Item Content color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "img_effect",
+      "label": "Image Hover effect",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "None"
+        },
+        {
+          "value": "2",
+          "label": "Fade Image"
+        },
+        {
+          "value": "3",
+          "label": "Zoom In"
+        },
+        {
+          "value": "4",
+          "label": "Flash Zoom"
+        },
+        {
+          "value": "7",
+          "label": "Black & White"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Big Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "big_image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Section Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading_text",
+      "label": "Subheading"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading2_text",
+      "label": "Subheading 2"
+    },
+    {
+      "type": "select",
+      "id": "heading_content_align",
+      "label": "Heading alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "section_heading_color",
+      "label": "Heading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "color",
+      "id": "section_subheading_color",
+      "label": "Subheading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "color",
+      "id": "section_subheading2_color",
+      "label": "Subheading 2 color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "header",
+      "content": "Slider settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "carousel_layout",
+      "label": "Enable Slider"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Enable Loop"
+    },
+    {
+      "type": "checkbox",
+      "id": "nav",
+      "label": "Show Next & Prev arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "dot",
+      "label": "Show Dots",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab's title",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tab title",
+          "default": "Tab's title"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_tab",
+          "label": "Image Tab Title (Optional)"
+        }
+      ]
+    },
+    {
+      "type": "single_image",
+      "name": "+ Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "+ Image with text",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "layout_style",
+          "label": "Layout style",
+          "default": "1",
+          "options": [
+            {
+              "value": "1",
+              "label": "Image and Text"
+            },
+            {
+              "value": "2",
+              "label": "Image and Text on same line"
+            },
+            {
+              "value": "3",
+              "label": "Text and Image"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Text content"
+        },
+        {
+          "type": "image_picker",
+          "id": "heading_image",
+          "label": "Heading Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+        {
+          "type": "textarea",
+          "id": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Content "
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color",
+          "default": "#FFFFFF"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "+ Text",
+      "settings": [
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "content_padding",
+          "label": "Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "header",
+          "content": "Text content #1"
+        },
+        {
+          "type": "range",
+          "id": "heading_size_1",
+          "label": "Heading font size (h1 -> h6)",
+          "min": 1,
+          "max": 6,
+          "default": 4
+        },
+        {
+          "type": "text",
+          "id": "heading_text_1",
+          "label": "Heading"
+        },
+        {
+          "type": "textarea",
+          "id": "content_1",
+          "label": "Content"
+        },
+        {
+          "type": "header",
+          "content": "Text content #2"
+        },
+        {
+          "type": "range",
+          "id": "heading_size_2",
+          "label": "Heading font size (h1 -> h6)",
+          "min": 1,
+          "max": 6,
+          "default": 4
+        },
+        {
+          "type": "text",
+          "id": "heading_text_2",
+          "label": "Heading"
+        },
+        {
+          "type": "textarea",
+          "id": "content_2",
+          "label": "Content"
+        }
+      ]
+    },
+    {
+      "type": "text_extend",
+      "name": "+ Text, image & button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "label": "Heading font size (h1 -> h6)",
+          "min": 1,
+          "max": 6,
+          "default": 4
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "range",
+          "id": "subheading_size",
+          "label": "Subheading font size (h1 -> h6)",
+          "min": 1,
+          "max": 6,
+          "default": 4
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Content "
+        },
+        {
+           "type":"image_picker",
+           "id":"banner_img",
+           "label":"Image (Optional)"
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Button Label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "text",
+          "id": "button_rd",
+          "label": "Button Rounded Corners",
+          "placeholder": "E.g: 5px 5px 5px 5px"
+        },
+        {
+          "type": "range",
+          "id": "button_inherit_style",
+          "label": "Inherit Button style:",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "info": "Set 0 to customize button"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Button Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "button_border",
+          "label": "Button Border color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color",
+          "label": "Button Background color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "content_padding",
+          "label": "Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Banner Tabs",
+      "category": "Banner"
+    }
+  ]
+}
+{% endschema %}

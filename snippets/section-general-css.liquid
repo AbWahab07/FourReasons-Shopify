@@ -1,0 +1,57 @@
+{%- if type == 'theme' -%}
+	{%- assign _head_letter_sc 			= settings.heading_letter_spacing -%}
+	{%- assign _sub1_letter_sc 			= settings.subheading_letter_spacing -%}
+	{%- assign _sub2_letter_sc 			= settings.subheading2_letter_spacing -%}
+	{%- assign _ts_container_width    	= settings.container_width -%}
+	{%- assign _ts_container_padding  	= settings.container_padding -%}
+	{%- assign _body_margin  			= settings.body_margin -%}
+	{%- assign _body_box_fixed			= settings.body_box_fixed -%}
+
+	<style>
+		{%- unless _body_box_fixed == blank -%}
+			{%- include 'css-responsive', classID:'#body-fixed-border-right,#body-fixed-border-left',css_value: _body_box_fixed, css_property: 'width' -%}
+			{%- include 'css-responsive', classID:'#body-fixed-border-top,#body-fixed-border-bottom',css_value: _body_box_fixed, css_property: 'height' -%}
+			{%- include 'css-responsive', classID:'#page-body',css_value: _body_box_fixed -%}
+		{%- endunless -%}
+		{%- include 'css-responsive', classID:'.section-heading.title-wrapper .title' 		,css_value: _head_letter_sc 			,css_property: 'letter-spacing' -%}
+		{%- include 'css-responsive', classID:'.section-heading.title-wrapper .subtitle' 	,css_value: _sub1_letter_sc 			,css_property: 'letter-spacing' -%}
+		{%- include 'css-responsive', classID:'.section-heading.title-wrapper .subtitle-2' 	,css_value: _sub2_letter_sc 			,css_property: 'letter-spacing' -%}
+		{%- include 'css-responsive', classID:'.section-heading.title-wrapper .title'       ,css_value: settings.heading_lh         ,css_property: 'line-height' -%}
+		{%- include 'css-responsive', classID:'.section-heading.title-wrapper .subtitle'    ,css_value: settings.subheading_lh      ,css_property: 'line-height' -%}
+		{%- include 'css-responsive', classID:'.section-heading.title-wrapper .subtitle-2'  ,css_value: settings.subheading2_lh     ,css_property: 'line-height' -%}
+		{%- include 'css-responsive', classID: '#page-body.boxed,.container,#header-style.layout-boxed .table-row > div', css_value: _ts_container_width, css_property: 'max-width' -%}
+		{%- include 'css-responsive', classID: '#page-body.boxed,.container,#header-style .table-row > div', css_value: _ts_container_padding, css_property: 'padding-left' -%}
+		{%- include 'css-responsive', classID: '#page-body.boxed,.container,#header-style .table-row > div', css_value: _ts_container_padding, css_property: 'padding-right' -%}
+		{%- include 'head-title', type: 'css_heading' -%}
+		{%- include 'css-responsive', classID: 'body:not(.templateIndex) #body-content', css_value: _body_margin, css_property: 'margin' -%}
+		{{- -}}body.popup-active{overflow: hidden !important;}
+	</style>
+{%- else -%}
+	{%- capture _secionID -%}.section-show-{{section.id}}{%- endcapture -%}
+
+	{%- assign _bg_color          = section.settings.section_bg_color | default: 'rgba(0,0,0,0)' -%}
+	{%- assign _padding           = section.settings.section_padding -%}
+	{%- unless section.settings.section_bg_image == blank -%}
+		{%- assign _bg_size           = section.settings.section_bg_size -%}
+		{%- assign _bg_repeat         = section.settings.section_bg_repeat -%}
+		{%- assign _bg_position       = section.settings.section_bg_position -%}
+		{%- assign _bg_fixed  	      = section.settings.section_bg_fixed -%}
+
+	{%- if section.settings.use_bg_img == 'content' -%}
+		{%- capture sectionIMG_ID -%}{{_secionID}} .bg-image{%- endcapture -%}
+	{%- else -%}
+		{%- capture sectionIMG_ID -%}{{_secionID}}.bg-image{%- endcapture -%}
+	{%- endif -%}
+	{{sectionIMG_ID}}{
+		{%- unless _bg_size 	== blank -%}background-size: {{		_bg_size		}};{%- endunless -%}
+		{%- unless _bg_repeat 	== blank -%}background-repeat: {{	_bg_repeat		}};{%- endunless -%}
+		{%- unless _bg_position == blank -%}background-position: {{	_bg_position	}};{%- endunless -%}
+		{%- unless _lazyload 			-%}background-image: url({{	_bg_image		}});{%- endunless -%}
+		{%- if _bg_fixed 				-%}background-attachment: fixed;{%- endif -%}
+	}{% endunless %}
+
+	{%- if _bg_color != 'rgba(0,0,0,0)' and section.settings.bg_color_for != 'content' -%}{{_secionID}}{background-color: {{_bg_color}};}{%- endif -%}
+	{%- if _padding != blank -%}
+		{%- include 'css-responsive', classID: _secionID, css_value: _padding -%}
+	{%- endif -%}
+{%- endif -%}

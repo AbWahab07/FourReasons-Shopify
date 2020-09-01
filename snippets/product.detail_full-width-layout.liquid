@@ -1,0 +1,20 @@
+<div id="product-detail_content" class="product-content-wrapper">
+
+  <div id="product-image" class="product-image">
+    {%- include 'product.detail-image' -%}
+  </div>
+  <div class="container">
+    <div class="row">
+      <div id="product-info" class="product-info col-lg-6 col-12">
+        {%- include 'product.detail-info' -%}
+      </div>
+
+      <div id="product-detail_tabs" class="col-lg-6 col-12">
+        {%- include 'product.detail-snippet', ptype: 'bundled' -%}
+
+        {%- if _tabStyle < 4 -%}{%- include 'product.detail-snippet', ptype: 'tabs' -%}{%- endif -%}
+      </div>
+    </div>
+    {%- if _review_pos == 'block' -%}{%- include 'product.detail-snippet', ptype: 'review_tab' -%}{%- endif -%}
+  </div>
+</div>

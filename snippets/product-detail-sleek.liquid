@@ -1,0 +1,30 @@
+<div style="margin-top: 100px;">
+  <div class="row">
+    <div class="col-lg-3 col-sm-12 sleek-text-area1">
+      <div class="sleek-title">
+        {{ product.metafields.product.video_title }}
+      </div>      
+      <div class="sleek-description">
+        {{ product.metafields.product.video_description }}
+      </div>
+    </div>
+    
+    <div class="col-lg-9 col-sm-12">
+      <div class="video-wrap">
+        <div class="video-area">
+          <div id="video-play-button" style="background-image: url(//cdn.shopify.com/s/files/1/0047/8209/6456/files/play_circle.png?v=1591214629);"></div>
+          <video id="js-video" src="{{ product.metafields.product.video_url }}" style="width: 100%; height: auto; cursor: pointer;" poster="//cdn.shopify.com/s/files/1/0047/8209/6456/files/Rectangle_22_2.png?v=1592237365"/>
+        </div>        
+      </div>      
+    </div>
+    
+    <div class="col-lg-3 col-sm-12 sleek-text-area2">
+      <div class="sleek-title">
+        {{ product.metafields.product.video_title }}
+      </div>
+      <div class="sleek-description">
+        {{ product.metafields.product.video_description }}
+      </div>
+    </div>    
+  </div>
+</div>

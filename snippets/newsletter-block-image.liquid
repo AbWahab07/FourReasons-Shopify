@@ -1,0 +1,17 @@
+{%- for block in section.blocks -%}
+  {%- if block.type == 'image' -%}
+
+    {%- assign _image 		= block.settings.image -%}
+
+    <div class="block-image block-{{block.id}} image-position-{{ _text_box_position }}"{{ block.shopify_attributes }}>
+      {% include 'image-style' with image: _image %}
+    </div>
+
+  	{%- capture blockID -%}#newsletter_popup .block-image.block-{{block.id}}{%- endcapture -%}
+  	{%- capture texbox_css -%}
+    		{%- include 'css-responsive', classID: blockID, css_value: block.settings.width ,css_property: 'width' -%}
+  	{%- endcapture -%}
+  	{%- assign section_css = section_css | append: texbox_css -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}

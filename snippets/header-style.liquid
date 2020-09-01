@@ -1,0 +1,728 @@
+{%- case style -%}
+  {%- when 'initial' -%}
+    {%- assign show_search            = settings.show_search -%}
+    {%- assign currencies_length      = shop.enabled_currencies | size -%}
+    {%- assign nav_link               = section.settings.nav_linklist -%}
+    {%- assign menu_align             = section.settings.menu_align -%}
+    {%- assign left_links             = section.settings.left_nav_linklist -%}
+    {%- assign right_links            = section.settings.right_nav_linklist -%}
+    {%- assign ver_nav_link           = section.settings.ver_nav_link -%}
+    {%- assign search_position        = section.settings.search_position -%}
+    {%- assign search_form_pos        = section.settings.search_form_position -%}
+    {%- assign search_display         = section.settings.search_display -%}
+    {%- assign account_options        = section.settings.account_display  -%}
+    {%- assign show_curr_lang         = section.settings.include_curr_lang -%}
+    {%- assign search_category        = section.settings.search_category -%}
+    {%- assign search_center          = section.settings.search_form_center -%}
+    {%- assign _show_compare          = section.settings.show_compare -%}
+    {%- assign _show_wishlist         = section.settings.show_wishlist -%}
+    {%- assign _show_cart             = section.settings.show_cart -%}
+    {%- assign menu_extended          = ' ' | append: section.settings.nav_ff -%}
+
+    {%- capture _currencies_languages -%}
+      {%- if show_curr_lang -%}
+        {%- if settings.lang_type != 'none' -%}
+          <li class="li-languages"> {%- include 'icons', type: 'languages'  -%}</li>
+        {%- endif -%}
+        {%- if currencies_length > 1 -%}
+          <li class="li-currencies">{%- include 'icons', type: 'currencies' -%}</li>
+        {%- endif -%}
+       {%- endif -%}
+    {%- endcapture -%}
+
+    {%- capture _list_icon -%}
+      {%- if _show_compare or _show_wishlist or _show_cart or account_options != 'hide' -%}
+        <div class="header-icons">
+          <ul class="list-inline">
+            {%- if style == '5' and search_form_pos == 'top' or style == '6' -%}{{ _currencies_languages }}{%- endif -%}
+
+            {%- if style != '7' and style != '8' and style != '9' -%}
+              {%- if search_position == 'in_list' -%}<li class="li-search" >{%- include 'icons', type: 'search', use_content: search_display -%}</li>{%- endif -%}
+            {%- endif -%}
+            {%- unless account_options == 'hide' -%}<li class="li-account"> {%- include 'icons', type: 'account' ,use_content: account_options -%}</li>{%- endunless -%}
+
+            {%- if _show_compare    -%}<li class="li-compare">{%-   include 'icons', type: 'compare'  -%}</li>{%- endif -%}
+            {%- if _show_wishlist   -%}<li class="li-wishlist">{%-  include 'icons', type: 'wishlist' -%}</li>{%- endif -%}
+            {%- if _show_cart       -%}<li class="li-cart">{%-      include 'icons', type: 'cart'     -%}</li>{%- endif -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    {%- endcapture -%}
+
+    {%- capture __search -%}{%- if search_position == 'in_menu' -%}<li class="li-search">{%- include 'icons', type: 'search', use_content: search_display -%}</li>{%- endif -%}{%- endcapture -%}
+
+    {%- capture head_border_style -%}
+      {%- assign _border_mode  = section.settings.border_mode -%}
+      {%- unless _border_mode == 'hide' -%}
+        <div class="header-border{% if _border_mode == 'boxed' %} container{% endif %}">
+          <div class="border-element"></div>
+        </div>
+      {%- endunless -%}
+    {%- endcapture -%}
+
+    {%- unless _border_mode == 'hide' -%}
+      {%- assign _border_width    = section.settings.border_width -%}
+      {%- assign _border_style    = section.settings.border_style -%}
+      {%- assign _border_padding  = section.settings.border_padding -%}
+      {%- assign _border_color    = section.settings.border_color | default: 'rgba(0,0,0,0)' -%}
+      {%- assign _border_opacity  = section.settings.border_color_opacity | times: 0.01 -%}
+
+      {%- unless _border_color == 'rgba(0,0,0,0)' -%}
+        {%- assign _border_color = _border_color | color_modify: 'alpha', _border_opacity -%}
+      {%- endunless -%}
+
+      {%- capture head_borderID -%}#header-style .header-border{%- endcapture -%}
+      {%- capture border_css -%}
+        {%- if _header_style == '9' -%}
+          #header-style .header-main{border-right: {{_border_width}}px {{_border_style}} {{_border_color}};}
+        {%- else -%}
+          {{head_borderID}} .border-element{border-bottom: {{_border_width}}px {{_border_style}} {{_border_color}};}
+        {%- endif -%}
+        {%- include 'css-responsive', classID: head_borderID, css_value: _border_padding -%}
+      {%- endcapture -%}
+      {%- assign section_css = section_css | append: border_css -%}
+    {%- endunless -%}
+
+    {%- include 'header-style', style: 'block_text' -%}
+    {%- include 'header-style', style: 'mega_menu_style' -%}
+
+  {%- comment -%}    ============      Header style 1 Xstore        ============ {%- endcomment -%}
+  {%- when '1' -%}
+    {%- capture btn_custom_layout -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'hd_btn' -%}
+          {%- assign hs1_btn_text         = block.settings.c_button -%}
+          {%- assign hs1_btn_link         = block.settings.c_button_link | default: 'javascript:void(0);' -%}
+          {%- assign hs1_btn_underline    = block.settings.c_underline -%}
+          {%- assign hs1_btn_inherit      = block.settings.c_button_inherit -%}
+          {%- assign hs1_btn_bg_color     = block.settings.c_button_text_bg_color -%}
+          {%- assign hs1_btn_color        = block.settings.c_button_text_color -%}
+          {%- assign hs1_btn_bold         = block.settings.c_but_weight -%}
+          {%- assign hs1_btn_border       = block.settings.c_btn_border -%}
+          {%- assign hs1_btn_border_size  = block.settings.c_button_border_size -%}
+          {%- assign _insert_to_menu      = block.settings.insert_to_menu_list -%}
+
+          {%- unless hs1_btn_text == blank -%}
+            <div class="custom-btn-h1"{{block.shopify_attributes}}>
+              <a href="{{hs1_btn_link}}" id="btn_{{block.id}}"class="btn btn-{{hs1_btn_inherit}}{% if block.settings.custom_button %} btn-custom-h1{% endif %}">{{hs1_btn_text}}</a>
+            </div>
+            {%- capture hs1_id -%}#btn_{{block.id}}{%- endcapture -%}
+
+            {%- capture hs1_btn_style -%}
+              /*Check */
+              {%- include 'css-responsive', classID: hs1_id, css_value: block.settings.c_button_padding -%}
+              {%- include 'css-responsive', classID: hs1_id, css_value: block.settings.c_button_margin      ,css_property: 'margin' -%}
+              {%- include 'css-responsive', classID: hs1_id, css_value: block.settings.c_button_font_size   ,css_property: 'font-size' -%}
+              {%- include 'css-responsive', classID: hs1_id, css_value: block.settings.c_button_lsp         ,css_property: 'letter-spacing' -%}
+              {%- include 'css-responsive', classID: hs1_id, css_value: block.settings.c_button_rounded     ,css_property: 'border-radius' -%}
+              {%- if hs1_btn_inherit == 0 or hs1_btn_underline -%}
+                {{hs1_id}}{
+                  {%- if hs1_btn_inherit == 0 -%}
+                  background-color: {{hs1_btn_bg_color}};color: {{hs1_btn_color}};font-weight: {{hs1_btn_bold}};{%- endif -%}
+                  {%- if hs1_btn_underline -%}text-decoration: underline;{%- endif -%}
+                  {%- if hs1_btn_border_size > 0 -%}border: {{hs1_btn_border_size}}px solid {{hs1_btn_border}}{%- endif -%}
+                }
+              {%- endif -%}
+            {%- endcapture -%}
+            {%- assign section_css = section_css | append: hs1_btn_style -%}
+          {%- endunless -%}
+
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    <div class="header-main">
+      <div class="table-row">
+        <div class="table-wrap-items">
+          {%- include 'include-logo' -%}
+
+          {%- unless nav_link == blank -%}
+            <div class="horizontal-menu">
+              <nav class="main-menu">
+                <ul class="menu-list{{menu_extended}} list-inline {{menu_align}}">
+                  {%- for l in linklists[nav_link].links -%}{%- include 'nav-link' ,main_menu: true -%}{%- endfor -%}
+
+                  {%- if is_sticky and sticky_icons -%}{%- else -%}{{ __search }}{%- endif -%}
+
+                  {%- if _insert_to_menu -%}<li>{{ btn_custom_layout }}</li>{%- endif -%}
+                </ul>
+              </nav>
+            </div>
+          {%- endunless -%}
+
+          {%- if is_sticky and sticky_icons -%}{%- else -%}{{ _list_icon }}{%- endif -%}
+
+          {{ _custom_text }}
+          {%- unless _insert_to_menu -%}{{ btn_custom_layout }}{%- endunless -%}
+        </div>
+      </div>
+      {{head_border_style}}
+    </div>
+  {%- comment -%}    ============      Header style 2 Xstore #2     ============ {%- endcomment -%}
+  {%- when '2' -%}
+    <div class="header-main">
+      <div class="table-row">
+        <div class="table-wrap-items">
+
+          {%- unless nav_link == blank -%}
+            <div class="horizontal-menu">
+              <nav class="main-menu">
+                <ul class="menu-list{{menu_extended}} list-inline {{menu_align}}">
+                  {%- if is_sticky and sticky_icons -%}{%- else -%}{{ __search }}{%- endif -%}
+                  {%- for l in linklists[nav_link].links -%}{%- include 'nav-link' ,main_menu: true -%}{%- endfor -%}
+                </ul>
+              </nav>
+            </div>
+          {%- endunless -%}
+
+          {%- include 'include-logo' -%}
+          {{- _custom_text -}}
+          {%- if is_sticky and sticky_icons -%}{%- else -%}{{ _list_icon }}{%- endif -%}
+        </div>
+      </div>
+      {{head_border_style}}
+    </div>
+  {%- comment -%}    ============      Header style 3 Double Menu     ========== {%- endcomment -%}
+  {%- when '3' -%}
+
+    <div class="header-main">
+      <div class="table-row">
+        <div class="table-wrap-items">
+
+          <div class="wrap-header-left">
+            {{- left_text_content -}}
+            <div class="horizontal-menu">
+              {%- unless left_links == blank -%}
+                <ul class="menu-list{{menu_extended}} list-inline">
+                  {%- if is_sticky and sticky_icons -%}{%- else -%}{{ __search }}{%- endif -%}
+                  {%- for l in linklists[left_links ].links -%}{%- include 'nav-link' -%}{%- endfor -%}
+                </ul>
+              {%- endunless -%}
+            </div>
+          </div>
+
+          {%- include 'include-logo' -%}
+
+          <div class="wrap-header-right d-flex">
+            {%- unless right_links == blank -%}
+              <div class="horizontal-menu">
+                <ul class="menu-list{{menu_extended}} list-inline">
+                  {%- for l in linklists[right_links].links -%}{%- include 'nav-link' -%}{%- endfor -%}
+                </ul>
+              </div>
+            {%- endunless -%}
+            {%- if is_sticky and sticky_icons -%}{%- else -%}{{ _list_icon }}{%- endif -%}
+            {{- right_text_content -}}
+          </div>
+        </div>
+      </div>
+      {{head_border_style}}
+    </div>
+  {%- comment -%}    ============      Header style 4 Variant Hamburger ======== {%- endcomment -%}
+  {%- when '4' -%}
+    {%- capture hamburgerID -%}desktop-hamburger-{%- cycle 1, 2, 3, 4, 5, 6 -%}{%- endcapture -%}
+    <div class="header-main">
+      <div class="table-row">
+        <div class="table-wrap-items">
+          {%- include 'include-logo' -%}
+          {{- _custom_text -}}
+          {%- if is_sticky and sticky_icons -%}{%- else -%}{{ _list_icon }}{%- endif -%}
+
+          <div class="nav-hamburger" data-toggle="modal" data-target="#{{hamburgerID}}">
+            {%- include 'icons', type: 'navbar',desktop: true -%}
+          </div>
+        </div>
+      </div>
+      {{head_border_style}}
+    </div>
+    <div class="modal fade" id="{{hamburgerID}}" tabindex="-1" role="dialog" aria-labelledby="{{hamburgerID}}" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">
+                {%- include 'icons', type: 'icon_free', name: 'icon-delete' -%}
+              </span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="vertical-menu">
+              <nav class="main-menu">
+                <ul class="menu-list{{menu_extended}} {{menu_align}}">
+                  {%- for l in linklists[nav_link].links -%}{%- include 'nav-link' ,main_menu: true ,nav_check: 'no-mega' -%}{%- endfor -%}
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- comment -%}    ============      Header style 5 Variant Center 1    ====== {%- endcomment -%}
+  {%- when '5' -%}
+    <div class="header-main">
+      <div class="table-row" data-index="0">
+        <div class="table-wrap-items">
+
+          <div class="wrap-header-left">
+            {%- if _show_social_media -%}{%- include 'social-media-icons' -%}
+
+            {%- elsif search_form_pos == 'top' -%}
+                <div class="searchbox{% unless show_search %} d-none{% endunless %}" id="header-search">
+                  {%- include 'layer-search-modal' ,type: 'search_template' -%}
+                </div>
+            {%- endif -%}
+
+            {%- unless _currencies_languages == blank -%}
+              <div class="header-icons"><ul class="list-inline">{{ _currencies_languages }}</ul></div>
+            {%- endunless -%}
+          </div>
+
+          <div class="wrap-header-center">
+            {%- include 'include-logo' -%}
+          </div>
+
+          <div class="wrap-header-right">
+            {%- unless search_form_pos == 'top' -%}{{- right_text_content -}}{%- endunless -%}
+            {{_list_icon}}
+            {%- if search_form_pos == 'top' and _show_social_media-%}
+              <div class="searchbox{% unless show_search %} d-none{% endunless %}" id="header-search">
+                {%- include 'layer-search-modal' ,type: 'search_template'  -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+
+      {%- if _border_top -%}{{head_border_style}}{%- endif -%}
+      <div class="table-row" data-index="1">
+        <div class="table-wrap-items">
+          {{- left_text_content -}}
+
+          {%- unless nav_link == blank -%}
+            <div class="horizontal-menu">
+              <nav class="main-menu">
+                <ul class="menu-list{{menu_extended}} list-inline {{menu_align}}">
+                  {%- for l in linklists[nav_link].links -%}{%- include 'nav-link' ,main_menu: true -%}{%- endfor -%}
+                  {{- __search -}}
+                </ul>
+              </nav>
+            </div>
+          {%- endunless -%}
+
+          {%- if search_form_pos == 'bottom' -%}
+            <div class="searchbox{% unless show_search %} d-none{% endunless %}" id="header-search">{% include 'layer-search-modal' ,type: 'search_template'  %}</div>
+
+          {%- elsif search_form_pos != 'hide' -%}
+            {{- right_text_content -}}
+          {%- endif -%}
+        </div>
+      </div>
+      {%- if _second_border -%}{{head_border_style}}{%- endif -%}
+    </div>
+  {%- comment -%}    ============      Header style 6 Variant Center 2  ======== {%- endcomment -%}
+  {%- when '6' -%}
+    <div class="header-main">
+      <div class="table-row" data-index="0">
+        <div class="table-wrap-items">
+          <div class="wrap-header-left">
+            <div class="d-flex align-items-center">
+              {{- left_text_content -}}
+              {%- if _show_social_media -%}
+                {%- include 'social-media-icons' -%}
+              {%- else -%}
+                <div class="header-icons">
+                  <ul class="list-inline">{{ _currencies_languages }}</ul>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+
+          <div class="wrap-header-center">
+            {%- include 'include-logo' -%}
+          </div>
+
+          <div class="wrap-header-right">
+            {{- right_text_content -}}
+            {%- if _show_social_media -%}
+              <div class="header-icons">
+                <ul class="list-inline">{{ _currencies_languages }}</ul>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+      {%- if _border_top -%}{{head_border_style}}{%- endif -%}
+      <div class="table-row" data-index="1">
+        <div class="table-wrap-items">
+          {%- unless nav_link == blank -%}
+            <div class="horizontal-menu">
+              <nav class="main-menu">
+                <ul class="menu-list{{menu_extended}} list-inline {{menu_align}}">
+                  {%- for l in linklists[nav_link].links -%}{%- include 'nav-link' ,main_menu: true -%}{%- endfor -%}
+                  {{- __search -}}
+                </ul>
+              </nav>
+            </div>
+          {%- endunless -%}
+          {{_list_icon}}
+        </div>
+      </div>
+      {%- if _second_border -%}{{head_border_style}}{%- endif -%}
+    </div>
+  {%- comment -%}    ============      Header style 7 Variant Standard  ======== {%- endcomment -%}
+  {%- when '7' -%}
+    <div class="header-main">
+      <div class="table-row" data-index="0">
+        <div class="table-wrap-items">
+          <div class="wrap-header-left">{%- include 'include-logo' -%}</div>
+
+          <div class="wrap-header-center">
+            {{- _custom_text -}}
+            {%- if search_form_pos == 'top' -%}
+              <div class="searchbox{% unless show_search %} d-none{% endunless %}" id="header-search">{% include 'layer-search-modal' ,type: 'search_template'  %}</div>
+            {%- endif -%}
+          </div>
+
+          <div class="wrap-header-right">{{_list_icon}}</div>
+        </div>
+      </div>
+      {%- if _border_top -%}{{head_border_style}}{%- endif -%}
+      <div class="table-row" data-index="1">
+        <div class="table-wrap-items">
+          {%- unless nav_link == blank -%}
+            <div class="horizontal-menu">
+              <nav class="main-menu">
+                <ul class="menu-list{{menu_extended}} list-inline {{menu_align}}">
+                  {%- for l in linklists[nav_link].links -%}{%- include 'nav-link' ,main_menu: true -%}{%- endfor -%}
+                  {{- __search -}}
+                </ul>
+              </nav>
+            </div>
+          {%- endunless -%}
+          {%- if search_form_pos == 'bottom' -%}
+            <div class="searchbox{% unless show_search %} d-none{% endunless %}" id="header-search">{% include 'layer-search-modal' ,type: 'search_template'  %}</div>
+          {%- endif -%}
+        </div>
+      </div>
+      {%- if _second_border -%}{{head_border_style}}{%- endif -%}
+    </div>
+  {%- comment -%}    ============      Header style 8 Advanced          ======== {%- endcomment -%}
+  {%- when '8' -%}
+    <div class="header-main">
+      <div class="table-row" data-index="0">
+        <div class="table-wrap-items">
+          <div class="wrap-header-left">
+            {%- include 'include-logo' -%}
+          </div>
+          <div class="wrap-header-center{% if search_center %} search-center{% endif %}">
+            {{- _custom_text -}}
+            <div class="searchbox{% unless show_search %} d-none{% endunless %}" id="header-search">
+              {%- include 'layer-search-modal' ,type: 'search_template' -%}
+            </div>
+          </div>
+
+          <div class="wrap-header-right">
+            {{_list_icon}}
+          </div>
+        </div>
+      </div>
+      {%- if _border_top -%}{{head_border_style}}{%- endif -%}
+      <div class="table-row" data-index="1">
+        <div class="table-wrap-items">
+          {%- unless ver_nav_link == blank -%}
+            <div class="vertical-menu">
+              <div class="dropdown{% if template == 'index' %} show{% endif %}">
+                <button class="btn dropdown-toggle{{menu_extended}}" type="button" id="dd_verticalmenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="{%- if template == 'index' -%}true{%- else -%}false{%- endif -%}">
+                  {{- section.settings.ver_nav_link_label | default: linklists[ver_nav_link].title -}}
+                </button>
+                <ul class="menu-list{{menu_extended}} dropdown-menu text-left{% if template == 'index' %} show{% endif %}" aria-labelledby="dd_verticalmenu">
+                  {%- for l in linklists[ver_nav_link].links -%}
+                  {%- include 'nav-link', vertical: true -%}
+                  {%- endfor -%}
+                </ul>
+              </div>
+            </div>
+          {%- endunless -%}
+          {%- unless nav_link == blank -%}
+            <div class="horizontal-menu">
+              <nav class="main-menu">
+                <ul class="menu-list{{menu_extended}} list-inline {{menu_align}}">
+                  {%- for l in linklists[nav_link].links %}{%- include 'nav-link' ,main_menu: true -%}{%- endfor -%}
+                  {{- __search -}}
+                </ul>
+              </nav>
+            </div>
+          {%- endunless -%}
+        </div>
+      </div>
+      {%- if _second_border -%}{{head_border_style}}{%- endif -%}
+    </div>
+  {%- comment -%}    ============      Header style 9 Vertical #1       ======== {%- endcomment -%}
+  {%- when '9' -%}
+    <aside class="header-main">
+      <div class="table-row">
+        <div class="table-wrap-items">
+          {%- include 'include-logo' -%}
+          <div class="navbar-vertical-collapse">
+            {%- include 'icons', type: 'navbar',desktop: true -%}
+          </div>
+          <div class="header-icons">
+            {%- if _show_cart -%}
+              <ul class="list-inline"><li class="li-cart">{%- include 'icons', type: 'cart'-%}</li></ul>
+            {%- endif -%}
+          </div>
+        </div>
+        <div class="vertical-menu">
+          <nav class="main-menu">
+            <ul class="menu-list{{menu_extended}} {{menu_align}}">
+              {%- for l in linklists[nav_link].links -%}{%- include 'nav-link' ,main_menu: true -%}{%- endfor -%}
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </aside>
+  {%- comment -%}    ============      Header style 10 Vertical #2      ======== {%- endcomment -%}
+  {%- when '10' -%}
+    <div class="header-main">
+      <div class="table-row">
+        <div class="table-wrap-items">
+          <div class="wrap-header-left">
+              {{_custom_text}}
+          </div>
+          <div class="wrap-header-center">
+            {%- include 'include-logo' -%}
+          </div>
+          <div class="wrap-header-right">
+            {{_list_icon}}
+          </div>
+        </div>
+      </div>
+      {{head_border_style}}
+    </div>
+    <aside class="header-fixed-column">
+      <div class="table-wrap-items">
+        <div class="navbar-vertical-collapse">
+          {%- include 'icons', type: 'navbar',desktop: true -%}
+        </div>
+      </div>
+      <div class="vertical-menu">
+        <nav class="main-menu">
+          <ul class="menu-list{{menu_extended}} {{menu_align}}">
+            {%- for l in linklists[nav_link].links -%}{%- include 'nav-link' ,main_menu: true -%}{%- endfor -%}
+          </ul>
+        </nav>
+      </div>
+    </aside>
+  {%- comment -%}    ============      Header Sticky                ============ {%- endcomment -%}
+  {%- when 'sticky' -%}
+
+    <div class="header-main">
+      <div class="table-row">
+        <div class="table-wrap-items header-sticky-mobile-{{_mobile_style}}">
+
+          {%- if _mobile_style == '2' -%}
+            <div class="col-6">{%- include 'include-logo', type: 'sticky' -%}</div>
+            <div class="col-6">{%- include 'icons' with type: 'navbar' -%}</div>
+
+          {%- else -%}
+            {%- include 'icons' with type: 'navbar' -%}
+
+            {%- include 'include-logo', type: 'sticky' -%}
+
+            {%- if nav_link != blank and is_mobile != true -%}
+              <div class="horizontal-menu d-none d-lg-block">
+                <nav class="main-menu">
+                  <ul class="menu-list{{menu_extended}} list-inline {{menu_align}}">
+                    {%- for l in linklists[nav_link].links -%}{%- include 'nav-link' ,main_menu: true, no_label: true -%}{%- endfor -%}
+                    {%- unless _st_hide_sticky_icons -%}
+                    {{- __search -}}
+                    {%- endunless -%}
+                  </ul>
+                </nav>
+              </div>
+            {%- endif -%}
+
+              <div class="header-icons">
+                {%- unless _st_hide_sticky_icons -%}
+                  <ul class="list-inline">
+                    {%- unless account_options == 'hide' -%}
+                    <li class="li-account d-none d-lg-block">{%- include 'icons', type: 'account' ,use_content: account_options -%}</li>
+                    {%- endunless -%}
+                    <li class="li-cart">{%- include 'icons', type: 'cart'-%}</li>
+                  </ul>
+                {%- endunless -%}
+              </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+    {%- capture stick_logo_max_width -%}
+      {%- unless section.settings.logo_sticky_max_width == blank -%}
+        {%- assign _logo_max_w = section.settings.logo_sticky_max_width | replace: ',', '!important,' | append: '!important' -%}
+        {%- include 'css-responsive', classID: '#header-fixed .header-logo img', css_value: _logo_max_w, css_property: 'max-width' -%}
+      {%- endunless -%}
+
+      {%- unless section.settings.show_sticky_logo -%}
+      @media (min-width: 992px){#header-fixed .header-logo{display: none!important;}}
+      {%- endunless -%}
+
+      {%- include 'css-responsive', classID: '#header-fixed', css_value: section.settings.header_fixed_shadow, css_property: 'box-shadow' ,css_split: ';' -%}
+    {%- endcapture -%}
+    {%- assign section_css = section_css | append: stick_logo_max_width -%}
+  {%- comment -%}    ============      Header Mobile     ============ {%- endcomment -%}
+  {%- when 'mobile' -%}
+
+    <div class="header-main">
+      <div class="table-row">
+        {%- case _mobile_style -%}
+          {%- when '2' -%}
+            <div class="col-6">{%- include 'include-logo' with type: 'mobile' -%}</div>
+            <div class="col-6">{%- include 'icons' with type: 'navbar' -%}</div>
+          {%- else -%}
+            <div class="col-3">{%- include 'icons' with type: 'navbar' -%}</div>
+            <div class="col-6">{%- include 'include-logo' with type: 'mobile' -%}</div>
+            <div class="col-3">
+
+              <div class="header-mobile--right-content">
+                <div class="header-icons">
+                  <ul class="list-inline">
+                    <li class="li-cart">{%- include 'icons', type: 'cart' -%}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+
+        {%- endcase -%}
+      </div>
+    </div>
+
+  {%- when 'block_text' -%}
+    {%- assign _left_text_content   = '' -%}
+    {%- assign _right_text_content  = '' -%}
+
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'hd_text' -%}
+        {%- assign _cus_text_align = section.settings.custom_text_align -%}
+
+        {%- capture hd_text -%}
+            {%- assign _inline          = block.settings.inline    -%}
+            {%- assign hd_icon          = block.settings.icon      -%}
+            {%- assign countdown        = block.settings.countdown -%}
+            {%- assign border           = block.settings.border    -%}
+            {%- assign hd_text          = block.settings.text      -%}
+            {%- assign hd_link          = block.settings.text_link -%}
+            {%- assign hd_icon_align    = block.settings.icon_align  -%}
+            {%- assign hd_icon_size     = block.settings.ic_font_size  -%}
+            {%- assign hd_ic_color      = block.settings.ic_color | default: 'rgba(0,0,0,0)' -%}
+            {%- assign hd_text_color    = block.settings.text_color | default: 'rgba(0,0,0,0)'  -%}
+
+            {%- capture _icon -%}
+              {%- unless hd_icon == blank -%}
+                {%- include 'icons', type: 'icon_free', name: hd_icon -%}
+                {%- capture iconID -%}#header-style .hd-text.block-{{block.id}} .demo-icon{%- endcapture -%}
+                {%- capture hd_icon_css -%}
+                  {%- include 'css-responsive', classID: iconID,css_value: hd_icon_size, css_property: 'font-size' -%}
+                  {%- unless hd_ic_color == 'rgba(0,0,0,0)' -%}{{iconID}}{color: {{hd_ic_color}};}{%- endunless -%}
+                {%- endcapture -%}
+                {%- assign section_css = section_css | append: hd_icon_css -%}
+              {%- endunless -%}
+            {%- endcapture -%}
+
+            <div class="hd-text block-{{block.id}} custom-text{% if border %} has-border{% endif %}{% if _inline %} d-inline-block{% endif %}"{{block.shopify_attributes}}>
+              <div class="custom--text">
+
+                {%- unless hd_text contains '[icon]' -%}
+                  {%- if _icon.size > 0 -%}
+                    <div class="d-inline-block d-icon {{hd_icon_align}}">{{_icon}}</div>
+                    {%- capture hd_icon_css -%}
+                      {%- include 'css-responsive', classID: '#header-style .hd-text .d-icon',css_value: block.settings.ic_margin, css_property: 'margin' -%}
+                    {%- endcapture -%}
+                    {%- assign section_css = section_css | append: hd_icon_css -%}
+                  {%- endif -%}
+                {%- endunless -%}
+
+                <div class="d-inline-block">
+                  {%- unless hd_link == blank -%}<a href="{{hd_link}}">{%- endunless -%}
+                  {%- unless hd_text == blank -%}{{hd_text | replace: '[icon]',_icon}}{%- endunless -%}
+                  {%- unless hd_link == blank -%}</a>{%- endunless -%}
+                  {%- include 'include-countdown' -%}
+                </div>
+
+                {%- unless hd_text_color == 'rgba(0,0,0,0)' -%}
+                  {%- capture hd_text_css -%}
+                    .hd-text.block-{{block.id}}{color:{{hd_text_color}};}
+                  {%- endcapture -%}
+                  {%- assign section_css = section_css | append: hd_text_css -%}
+                {%- endunless -%}
+              </div>
+
+            </div>
+        {%- endcapture -%}
+
+        {%- if block.settings.text_pos == 'left' -%}
+          {%- assign _left_text_content = _left_text_content | append: hd_text -%}
+        {%- else -%}
+          {%- assign _right_text_content = _right_text_content | append: hd_text -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- capture left_text_content  -%}{%- if _left_text_content.size > 0 -%}<div class="group-custom-text">{{_left_text_content}}</div>{%- endif -%}{%- endcapture -%}
+    {%- capture right_text_content -%}{%- if _right_text_content.size > 0 -%}<div class="group-custom-text">{{_right_text_content}}</div>{%- endif -%}{%- endcapture -%}
+
+    {%- capture _custom_text -%}
+      {%- if _left_text_content.size > 0 or _right_text_content.size > 0 -%}
+        <div class="group-custom-text{% unless section.settings.custom_text_inline %} d-block{% endunless %}">{{ _left_text_content }}{{ _right_text_content }}</div>
+      {%- endif -%}
+    {%- endcapture -%}
+
+  {%- when 'mega_menu_style' -%}
+
+    {%- if section.settings.use_super_megamenu -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'mega_heading_style' -%}
+
+          {%- assign __mega_heading_trigger = block.settings.mega_menu_trigger | strip_newlines -%}
+
+          {%- unless __mega_heading_trigger == blank -%}
+            {%- assign __mega_heading_trigger         = __mega_heading_trigger | split: ',' -%}
+            {%- assign __mega_heading_id              = nil -%}
+            {%- assign __mega_heading_trigger_array   = nil -%}
+
+            {%- for mg_item in __mega_heading_trigger -%}
+              {%- capture _mg_item -%}{{ mg_item | strip }}{%- endcapture -%}
+              {%- assign __mega_heading_trigger_array = __mega_heading_trigger_array | append: '++' | append: _mg_item | append: '++' -%}
+              {%- assign __mega_heading_id = __mega_heading_id | append: ',#header-style div[data-mega-title="' | append: _mg_item | append: '"] .mega-column--heading' -%}
+            {%- endfor -%}
+            <input type="hidden" name="megaMenuStyle" data-block-id="block-{{block.id}}" value="{{ __mega_heading_trigger_array | remove_first: '++' }}"{{block.shopify_attributes}}>
+
+            {%- assign __mega_heading_array     = __mega_heading_array | append: '||' | append: __mega_heading_trigger_array -%}
+            {%- assign __mega_heading_array_ff  = __mega_heading_array_ff | append: '||' | append: block.settings.mega_col_heading_ff -%}
+            {%- assign __mega_col_heading_color = block.settings.mega_col_heading_cl | default: 'rgba(0,0,0,0)' -%}
+
+            {%- capture mega_col_ID -%}{{__mega_heading_id | remove_first: ',' | strip }}{%- endcapture -%}
+
+            {%- capture mega_style -%}
+              {{- mega_col_ID }}{text-transform: {{block.settings.mega_col_heading_tt}};font-weight: {{block.settings.mega_col_heading_fw}};
+
+              {%- unless __mega_col_heading_color == 'rgba(0,0,0,0)' -%}color: {{__mega_col_heading_color}} !important;{%- endunless -%} }
+
+              {%- include 'css-responsive', classID: mega_col_ID, css_value: block.settings.mega_col_heading_fs, css_property: 'font-size' -%}
+              {%- include 'css-responsive', classID: mega_col_ID, css_value: block.settings.mega_col_heading_margin, css_property: 'margin' -%}
+            {%- endcapture -%}
+
+            {%- assign mega_section_css = mega_section_css | append: mega_style -%}
+          {%- endunless -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- assign __mega_heading_array     = __mega_heading_array    | remove_first: '||' | split: '||' -%}
+      {%- assign __mega_heading_array_ff  = __mega_heading_array_ff | remove_first: '||' | split: '||' -%}
+    {%- endif -%}
+
+  {%- else -%}
+{%- endcase -%}
+
+{%- if style == '9' or style == '10' -%}
+  {%- assign section_css = section_css | append: '@media (min-width: 992px){#page-body{padding-left: 90px;}}' -%}
+{%- endif -%}

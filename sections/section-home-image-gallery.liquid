@@ -1,0 +1,134 @@
+<div style="position: relative;">
+  <div class="home-image-gallery-brown"></div>
+  
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="home-image-gallery">
+          {%- if section.blocks.size > 0 -%}
+            <div class="home-image-gallery-content">
+              {%- assign index = 0 -%}
+              {%- for block in section.blocks -%}
+                {%- assign index = index | plus: 1 -%}
+                <div class="home-gallery-content home-gallery-content__{{index}}">
+                  {%- if block.settings.title != blank -%}
+                    <h2>{{ block.settings.title }}</h2>
+                  {%- endif -%}
+
+                  {%- if block.settings.text != blank -%}
+                    {{ block.settings.text }}
+                  {%- endif -%}
+                </div> 
+              {%- endfor -%}
+
+              <div class="move-wrap">
+                <span class="current-content">1</span><span class="total-content">/4</span>
+
+                <div class="home-gallery__arrow home-gallery__arrow-right">
+                  {%- include 'icon-right-arrow'-%}
+                </div>
+
+                <div class="home-gallery__arrow home-gallery__arrow-left">
+                  {%- include 'icon-left-arrow' -%}
+                </div>
+
+                <div class="content-width"></div>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.button_link != blank -%}
+            <div class="home-image-gallery-banner">
+              {%- if section.settings.header_title != blank-%}
+                <div class="home-banner-header">
+                  <p>{{ section.settings.header_title }}</p>
+
+                  {%- if section.settings.sub_header_title != blank -%}
+                    <h2>{{ section.settings.sub_header_title }}</h2>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              <div class="home-banner-image">
+                {%- assign index = 0 -%}
+                {%- for block in section.blocks -%}
+                  {%- assign index = index | plus: 1 -%}
+                  {%- if index == 1 -%}
+                  <img class="lazyautosizes lazyloaded home-gallery-img home-gallery-img__{{index}}" src="{{ block.settings.image | img_url: 'master' }}">
+                  {%- else -%}
+                  <img class="lazyautosizes lazyloaded home-gallery-img home-gallery-img__{{index}}" src="{{ block.settings.image | img_url: 'master' }}" style="display: none;">
+                  {%- endif -%}
+
+                {%- endfor -%}
+
+                <a href="{{ section.settings.button_link }}">
+                  {{ section.settings.button_label }}
+                  {%- include 'icon-right-arrow' -%}
+                </a>
+              </div>
+            </div>
+          {%- endif -%}
+          <div style="clear: both;"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Home Image Gallery",
+    "settings": [
+	  {
+         "type":"text",
+         "id":"header_title",
+         "label":"Heading"
+      },
+	  {
+         "type":"text",
+         "id":"sub_header_title",
+         "label":"Sub Heading"
+      },
+	  {
+      	"type":"text",
+      	"id":"button_label",
+      	"label":"Button Label"
+      },
+	  {
+      	"type":"url",
+      	"id":"button_link",
+      	"label":"Button Link"
+      }
+	],
+	"blocks": [
+      {
+        "type": "text",
+        "name": "Content",
+        "settings": [
+          {
+            "type":"image_picker",
+            "id":"image",
+            "label":"Image"
+          },
+	      {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+		  },
+		  {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text"
+		  }
+        ]
+      }
+    ],
+	"presets":[
+      {
+         "name":"Home Image Gallery",
+         "category":"Banner"
+      }
+    ]
+  }
+{% endschema %}

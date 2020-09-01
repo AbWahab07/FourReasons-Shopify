@@ -1,0 +1,1405 @@
+{%- comment -%}
+   ============
+      Only Product pages have id: "breadcrumb_as_page_title", "breadcrumb_in_info_column"
+      Only This Product has id: "breadcrumb_in_info_column"
+   ============
+{%- endcomment-%}
+
+{%- assign _product_layout = 'default' -%}
+{%- include 'product-default' -%}
+{% schema %}
+{
+   "name": "Product Default",
+   "tag": "section",
+   "settings": [
+      {
+         "type":"header",
+         "content":"Breadcrumb"
+      },
+      {
+         "type": "checkbox",
+         "id": "show_breabcrumb",
+         "label": "Show Breadcrumb",
+         "default": true
+      },
+      {
+         "type":"checkbox",
+         "id":"breadcrumb_in_info_column",
+         "label":"Show Breadcrumb in Product Info column"
+      },
+      {
+         "type":"checkbox",
+         "id":"breadcrumb_as_page_title",
+         "label":"Use Breadcrumb as Page Title"
+      },
+      {
+         "type":"checkbox",
+         "id":"breadcrumb_image_inherit",
+         "label":"Inherit Background image",
+         "info": "Please upload image in Theme settings > Breadcrumb","default":true
+      },
+      {
+         "type": "image_picker",
+         "id": "breadcrumb_image",
+         "label": "Breadcrumb Image"
+      },
+      {
+         "type":"paragraph",
+         "content":"To customize breadcrumb, please add block 'Breadcrumb'."
+      },
+      {
+         "type":"header",
+         "content":"Layout"
+      },
+      {
+         "type": "checkbox",
+         "id": "boxed_layout",
+         "label": "Boxed layout",
+         "default": true
+      },
+      {
+         "type": "color",
+         "id": "background_color",
+         "label": "Section Background color"
+      },
+      {
+         "type": "text",
+         "id": "section_padding",
+         "label": "Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"header",
+         "content":"Product gallery"
+      },
+      {
+         "type": "select",
+         "id": "image_pos",
+         "label": "Product Gallery position",
+         "options": [
+            {"value":"left","label":"Left"},
+            {"value":"right","label":"Right"}
+         ],
+         "default": "left"
+      },
+      {
+         "type": "select",
+         "id": "thumbnail_pos",
+         "label": "Product Gallery Thumbnail position",
+         "options": [
+            {"value":"left","label":"Left"}
+            ,{"value":"right","label":"Right"}
+            ,{"value":"bottom_left","label":"Bottom (Left align)"}
+            ,{"value":"bottom","label":"Bottom (Center align)"}
+            ,{"value":"bottom_right","label":"Bottom (Right align)"}
+         ],
+         "default": "left"
+      },
+      {
+         "type":"range",
+         "id":"thumbnail_view_number",
+         "label":"How many of the thumbnail showing on Desktop?",
+         "min":3,
+         "max":6,
+         "step":1,
+         "default":5
+      },
+      {
+         "type":"range",
+         "id":"thumbnail_view_number_mobi",
+         "label":"How many of the thumbnail showing on Mobile?",
+         "min":3,
+         "max":5,
+         "step":1,
+         "default":4
+      },
+      {
+         "type": "select",
+         "id": "zoom_type",
+         "label": "Zoom type",
+         "default": "hover",
+         "options": [
+            {"value":"none","label":"Disabled"},
+            {"value":"hover","label":"Zoom on Hover"},
+            {"value":"popup","label":"Zoom Popup"}
+         ]
+      },
+      {"type":"checkbox","id":"auto_switchFirst","label":"Auto switch feature image by default variants","info":"When the page has been loaded it will select one variant instead of feature product images"},
+      {"type":"checkbox","id":"hide_variant_out","label":"Hide variants sold out"},
+      {
+         "type": "header",
+         "content": "Add to cart"
+      },
+      {
+         "type": "range",
+         "id": "btn_cart_inherit",
+         "label": "Cart button inherit style",
+         "min": 1,
+         "max": 3,
+         "default": 2
+      },
+      {
+         "type": "checkbox",
+         "id": "shaking_cart",
+         "label": "Show Shaking Cart Button",
+         "default": true
+      },
+      {
+         "type": "checkbox",
+         "id": "enable_payment_button",
+         "label": "Show Dynamic Checkout button",
+         "info": "Lets customers check out directly using a familiar payment method. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)"
+      },
+      {
+         "type": "range",
+         "id": "dynamic_btn_style",
+         "label": "Checkout button inherit style",
+         "min": 1,
+         "max": 3,
+         "default": 2
+      },
+      {
+         "type":"select",
+         "id":"qty_style",
+         "label":"Quantity style",
+         "default":"1",
+         "options":[
+            {
+              "value":"1",
+              "label":"1. Default"
+            },
+            {
+              "value":"2",
+              "label":"2. Rounded corners"
+            }
+         ]
+      },
+      {
+         "type": "checkbox",
+         "id": "enable_pre_order_button",
+         "label": "Show Pre-order button",
+         "default": true
+      },
+      {
+         "type": "checkbox",
+         "id": "show_sticky_cart",
+         "label": "Show sticky cart"},{"type":"range","id":"sticky_cart_style","label":"Sticky cart button style","min":1,"max":3,"default":2
+      },
+      {
+         "type": "select",
+         "id": "sticky_cart_position",
+         "label": "Sticky cart position",
+         "default": "bottom",
+         "options": [
+            {"value":"top","label":"Top"},
+            {"value":"bottom","label":"Bottom"}
+         ]
+      },
+      {
+         "type": "text",
+         "id": "tax_text",
+         "label": "Excl. tax or Incl. tax."
+      },
+      {
+         "type": "header",
+         "content": "Product Summary"
+      },
+      {
+         "type": "checkbox",
+         "id": "show_next_prev_product",
+         "label": "Show Next/Previous products",
+         "default": true
+      },
+      { 
+         "type": "checkbox",
+         "id": "stock_enable",
+         "label": "Show Inventory Remaining"
+      },
+      {
+         "type": "checkbox",
+         "id": "show_prod_brand",
+         "label": "Show Product Brand"
+      },
+      {
+         "type": "checkbox",
+         "id": "show_prod_sku",
+         "label": "Show Product SKU"
+      },
+      {
+         "type": "checkbox",
+         "id": "show_prod_category",
+         "label": "Show Product Category"
+      },
+      {
+         "type": "checkbox",
+         "id": "show_prod_tags",
+         "label": "Show Product Tags"
+      },
+      {
+         "type":"checkbox",
+         "id":"show_prod_info_middle",
+         "label":"Product Info Middle alignment"
+      },
+      {
+         "type": "image_picker",
+         "id": "image_size_chart",
+         "label": "Sizing Guide",
+         "info": "Or Metafields: c_f.image_size_chart"
+      },
+      {
+         "type": "paragraph",
+         "content": "Metafield allow you to attach metadata, which is additional information to a store's resources. Please install [Advanced Custom Field](https://apps.shopify.com/advanced-custom-field) to edit content."
+      },
+      {
+         "type": "checkbox",
+         "id": "meta_description_excerpt",
+         "label": "Metafields Description Excerpt: c_f.description_excerpt",
+         "default": true
+      },
+      {
+         "type": "checkbox",
+         "id": "meta_countdown_timer",
+         "label": "Metafields Countdown Timer: c_f.countdown_timer",
+         "default": true
+      },
+      {
+         "type": "header",
+         "content": "Product Tabs"
+      },
+      {
+         "type": "paragraph",
+         "content": "To customize your product tabs, please scroll to Content section and add content."
+      },
+      {
+         "type": "select",
+         "id": "product_tab_style",
+         "label": "Tab style",
+         "options": [
+            {"value":"0","label":"Hidden"},
+            {"value":"1","label":"1. Default tabs"},
+            {"value":"2","label":"2. Left side style"},
+            {"value":"3","label":"3. Accordion style"},
+            {"value":"4","label":"4. Accordion next to image"}
+         ],
+         "default": "1"
+      },
+      {
+         "type": "checkbox",
+         "id": "product_tab_trigger_first_tab",
+         "label": "Auto Open the first tab content",
+         "info": "Use for Accordion styles",
+         "default": true
+      },
+      {
+         "type": "paragraph",
+         "content": "With Product description, standard tab are created base on your Product description content. If you'd like unique set of tabs for each product you shoud use heading 5 function"
+      },
+      {
+         "type": "checkbox",
+         "id": "multi-tab",
+         "label": "Use Multi-tabs with heading 5 tag",
+         "default": true,
+         "info": "We use heading 5 in Product's description to seperate Multi-tabs, each <h5>Tabs Title</h5> will be considered as content seperator and tabs title"
+      },
+      {
+         "type": "paragraph",
+         "content": "+ TAB TITLE SETTINGS"
+      },
+      {
+         "type":"select",
+         "id":"nav_des_tt",
+         "label":"Tab title text transform",
+         "default":"uppercase",
+         "options":[
+            {"value":"none","label":"Normal"},
+            {"value":"uppercase","label":"Uppercase"},
+            {"value":"lowercase","label":"Lowercase"},
+            {"value":"capitalize","label":"Capitalize"}
+         ]
+      },
+      {
+         "type": "color",
+         "id": "nav_des_cl",
+         "label": "Tab title color"
+      },
+      {
+         "type": "text",
+         "id": "nav_des_fs",
+         "label": "Tab title font size",
+         "placeholder": "E.g: 14px",
+         "default": "14px"
+      },
+      {
+         "type": "select",
+         "id": "nav_des_fw",
+         "label": "Tab title font weight",
+         "default": "400",
+         "options": [
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+         ]
+      },
+      {
+         "type": "select",
+         "id": "nav_des_ff",
+         "label": "Tab title font family",
+         "default": "auto",
+         "options": [
+            {"value":"auto","label":"Auto"},
+            {"value":"ff-head","label":"Header font"},
+            {"value":"ff-body","label":"Body font"},
+            {"value":"ff-1","label":"Custom font 1"},
+            {"value":"ff-2","label":"Custom font 2"},
+            {"value":"ff-3","label":"Custom font 3"},
+            {"value":"ff-4","label":"Custom font 4"},
+            {"value":"ff-5","label":"Custom font 5"}
+         ]
+      },
+      {
+         "type": "text",
+         "id": "nav_des_ls",
+         "label": "Tab title letter spacing",
+         "placeholder": "E.g: 2px"
+      },
+      {
+         "type": "text",
+         "id": "nav_des_padding",
+         "label": "Tab title padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type": "text",
+         "id": "nav_des_margin",
+         "label": "Tab title margin",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Not for Style 2. Order: Top Right Bottom Left"
+      },
+      {
+         "type":"paragraph",
+         "content":"+ ACTIVE TAB"
+      },
+      {
+         "type": "color",
+         "id": "nav_active_des_cl",
+         "label": "Tab title color"
+      },
+      {
+         "type": "color",
+         "id": "nav_active_des_bg_cl",
+         "label": "Tab title background color"
+      },
+      {
+         "type": "color",
+         "id": "nav_active_des_border_bottom",
+         "label": "Border bottom color",
+         "info": "Only for Style 1"
+      },
+      {
+         "type": "text",
+         "id": "nav_active_des_fs",
+         "label": "Tab title font size",
+         "placeholder": "E.g: 16px"
+      },
+      {
+         "type": "select",
+         "id": "nav_active_des_fw",
+         "label": "Tab title font weight",
+         "default": "400",
+         "options": [
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+         ]
+      },
+      {
+         "type": "header",
+         "content": "Product Review"
+      },
+      {
+         "type": "select",
+         "id": "product_tab_review",
+         "label": "Product Review Position",
+         "options": [
+            {"value":"hide","label":"Hidden"},
+            {"value":"block","label":"Separate blocks"},
+            {"value":"inside","label":"Inside the product tabs"}
+         ],
+         "default": "block",
+         "info": "Make sure Product Review had enabled. Theme settings > App Integrations > Product Review"
+      },
+      {
+         "type":"header",
+         "content":"Block Heading style"
+      },
+      {
+         "type":"paragraph",
+         "content":"Use for Related block & Recent viewed block"
+      },
+      {
+         "type": "select",
+         "id": "block_heading_style",
+         "label": "Heading block style",
+         "default": "inherit",
+         "options":[
+            {"value":"default","label":"Custom"},
+            {"value":"inherit","label":"Inherit Heading sections"}
+         ]
+      },
+      {
+         "type": "text",
+         "id":"section_heading_container_margin",
+         "label": "Container margin",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"paragraph",
+         "content":"+ HEADING TEXT"
+      },
+      {
+         "type":"text",
+         "id":"section_heading_fs",
+         "label":"Heading font size",
+         "default": "26px",
+         "placeholder": "E.g: 26px"
+      },
+      {
+         "type":"color",
+         "id":"section_heading_color",
+         "label":"Heading color",
+         "default": "#000000"
+      },
+      {
+         "type": "select",
+         "id":"section_heading_fw",
+         "label": "Heading font weight",
+         "default": "400",
+         "options": [
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+         ]
+      },
+      {
+        "type": "select",
+        "id": "section_heading_ff",
+        "label": "Heading font family",
+        "default": "ff-body",
+        "options": [
+          {"value":"ff-head","label":"Header font"},
+          {"value":"ff-body","label":"Body font"},
+          {"value":"ff-1","label":"Custom font 1"},
+          {"value":"ff-2","label":"Custom font 2"},
+          {"value":"ff-3","label":"Custom font 3"},
+          {"value":"ff-4","label":"Custom font 4"},
+          {"value":"ff-5","label":"Custom font 5"}
+        ]
+      },
+      {
+         "type": "text",
+         "id":"section_heading_margin",
+         "label": "Heading margin",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"text",
+         "id":"section_heading_lsp",
+         "label":"Heading letter spacing",
+         "placeholder": "E.g: 2px"
+      },
+      {
+         "type":"paragraph",
+         "content":"+ SUBHEADING TEXT"
+      },
+      {
+         "type":"text",
+         "id":"section_subheading_fs",
+         "label":"Subheading font size",
+         "default": "14px",
+         "placeholder": "E.g: 14px"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading_color",
+         "label":"Subheading color",
+         "default": "#000000"
+      },
+      {
+         "type": "select",
+         "id":"section_subheading_fw",
+         "label": "Subheading font weight",
+         "default": "400",
+         "options": [
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+         ]
+      },
+      {
+        "type": "select",
+        "id": "section_subheading_ff",
+        "label": "Subheading font family",
+        "default": "ff-body",
+        "options": [
+          {"value":"ff-head","label":"Header font"},
+          {"value":"ff-body","label":"Body font"},
+          {"value":"ff-1","label":"Custom font 1"},
+          {"value":"ff-2","label":"Custom font 2"},
+          {"value":"ff-3","label":"Custom font 3"},
+          {"value":"ff-4","label":"Custom font 4"},
+          {"value":"ff-5","label":"Custom font 5"}
+        ]
+      },
+      {
+         "type": "text",
+         "id":"section_subheading_margin",
+         "label": "Subheading margin",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"text",
+         "id":"section_subheading_lsp",
+         "label":"Subheading letter spacing",
+         "placeholder": "E.g: 2px"
+      },
+      {
+         "type": "header",
+         "content": "Related Product"
+      },
+      {
+         "type": "checkbox",
+         "id": "enable_related_product",
+         "label": "Enable Related Product",
+         "default": true
+      },
+      {
+         "type": "text",
+         "id": "heading_related_product",
+         "label": "Title",
+         "default": "RELATED PRODUCTS"
+      },
+      {
+         "type": "textarea",
+         "id": "subheading_related_product",
+         "label": "Subtitle"
+      },
+      {
+         "type": "select",
+         "id": "related_title_align",
+         "label": "Title alignment",
+         "default": "left",
+         "options": [
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ]
+      },
+      {
+         "type": "select",
+         "id": "related_product_data",
+         "label": "How to select related products",
+         "options": [
+            {"label":"Same Collection","value":"collection"},
+            {"label":"Same Vendor","value":"vendors"},
+            {"label":"Same Tag","value":"tags"}
+         ],
+         "default": "collection"
+      },
+      {
+         "type": "text",
+         "id": "related_items_resp",
+         "label": "Max number of items per row",
+         "placeholder": "xl,lg,md,sm,xs,xxs",
+         "info": "E.g: 4,3,2",
+         "default": "5,3,2"
+      },
+      {
+         "type": "checkbox",
+         "id": "padding_item",
+         "label": "Spacing items",
+         "default": true
+      },
+      {
+         "type": "range",
+         "id": "related_product_limit",
+         "label": "Limited items",
+         "min": 3,
+         "max": 20,
+         "step": 1,
+         "default": 15,
+         "info": "Use for Same Collection"
+      },
+      {
+         "type": "header",
+         "content": "RECENTLY VIEWED"
+      },
+      {
+         "type": "checkbox",
+         "id": "enable_recently_viewd",
+         "label": "Show Recently Viewd",
+         "default": true
+      },
+      {
+         "type": "text",
+         "id": "rencent_title",
+         "label": "Title",
+         "default": "RECENTLY VIEWED"
+      },
+      {
+         "type": "select",
+         "id": "recent_title_align",
+         "label": "Title alignment",
+         "default": "left",
+         "options": [
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ]
+      },
+      {
+         "type": "text",
+         "id": "recent_items_resp",
+         "label": "Max number of items per row",
+         "placeholder": "xl,lg,md,sm,xs,xxs",
+         "info": "E.g: 4,3,2",
+         "default": "5,3,2"
+      },
+      {
+         "type": "range",
+         "id": "recent_product_limit",
+         "label": "Limited items",
+         "min": 1,
+         "max": 20,
+         "step": 1,
+         "default": 5
+      }
+   ],
+   "blocks": [
+      {
+         "type": "breadcrumb",
+         "name": "Breadcrumb",
+         "limit": 1,
+         "settings": [
+            {
+               "type":"header",
+               "content":"Layout"
+            },
+            {
+               "type":"range",
+               "id":"breadcrumb_style",
+               "label":"Breadcrumb style",
+               "min":0,
+               "max":3,
+               "step":1,
+               "default": 0,
+               "info": "0 to inherit from Theme settings"
+            },
+            {
+              "type": "color",
+              "id": "breadcrumb_bg_color",
+              "label": "Background color"
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_bg_size",
+              "label": "Background Image Size:",
+              "default": "auto",
+              "options": [
+                {"value":"auto","label":"Auto"},
+                {"value":"contain","label":"Contain"},
+                {"value":"cover","label":"Cover"},
+                {"value":"150%","label":"150%"},
+                {"value":"200%","label":"200%"}
+              ]
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_bg_repeat",
+              "label": "Background Image Repeat:",
+              "default": "no-repeat",
+              "options": [
+                {"value":"no-repeat","label":"No Repeat"},
+                {"value":"repeat","label":"Repeat"},
+                {"value":"repeat-x","label":"Repeat X"},
+                {"value":"repeat-y","label":"Repeat Y"}
+              ]
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_bg_position",
+              "label": "Background Image Position:",
+              "default": "center center",
+              "options": [
+                {"value":"left top","label":"Left Top"},
+                {"value":"center top","label":"Center Top"},
+                {"value":"right top","label":"Right Top"},
+                {"value":"left center","label":"Left Center"},
+                {"value":"center center","label":"Center Center"},
+                {"value":"right center","label":"Right Center"},
+                {"value":"left bottom","label":"Left Bottom"},
+                {"value":"center bottom","label":"Center Bottom"},
+                {"value":"right bottom","label":"Right Bottom"}
+              ]
+            },
+            {
+              "type": "checkbox",
+              "id": "breadcrumb_bg_fixed",
+              "label": "Background Image Fixed"
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_padding",
+              "label": "Breadcrumb padding",
+              "placeholder": "E.g: 5px 20px 5px 20px",
+              "info": "Order: Top Right Bottom Left"
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_margin",
+              "label": "Breadcrumb margin",
+              "placeholder": "E.g: 5px 20px 5px 20px",
+              "info": "Order: Top Right Bottom Left"
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_shadow",
+              "label": "Breadcrumb Box shadow",
+              "placeholder": "Optional"
+            },
+            {
+               "type":"header",
+               "content":"Link settings"
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_text_fs",
+              "label": "Text font size",
+              "placeholder": "E.g: 14px"
+            },
+            {
+              "type": "color",
+              "id": "breadcrumb_text_color",
+              "label": "Text color"
+            },
+            {
+               "type":"select",
+               "id":"breadcrumb_text_fw",
+               "label":"Text font weight",
+               "default": "400",
+               "options": [
+                  {"value":"inherit","label":"Auto"},
+                  {"value":"100","label":"100 Thin (Hairline)"},
+                  {"value":"200","label":"200 Extra Light (Ultra Light)"},
+                  {"value":"300","label":"300 Light"},
+                  {"value":"400","label":"400 Normal"},
+                  {"value":"500","label":"500 Medium"},
+                  {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+                  {"value":"700","label":"700 Bold"},
+                  {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+                  {"value":"900","label":"900 Black (Heavy)"}
+               ]
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_text_ff",
+              "label": "Text font family",
+              "default": "inherit",
+              "options": [
+                {"value":"inherit","label":"Auto"},
+                {"value":"ff-head","label":"Header font"},
+                {"value":"ff-body","label":"Body font"},
+                {"value":"ff-1","label":"Custom font 1"},
+                {"value":"ff-2","label":"Custom font 2"},
+                {"value":"ff-3","label":"Custom font 3"},
+                {"value":"ff-4","label":"Custom font 4"},
+                {"value":"ff-5","label":"Custom font 5"}
+              ]
+            },
+            {
+               "type":"header",
+               "content":"Active Link settings"
+            },
+            {
+               "type":"checkbox",
+               "id":"show_breadcrumb_active",
+               "label":"Show Active Link/Title page",
+               "default": true
+            },
+            {
+              "type": "checkbox",
+              "id": "breadcrumb_active_up",
+              "label": "Show Active text UPPERCASE"
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_active_fs",
+              "label": "Active text font size",
+              "placeholder": "E.g: 18px or auto",
+              "info": "Blank to default"
+            },
+            {
+              "type": "color",
+              "id": "breadcrumb_active_color",
+              "label": "Active text color"
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_active_fw",
+              "label": "Active text font weight",
+              "default": "inherit",
+              "options": [
+                {"value":"inherit","label":"Auto"},
+                {"value":"100","label":"100 Thin (Hairline)"},
+                {"value":"200","label":"200 Extra Light (Ultra Light)"},
+                {"value":"300","label":"300 Light"},
+                {"value":"400","label":"400 Normal"},
+                {"value":"500","label":"500 Medium"},
+                {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+                {"value":"700","label":"700 Bold"},
+                {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+                {"value":"900","label":"900 Black (Heavy)"}
+              ]
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_active_ff",
+              "label": "Active text font family",
+              "default": "ff-body",
+              "options": [
+                {"value":"ff-head","label":"Header font"},
+                {"value":"ff-body","label":"Body font"},
+                {"value":"ff-1","label":"Custom font 1"},
+                {"value":"ff-2","label":"Custom font 2"},
+                {"value":"ff-3","label":"Custom font 3"},
+                {"value":"ff-4","label":"Custom font 4"},
+                {"value":"ff-5","label":"Custom font 5"}
+              ]
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_active_lsp",
+              "label": "Active text letter spacing",
+              "placeholder": "E.g: 2px"
+            },
+            {
+               "type":"header",
+               "content":"Breacrumb Previous"
+            },
+            {
+              "type": "checkbox",
+              "id": "show_previous_page",
+              "label": "Show Previous page",
+              "default": true
+            },
+            {
+              "type": "checkbox",
+              "id": "breadcrumbs_prev_uc",
+              "label": "Text UPPERCASE"
+            },
+            {
+               "type":"text",
+               "id":"breadcrumb_prev_fs",
+               "label":"Text font size",
+               "placeholder": "E.g: 14px",
+               "info": "Blank to use Link font size"
+            },
+            {
+               "type": "color",
+               "id": "breadcrumb_prev_color",
+               "label": "Text color",
+               "info": "Blank to use Link color"
+            },
+            {
+               "type":"select",
+               "id":"breadcrumb_prev_fw",
+               "label":"Text font weight",
+               "default": "inherit",
+               "options": [
+                  {"value":"inherit","label":"Auto"},
+                  {"value":"100","label":"100 Thin (Hairline)"},
+                  {"value":"200","label":"200 Extra Light (Ultra Light)"},
+                  {"value":"300","label":"300 Light"},
+                  {"value":"400","label":"400 Normal"},
+                  {"value":"500","label":"500 Medium"},
+                  {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+                  {"value":"700","label":"700 Bold"},
+                  {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+                  {"value":"900","label":"900 Black (Heavy)"}
+               ]
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_prev_ff",
+              "label": "Text font family",
+              "default": "inherit",
+              "options": [
+                {"value":"inherit","label":"Auto"},
+                {"value":"ff-head","label":"Header font"},
+                {"value":"ff-body","label":"Body font"},
+                {"value":"ff-1","label":"Custom font 1"},
+                {"value":"ff-2","label":"Custom font 2"},
+                {"value":"ff-3","label":"Custom font 3"},
+                {"value":"ff-4","label":"Custom font 4"},
+                {"value":"ff-5","label":"Custom font 5"}
+              ]
+            }
+         ]
+      },
+      {
+         "type": "page",
+         "name": "Static - Page",
+         "settings": [
+            {
+               "type": "paragraph",
+               "content": "Static tab are created base on Page content. It's usefull for some content that is same for all the products like Shipping term, Size Guide, and so on"
+            },
+            {
+               "type": "text",
+               "id": "page_title",
+               "label": "Heading"
+            },
+            {
+               "type": "page",
+               "id": "page",
+               "label": "Select a Page"
+            }
+         ]
+      },
+      {
+         "type": "fomo_inline",
+         "name": "Fomo Notify (Inline)",
+         "settings": [
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Block label"
+            },
+            {
+               "type": "text",
+               "id": "fomo_margin",
+               "label": "Fomo margin",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "header",
+               "content": "Fomo Settings"
+            },
+            {
+               "type": "range",
+               "id": "cookie_history",
+               "label": "Remove cookie every",
+               "min": 10,
+               "max": 60,
+               "step": 5,
+               "default": 30,
+               "unit": "s"
+            },
+            {
+               "type": "text",
+               "id": "loop_time",
+               "label": "Loop timer",
+               "default": "20"
+            },
+            {"type":"range","id":"deviation_value","label":"Standard Deviation","info":"Value range of counter after reload page (Percent * The previous value)","min":10,"max":90,"step":10,"default":20,"unit":"%"},
+            {
+               "type": "text",
+               "id": "count_min_max",
+               "label": "Counter Min - Max",
+               "default": "60;100",
+               "placeholder": "Min ; Max"
+            },
+            {
+               "type": "checkbox",
+               "id": "city_manual",
+               "label": "Use Manual Cities List"
+            },
+            {
+               "type": "paragraph",
+               "content": "Show manual cities list instead of nearby cities detect with GEOIP service."
+            },
+            {
+               "type": "paragraph",
+               "content": "Change list in Theme settings/ Fomo Popups/ Manual Cities List"
+            },
+            {
+               "type": "header",
+               "content": "Image settings"
+            },
+            {
+               "type": "select",
+               "id": "image_pos",
+               "label": "Position",
+               "default": "left",
+               "options": [
+                  {"value":"left","label":"Left"},
+                  {"value":"top","label":"Top"},
+                  {"value":"right","label":"Right"},
+                  {"value":"bottom","label":"Bottom"}
+               ]
+            },
+            {
+               "type": "select",
+               "id": "image_size",
+               "label": "Image size",
+               "default": "small",
+               "options": [
+                  {"value":"small","label":"Small"},
+                  {"value":"medium","label":"Medium"},
+                  {"value":"large","label":"Large"}
+               ]
+            },
+            {
+               "type": "image_picker",
+               "id": "noti_image",
+               "label": "Image",
+               "info": "Blank to hide"
+            },
+            {
+               "type": "checkbox",
+               "id": "use_product_image",
+               "label": "Use Image from Products random"
+            },
+            {
+               "type": "text",
+               "id": "image_radius",
+               "label": "Image Rounded corners",
+               "default": "4px"
+            },
+            {
+               "type": "text",
+               "id": "image_margin",
+               "label": "Image margin",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "header",
+               "content": "Icon settings"
+            },
+            {
+               "type": "text",
+               "id": "icon_name",
+               "label": "Font icon name",
+               "info": "Use [icon] to place in your content"
+            },
+            {
+               "type": "text",
+               "id": "ic_fs",
+               "label": "Icon font size",
+               "default": "18px"
+            },
+            {
+               "type": "color",
+               "id": "ic_cl",
+               "label": "Icon color",
+               "default": "#222222"
+            },
+            {
+               "type": "header",
+               "content": "Line 1 settings"
+            },
+            {
+               "type": "text",
+               "id": "fomo_content_lh_1",
+               "label": "Line 1 line height"
+            },
+            {
+               "type": "text",
+               "id": "fomo_content_padding_1",
+               "label": "Line 1 Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "text",
+               "id": "text_fs_1",
+               "label": "Text font size",
+               "default": "14px"
+            },
+            {
+               "type": "text",
+               "id": "link_fs_1",
+               "label": "Link font size",
+               "default": "14px"
+            },
+            {
+               "type": "select",
+               "id": "text_fw_1",
+               "label": "Text font weight",
+               "default": "300",
+               "options": [
+                  {"value":"100","label":"100 Thin (Hairline)"},
+                  {"value":"200","label":"200 Extra Light (Ultra Light)"},
+                  {"value":"300","label":"300 Light"},
+                  {"value":"400","label":"400 Normal"},
+                  {"value":"500","label":"500 Medium"},
+                  {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+                  {"value":"700","label":"700 Bold"},
+                  {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+                  {"value":"900","label":"900 Black (Heavy)"}
+               ]
+            },
+            {
+               "type": "select",
+               "id": "link_fw_1",
+               "label": "Link font weight",
+               "default": "300",
+               "options": [
+                  {"value":"100","label":"100 Thin (Hairline)"},
+                  {"value":"200","label":"200 Extra Light (Ultra Light)"},
+                  {"value":"300","label":"300 Light"},
+                  {"value":"400","label":"400 Normal"},
+                  {"value":"500","label":"500 Medium"},
+                  {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+                  {"value":"700","label":"700 Bold"},
+                  {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+                  {"value":"900","label":"900 Black (Heavy)"}
+               ]
+            },
+            {
+               "type": "color",
+               "id": "text_color_1",
+               "label": "Text color",
+               "default": "#888888"
+            },
+            {
+               "type": "color",
+               "id": "link_color_1",
+               "label": "Tink color",
+               "default": "#1A1A1A"
+            },
+            {
+               "type": "header",
+               "content": "Line 2 settings"
+            },
+            {
+               "type": "text",
+               "id": "fomo_content_lh_2",
+               "label": "Line 2 line height"
+            },
+            {
+               "type": "text",
+               "id": "fomo_content_padding_2",
+               "label": "Line 2 Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "text",
+               "id": "text_fs_2",
+               "label": "Text font size",
+               "default": "14px"
+            },
+            {
+               "type": "text",
+               "id": "link_fs_2",
+               "label": "Link font size",
+               "default": "14px"
+            },
+            {
+               "type": "select",
+               "id": "text_fw_2",
+               "label": "Text font weight",
+               "default": "300",
+               "options": [
+                  {"value":"100","label":"100 Thin (Hairline)"},
+                  {"value":"200","label":"200 Extra Light (Ultra Light)"},
+                  {"value":"300","label":"300 Light"},
+                  {"value":"400","label":"400 Normal"},
+                  {"value":"500","label":"500 Medium"},
+                  {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+                  {"value":"700","label":"700 Bold"},
+                  {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+                  {"value":"900","label":"900 Black (Heavy)"}
+               ]
+            },
+            {
+               "type": "select",
+               "id": "link_fw_2",
+               "label": "Link font weight",
+               "default": "300",
+               "options": [
+                  {"value":"100","label":"100 Thin (Hairline)"},
+                  {"value":"200","label":"200 Extra Light (Ultra Light)"},
+                  {"value":"300","label":"300 Light"},
+                  {"value":"400","label":"400 Normal"},
+                  {"value":"500","label":"500 Medium"},
+                  {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+                  {"value":"700","label":"700 Bold"},
+                  {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+                  {"value":"900","label":"900 Black (Heavy)"}
+               ]
+            },
+            {
+               "type": "color",
+               "id": "text_color_2",
+               "label": "Text color",
+               "default": "#888888"
+            },
+            {
+               "type": "color",
+               "id": "link_color_2",
+               "label": "Tink color",
+               "default": "#1A1A1A"
+            },
+            {
+               "type": "header",
+               "content": "Fomo Content"
+            },
+            {
+               "type": "paragraph",
+               "content": "Use keywords to created random content, place in your content. [cities], [number], [products], [time]"
+            },
+            {
+               "type": "textarea",
+               "id": "text_header",
+               "label": "Line 1",
+               "default": "Fomo Lorem ipsum"
+            },
+            {
+               "type": "select",
+               "id": "head_alignment",
+               "label": "Line 1 alignment",
+               "default": "left",
+               "options": [
+                  {"value":"left","label":"Left"},
+                  {"value":"center","label":"Center"},
+                  {"value":"right","label":"Right"}
+               ]
+            },
+            {
+               "type": "textarea",
+               "id": "text_body",
+               "label": "Line 2"
+            },
+            {
+               "type": "select",
+               "id": "body_alignment",
+               "label": "Line 2 alignment",
+               "default": "left",
+               "options": [
+                  {"value":"left","label":"Left"},
+                  {"value":"center","label":"Center"},
+                  {"value":"right","label":"Right"}
+               ]
+            }
+         ]
+      },
+      {
+         "type": "fomo_shipping",
+         "name": "Fomo Notify (Shipping)",
+         "limit": 1,
+         "settings": [
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Block label"
+            },
+            {
+               "type": "text",
+               "id": "fomo_margin",
+               "label": "Fomo margin",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "header",
+               "content": "Order and Shipping Time",
+               "info": "Working days"
+            },
+            {
+               "type": "paragraph",
+               "content": "Metafields: c_f.deadline_day"
+            },
+            {
+               "type": "paragraph",
+               "content": "Metafields: c_f.delivery_time"
+            },
+            {
+               "type": "range",
+               "id": "deadline_day",
+               "label": "Deadline each day",
+               "default": 14,
+               "min": 0,
+               "max": 23,
+               "step": 1,
+               "unit": "h"
+            },
+            {
+               "type": "range",
+               "id": "delivery_time",
+               "label": "Delivery time",
+               "default": 2,
+               "min": 1,
+               "max": 7,
+               "step": 1,
+               "unit": "d"
+            }
+         ]
+      },
+      {
+         "type": "discount",
+         "name": "Discount popup",
+         "limit": 1,
+         "settings": [
+            {
+               "type": "paragraph",
+               "content": "Metafields: c_f.discount_code"
+            },
+            {
+               "type": "paragraph",
+               "content": "Metafields: c_f.discount_percent"
+            },
+            {
+               "type": "image_picker",
+               "id": "banner_discount",
+               "label": "Banner image"
+            },
+            {
+               "type": "textarea",
+               "id": "discount_popup_text_1",
+               "label": "Text 01",
+               "default": "Wait a second..."
+            },
+            {
+               "type": "textarea",
+               "id": "discount_popup_text_2",
+               "label": "Text 01",
+               "default": "Don't you want discount off"
+            }
+         ]
+      }
+   ]
+}
+{% endschema %} 
+

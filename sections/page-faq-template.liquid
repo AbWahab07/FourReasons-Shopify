@@ -1,0 +1,123 @@
+{%- include 'breadcrumb' -%}
+{%- assign faq_group    = section.settings.faq_group -%}
+
+<div id="col-main" class="page-faq">
+  <style>#col-main{background-color:{{section.settings.background_color | default: 'rgba(0,0,0,0)' }};
+    {%- include 'css-responsive', classID: '#col-main', css_value: section.settings.section_padding  -%}
+  </style>
+
+  <div class="page-content">
+    <div class="container">
+      {%- if section.blocks.size > 0 -%}
+
+          <div class="faq-group-container">
+
+            {%- unless faq_group == blank -%}
+              {%- assign group = faq_group | split: ',' -%}
+              <div class="faq-tab-title">
+                <ul class="list-inline">
+                  {%- for name in group -%}
+                    <li class="faq-tb-title" data-value="{{name | strip | handle }}">
+                      <a href="javascript:void(0);">{{ name | capitalize }}</a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endunless -%}
+
+            <div class="faq-table-content">
+              {%- for block in section.blocks -%}
+                {%- assign f_heading   = block.settings.title | strip | handle  -%}
+
+                <div class="faq-row" data-group="{{f_heading}}"{{block.shopify_attributes}}>
+                  {%- assign f_title   = block.settings.block_title  | default: 'Lorem ipsum dolor sit amet'-%}
+                  {%- assign f_content = block.settings.block_content  | default: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'-%}
+
+                  <div class="faq-title">
+                    <span class="h4">{{f_title}}</span>
+                    <span class="expand"></span>
+                  </div>
+
+                  <div class="faq-text" style="display: none;">
+                    <p>{{f_content}}</p>
+                  </div>
+                </div>
+
+              {%- endfor -%}
+            </div>
+          </div>
+      {%- else -%}<p>{{'general.text.no_content' | t}}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+    jQuery(document)
+    .on('click','.page-faq .faq-title',function(){
+      let $this = jQuery(this);
+      $this.toggleClass('show');
+      $this.next('.faq-text').slideToggle();
+    })
+    .on('click','.faq-group-container .faq-tb-title',function(){
+      let $this = jQuery(this), _group = $this.data('value');
+      jQuery('.faq-group-container .faq-tb-title').removeClass('active');
+      $this.addClass('active');
+
+      jQuery('.faq-table-content .faq-row').removeClass('active');
+      jQuery('.faq-table-content .faq-row[data-group="'+_group+'"]').addClass('active');
+    })
+    .ready(function($) {
+      $('.faq-tab-title').length && $('.faq-tab-title').find('.faq-tb-title').first().trigger('click');
+    });
+</script>
+{% schema %}
+  {
+    "name": "FAQ Page",
+    "tag": "section",
+    "settings": [
+      {
+         "type":"color",
+         "id"    :"background_color",
+         "label":"Background color",
+         "default": "rgba(0,0,0,0)"
+      },
+      {
+         "type": "text",
+         "id": "section_padding",
+         "label": "Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"textarea",
+         "id":"faq_group",
+         "label":"FAQ Group",
+         "placeholder":"Service, Payment, etc.."
+      }
+    ],
+    "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "FAQ Group"
+        },
+        {
+          "type": "textarea",
+          "id": "block_title",
+          "label": "Title"
+        },
+        {
+          "type": "html",
+          "id": "block_content",
+          "label": "Content"
+        }
+      ]
+    }
+    ]
+  }
+{% endschema %}

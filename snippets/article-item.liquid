@@ -1,0 +1,65 @@
+{%- if type == 'list' or type == 'list-2' -%}
+  <div class="post-item">
+    <div class="post-item-inner">
+      <div class="post-image">
+        <a href="{{ article.url }}">
+          {%- include "image-style" with image: article.image, image_width: '[240]' -%}
+        </a>
+      </div>
+
+      <div class="post-content">
+        <div class="info">
+          <p class="post-title"><a href="{{ article.url }}">{{ article.title }}</a></p>
+            
+          {%- unless type == 'list-2' -%}
+            <p class="date">
+              {%- include 'icons', type: 'icon_free', name: 'icon-uniE937' -%}
+              <span>{{ article.published_at | date: '%b %d, %Y' }}</span>
+            </p>
+          {%- endunless -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{%- elsif type == 'list-3' -%}
+  <div class="post-item">
+    <div class="post-item-inner">
+      <div class="post-content p-0">
+        <div class="info">
+          <p class="post-title"><a href="{{ article.url }}">{{ article.title }}</a></p>                      
+        </div>
+      </div>
+    </div>
+  </div>
+
+{%- else -%}
+  <article class="post-item">
+    <div class="post-item-inner">
+      {%- if article.image -%}
+        <div class="post-image">
+          <a href="{{ article.url }}">
+            {% include 'image-style' with image: article.image %}
+          </a>
+          {%- if article.tags[0].size > 0 -%}
+            <span class="post-label">{{ article.tags[0] }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+      <div class="post-content">
+        <div class="info">
+
+          <div class="article-title"><a href="{{ article.url }}" ><span class="h3">{{ article.title }}</span></a></div>
+
+          <div class="meta-data">
+            <span class="date">{{ article.published_at | date: '%B %d, %Y' }}</span>
+            <span>{{ 'blogs.article.by' | t }} {{article.author}}</span>
+
+          </div>
+          {%- if _show_excerpt -%}<div class="blog-excerpt">{{article.excerpt}}</div>{%- endif -%}
+          <a href="{{article.url}}" class="blog-link{% if _style_as_button %} btn btn-{{_button_inherit}}{% endif %}">{{ 'blogs.article.countinute' | t }}</a>
+        </div>
+      </div>
+    </div>
+  </article>
+{%- endif -%}

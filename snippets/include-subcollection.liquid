@@ -1,0 +1,39 @@
+{%- for block in section.blocks -%}
+  {%- if block.type == 'subcollection' -%}
+    <!-- Subcollection-->
+    {%- if collection.metafields.c_f.subcollection != blank -%}
+      <div class="hide">{{collection.metafields.c_f.subcollection}}</div>
+      {%- assign _cf_subcollection = collection.metafields.c_f.subcollection | remove: '["' | remove: '"]' | split: '|' -%}
+
+      <h2 class="subcategory">{{ collection.title }} {{ block.settings.subcategory_title }}</h2>
+      <div class="row subcategory-list">
+        {%- case block.settings.subcollection_per_row -%}
+          {%- when 2 -%}{%- assign subcol_class = 'col-6' -%}
+          {%- when 3 -%}{%- assign subcol_class = 'col-4' -%}
+          {%- else   -%}{%- assign subcol_class = 'col-3' -%}
+        {%- endcase -%}
+
+        {%- for cf_collection in _cf_subcollection -%}
+          {%- assign _cf_collection = collections[cf_collection] -%}
+            <div class="category {{ subcol_class }} text-center">
+              <div class="category-image">
+                <a href="{{ _cf_collection.url }}">
+                  {%- if _cf_collection.image != blank -%}
+                    {%- assign _cf_collection_img = _cf_collection.image | img_url: 'master' -%}
+                  {%- else -%}
+                    {%- assign _cf_collection_img = 'default-image.jpg' | asset_img_url: 'master' -%}
+                  {%- endif -%}
+
+                  <span class="image--style">
+                    <img class="lazyload img-lazy blur-up" data-src="{{ _cf_collection_img }}"/>
+                  </span>
+                </a>
+              </div>
+              <a class="category-name" href="{{ _cf_collection.url }}" title="{{ _cf_collection.title | escape }}">{{ _cf_collection.title }}</a>
+            </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}

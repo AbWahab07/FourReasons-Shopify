@@ -1,0 +1,365 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- if section.settings.carousel_layout -%}{%- assign _type = 'carousel' -%}{%- else -%}{%- assign _type = 'row' -%}{%- endif -%}
+
+{%- assign _lazyload          = settings.use_lazyload -%}
+{%- assign _bg_color          = section.settings.section_bg_color -%}
+{%- assign _bg_image          = section.settings.section_bg_image -%}
+{%- assign _padding           = section.settings.section_padding -%}
+{%- assign _show_pimage       = section.settings.show_product_image -%}
+{%- assign _border_style      = section.settings.border_style -%}
+
+{%- assign _max_col           = section.settings.max_col -%}
+{%- assign _items_per_col     = section.settings.item_per_col -%}
+{%- assign _total_items       = section.settings.total_items -%}
+
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+{%- capture sectionID -%}.section-show-{{section.id}}{%- endcapture -%}
+
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="product-menu-section layout-{{_layout }} section-show-{{section.id}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="product-menu" data-section-id="{{section.id}}">
+   <div class="home-menu{% if _layout == 'boxed' %} container{% endif %}">
+
+      {%- include 'head-title' -%}
+      <div class="menu-product border-style-{{_border_style}}">
+         <div class="row">
+            {%- if section.blocks.size > 0 -%}
+               {%- for block in section.blocks -%}
+                  {%- assign _banner_image      = block.settings.banner_image -%}
+
+                  <div class="col-md-{{block.settings.width}} col-12"{{ block.shopify_attributes }}>
+                     <div class="menu-item-inner">
+                        {%- unless _banner_image == blank -%}
+                           {%- assign _banner_title      = block.settings.banner_title -%}
+                           {%- assign _banner_content    = block.settings.banner_content -%}
+                           <div class="menu-banner">
+                              <div class="menu-banner-inner">
+                                 <div class="banner-image">{%- include 'image-style', image: _banner_image -%}</div>
+
+                                 {%- unless _banner_title == blank and _banner_content == blank -%}
+                                    <div class="banner-text">
+                                       {%- unless _banner_title == blank -%}<div class="b-title" style="color:{{block.settings.banner_title_color}};">{{_banner_title}}</div>{%- endunless -%}
+                                       {%- unless _banner_content == blank -%}<div class="b-content" style="color:{{block.settings.banner_content_color}};">{{_banner_content}}</div>{%- endunless -%}
+                                    </div>
+                                 {%- endunless -%}
+                              </div>
+                           </div>
+                        {%- endunless -%}
+                        <div class="menu-p-content">
+                           {%- assign collection = collections[block.settings.collection] -%}
+                           {%- if collection != blank and collection.products_count > 0 -%}
+                              <div class="row">
+                                 {%- if _max_col == '2' -%}{%- assign split_col = 'col-md-6 ' -%}{%- endif -%}
+
+                                 <div class="{{split_col}}col-12">
+                                    {%- for product in collection.products limit: _total_items -%}
+                                       {% include 'product-item', type: 'product-menu' %}
+                                       {%- if _max_col == '2' and _items_per_col == forloop.index -%}
+                                          </div>
+                                          <div class="{{split_col}}col-12">
+                                       {%- endif -%}
+                                    {%- endfor -%}
+                                 </div>
+                              </div>
+                           {%- endif -%}
+                        </div>
+                     </div>
+                  </div>
+               {%- endfor -%}
+            {%- else -%}
+               {%- for i in (1..2) -%}
+                  <div class="col-md-6 col-12">
+                     <div class="menu-p-content">
+                        {%- for j in (1..4) -%}
+                           <div class="product-menu-item">
+                              <div class="product-item-inner">
+                                 <div class="product-image">
+                                    <div class="product-image-inner">
+                                       {%- include 'svgset', type: 'product' -%}
+                                    </div>
+                                 </div>
+                                 <div class="product-info">
+                                    <div class="product-info-inner">
+                                       <h5 class="product-name">{{ 'homepage.onboarding.product_title' | t }}</h5>
+                                    </div>
+                                 </div>
+                                 <div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+                              </div>
+                           </div>
+                        {%- endfor -%}
+                     </div>
+                  </div>
+               {%- endfor -%}
+            {%- endif -%}
+         </div>
+      </div>
+
+   </div>
+   <style>
+      {%- include 'css-responsive' ,classID: sectionID, css_value: _padding -%}
+      .section-show-{{section.id}} .home-menu{background-color: {{_bg_color}};}     
+      {%- unless section.settings.section_bg_image == blank -%}
+      .section-show-{{section.id}}.bg-image{background-size: {{section.settings.section_bg_size}};background-repeat: {{section.settings.section_bg_repeat}};background-position: {{section.settings.section_bg_position}};
+      {%- unless _lazyload -%}background-image: url({{_bg_image}});{%- endunless -%}
+      }{%- endunless -%}
+   </style>
+</div>
+
+{% schema %}
+{
+   "name":"Product Menu",
+   "tag":"section",
+   "settings":[
+      {
+         "type":"paragraph",
+         "content":"Created by 'Products Menu' section"
+      },
+      {
+         "type":"text",
+         "id":"title",
+         "label":"Section Label [:id]","default": "Product menu"
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT"
+      },
+      {
+         "type":"checkbox",
+         "id":"boxed_layout",
+         "label":"Boxed layout",
+         "default":true
+      },
+      {
+         "type"  :"text",
+         "id"    :"section_padding",
+         "label" :"Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"color",
+         "id":"section_bg_color",
+         "label":"Background color",
+         "default": "#FFFFFF"
+      },
+      {
+        "type":"image_picker",
+        "id":"section_bg_image",
+        "label":"Background image"
+      },
+      {
+        "type":"select",
+        "id"   :"section_bg_size",
+        "label":"Background Size",
+        "default": "cover",
+        "options":[
+        {"value":"auto","label":"Auto"},
+        {"value":"cover","label":"Cover"},
+        {"value":"contain","label":"Contain"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_repeat",
+        "label": "Background Image Repeat:",
+        "default": "no-repeat",
+        "options": [
+        {"value":"no-repeat","label":"No Repeat"},
+        {"value":"repeat","label":"Repeat"},
+        {"value":"repeat-x","label":"Repeat X"},
+        {"value":"repeat-y","label":"Repeat Y"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_position",
+        "label": "Background Image Position:",
+        "default": "center center",
+        "options": [
+        {"value":"left top","label":"Left Top"},
+        {"value":"center top","label":"Center Top"},
+        {"value":"right top","label":"Right Top"},
+        {"value":"left center","label":"Left Center"},
+        {"value":"center center","label":"Center Center"},
+        {"value":"right center","label":"Right Center"},
+        {"value":"left bottom","label":"Left Bottom"},
+        {"value":"center bottom","label":"Center Bottom"},
+        {"value":"right bottom","label":"Right Bottom"}
+        ]
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT CONTENT"
+      },
+      {
+         "type":"checkbox",
+         "id"    :"show_product_image",
+         "label":"Show Product Image"
+      },
+      {
+         "type":"select",
+         "id"    :"border_style",
+         "label":"Border style",
+         "default": "1",
+         "options":[
+            {
+              "value": "1",
+              "label": "#1"
+            },
+            {
+              "value": "2",
+              "label": "#2"
+            },
+            {
+              "value": "3",
+              "label": "#3"
+            }
+         ]
+      },
+      {
+         "type":"select",
+         "id"    :"max_col",
+         "label":"Menu Columns:",
+         "default": "1",
+         "options":[
+            {
+              "value": "1",
+              "label": "1 column"
+            },
+            {
+              "value": "2",
+              "label": "2 columns"
+            }
+         ]
+      },
+      {
+         "type":"range",
+         "id":"item_per_col",
+         "label":"Max number of items per column",
+         "min":1,
+         "max":15,
+         "default":4,
+         "step":1
+      },
+      {
+         "type":"range",
+         "id":"total_items",
+         "label":"Total items",
+         "default":12,
+         "min":1,
+         "max":30,
+         "step":1
+      },
+      {
+         "type":"header",
+         "content":"Section Heading"
+      },
+      {
+         "type":"text",
+         "id":"heading_text",
+         "label":"Heading"
+      },
+      {
+         "type":"text",
+         "id":"subheading_text",
+         "label":"Subheading"
+      },
+      {
+         "type":"textarea",
+         "id":"subheading2_text",
+         "label":"Subheading 2"
+      },
+      {
+         "type":"select",
+         "id":"heading_content_align",
+         "label":"Heading alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type":"color",
+         "id":"section_heading_color",
+         "label":"Heading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading_color",
+         "label":"Subheading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading2_color",
+         "label":"Subheading 2 color",
+         "info": "Blank to inherit color"
+      }
+   ],
+   "blocks":[
+      {
+         "type":"collection",
+         "name":"Collection item",
+         "settings":[
+            {
+               "id":"collection",
+               "type":"collection",
+               "label":"Collection item"
+            },
+            {
+               "type":"select",
+               "id"    :"width",
+               "label":"Column width",
+               "default": "6",
+               "options":[
+                  {
+                    "value": "6",
+                    "label": "50%"
+                  },
+                  {
+                    "value": "12",
+                    "label": "100%"
+                  }
+               ]
+            },
+            {
+               "type":"image_picker",
+               "id"    :"banner_image",
+               "label":"Banner image"
+            },
+            {
+               "type":"text",
+               "id"    :"banner_title",
+               "label":"Banner title"
+            },
+            {
+               "type":"textarea",
+               "id"    :"banner_content",
+               "label":"Banner content"
+            },
+            {
+               "type":"color",
+               "id":"banner_title_color",
+               "label":"Heading color",
+               "default": "#000000"
+            },
+            {
+               "type":"color",
+               "id":"banner_content_color",
+               "label":"Subheading color",
+               "default": "#000000"
+            }
+         ]
+      }
+   ],
+   "presets":[
+      {
+         "name":"Product Menu",
+         "category":"Collection"
+      }
+   ]
+}
+{% endschema %}

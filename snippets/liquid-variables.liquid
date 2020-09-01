@@ -1,0 +1,205 @@
+{% assign light-color = settings.light_color %}
+{% assign dark-color = settings.dark_color %}
+
+{% assign color = adaptive-color %}
+{% assign color_brightness = color | color_brightness %}
+
+{% capture body_link_color %}
+  {% assign color = settings.body_link_color  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture light_color %}
+  {% assign color = settings.light_color  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture dark_color %}
+  {% assign color = settings.dark_color  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture body_title_color %}
+  {% assign color = settings.body_title_color  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture body_border_color %}
+  {% assign color = settings.body_border_color  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture header_bg_color_mobile %}
+  {% assign color = settings.header_bg_color_mobile  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture menu_new_label_bg %}
+  {% assign color = settings.menu_new_label_bg  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture menu_sale_label_bg %}
+  {% assign color = settings.menu_sale_label_bg  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture menu_hot_label_bg %}
+  {% assign color = settings.menu_hot_label_bg  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture footer_color_hover %}
+  {% assign color = settings.footer_color_hover  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture footer_bt_color_hover %}
+  {% assign color = settings.footer_bt_color_hover  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture prod_sale_label_bg %}
+  {% assign color = settings.prod_sale_label_bg  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture prod_new_label_bg %}
+  {% assign color = settings.prod_new_label_bg  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture prod_hot_label_bg %}
+  {% assign color = settings.prod_hot_label_bg  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture mobile_background_menu_color %}
+  {% assign color = settings.mobile_background_menu_color  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture header_bg_color %}
+  {% assign color = settings.header_bg_color  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture nav_hover_color %}
+  {% assign color = settings.nav_hover_color  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture dropdown_bg_color %}
+  {% assign color = settings.dropdown_bg_color  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture body_bg_color %}
+  {% assign color = settings.body_bg_color  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}
+
+{% capture number_icons_bg_color %}
+  {% assign color = settings.number_icons_bg_color  %}
+  {% assign color_brightness = color | color_brightness %}
+  {% if color_brightness >= 129 %}
+    {{ dark-color }}
+  {% else %}
+    {{ light-color }}
+  {% endif %}
+{% endcapture %}

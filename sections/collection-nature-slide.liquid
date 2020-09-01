@@ -1,0 +1,42 @@
+<div class="slide-center-mode slide-wrapper">
+  {%- if section.blocks.size > 0 -%}
+  	{%- for block in section.blocks -%}
+  	  <div class="slide-item">
+        <a href="{{ block.settings.url }}">
+  			<img class="lazyautosizes lazyloaded" src="{{ block.settings.image | img_url: 'master' }}">
+        </a>
+      </div>
+  	{%- endfor -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+  {
+    "name": "Nature Slider",
+    "settings": [
+	  {
+        "type":"text",
+        "id":"title",
+        "label":"Section Id"
+      }
+    ],
+    "blocks":[
+      {
+        "type":"image",
+        "name":"image",
+        "settings":[
+		  {
+            "type":"image_picker",
+            "id":"image",
+            "label":"Image"
+          },
+		  {
+            "type":"url",
+            "id":"url",
+            "label":"URL"
+          }
+		]
+      }
+    ]
+  }
+{% endschema %}

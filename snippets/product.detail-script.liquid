@@ -1,0 +1,281 @@
+{%- assign _product_sale_label        = settings.enable_prod_sale_label -%}
+{%- assign _auto_switchFirst          = section.settings.auto_switchFirst | default: false -%}
+{%- assign _enable_pre_order_button   = section.settings.enable_pre_order_button | default: false -%}
+{%- assign _product_sku               = section.settings.show_prod_sku | default: false -%}
+{%- assign _stock_enable              = section.settings.stock_enable | default: false -%}
+{%- if _stock_enable -%}
+
+{%- capture _variantJSON -%}
+  [{%- for variant in product.variants -%}{
+      {{- -}} "id":{{- variant.id | json -}},
+      {{- -}} "incoming": {{- variant.incoming | default: false | json -}},
+      {{- -}} "unformat_incoming_date": {{- variant.next_incoming_date | date:"%d/%m/%Y" | json -}},
+      {{- -}} "next_incoming_date": {{- variant.next_incoming_date | date: format: 'month_day_year' | json -}},
+      {{- -}} "inventory_policy": {{- variant.inventory_policy | json -}},
+      {{- -}} "inventory_quantity": {{- variant.inventory_quantity | json -}}
+      }{%- unless forloop.last -%},{%- endunless -%}
+  {%- endfor -%}]
+{%- endcapture -%}
+<script type="application/json" id="variantJSON-{{ product.id }}">{{ _variantJSON }}</script>
+{%- endif -%}
+
+<script type="application/json" id="ProductJson-{{ product.id }}">{{ product | json | remove:'\u003E' | remove:'\u003C' | remove:'\u00a0' }}</script>
+<script type="text/javascript">
+  jQuery(document).ready(function($) {
+    let _product_layout = '{{_product_layout}}';
+    var i_sections = new theme.Sections();
+
+    i_sections.register('{{section_type}}', function(){
+
+      $('#discount-modal').on('shopify:block:select', ()=>$('#discount-modal').show().find('.discount-redirect').html($('.btn-discount-code')).html())
+                          .on('shopify:block:deselect', $('#discount-modal').hide().find('.discount-redirect').empty());
+
+      jQuery(".qty-inner .qty-up").on("click", function() {
+        var oldValue = jQuery("#quantity").val() || 1;
+        newVal = Number(oldValue) + 1;
+        jQuery("#quantity, #sticky-quantity").val(newVal);
+      });
+      jQuery(".qty-inner .qty-down").on("click", function() {
+        var oldValue = jQuery("#quantity").val() || 1;
+        if (oldValue > 1) {
+          newVal = Number(oldValue) - 1;
+          jQuery("#quantity, #sticky-quantity").val(newVal);
+        }
+      });
+
+      AT_Main.stickAddToCart();
+      AT_Main.deadLine_time();
+      AT_Main.delivery_time();
+      PT_Main.init();
+
+      (_product_layout != 'fixed-center' && _product_layout != 'full-width-image') && AT_Main.productPage_handle();
+
+      (_product_layout == 'fixed-center') && AT_Main.init_productZoom();
+
+      jQuery('.alert-pre-order').hasClass('success') && jQuery('.pre-order-success').removeClass('hide') && jQuery('.btn-pre-order').attr('disabled', 'disabled');;
+      $('.sb-product-carousel').length && AT_Main.init_carousel($('.sb-product-carousel'))
+
+      $('.product-detail_cart-action .swatch-element').length && $('#add-to-cart').addClass('first_disabled');
+
+      if (JSON.parse($('.product-detail_tab-content').data('auto-opened') || 'false') && $('.nav-ver-2').length) {
+        $('.nav-ver-2 li.nav-item').find('a.nav-link').removeClass('active');
+        $('.nav-ver-2 li.nav-item').removeClass('active').find('.tab-pane').removeClass('show active');
+        $('.nav-ver-2 > li:first-child').find('a.nav-link').addClass('active');
+        $('.nav-ver-2 > li:first-child').addClass('active').find('.tab-pane').show().addClass('show active');
+      }
+
+      if ($('.product-main-swiper').length) {
+        var pSwiper = new Swiper('.product-main-swiper',{
+          slidesPerView: 'auto',
+          centeredSlides: true,
+          loop: true,
+          spaceBetween: 10,
+          navigation:{
+            prevEl: '.swiper-button-prev'
+            ,nextEl: '.swiper-button-next'
+          }
+        })
+      }
+    });
+  });
+
+  /*initialize multi selector for product*/
+  var PT_Main = {
+    init : ()=>{
+      var variantClick = JSON.parse('{{_auto_switchFirst }}')
+        ,enable_preOrder = JSON.parse('{{_enable_pre_order_button}}')
+        ,enable_add_cart = false;
+
+
+      $(document)
+      .on('click', '.swatch-element, .single-option-selector',e=>{
+        variantClick = true;
+        enable_add_cart = true;
+        $('#add-to-cart.first_disabled').length && $('#add-to-cart.first_disabled').removeClass('first_disabled');
+      })
+      .on('click', '.thumb-zoom',function(event) {
+        $('#slide--thumbs .thumb-zoom').removeClass('active');
+        $(this).addClass('active');
+      })
+
+      /* selectCallback */
+      var selectOptionsCallback = function(variant, selector) {
+        if ($('.pswp').length && JSON.parse($('.pswp').attr('disabled-variant-switch') || 'false')) {return;}
+        if (!variantClick && $('.product-detail_cart-action .swatch-element').length) {return;}
+
+        /**
+         * Update variant image
+         */
+        if (variant) {
+
+          let groupImage = variant.featured_image ? variant.featured_image.alt : null;
+          if (groupImage !== null && !groupImage.includes('http')) {groupImage = '';}
+
+          Number($('#slide--alt').val()) > 1 && AT_Main.productPage_variantFilter(groupImage == 'null' ? 'none-group' : groupImage);
+
+          /**
+          * Variant switch image
+          */
+          if (variantClick && variant.featured_media) {
+            let _img_element = $(`#slide--thumbs .thumb-zoom[data-image-id="${variant.featured_media.id}"]`);
+            _img_element.length && _img_element.parent().trigger('click');
+          }
+
+        }
+
+        if (!enable_add_cart) {return;}
+
+        var add_to_cart = $('#add-to-cart, .sticky-add-cart')
+                ,$price = '.product-detail_price-element'
+                ,$stock = $('.stock-variant');
+
+
+        if (variant && variant.available) {
+          /*selected a valid variant*/
+          add_to_cart.removeClass('disabled hide').removeAttr('disabled').html('<i class="demo-icon {{icon_cart}}"></i>{{ "products.product.add_to_cart" | t }}').parent().removeClass('hide');
+
+          jQuery('.page-product .quantity-product').removeClass('hide');
+
+          if(variant.compare_at_price >  variant.price){
+            let _vant_price = '<span class="price-sale">'   + Shopify.formatMoney(variant.price, _bc_config.money_format) + '</span>'
+             ,_vant_compare = '<del class="price-compare">' + Shopify.formatMoney(variant.compare_at_price, _bc_config.money_format) + '</del>';
+            jQuery($price).empty().html(_vant_compare + _vant_price);
+
+            JSON.parse('{{_product_sale_label}}') && $('.product-detail_label').removeClass('hide');
+          }
+
+          else {
+            jQuery($price).empty().html('<span class="price-single">'+Shopify.formatMoney(variant.price, _bc_config.money_format)+'</span>');
+            $('.product-detail_label').addClass('hide');
+          }
+          AT_Main.currenciesFormat($price + ' span.money');
+
+          enable_preOrder && jQuery('.pre-order').addClass('hide');
+
+          jQuery('.shopify-payment-button').removeClass('hide');
+
+        }
+
+        else{
+
+          let message = variant ? "{{'products.product.out_stock' | t }}" : "{{'products.product.unavailable' | t }}";
+
+          add_to_cart.attr('disabled', 'disabled').html('<i class="demo-icon {{icon_cart}}"></i>'+message)/*SET ADD TO CART TO DISABLED*/
+
+          enable_preOrder && add_to_cart.parent().addClass('hide') && jQuery('.pre-order').removeClass('hide');
+
+          jQuery('.page-product .quantity-product').addClass('hide');
+          jQuery($price).html('<span class="price">'+message+'</span>');
+          jQuery('.shopify-payment-button').addClass('hide');
+
+        }
+
+        if (variant) {
+          let form = jQuery('#' + selector.domIdPrefix).closest('form')
+          ,stickyForm = $('.add-to-cart-sticky');
+
+          for (let i=0,length=variant.options.length; i<length; i++) {
+            let radioButton
+            ,radioButtonSticky
+            ,value = variant.options[i]
+            ,stickySelect = $(`.sticky-select-option[data-option-index="${i+1}"]`);
+
+            if (value.includes('"')) {
+              radioButton =  form.find(`.swatch[data-option-index="${i}"] :radio[data-value="${AT_Main.swatchValue_decode(value)}"]`);
+              radioButtonSticky =  stickyForm.find(`.swatch[data-option-index="${i}"] :radio[data-value="${AT_Main.swatchValue_decode(value)}"]`);
+            }
+            else{
+              radioButton = form.find(`.swatch[data-option-index="${i}"] :radio[value="${value}"]`);
+              radioButtonSticky = stickyForm.find(`.swatch[data-option-index="${i}"] :radio[value="${value}"]`);
+            }
+
+            if (radioButton.length){
+              radioButton.get(0).checked = true;
+            }
+            if (radioButtonSticky.length){
+              radioButtonSticky.get(0).checked = true;
+            }
+            stickySelect.length && stickySelect.val(value);
+          }
+          jQuery('.shipping-time').removeClass('hide');
+        }
+
+        if ($stock.length && $stock.data('variants-count') > 1 && $('#variantJSON-{{ product.id }}').length) {
+
+          let variantProd = JSON.parse($('#variantJSON-{{ product.id }}').html());
+
+          if (!variant || !variant.inventory_management) {
+            $stock.addClass('hide');
+            jQuery('.shipping-time').removeClass('hide');
+          }
+
+          if (variant) {
+            var variant_stock = variantProd.find(item => item.id === variant.id);
+
+            if (variant.available) {
+              if (variant_stock.inventory_quantity >= 10) {
+                $stock.html("<span>{{ 'products.product.available' | t }}: {{ 'products.product.in_stock' | t }}</span>").removeClass('hide');
+              }
+
+              else if (variant_stock.inventory_quantity < 10 && variant_stock.inventory_quantity > 0) {
+
+                let text = "<span>{{ 'products.product.available' | t }}: {{ 'products.product.stock_available' | t: count: 1}}</span>";
+                $stock.html(text.replace('1','<strong>'+variant_stock.inventory_quantity+'</strong>')).removeClass('hide');
+                jQuery('.shipping-time').removeClass('hide');
+              }
+
+              else if (variant_stock.inventory_quantity <= 0 && variant_stock.incoming) {
+                jQuery('.shipping-time').addClass('hide');
+
+                let text = "{{ 'products.product.unavailable' | t }}: <span>{{ 'products.product.will_not_ship_until' | t: date: '[date]' }}</span>";
+                $stock.html(text.replace('[date]','<strong>'+variant_stock.next_incoming_date+'</strong>')).removeClass('hide');
+              }
+
+              else{/*If there's more than 10 available, hide stock*/
+                $stock.addClass('hide');
+                jQuery('.shipping-time').removeClass('hide');
+              }
+
+            }
+            else{
+              if (variant_stock.incoming) {
+                let text = "<span>{{ 'products.product.unavailable' | t }}: {{ 'products.product.will_be_in_stock_after' | t: date: '[date]' }}</span>";
+                $stock.html(text.replace('[date]','<strong>'+variant_stock.next_incoming_date+'</strong>')).removeClass('hide');
+                jQuery('.shipping-time').addClass('hide');
+              }
+              else{
+                /*If there is no stock incoming, hide stock*/
+                $stock.html("<span>{{ 'products.product.available' | t }}: {{ 'products.product.out_stock' | t }}</span>").removeClass('hide');
+                jQuery('.shipping-time').removeClass('hide');
+              }
+            }
+          }
+        }
+        $.parseJSON('{{ _product_sku }}') && (variant && variant.sku ? jQuery(".sku").html(variant.sku).parent().show() : jQuery(".sku").parent().hide());
+
+        {%- include 'product.detail-snippet' ,ptype: 'metafield_variant_script' -%}
+
+      };
+
+      $(window).on('load' ,function(){
+        {%- if product.variants.size > 0 -%}
+          let _productJSON = JSON.parse($('#ProductJson-{{ product.id }}').html());
+          new Shopify.OptionSelectors("product-select-{{ product.id }}", { product: _productJSON, onVariantSelected: selectOptionsCallback, enableHistoryState: true });
+        {%- endif -%}
+        {%- if product.options.size == 1  -%}
+          {%- if product.options.first != 'Title' -%}
+          /*Add label if only one product option*/
+          jQuery('.selector-wrapper:eq(0)').prepend('<label>{{ product.options.first | escape }}</label>');
+          {%- endif -%}
+
+          {%- if product.variants.first.title contains 'Default' -%}
+          /*Hide selectors if we only have 1 variant and its title contains 'Default'.*/
+          jQuery('.selector-wrapper').hide();
+          {%- endif -%}
+        {%- endif -%}
+      });
+    }
+  }
+</script>
+{%- assign __hide_variant_out = section.settings.hide_variant_out -%}
+{%- include 'linked-options' -%}

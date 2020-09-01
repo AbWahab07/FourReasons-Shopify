@@ -1,0 +1,285 @@
+{% if section.settings.boxed_layout %}{% assign _layout = 'boxed' %}{% else %}{% assign _layout = 'full' %}{% endif %}
+{%- assign _full_height       = false -%}
+{%- assign _adapt_first_slide = false -%}
+{%- assign _lazyload          = settings.use_lazyload -%}
+{%- assign slide_height       = section.settings.slide_height -%}
+{%- assign _nav_pag_style     = section.settings.nav_pag_style -%}
+{%- assign _slide_active      = section.settings.slide_active | minus: 1 -%}
+{%- assign _slide_view        = section.settings.slide_view | times: 1 | default: 1  -%}
+{%- assign autoplay_speed     = section.settings.autoplay_speed | default: 0 | times: 1000 -%}
+{%- assign _slide_center      = section.settings.slide_center | default: false -%}
+{%- assign animation          = section.settings.animation -%}
+{%- assign _parallax_scroll   = section.settings.parallax_scroll -%}
+{%- assign _parallax_hover    = section.settings.parallax_hover -%}
+{%- if autoplay_speed > 0 -%}{%- assign autoplay = true -%}{%- endif -%}
+
+{%- if slide_height == 'adapt-first-slide' -%}
+  {%- assign _adapt_first_slide = true -%}
+  {%- assign first_block = section.blocks[0] -%}
+
+  {%- if first_block.settings.slide_use == 'normal' -%}
+    {%- assign min_aspect_ratio     = first_block.settings.image.aspect_ratio | default: 2.0 -%}
+    {%- assign image_padding_adapt  = 100 | divided_by: min_aspect_ratio | append: '%' -%}
+  {%- else -%}
+    {%- assign image_padding_adapt = first_block.settings.min_height -%}
+  {%- endif -%}
+
+{%- elsif slide_height == 'full-screen' -%}
+  {%- assign _full_height = true -%}
+  {%- assign image_padding_adapt = '100vh' -%}
+{%- endif -%}
+{%- capture sectionID -%}.section-show-{{section.id}}{%- endcapture -%}
+
+<div class="slideshow-catalog-wrapper slideshow-{{section.id}} layout-{{_layout}} section-show-{{section.id}} slideshow-v3" data-section-type="slideshow" data-section-id="{{section.id}}" data-adapt="{{_adapt_first_slide}}"{% if _adapt_first_slide %} style="overflow:hidden;"{% endif %}>
+    {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    <div class="bc-wrapper slide-height-{{slide_height}} navigator-style-{{_nav_pag_style}} pagination-position_{{section.settings.pagination_position}}">
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="home-slideshow-wrapper swiper-container swiper-container-{{section.id}}" data-slide-view="{{_slide_view}}" data-autoplay="{{autoplay | default: false}}" data-parallax="{{_parallax_scroll}}" data-time="{{autoplay_speed}}" data-animation="{{animation}}"data-style="{{_nav_pag_style}}" data-direction="horizontal" data-touch="{% if _parallax_hover %}false{%- else -%}true{% endif %}" data-slide-active="{{_slide_active}}" data-center="{{_slide_center}}">
+          <div class="home-slideshow swiper-wrapper">
+
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'image' -%}
+                {%- assign image              = block.settings.image -%}
+                {%- assign video              = block.settings.video -%}
+                {%- assign slide_use          = block.settings.slide_use -%}
+                {%- assign link               = block.settings.link | default: 'javascript:void(0);' -%}
+                {%- assign slide_index        = forloop.index -%}
+                {%- assign slide_id           = block.id -%}
+                {%- assign first_btn_in_block = false -%}
+                {%- assign inline_button      = false -%}
+                {%- assign slideCount         = slideCount | plus: 1 -%}
+
+                {%- capture layer_ID -%}.section-show-{{section.id}} .swiper-slide.swiper-slide-{{ block.id }}{%- endcapture -%}
+
+                <div class="swiper-slide swiper-slide-{{ block.id }}{% if video != blank and slide_use == 'normal' %} has-video{% endif %}"{{ block.shopify_attributes }}>
+                  {%- if slide_use == 'normal' -%}
+                    {%- if video != blank -%}
+                      <div class="video-slide" style="display: none;" data-full-height="{{_full_height}}">
+                        {%- if video contains 'iframe' -%}
+                          {{ video }}
+                        {%- else -%}
+                          <video class="video" autoplay muted loop playsinline preload="auto" data-width="0" data-height="0" poster="{{image | img_url: '1920x' }}">
+                            <source src="{{ video }}" type="video/mp4">
+                          </video>
+                        {%- endif -%}
+                      </div>
+                    {%- else -%}
+                      <a href="{{ link }}" class="slider-layer">
+                        {%- if image != blank -%}
+                          {% include 'image-style' with image:image, set_padding: image_padding_adapt %}
+
+                          {%- capture _slideimage_style -%}
+                            {{layer_ID}} .slider-layer:before{content: '';background-color: {{block.settings.overlay_color | default: 'rgba(0,0,0,0)' }};opacity: {{block.settings.image_overlay | times: 0.01 }};}
+                            {%- include 'css-responsive', classID: layer_ID, nextClassID: ' img', css_property: 'object-position', css_value: block.settings.image_position -%}
+                          {%- endcapture -%}
+
+                          {%- assign slideshow_style = slideshow_style | append: _slideimage_style -%}
+                        {%- else -%}
+                          {%- include 'svgset', type: 'lifestyle' -%}
+                        {%- endif -%}
+                      </a>
+                    {%- endif -%}
+
+                  {%- else -%}
+                    {%- capture slide_bg -%}{%- unless image == blank -%}{{ image | img_url: '1920x' }}{%- endunless -%}{%- endcapture -%}
+
+                    <a href="{{ link }}" class="slider-layer{% if image != blank %} slide--bg{% if _lazyload %} lazyload" data-bgset="{{slide_bg}} 1920w{%- endif -%}{%- endif -%}"><span class="d-block"></span></a>
+
+                    {%- assign _overlay_color = block.settings.overlay_color | default: 'rgba(0,0,0,0)' -%}
+                    {%- assign _image_overlay = block.settings.image_overlay | times: 0.01 -%}
+
+                    {%- if slide_height == 'adapt-first-slide' -%}
+                      {%- assign _min_height = image_padding_adapt -%}
+                    {%- else -%}
+                      {%- assign _min_height = block.settings.min_height -%}
+                    {%- endif -%}
+
+                    {%- unless _overlay_color == 'rgba(0,0,0,0)' -%}
+                      {%- assign slide_color = _overlay_color | color_modify: 'alpha', _image_overlay -%}
+                    {%- else -%}
+                      {%- assign slide_color = _overlay_color -%}
+                    {%- endunless -%}
+
+                    {%- capture slide_css -%}
+                      {{layer_ID}} .slider-layer{background-color: {{slide_color}};}
+                      {%- include 'css-responsive', classID: layer_ID, css_value: _min_height, css_property: 'height' -%}
+                      {%- unless image == blank -%}
+                        {%- include 'css-responsive', classID: layer_ID, nextClassID: ' .slider-layer.slide--bg' ,css_value: block.settings.image_position, css_property: 'background-position' -%}
+                        {{layer_ID}} .slider-layer.slide--bg{background-size:{{block.settings.slide_bg_size}};background-repeat:{{block.settings.slide_repeat}};}
+                      {%- endunless -%}
+                    {%- endcapture -%}
+
+                    {%- assign slideshow_style = slideshow_style | append: slide_css -%}
+                  {%- endif -%}
+
+                  {%- if section.blocks[slide_index].type != 'image' -%}
+                    <div class="parallax" data-pointer-events="true" data-parallax="{{_parallax_hover}}">
+                      {%- for block in section.blocks offset: slide_index -%}
+                        {%- assign btype = block.type -%}
+
+                        {%- if btype == 'image' -%}{% break %}{%- endif -%}
+                        {%- if btype == 'layer_button' and first_btn_in_block -%}{%- continue -%}{%- endif -%}
+
+                        {%- capture check_content -%}
+                          {%- case btype -%}
+                            {%- when 'layer_image'         -%}{{block.settings.image}}
+                            {%- when 'layer_text'          -%}{{block.settings.text_title}}{{block.settings.text_subtitle}}{{block.settings.text_1}}{{block.settings.text_2}}
+                            {%- when 'layer_button'        -%}{{block.settings.button_text}}
+                            {%- when 'layer_text_full'     -%}{{block.settings.text_1}}{{block.settings.text_2}}{{block.settings.text_3}}{{block.settings.text_4}}{{block.settings.btn_text_1}}{{block.settings.btn_text_2}}
+                            {%- when 'layer_img_with_text' -%}{{block.settings.image}}{{block.settings.text_1}}{{block.settings.text_2}}
+                            {%- when 'layer_shape' -%}0
+                          {%- endcase -%}
+                        {%- endcapture -%}
+
+
+                        {%- if check_content.size > 0 -%}
+                          {%- assign movement     = block.settings.movement -%}
+                          {%- assign hide_mobile  = block.settings.hide_mobile -%}
+                    	    {%- assign z            = forloop.index -%}
+
+                          <div class="block-type-{{btype}}{% if hide_mobile %} d-none d-md-block{% endif %}" data-pointer-events="{% if btype == 'layer_button' %}true{% else %}false{% endif %}" data-depth="{{movement}}" style="z-index: {{z}};"{{ block.shopify_attributes }}>
+
+                            <div class="block-{{block.id}}">{%- include 'snippet-slideshow' -%}</div>
+
+                            {%- if btype == 'layer_button' -%}
+                              {%- assign first_btn_in_block = true -%}
+                              {%- assign btn_index = slide_index | plus: forloop.index -%}
+                              {%- for block in section.blocks offset: btn_index -%}
+                                {%- if block.type == 'image' -%}{%- break -%}{%- endif -%}
+                                {%- if block.type == 'layer_button' and block.settings.inline == false -%}
+                                  <div class="block-{{block.id}}"{{ block.shopify_attributes }}>
+                                    {%- include 'snippet-slideshow' -%}
+                                  </div>
+                                {%- endif -%}
+                              {%- endfor -%}
+                            {%- endif -%}
+
+                          </div>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+                {%- capture block_css -%}
+                  {%- include 'css-responsive', classID: layer_ID, css_value: block.settings.slide_clip_path, css_property: '-webkit-clip-path' ,css_value_proper: 'polygon' ,css_split: ';' -%}
+                  {%- include 'css-responsive', classID: layer_ID, css_value: block.settings.slide_clip_path, css_property: 'clip-path' ,css_value_proper: 'polygon' ,css_split: ';' -%}
+                {%- endcapture -%}
+                {%- assign slideshow_style = slideshow_style | append: block_css -%}
+
+                {% comment %}
+                  SLIDE THUMB CONTENT
+                {% endcomment %}
+                {%- assign _thumb_text    = block.settings.thumb_text -%}
+                {%- assign _thumb_text_2  = block.settings.thumb_text_2 -%}
+
+                {%- unless _thumb_text == blank and _thumb_text_2 == blank -%}
+                  {%- capture slide_thumb_item -%}
+                    <div class="swiper-slide swiper-slide-thumb-{{ block.id }}">
+                      <div class="slide-content d-flex w-100 align-items-center">
+                        {%- if section.settings.show_slide_index -%}
+                          <div class="slide-index">                            
+                            <span>{%- if slideCount < 10 -%}0{%- endif -%}{{slideCount}}</span>
+                          </div>
+                        {%- endif -%}
+                        <div class="slide-text-content text-{{section.settings.thumb_text_align}}">
+                          <span class="text-1 d-block">{{_thumb_text}}</span>
+                          <span class="text-2">{{_thumb_text_2}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  {%- endcapture -%}
+                  {%- assign section_slide_thumb = section_slide_thumb | append: slide_thumb_item -%}
+                {%- endunless -%}
+
+              {%- endif -%}
+            {%- endfor -%}
+
+          </div>
+
+          <div class="wrap-thumb-slide hide">
+            {%- assign thumbCount = 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'image' -%}
+                {%- assign _image = block.settings.image_thumb -%}
+                {%- assign _text  = block.settings.thumb_text -%}
+                {%- capture thumbContent -%}{{_image}}{{_text}}{%- endcapture -%}
+
+                {%- if thumbContent.size > 0 -%}
+                  {%- assign has_thumbnail  = true -%}
+                  {%- assign thumbCount     = thumbCount | plus: 1 -%}
+
+                  <span class="thumb-slide" data-index="{{ thumbCount }}" data-text="{{_text}}" data-src="{%- unless _image == blank -%}{{- _image | img_url: '280x' -}}{%- endunless -%}"{{block.shopify_attributes}}></span>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          {%- if section.settings.pagination -%}<div class="swiper-pagination swiper-container{% if section.settings.pag_hide_mobile %} d-none d-md-block{% endif %}"></div>{%- endif -%}
+          {%- if section.settings.navigator -%}
+            <div class="swiper-button-next swiper-button-white{% if section.settings.nav_hide_mobile %} d-none d-md-block{% endif %}"></div>
+            <div class="swiper-button-prev swiper-button-white{% if section.settings.nav_hide_mobile %} d-none d-md-block{% endif %}"></div>
+          {%- endif -%}
+
+
+          {%- unless section_slide_thumb == blank -%}
+            <div class="swiper-container container gallery-thumbs gallery-thumbs-{{section.id}}" data-view= "3" data-view-md="3" data-spacing="30">
+              <div class="swiper-wrapper">{{section_slide_thumb}}</div>
+            </div>
+            {%- assign _thumb_txt_color_1 = section.settings.thumb_text_color   | default: 'rgba(0,0,0,0)' -%}
+            {%- assign _thumb_txt_color_2 = section.settings.thumb_text_color_2 | default: 'rgba(0,0,0,0)' -%}
+
+            {%- capture slide_thumb_css -%}
+              {{- sectionID}} .gallery-thumbs .swiper-wrapper span{color: {{_thumb_txt_color_2}};}
+              {{- sectionID}} .gallery-thumbs .swiper-wrapper .swiper-slide{border-top: 2px solid {{_thumb_txt_color_2}};padding-top: 30px;}
+
+              {{- sectionID}} .gallery-thumbs .swiper-wrapper .swiper-slide-thumb-active .slide-index span,
+              {{- sectionID}} .gallery-thumbs .swiper-wrapper .swiper-slide-thumb-active span.text-1{color: {{_thumb_txt_color_1}};}
+              {{- sectionID}} .gallery-thumbs .swiper-wrapper .swiper-slide.swiper-slide-thumb-active {border-top: 2px solid {{_thumb_txt_color_1}};}
+
+              {%- include 'css-responsive', classID: sectionID, nextClassID: ' .gallery-thumbs span.text-1' ,css_value: section.settings.thumb_text_fs     ,css_property: 'font-size' -%}
+              {%- include 'css-responsive', classID: sectionID, nextClassID: ' .gallery-thumbs span.text-2' ,css_value: section.settings.thumb_text_fs_2   ,css_property: 'font-size' -%}
+
+
+            {%- endcapture -%}
+            {%- assign slideshow_style = slideshow_style | append: slide_thumb_css -%}
+            <div class="hide">{{slide_thumb_css}}</div>
+          {%- endunless -%}
+
+
+        </div>
+      {%- else -%}
+
+        <div class="home-slideshow-wrapper swiper-container">
+            <div class="home-slideshow swiper-wrapper">
+                <div class="swiper-slide">
+                    <a href="javascript:void(0);">{%- include 'svgset', type: lifestyle -%}</a>
+                </div>
+            </div>
+        </div>
+      {%- endif -%}
+    </div>
+    {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+    {%- assign _dots_bg_color   = section.settings.dots_bg_color | default: 'rgba(0,0,0,0)' -%}
+    {%- assign _dots_bg_opacity = section.settings.dots_bg_opacity | times: 0.01 -%}
+
+    {%- if _dots_bg_color != 'rgba(0,0,0,0)' -%}
+      {%- assign n_dots_bg_color = _dots_bg_color | color_modify: 'alpha', _dots_bg_opacity -%}
+    {%- else -%}
+      {%- assign n_dots_bg_color = _dots_bg_color -%}
+    {%- endif -%}
+    
+    {% style %}
+      {{- slideshow_style | strip_newlines -}}
+      {{- sectionID}}{background-color: {{section.settings.section_bg_color}};}
+      {{- sectionID}} .block-type-layer_image .image{opacity: 0;}
+      {{- sectionID}} .swiper-slide-active .block-type-layer_image .image{opacity: 1;}
+      {{- sectionID}} .parallax{position: absolute;width: 100%;height: 100%;z-index: 9;}
+      {%- if _parallax_hover -%}{{ sectionID }} .parallax > div{ width: 100%;height: 100%;position: absolute;}{%- endif -%}
+      {%- include 'snippet-slideshow-css', type: 'navigation_css' -%}
+      {%- unless n_dots_bg_color == 'rgba(0,0,0,0)' -%}
+      {{- sectionID}} .bc-wrapper .swiper-pagination .swiper-pagination-bullet{background-color: {{n_dots_bg_color}};}
+      {%- endunless -%}
+    {% endstyle %}
+</div>

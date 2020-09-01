@@ -1,0 +1,38 @@
+{%- assign currencies_length  = shop.enabled_currencies | size -%}
+
+<!-- Begin Menu Mobile-->
+<div class="mobile-version">
+  <span class="m-close close-nav-mobile d-lg-none"><i class="demo-icon icon-delete"></i></span>
+  <div class="menu-mobile navbar">
+    <div class="mm-wrapper">
+      <nav class="nav-mobile">
+        <ul class="main-nav">
+          <li class="back-prev-menu">
+              {%- if _mob_show_logo -%}{% include 'include-logo' with type: 'mobile' %}{%- endif -%}
+          </li>
+
+          <li class="mobile-searchbox searchbox">{%- include 'layer-search-modal', type: 'search_mobile_template' -%}</li>
+
+          {%- if currencies_length > 1 or settings.lang_type != 'none' -%}
+            <li>
+              <div class="d-flex w-100">
+                {%- include 'currencies' ,type: 'mobile' -%}
+                {%- if settings.lang_type != 'none' -%}                  
+                  {%- include 'icons' ,type: 'languages' ,is_nav_mobile: true -%}
+                {%- endif -%}
+              </div>
+            </li>
+          {%- endif -%}
+
+          {%- for l in linklists[section.settings.mobile_linklist].links -%}
+            {%- include 'nav-link-mobile' -%}
+          {%- endfor -%}
+
+          <li class="li-account">{%- include 'icons', type: 'account' -%}</li>
+          <li class="li-wishlist">{%- include 'icons', type: 'wishlist' ,show_label: true -%}</li>
+          <li class="li-social">{%- include 'social-media-icons' -%}</li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

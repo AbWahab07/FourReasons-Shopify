@@ -1,0 +1,127 @@
+{%- if type == 'mailchimp' or type == 'klaviyo' -%}
+  {%- if frm_btn_label == blank -%}
+    {%- assign frm_btn_label = 'contact.form.subscrible' | t -%}
+  {%- endif -%}
+  {%- if frm_placeholder == blank -%}
+    {%- assign frm_placeholder  = 'contact.form.email' | t  -%}
+  {%- endif -%}
+
+{%- endif -%}
+
+{%- case type -%}
+  {%- when 'mailchimp' -%}
+
+    <form action="{{ frm_action }}" method="post" class="form-inline form-subscribe" name="mc-embedded-subscribe-form" target="_blank" rel="noopener">
+      <input class="form-control{% if frm_corner %} form-rd{% endif %}" type="email" required placeholder="{{ frm_placeholder }}" name="EMAIL"/>
+      <button type="submit" class="btn btn-{{ frm_btn_style }}{% if frm_btn_corner %} btn-rd{% endif %}">
+        {%- if frm_btn_type == 'icon' or frm_btn_type == 'all' or frm_btn_type == blank -%}
+        {%- include 'icons',type: 'icon_free', name: frm_btn_icon -%}
+        {%- endif -%}
+
+        {%- if frm_btn_type == 'text' or frm_btn_type == 'all' or frm_btn_type == blank -%}
+        <span class="btn-text">{{ frm_btn_label }}</span>
+        {%- endif -%}
+      </button>
+    </form>
+
+  {%- when 'klaviyo' -%}
+    {%- assign klaviyo_url = frm_action -%}
+    {%- assign klaviyo_id  = frm_action | split: 'g=' | last -%}
+
+    <form action="{{klaviyo_url}}" class="form-inline form-subscribe klaviyo_styling" target="_blank" novalidate="novalidate"{% if is_newsletterPopup %} data-ajax-submit="//manage.kmail-lists.com/ajax/subscriptions/subscribe" method="GET"{% else %} method="post"{% endif %}>
+      <input type="hidden" name="g" value="{{klaviyo_id}}">
+      <input required type="email" class="form-control{% if frm_corner %} form-rd{% endif %}" value="" name="email" class="contact_email" placeholder="{{ frm_placeholder }}">
+      <button type="submit" class="btn btn-{{ frm_btn_style }}{% if frm_btn_corner %} btn-rd{% endif %}" name="subscribe">
+        {%- if frm_btn_type == 'icon' or frm_btn_type == 'all' or frm_btn_type == blank -%}
+          {%- include 'icons',type: 'icon_free', name: frm_btn_icon -%}
+        {%- endif -%}
+        {%- if frm_btn_type == 'text' or frm_btn_type == 'all' or frm_btn_type == blank -%}
+          <span class="btn-text">{{ frm_btn_label }}</span>
+        {%- endif -%}
+      </button>
+    </form>
+    {%- if is_newsletterPopup -%}
+      <script type="text/javascript" src="//www.klaviyo.com/media/js/public/klaviyo_subscribe.js"></script>
+    {%- endif -%}
+
+  {%- else -%}
+
+    {%- assign f_btn_align        = _text_align | default: 'left' -%}
+    {%- assign enable_form_label  = form_label | default: false -%}
+
+    {%- if frm_btn_label == blank -%}
+      {%- assign frm_btn_label = 'contact.form.submit_button' | t -%}
+    {%- endif -%}
+
+    {%- unless f_align -%}{%- assign f_align = f_btn_align -%}{%- endunless -%}
+
+    <div class="contact-form">
+      {%- form 'contact' -%}
+
+        {%- if form.posted_successfully? -%}
+          <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {{'contact.form.post_success' | t }}
+          </div>
+        {%- endif -%}
+
+        {%- if form.errors -%}
+          <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div id="contact-form" class="grid-form{% unless _frm_label_align == blank %} text-{{_frm_label_align}}{% endunless %}">
+          <div class="grid-form-name">
+            <div class="form-group first-name">
+              {%- if enable_form_label -%}<label for="first_name_{{section.id}}">{{ 'contact.form.first_name' | t }}</label>{%- endif -%}
+              <input  required
+                      type="text"
+                      id="first_name_{{section.id}}"
+                      class="form-control form-contact-us text-{{f_align}}"
+                      value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.first_name }}{% endif %}"
+                      name="contact[first_name]"
+                      {%- if enable_form_label -%}placeholder="{{ 'contact.form.first_name' | t }}"{%- endif -%}/>
+            </div>
+            <div class="form-group last-name">
+              {%- if enable_form_label -%}<label for="first_name_{{section.id}}">{{ 'contact.form.last_name' | t }}</label>{%- endif -%}
+              <input  required
+                      type="text"
+                      id="last_name_{{section.id}}"
+                      class="form-control form-contact-us text-{{f_align}}"
+                      value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.last_name }}{% endif %}"
+                      name="contact[last_name]"
+                      {%- if enable_form_label -%}placeholder="{{ 'contact.form.last_name' | t }}"{%- endif -%}/>
+            </div>
+          </div>
+          <div class="form-group{% if form.errors contains 'email' %} error{% endif %}">
+            {%- if enable_form_label -%}<label for="first_name_{{section.id}}">{{ 'contact.form.email' | t }}</label>{%- endif -%}
+            <input  required
+                    type="email"
+                    id="email_{{section.id}}"
+                    class="form-control form-contact-us text-{{f_align}}"
+                    value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                    name="contact[email]"
+                    {%- if enable_form_label -%}placeholder="{{ 'contact.form.email' | t }}"{%- endif -%}/>
+          </div>
+
+          <div class="form-group{% if form.errors contains 'body' %} error{% endif %}">
+            {%- if enable_form_label -%}<label for="first_name_{{section.id}}">{{ 'contact.form.message' | t }}</label>{%- endif -%}
+            <textarea required
+                      id="message_{{section.id}}"
+                      class="form-control form-contact-us text-{{f_align}}"
+                      name="contact[body]"
+                      cols="40"
+                      rows="7"
+                      {%- if enable_form_label -%}placeholder="{{ 'contact.form.message' | t }}"{%- endif -%}>{{ form.body }}</textarea>
+          </div>
+
+          <div class="form-actions text-{{f_btn_align}}">
+            <button type="submit" class="btn btn-{{ frm_btn_style | default: 1 }} btn-contact-us btn-block">{{ frm_btn_label }}</button>
+          </div>
+        </div>
+
+      {%- endform -%}
+    </div>
+{%- endcase -%}

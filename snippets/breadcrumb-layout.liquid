@@ -1,0 +1,273 @@
+{%- assign _lazyload                      = settings.use_lazyload -%}
+{%- assign breadcrumb_bg                  = settings.breadcrumb_bg -%}
+{%- assign brc_active_up                  = settings.breadcrumb_active_up -%}
+{%- assign brc_prev_up                    = settings.breadcrumbs_prev_uc -%}
+{%- assign brc_previous                   = settings.show_previous_page -%}
+{%- assign breadcrumb_image               = section.settings.breadcrumb_image -%}
+{%- assign brc_bg_img_inherit             = section.settings.breadcrumb_image_inherit -%}
+
+{%- assign brc_root                       = brc_root | default: section -%}
+{%- assign _breadcrumb_bg_color           = brc_root.settings.breadcrumb_bg_color     | default: 'rgba(0,0,0,0)' -%}
+{%- assign breadcrumb_padding             = brc_root.settings.breadcrumb_padding      | default: settings.breadcrumb_padding -%}
+{%- assign breadcrumb_margin              = brc_root.settings.breadcrumb_margin       | default: settings.breadcrumb_margin -%}
+{%- assign brc_box_shadow                 = brc_root.settings.breadcrumb_shadow       | default: settings.breadcrumb_shadow -%}
+{%- assign brc_text_ff                    = brc_root.settings.breadcrumb_text_ff      | default: 'inherit' -%}
+{%- assign brc_text_fs                    = brc_root.settings.breadcrumb_text_fs      | default: settings.breadcrumb_text_fs -%}
+{%- assign brc_active_fw                  = brc_root.settings.breadcrumb_active_fw    | default: 'inherit' -%}
+{%- assign brc_active_ff                  = brc_root.settings.breadcrumb_active_ff    | default: 'inherit' -%}
+{%- assign brc_text_fw                    = brc_root.settings.breadcrumb_text_fw      | default: 'inherit' -%}
+
+{%- if brc_text_fw   == 'inherit' -%}{%- assign brc_text_fw   = settings.breadcrumb_text_fw -%}{%- endif -%}
+{%- if brc_text_ff   == 'inherit' -%}{%- assign brc_text_ff   = settings.breadcrumb_text_ff -%}{%- endif -%}
+{%- if brc_active_fw == 'inherit' -%}{%- assign brc_active_fw = settings.breadcrumb_active_fw -%}{%- endif -%}
+{%- if brc_active_ff == 'inherit' -%}{%- assign brc_active_ff = settings.breadcrumb_active_ff -%}{%- endif -%}
+
+{%- if brc_root.settings.breadcrumb_style > 0 -%}
+  {%- assign breadcrumb_style = brc_root.settings.breadcrumb_style | plus: 0 -%}
+{%- else -%}
+  {%- assign breadcrumb_style = settings.breadcrumb_style | plus: 0 -%}
+{%- endif -%}
+
+{%- comment -%}
+  ============
+    * Breadcrumb Previous
+  ============
+{%- endcomment-%}
+
+{%- assign brc_prev_color  = settings.breadcrumb_prev_color  | default: 'rgba(0,0,0,0)' -%}
+{%- assign brc_prev_fs     = settings.breadcrumb_prev_fs     | default: settings.breadcrumb_text_fs -%}
+{%- assign brc_prev_fw     = settings.breadcrumb_prev_fw     | default: 'inherit' -%}
+{%- assign brc_prev_ff     = settings.breadcrumb_prev_ff     | default: 'inherit' -%}
+
+{%- if brc_prev_fw == 'inherit' -%}{%- assign brc_prev_fw = settings.breadcrumb_text_fw -%}{%- endif -%}
+{%- if brc_prev_ff == 'inherit' -%}{%- assign brc_prev_ff = settings.breadcrumb_text_ff -%}{%- endif -%}
+
+{%- if brc_prev_color == 'rgba(0,0,0,0)' -%}
+  {%- assign brc_prev_color = settings.breadcrumb_text_color | default: 'rgba(0,0,0,0)' -%}
+{%- endif -%}
+{%- comment -%}  ======================== {%- endcomment-%}
+{%- if type == 'block' -%}
+
+  {%- assign brc_previous                   = brc_root.settings.show_previous_page -%}
+  {%- assign _show_breadcrumb_active        = brc_root.settings.show_breadcrumb_active  | default: false -%}
+  {%- assign _breadcrumb_text_color         = brc_root.settings.breadcrumb_text_color   | default: 'rgba(0,0,0,0)' -%}
+  {%- assign _breadcrumb_active_color       = brc_root.settings.breadcrumb_active_color | default: 'rgba(0,0,0,0)' -%}
+  {%- assign _breadcrumb_active_fs          = brc_root.settings.breadcrumb_active_fs    | replace: 'auto', 'inherit' -%}
+  {%- assign _breadcrumb_active_lsp         = brc_root.settings.breadcrumb_active_lsp -%}
+  {%- assign brc_active_up                  = brc_root.settings.breadcrumb_active_up -%}
+
+  {%- capture block_css -%}
+    {%- if _breadcrumb_text_color != 'rgba(0,0,0,0)' -%}#breadcrumb ul.breadcrumb li{color: {{_breadcrumb_text_color}};}{%- endif -%}
+
+    {%- unless _show_breadcrumb_active -%}#breadcrumb ul.breadcrumb li.active{display: none;}
+    {%- else -%}
+      {%- if _breadcrumb_active_color != 'rgba(0,0,0,0)'-%}#breadcrumb ul.breadcrumb li.active{color: {{_breadcrumb_active_color}};}{%- endif -%}
+      {%- include 'css-responsive', classID: '#breadcrumb ul.breadcrumb li.active', css_value: _breadcrumb_active_fs  ,css_property: 'font-size' -%}
+      {%- include 'css-responsive', classID: '#breadcrumb ul.breadcrumb li.active', css_value: _breadcrumb_active_lsp ,css_property: 'letter-spacing' -%}
+    {%- endunless -%}
+
+    {%- if breadcrumb_image != blank -%}
+      {%- assign _breadcrumb_bg_fixed           = brc_root.settings.breadcrumb_bg_fixed -%}
+      {%- assign _breadcrumb_bg_size            = brc_root.settings.breadcrumb_bg_size -%}
+      {%- assign _breadcrumb_bg_repeat          = brc_root.settings.breadcrumb_bg_repeat -%}
+      {%- assign _breadcrumb_bg_position        = brc_root.settings.breadcrumb_bg_position -%}
+      #breadcrumb .bw-image{background-size: {{_breadcrumb_bg_size}};background-repeat: {{_breadcrumb_bg_repeat}};background-position: {{_breadcrumb_bg_position}};
+        {%- if _breadcrumb_bg_fixed -%}background-attachment: fixed;{%- endif -%}
+      }
+    {%- endif -%}
+    {%- unless _breadcrumb_bg_color == 'rgba(0,0,0,0)' -%}
+      .bw-color{background-color: {{_breadcrumb_bg_color}};}
+    {%- endunless -%}
+  {%- endcapture -%}
+  {%- assign brc_css = brc_css | append: block_css -%}
+
+  {%- comment -%}
+    ============
+      * Breadcrumb Previous in Block
+    ============
+  {%- endcomment-%}
+  {%- if brc_root.settings.show_previous_page -%}
+    {%- assign old_brc_prev_color = brc_prev_color -%}
+    {%- assign brc_prev_color     = brc_root.settings.breadcrumb_prev_color | default: 'rgba(0,0,0,0)' -%}
+    {%- assign brc_prev_fs        = brc_root.settings.breadcrumb_prev_fs | default: settings.breadcrumb_prev_fs  | default: brc_root.settings.breadcrumb_text_fs | default: old_brc_prev_fs -%}
+    {%- assign brc_prev_up        = brc_root.settings.breadcrumbs_prev_uc -%}
+    {%- assign old_brc_prev_fs    = brc_prev_fs -%}
+    {%- assign old_brc_prev_fw    = brc_prev_fw -%}
+    {%- assign old_brc_prev_ff    = brc_prev_ff -%}
+    {%- assign brc_prev_fw        = brc_root.settings.breadcrumb_prev_fw -%}
+    {%- assign brc_prev_ff        = brc_root.settings.breadcrumb_prev_ff -%}
+
+
+    {%- if brc_prev_color       == 'rgba(0,0,0,0)' -%}{%- assign brc_prev_color = settings.breadcrumb_prev_color | default: 'rgba(0,0,0,0)' -%}
+      {%- if brc_prev_color     == 'rgba(0,0,0,0)' -%}{%- assign brc_prev_color = brc_root.settings.breadcrumb_text_color | default: 'rgba(0,0,0,0)' -%}
+        {%- if brc_prev_color   == 'rgba(0,0,0,0)' -%}{%- assign brc_prev_color = old_brc_prev_color -%}{%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if brc_prev_fw      == 'inherit' -%}{%- assign brc_prev_fw = settings.breadcrumb_prev_fw -%}
+      {%- if brc_prev_fw    == 'inherit' -%}{%- assign brc_prev_fw = brc_root.settings.breadcrumb_text_fw  -%}
+        {%- if brc_prev_fw  == 'inherit' -%}{%- assign brc_prev_fw = old_brc_prev_fw -%}{%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if brc_prev_ff      == 'inherit' -%}{%- assign brc_prev_ff = settings.breadcrumb_prev_ff -%}
+      {%- if brc_prev_ff    == 'inherit' -%}{%- assign brc_prev_ff = brc_root.settings.breadcrumb_text_ff  -%}
+        {%- if brc_prev_ff  == 'inherit' -%}{%- assign brc_prev_ff = old_brc_prev_ff -%}{%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endif -%}
+  {%- comment -%}  ======================== {%- endcomment-%}
+
+{%- endif -%}
+
+{%- comment -%}
+  ============
+    * Breadcrumb Background Image
+  ============
+{%- endcomment-%}
+{%- if template contains 'customers' or template contains 'page.' or template contains '404' -%}
+  {%- capture _breadcrumb_image -%}
+    {%- if breadcrumb_bg != blank -%}
+      {%- assign brc_bg_image = true -%}
+      {{- breadcrumb_bg | img_url: '1920x' -}}
+    {%- endif -%}
+  {%- endcapture -%}
+{%- else -%}
+
+  {%- capture _breadcrumb_image -%}
+    {%- if breadcrumb_image != blank -%}
+      {%- assign brc_bg_image = true -%}
+      {{- breadcrumb_image | img_url: '1920x' -}}
+
+    {%- elsif brc_bg_img_inherit and breadcrumb_bg != blank -%}
+      {%- assign brc_bg_image = true -%}
+      {{- breadcrumb_bg | img_url: '1920x' -}}
+    {%- endif -%}
+  {%- endcapture -%}
+{%- endif -%}
+{%- comment -%}  ======================== {%- endcomment-%}
+
+<div id="breadcrumb" class="wrap-breadcrumb bw-color{% unless brc_bg_image %} no-image{% endunless %}">
+    <div class="breadcrumb-holder layout-full bcrumb-style-{{breadcrumb_style}}{% if _show_breadcrumb_active == false %} no-breadcrumb-active{% endif %}">
+      <div class="breadcrumb-inner{% if brc_bg_image and _breadcrumb_image != blank %} bw-image{% if _lazyload %} lazyload" data-bgset="{{ _breadcrumb_image }} 1920w{% else %}" style="background-image: url({{_breadcrumb_image }});{% endif %}{% endif %}">
+
+        <div class="container">
+          <div class="bcrumb-inner">
+            <div class="bcrumb-list">
+              <ul class="breadcrumb fw-{{brc_text_fw}} {{brc_text_ff}}" itemscope itemtype="https://schema.org/BreadcrumbList">
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                  <a itemprop="item" href="{{ shop.url }}">
+                    <span itemprop="name" class="d-none">{{ shop.name | escape }}</span>{{- 'general.text.home' | t -}}
+                    <meta itemprop="position" content="1" />
+                  </a>
+                </li>
+
+                {%- if template contains 'collection' -%}
+                  <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="d-none">
+                    <a href="{{collection.url}}" itemprop="item">
+                      <span itemprop="name">{{ collection.title }}</span>
+                      <meta itemprop="position" content="2" />
+                    </a>
+                  </li>
+
+                  {%- if current_tags -%}
+                    {%- if breadcrumb_style != 1 -%}
+                    <li>{%- include 'icons' ,type: 'icon_free' ,name: 'icon-angle-right' -%}</li>
+                    {%- endif -%}
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                      <span itemprop="name">{{- collection.title | link_to: collection.url -}}</span>
+                      <meta itemprop="position" content="3" />
+                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active {{brc_active_ff}}">
+                      <span itemprop="name">{{- current_tags.first | capitalize -}}</span>
+                      <meta itemprop="position" content="3" />
+                    </li>
+
+                  {%- elsif collection.handle -%}
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active {{brc_active_ff}}">
+                      <span itemprop="name">{{- collection.title -}}</span>
+                      <meta itemprop="position" content="3" />
+                    </li>
+
+                  {%- else -%}
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active {{brc_active_ff}}">
+                      <span itemprop="name">{{- page_title | capitalize -}}</span>
+                      <meta itemprop="position" content="3" />
+                    </li>
+                  {%- endif -%}
+
+                {%- elsif template == 'article' -%}
+
+                  {%- if breadcrumb_style != 1 -%}
+                  <li>{%- include 'icons' ,type: 'icon_free' ,name: 'icon-angle-right' -%}</li>
+                  {%- endif -%}
+                  <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <span itemprop="name">
+                      {{- blog.title | link_to: blog.url -}}
+                    </span>
+                    <meta itemprop="position" content="2" />
+                  </li>
+                  <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active {{brc_active_ff}}">
+                    <span itemprop="name">{{- article.title -}}</span>
+                    <meta itemprop="position" content="3" />
+                  </li>
+
+                {%- elsif template contains 'search' -%}
+                  <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active search">
+                    <span>Search Results: </span>"<span class="search-keywords">{{ search.terms | escape }}</span>""
+                    <meta itemprop="position" content="2" />
+                  </li>
+
+                {%- else -%}
+                  {%- if product.collections[0].title != blank -%}
+                    {%- if breadcrumb_style != 1 -%}<li>{%- include 'icons' ,type: 'icon_free' ,name: 'icon-angle-right' -%}</li>{%- endif -%}
+                    {%- if product.collections[0].title -%}
+                      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <a href="{{product.collections[0].url}}" itemprop="item">
+                          <span itemprop="name">{{- product.collections[0].title -}}</span>
+                        </a>
+                        <meta itemprop="position" content="2" />
+                      </li>
+                    {%- endif -%}
+                  {%- endif -%}
+                  <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active {{brc_active_ff}}">
+                    <span itemprop="name">{{- page_title | capitalize -}}</span>
+                    <meta itemprop="position" content="3" />
+                  </li>
+                {%- endif -%}
+              </ul>
+            </div>
+
+            <div id="brc-previous" class="bcrumb-previous fw-{{brc_prev_fw}} {{brc_prev_ff}}{% if brc_previous == false %} hide{% endif %}">
+              <a href="javascript: history.go(-1)" style="color: {{brc_prev_color}};{% if brc_prev_up %}text-transform: uppercase;{% endif %}">
+                {%- include 'icons', type: 'icon_free', name: 'icon-angle-left' -%}
+                <span class="bcrumb-text">{{- 'collections.general.previous_page' | t -}}</span>
+              </a>
+            </div>
+          </div>
+          {%- if template contains 'collection' and section.settings.col_des_position == 'top' -%}
+            <div class="cata-description">{{ collection.description }}</div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+  {%- capture _brcID -%}{%- unless brc_bg_image -%}#breadcrumb.bw-color{%- else -%}#breadcrumb .bw-image{%- endunless -%}{%- endcapture -%}
+  {%- capture block_css -%}
+    #breadcrumb li.active{font-weight: {{brc_active_fw}};{%- if brc_active_up -%}text-transform: uppercase;{%- endif -%}}
+    {%- include 'css-responsive', classID: _brcID, css_value: breadcrumb_padding -%}
+    {%- include 'css-responsive', classID: _brcID, css_value: breadcrumb_margin ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: ' .breadcrumb li' ,css_value: brc_text_fs ,css_property: 'font-size' -%}
+    {%- include 'css-responsive', classID: ' #brc-previous'  ,css_value: brc_prev_fs ,css_property: 'font-size' -%}
+
+    {%- if brc_bg_image and _lazyload == false -%}#breadcrumb .bw-image{background-image: url({{_breadcrumb_image }});}{%- endif -%}
+    {%- if brc_bg_image -%}
+      {%- include 'css-responsive', classID: '#breadcrumb', nextClassID: ' .breadcrumb-inner' ,css_value: brc_box_shadow, css_property: 'box-shadow',css_split: ';' -%}
+    {%- else -%}
+      {%- include 'css-responsive', classID: '#breadcrumb', css_value: brc_box_shadow, css_property: 'box-shadow',css_split: ';' -%}
+    {%- endif -%}
+  {%- endcapture -%}
+  {%- assign brc_css = brc_css | append: block_css -%}
+
+  {%- unless brc_css == blank -%}<style>{{brc_css}}</style>{%- endunless -%}
+</div>

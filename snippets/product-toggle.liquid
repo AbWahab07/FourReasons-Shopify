@@ -1,0 +1,120 @@
+{%- assign description = product.description -%}
+{%- assign _nav_des_ff = section.settings.nav_des_ff | default: 'auto' -%}
+{%- assign _nav_des_tt = section.settings.nav_des_tt | default: 'none' -%}
+{%- capture _navTitle_style -%}{% unless _nav_des_ff == 'auto' %} {{_nav_des_ff}}{% endunless %}{% unless _nav_des_tt == 'none' %} text-{{_nav_des_tt}}{% endunless %}{%- endcapture -%}
+
+<div class="description-product">
+  <div role="tabpanel">
+    <div class="nav-content">
+      <ul class="nav nav-tabs{{_navTitle_style}}" role="tablist">
+        {%- unless description == blank -%}
+          {%- if section.settings.multi-tab -%}
+            {%- assign description_parts = description | split: "<h5" -%}
+
+            {%- if description_parts.first.size > 0 -%}
+              <li class="nav-item" ><a class="nav-link active" href="#tabs-description" aria-controls="tabs-description" role="tab" data-toggle="tab">{{ 'products.product.description' | t }}</a></li>
+            {%- endif -%}
+
+            {%- for part in description_parts -%}
+              {%- if part contains "</h5>" -%}
+                {%- assign remove  = part | split: ">" | first | append: ">" -%}
+                {%- assign t_title = part | split: "</h5>" | first | strip_html | replace: remove, "" -%}
+                
+                <li class="nav-item" ><a class="nav-link" href="#tabs-{{ forloop.index }}" aria-controls="tabs-{{ forloop.index }}" role="tab" data-toggle="tab">{{t_title}}</a></li>
+              {%- endif -%}
+            {%- endfor -%}
+
+          {%- else -%}
+            <li class="nav-item" ><a class="nav-link active" href="#tabs-description" aria-controls="tabs-description" role="tab" data-toggle="tab">{{ 'products.product.description' | t }}</a></li>
+
+          {%- endif -%}
+        {%- endunless -%}
+
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'page' -%}
+                {%- if block.settings.page != blank and pages[block.settings.page].content.size > 0 -%}                
+                <li class="nav-item" ><a class="nav-link" href="#tabs-page_{{block.id}}" aria-controls="tabs-page" role="tab" data-toggle="tab">{{ block.settings.page_title }}</a></li>
+                {%- endif -%}
+            {%- endcase -%}
+          {%- endfor -%}
+        {%- endif -%}
+        
+        {%- include 'product.detail-snippet' ,ptype: 'metafield_description_heading' -%}
+
+        {%- if _review_pos == 'inside' -%}
+          <li class="nav-item" id="tab_review_tabbed">
+            <a class="nav-link" href="#tab-review" aria-controls="tab-review" role="tab" data-toggle="tab">{{'products.product.customer_reviews' | t }}</a>
+          </li>
+        {%- endif -%}
+      </ul>
+    </div>
+
+    <div class="tab-content">
+
+      {%- unless description == blank -%}
+
+        {%- if section.settings.multi-tab -%}
+
+          {%- assign description_parts = description | split: "<h5" -%}
+
+          {%- if description_parts.first.size > 0 -%}
+            <div role="tabpanel" class="tab-pane show active" id="tabs-description">
+              {{ product.description | split: '<h5>' | first }}
+            </div>
+          {%- endif -%}
+
+          {%- for part in description_parts -%}
+            {%- if part contains "</h5>" -%}
+              
+              {%- assign fp = part | append: " " | split: "</h5>" | last -%}
+              {%- assign p  = part | append: " " | split: "</h5>" | last | strip_html | replace: "&nbsp;", "" | replace: " ", "" | strip_newlines -%}
+
+              {%- if p != "" or fp contains "<img " or fp contains "<iframe " -%}
+                <div role="tabpanel" class="tab-pane" id="tabs-{{ forloop.index }}">
+                  {{ part | split: "</h5>" | last | replace: "<div", "<span" | replace: "</div", "</span" }}
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+
+          {%- endfor -%}
+
+        {%- else -%}
+          <div role="tabpanel" class="tab-pane show active" id="tabs-description">
+            {{ product.description }}
+          </div>
+        {%- endif -%}
+      {%- endunless -%}
+      
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+
+            {%- when 'page' -%}
+              {%- if block.settings.page != blank and pages[block.settings.page].content.size > 0 -%}                
+                <div role="tabpanel" class="tab-pane" id="tabs-page_{{block.id}}">
+                  {{ pages[block.settings.page].content }}
+                </div>
+              {%- endif -%}
+
+          {%- endcase -%}
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- include 'product.detail-snippet' ,ptype: 'metafield_description_content' -%}
+
+      {%- if _review_pos == 'inside' -%}
+        <div role="tabpanel" class="tab-pane" id="tab-review">{% include 'include-reviews' %}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{%- if _product_tab_auto or _product_tab_style == '2' -%}  
+<script>
+  jQuery(document).ready(function($) {
+    jQuery('.description-product ul').find('li').first().children('a').trigger('click');
+  });
+</script>
+{%- endif -%}

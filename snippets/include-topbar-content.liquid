@@ -1,0 +1,63 @@
+{%- capture blockID -%}#topbar-col-{{colum_count}}{%- endcapture -%}
+{%- case block.type -%}
+  {%- when 'logo' -%}{% include 'include-logo' with type: 'block' %}
+
+  {%- when 'text' -%}
+    {%- assign tb_icon       = block.settings.icon -%}
+    {%- assign tb_text       = block.settings.text -%}
+    {%- assign tb_link       = block.settings.tb_text_link -%}
+    {%- assign countdown     = block.settings.countdown -%}
+    {%- assign tb_css_text   = block.settings.css_text -%}
+    {%- capture _icon -%}{%- unless tb_icon == blank -%}<i class="demo-icon {{tb_icon}}"></i>{%- endunless -%}{%- endcapture -%}
+    
+    <div class="tb-text custom-text"{{block.shopify_attributes}}>
+      
+        <div class="custom--text">
+          <p class="ct-{{section.id}}-{{block.id}}">
+            {%- unless tb_link == blank -%}<a href="{{tb_link}}">{%- endunless -%}
+              {%- unless tb_text contains 'icon_here' -%}{{_icon}}{%- endunless -%}
+              {%- unless tb_text == blank -%}{{tb_text | replace: 'icon_here', _icon }}{%- endunless -%}
+            {%- unless tb_link == blank -%}</a>{%- endunless -%}
+          </p>
+        </div>
+        {%- unless tb_css_text == blank -%}
+          <style>{{tb_css_text}}</style>
+        {%- endunless -%}
+      
+
+      {%- include 'include-countdown' -%}
+    </div>
+
+  {%- when 'tb_menu' -%}
+    {% assign nav_linklist  = block.settings.nav_linklist %}
+    {% assign menu_align    = block.settings.menu_align %}
+    <div class="tb-menu"{{block.shopify_attributes}}>
+      <ul class="menu-list list-inline {{menu_align}}">
+        {% for l in linklists[nav_linklist].links %}{% include 'nav-link' %}{% endfor %}
+      </ul>
+    </div>
+
+  {%- when 'tb_icons' -%}
+    {%- assign icon_type = block.settings.icon_type -%}
+    <div class="tb-{{icon_type}}"{{block.shopify_attributes}}>
+      {%- case icon_type -%}
+      {%- when 'social' -%}{% include 'social-media-icons' %}
+      {%- when 'newsletter' -%}
+        <a href="javascript:void(0);"data-toggle="modal" data-target="#newsletter_popup">
+          {%- render 'icons' ,type: 'icon_free' ,name: 'icon-uniE93A' -%}
+          {%- if block.settings.tb_ic_show_label -%}
+            <span class="icon-text">{{- 'general.header.newsletter' | t -}}</span>            
+          {%- endif -%}
+        </a>        
+      {%- else -%}{% include 'icons' ,type: icon_type ,show_label: block.settings.tb_ic_show_label %}
+      {%- endcase -%}
+    </div>
+
+    {%- capture block_iconID %}{{blockID}} .tb-{{icon_type}} .demo-icon{%- endcapture -%}
+    {%- capture block_css -%}
+      {%- include 'css-responsive', classID: block_iconID ,css_value: block.settings.tb_ic_fs ,css_property: 'font-size' -%}
+    {%- endcapture -%}
+    {%- assign section_css = section_css | append: block_css -%}
+
+  {%- when 'column' -%}{% break %}
+{%- endcase -%}

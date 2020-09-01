@@ -1,0 +1,715 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _lazyload          = settings.use_lazyload -%}
+{%- assign section_type       = 'columns-section' -%}
+{%- assign _bg_image          = section.settings.section_bg_image -%}
+{%- assign column_type        = section.settings.column_type -%}
+{%- assign column_postion     = section.settings.column_postion -%}
+{%- assign _width_resp        = section.settings.width_resp -%}
+{%- assign _width2_resp       = section.settings.width2_resp -%}
+{%- assign background_lc      = section.settings.background_lc -%}
+{%- assign l_title_color      = section.settings.l_title_color -%}
+{%- assign l_content_color    = section.settings.l_content_color -%}
+{%- assign l_icon_color       = section.settings.l_icon_color -%}
+{%- assign l_border_color     = section.settings.l_border_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign _form_color        = section.settings.form_color -%}
+{%- assign _form_border       = section.settings.form_border -%}
+{%- assign _btn_style         = section.settings.btn_style -%}
+
+{%- capture fcol_width -%}{%- unless _width_resp == blank -%}{%- include 'set-width-bootstrap',in_type: 'width', number: _width_resp -%}{{_out}}{%- endunless -%}{%- endcapture -%}
+{%- capture list_width -%}{%- unless _width2_resp == blank -%}{%- include 'set-width-bootstrap',in_type: 'width', number: _width2_resp -%}{{_out}}{%- endunless -%}{%- endcapture -%}
+
+{%- capture _l_col_bg -%}{% if background_lc != blank %}{{background_lc | img_url: '1024x'}}{% endif %}{%- endcapture -%}
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+
+{%- if column_type == 'insta' -%}
+  {%- assign ins_token  = section.settings.instagram_token -%}
+  {%- assign ins_userid = section.settings.instagram_userid -%}
+  {%- assign ins_total  = section.settings.total -%}
+  {%- include 'include-item-per-row' -%}
+  {%- capture insta_col -%}
+    <div id="home_instagram_list_{{section.id}}" class="home_instagram_list row" data-token-key="{{ins_token}}" data-uid="{{ins_userid}}" data-limit="{{ins_total}}" data-lazyload="{{_lazyload}}" data-row="{{items_class}}">
+      {%- for i in (1..ins_total) -%}
+        <div class="ins-item {{items_class}}">{%- include 'svgset', type: 'image' -%}</div>
+      {%- endfor -%}
+    </div>
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- capture btnFrm_style -%}
+  {%- if _btn_style == 0 -%}
+    {%- assign _btn_frm_bg        = section.settings.btn_frm_bg -%}
+    {%- assign _btn_frm_color     = section.settings.btn_frm_color -%}
+    {%- assign _btn_frm_lsp       = section.settings.btn_frm_lsp -%}
+    {%- assign _btn_frm_up        = section.settings.btn_frm_uppercase -%}
+    .section-show-{{section.id}} .contact-form .btn-0.btn-contact-us{
+        background: {{_btn_frm_bg}};
+        color: {{_btn_frm_color}};
+        letter-spacing: {{_btn_frm_lsp | default: 0}};
+        {%- if _btn_frm_up -%}text-transform: uppercase;{%- endif -%}
+    }
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture heading_1st -%}
+  {%- assign faq_align          = section.settings.faq_heading_content_align -%}
+  {%- assign faq_heading        = section.settings.faq_heading_text -%}
+  {%- assign faq_subhead        = section.settings.faq_subheading_text -%}
+  {%- assign faq_subhead_2      = section.settings.faq_subheading_2_text -%}  
+  {%- include 'head-title' ,_title: faq_heading , _subtitle: faq_subhead, _subtitle2: faq_subhead_2, _title_alignment: faq_align -%}
+{%- endcapture -%}
+
+{%- capture heading_2nd -%}
+  {%- assign m_title       = section.settings.heading_text -%}
+  {%- assign m_subtitle    = section.settings.subheading_text -%}
+  {%- assign m_subtitle2   = section.settings.subheading2_text -%}  
+  {%- assign m_head_align  = section.settings.heading_content_align -%}  
+  {%- include 'head-title' ,_title: m_title , _subtitle: m_subtitle, _subtitle2: m_subtitle2, _title_alignment: m_head_align -%}
+{%- endcapture -%}
+
+
+{%- capture fcol_width -%}{{fcol_width}} faq-style-{{ section.settings.faq_style }}{%- endcapture -%}
+
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="home-columns-section layout-{{_layout }} section-show-{{section.id}}{% if column_type == 'insta' %} home-instagram{% endif %}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload"
+      data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}"
+      data-section-type="{{section_type}}"
+      data-section-id="{{section.id}}"
+      data-balance-title="{{section.settings.enable_heading_blance | default: false }}">
+
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+      <div class="row">
+        {%- if column_postion == 'left' -%}
+          <div class="{{fcol_width}}">
+            {%- unless column_type == 'faq' -%}
+              {{heading_1st}}
+            {%- endunless -%}
+            {%- case column_type -%}
+              {%- when 'insta'    -%}{{insta_col}}
+              {%- when 'faq'      -%}{%- include 'faq-column' -%}
+              {%- when 'contact'  -%}{%- include 'include-form',_text_align :column_postion, frm_btn_style: _btn_style -%}
+            {%- endcase -%}
+          </div>
+        {%- endif -%}
+
+        <div class="{{list_width}}">
+          <div class="home-list-content">
+            {{heading_2nd}}
+
+            <div class="list-content-container{% if _l_col_bg != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_l_col_bg}} 1024w{%- endif -%}{%- endif -%}">
+              <ul class="list-content">
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'text' -%}
+                    {%- assign _title     = block.settings.title -%}
+                    {%- assign _content   = block.settings.content -%}
+                    {%- assign _font_icon = block.settings.font_icon -%}
+
+                    {%- unless _title == blank and _content == blank -%}
+                      <li class="list-item">
+                        {%- unless _title == blank -%}
+                          <span class="l-title">
+                          {%- unless _font_icon == blank -%}
+                            {%- include 'icons', type: 'icon_free', name: _font_icon -%}
+                          {%- endunless -%}
+                            <span class="text">{{_title}}</span>
+                          </span>
+                        {%- endunless -%}
+                        {%- unless _content == blank -%}
+                          <span class="l-content">{{_content}}</span>
+                        {%- endunless -%}
+                      </li>
+                    {%- endunless -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+
+              {%- assign l_button = section.settings.l_button -%}
+
+              {%- unless l_button == blank -%}
+                {%- assign l_button_url   = section.settings.l_button_url | default: 'javascript:void(0);' -%}
+                {%- assign l_button_style = section.settings.l_button_style -%}
+
+                <div class="list-conntent--button">
+                  <a href="{{l_button_url}}" class="btn btn-{{l_button_style}}">{{l_button}}</a>
+                </div>
+              {%- endunless -%}
+            </div>
+          </div>
+        </div>
+
+        {%- if column_postion == 'right' -%}
+          <div class="{{fcol_width}}">
+            {%- unless column_type == 'faq' -%}
+              {{heading_1st}}
+            {%- endunless -%}
+            {%- case column_type -%}
+              {%- when 'insta'    -%}{{insta_col}}
+              {%- when 'faq'      -%}{%- include 'faq-column' -%}
+              {%- when 'contact'  -%}{%- include 'include-form',_text_align :column_postion, btn_style: _btn_style -%}
+            {%- endcase -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+  {%- capture sectionCSS -%}
+    {%- include 'section-general-css' -%}
+    {%- if _l_col_bg != blank and _lazyload == false -%}.section-show-{{section.id}} .list-content-container{background-image: url({{_l_col_bg}});}{%- endif -%}
+    {{- _secionID }} li.list-item .l-title{color: {{l_title_color}};}
+    {{- _secionID }} li.list-item .l-content{color: {{l_content_color}};}
+    {{- _secionID }} li.list-item .icon-type{color: {{l_icon_color}};}
+    {{- _secionID }} .contact-form input,.section-show-{{section.id}} .contact-form textarea{color:{{_form_color}};border: 1px solid {{_form_border}};}
+    {%- if column_type == 'contact' -%}{{btnFrm_style}}{%- endif -%}
+    {%- unless l_border_color == 'rgba(0,0,0,0)' -%}.section-show-{{section.id}} .home-list-content .list-content-container li:not(:last-child):after{background: {{l_border_color}};}{%- endunless -%}
+  {%- endcapture -%}
+   <style>{{sectionCSS}}</style>
+</div>
+
+{% schema %}
+{
+  "name": "Columns Section",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Created by 'Columns' section"
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "label": "Section Label [:id]",
+      "default": "Column section"
+    },
+    {
+      "type": "header",
+      "content": "LAYOUT"
+    },
+    {
+      "type": "checkbox",
+      "id": "boxed_layout",
+      "label": "Boxed layout",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_heading_blance",
+      "label": "Enable Heading section balance",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "section_padding",
+      "label": "Section Padding",
+      "placeholder": "E.g: 5px 20px 5px 20px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "select",
+      "id": "section_bg_size",
+      "label": "Background Size",
+      "default": "cover",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_repeat",
+      "label": "Background Image Repeat:",
+      "default": "no-repeat",
+      "options": [
+        {
+          "value": "no-repeat",
+          "label": "No Repeat"
+        },
+        {
+          "value": "repeat",
+          "label": "Repeat"
+        },
+        {
+          "value": "repeat-x",
+          "label": "Repeat X"
+        },
+        {
+          "value": "repeat-y",
+          "label": "Repeat Y"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_position",
+      "label": "Background Image Position:",
+      "default": "center center",
+      "options": [
+        {
+          "value": "left top",
+          "label": "Left Top"
+        },
+        {
+          "value": "center top",
+          "label": "Center Top"
+        },
+        {
+          "value": "right top",
+          "label": "Right Top"
+        },
+        {
+          "value": "left center",
+          "label": "Left Center"
+        },
+        {
+          "value": "center center",
+          "label": "Center Center"
+        },
+        {
+          "value": "right center",
+          "label": "Right Center"
+        },
+        {
+          "value": "left bottom",
+          "label": "Left Bottom"
+        },
+        {
+          "value": "center bottom",
+          "label": "Center Bottom"
+        },
+        {
+          "value": "right bottom",
+          "label": "Right Bottom"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "SECTION HEADING COLOR"
+    },
+    {
+      "type": "color",
+      "id": "section_heading_color",
+      "label": "Heading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "color",
+      "id": "section_subheading_color",
+      "label": "Subheading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "color",
+      "id": "section_subheading2_color",
+      "label": "Subheading 2 color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "header",
+      "content": "1st Column"
+    },
+    {
+      "type": "select",
+      "id": "column_postion",
+      "label": "Position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "column_type",
+      "label": "Column type",
+      "options": [
+        {
+          "value": "faq",
+          "label": "FAQ"
+        },
+        {
+          "value": "insta",
+          "label": "Instafeed"
+        },
+        {
+          "value": "contact",
+          "label": "Contact"
+        }
+      ],
+      "default": "faq"
+    },
+    {
+      "type": "text",
+      "id": "width_resp",
+      "label": "Width (1->12)",
+      "placeholder": "xl,lg,md,sm,xs,xxs",
+      "default": "6,6,12",
+      "info": "E.g: 4,6,12"
+    },
+    {
+      "type": "select",
+      "id": "faq_heading_content_align",
+      "label": "Heading alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "text",
+      "id": "faq_heading_text",
+      "label": "Heading",
+      "default": "FAQ"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_subheading_text",
+      "label": "Subheading"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_subheading_2_text",
+      "label": "Subheading 2"
+    },
+    {
+      "type": "header",
+      "content": "FAQ settings"
+    },
+    {
+       "type":"select",
+       "id":"faq_style",
+       "label":"Faq style",
+       "options":[
+         {
+           "value":"1",
+           "label":"Style 1"
+         },
+         {
+           "value":"2",
+           "label":"Style 2"
+         }
+       ]
+    },
+    {
+      "type":"paragraph",
+      "content": "please add block FAQ for more contents"
+    },
+    {
+      "type": "header",
+      "content": "Contact Form settings"
+    },
+    {
+      "type": "color",
+      "id": "form_color",
+      "label": "Form text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "form_border",
+      "label": "Form border color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "btn_style",
+      "label": "Inherit Button style:",
+      "min": 0,
+      "max": 3,
+      "default": 1,
+      "info": "Set 0 to customize"
+    },
+    {
+      "type": "color",
+      "id": "btn_frm_bg",
+      "label": "Background color button form",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "btn_frm_color",
+      "label": "Button form text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "btn_frm_lsp",
+      "label": "Button text letter spacing"
+    },
+    {
+      "type": "checkbox",
+      "id": "btn_frm_uppercase",
+      "label": "Uppercase button"
+    },
+    {
+      "type": "header",
+      "content": "Instafeed settings"
+    },
+    {
+      "id": "instagram_token",
+      "label": "Instagram Access Token [( ? )](http://jelled.com/instagram/access-token)",
+      "type": "text",
+      "default": "8232616123.bd54f22.c30c8173a6ad48e09fc915ece80d052a"
+    },
+    {
+      "id": "instagram_userid",
+      "label": "Instagram User ID [( ? )](http://jelled.com/instagram/lookup-user-id)",
+      "type": "text",
+      "default": "8232616123"
+    },
+    {
+      "type": "text",
+      "id": "items_resp",
+      "label": "Max number of items per row",
+      "placeholder": "xl,lg,md,sm,xs,xxs",
+      "info": "E.g: 4,3,2",
+      "default": "4,3,2"
+    },
+    {
+      "type": "range",
+      "id": "total",
+      "label": "Total items",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "2nd Column"
+    },
+    {
+      "type": "text",
+      "id": "width2_resp",
+      "label": "Width (1->12)",
+      "placeholder": "xl,lg,md,sm,xs,xxs",
+      "default": "6,6,12",
+      "info": "E.g: 4,6,12"
+    },
+    {
+      "type": "select",
+      "id": "heading_content_align",
+      "label": "Heading alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading",
+      "default": "List Content"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading_text",
+      "label": "Subheading"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading2_text",
+      "label": "Subheading 2"
+    },
+    {
+      "type": "color",
+      "id": "l_icon_color",
+      "label": "Font icon color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "l_title_color",
+      "label": "Item Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "l_content_color",
+      "label": "Item Content color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "l_border_color",
+      "label": "Border color",
+      "default": "#555555"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_lc",
+      "label": "Background image content"
+    },
+    {
+       "type":"text",
+       "id":"l_button",
+       "label":"Button text"
+    },
+    {
+       "type":"url",
+       "id":"l_button_url",
+       "label":"Button link"
+    },
+    {
+       "type":"range",
+       "id":"l_button_style",
+       "label":"Button style",
+       "min":1,
+       "max":3,
+       "default":1
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ Content",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "FAQ Block label"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "FAQ Heading"
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Content",
+          "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod lorem solo tempor incididunt ut labore et dolore magna aliqua."
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Block Content",
+      "settings": [
+        {
+          "type": "text",
+          "id": "font_icon",
+          "label": "Font icon name"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Pretium quam"
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Content",
+          "default": "Purus in massa"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Columns Section",
+      "category": "Advanced layout",
+      "blocks": [
+        {
+          "type": "faq",
+          "settings": {
+            "heading": "Nec feugiat"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "heading": "Netus et"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "heading": "Ornare arcu"
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "title": "Volutpat maecenas",
+            "content": "Elit duis"
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "title": "Non odio",
+            "content": "Netus et"
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "title": "Hac habitasse",
+            "content": "Nec ultrices"
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "title": "Orci eu",
+            "content": "Cursus mattis"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,459 @@
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- if section.settings.carousel_layout -%}{%- assign _type = 'carousel' -%}{%- else -%}{%- assign _type = 'row' -%}{%- endif -%}
+
+{%- assign _lazyload    = settings.use_lazyload -%}
+{%- assign _padding     = section.settings.padding_item -%}
+{%- assign ins_token    = section.settings.instagram_token -%}
+{%- assign ins_userid   = section.settings.instagram_userid -%}
+{%- assign ins_total    = section.settings.total -%}
+{%- assign _bg_image    = section.settings.section_bg_image -%}
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+
+{%- include 'include-item-per-row' -%}
+
+<div class="home-instagram section-show-{{section.id}} layout-{{ _layout }}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="insta" data-section-id="{{section.id}}"
+    {%- unless section.settings.bg_color == blank -%} style="background: {{section.settings.bg_color}};"{%- endunless -%}>
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+     <div class="row">
+      <div class="col-sm-3">
+        {% include 'head-title' %}
+        {%- include 'include-button', btn_type: 'section' -%}
+      </div>
+      <div class="col-sm-9">
+        <div class="home-ins-wrap">
+          <div id="home_instagram_list_{{section.id}}" class="home_instagram_list{% if _type == 'row' %} row{% unless _padding %} no-padding{% endunless %}{% else %} insta-carousel{% endif %}" data-token-key="{{ins_token}}" data-uid="{{ins_userid}}" data-limit="{{ins_total}}" data-lazyload="{{_lazyload}}{% if _type == 'row' %}" data-row="{{items_class}}{% endif %}" {%- include 'include-carousel-attr' -%}>
+
+            {%- if ins_token != blank or section.blocks.size == 0 -%}
+              {%- for i in (1..ins_total) -%}
+                <div class="ins-item {{items_class}}">{%- include 'svgset', type: 'image' -%}</div>
+              {%- endfor -%}
+
+            {%- else -%}
+              {%- for block in section.blocks -%}
+                {%- assign _image         = block.settings.image -%}
+                {%- assign _total_like    = block.settings.total_like -%}
+                {%- assign _total_comment = block.settings.total_comment -%}
+
+                <div class="ins-item ins-te-item{% if _type == 'row' %} {{items_class}}{% endif %}"{{block.shopify_attributes}}>
+                  <a href="javascript:void(0);">
+                    {%- include 'image-style' ,image: _image -%}
+                  </a>
+                  <div class="instagram-hover">
+                    <div class="insta-comment">
+                      <span><i class="demo-icon icon-uniE908"></i>{{ _total_like }}</span>
+                      <span><i class="demo-icon icon-uniE938"></i>{{ _total_comment }}</span>
+                    </div>
+                  </div>              
+                </div>
+              {%- endfor -%}
+
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+  <style>{%- include 'section-general-css' -%}</style>
+</div>
+{% schema %}
+{
+  "name":"Instafeed",
+  "tag":"section",
+  "settings":[
+    {
+      "type":"paragraph",
+      "content":"Created by 'Instagram' section"
+    },
+    {
+      "id":"title",
+      "type":"text",
+      "label":"Section Label [:id]","default": "Instafeed"
+    },
+    {
+      "type":"header",
+      "content":"LAYOUT"
+    },
+    {
+      "type":"checkbox",
+      "id":"boxed_layout",
+      "label":"Boxed layout",
+      "default":true
+    },
+    {
+      "type":"text",
+      "id":"section_padding",
+      "label":"Section Padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"color",
+      "id":"section_bg_color",
+      "label":"Background color"
+    },
+    {
+      "type":"image_picker",
+      "id":"section_bg_image",
+      "label":"Background image"
+    },
+    {
+      "type":"select",
+      "id":"section_bg_size",
+      "label":"Background Size",
+      "default":"cover",
+      "options":[
+        {
+          "value":"auto",
+          "label":"Auto"
+        },
+        {
+          "value":"cover",
+          "label":"Cover"
+        },
+        {
+          "value":"contain",
+          "label":"Contain"
+        }
+      ]
+    },
+    {
+      "type":"select",
+      "id":"section_bg_repeat",
+      "label":"Background Image Repeat:",
+      "default":"no-repeat",
+      "options":[
+        {
+          "value":"no-repeat",
+          "label":"No Repeat"
+        },
+        {
+          "value":"repeat",
+          "label":"Repeat"
+        },
+        {
+          "value":"repeat-x",
+          "label":"Repeat X"
+        },
+        {
+          "value":"repeat-y",
+          "label":"Repeat Y"
+        }
+      ]
+    },
+    {
+      "type":"select",
+      "id":"section_bg_position",
+      "label":"Background Image Position:",
+      "default":"center center",
+      "options":[
+        {
+          "value":"left top",
+          "label":"Left Top"
+        },
+        {
+          "value":"center top",
+          "label":"Center Top"
+        },
+        {
+          "value":"right top",
+          "label":"Right Top"
+        },
+        {
+          "value":"left center",
+          "label":"Left Center"
+        },
+        {
+          "value":"center center",
+          "label":"Center Center"
+        },
+        {
+          "value":"right center",
+          "label":"Right Center"
+        },
+        {
+          "value":"left bottom",
+          "label":"Left Bottom"
+        },
+        {
+          "value":"center bottom",
+          "label":"Center Bottom"
+        },
+        {
+          "value":"right bottom",
+          "label":"Right Bottom"
+        }
+      ]
+    },
+    {
+      "type":"header",
+      "content":"Insta settings"
+    },
+    {
+      "id":"instagram_token",
+      "label":"Instagram Access Token [( ? )](http:\/\/jelled.com\/instagram\/access-token)",
+      "type":"text",
+      "default":"8232616123.bd54f22.c30c8173a6ad48e09fc915ece80d052a"
+    },
+    {
+      "id":"instagram_userid",
+      "label":"Instagram User ID [( ? )](http:\/\/jelled.com\/instagram\/lookup-user-id)",
+      "type":"text",
+      "default":"8232616123"
+    },
+    {
+      "type":"text",
+      "id":"items_resp",
+      "label":"Max number of items per row",
+      "placeholder":"xl,lg,md,sm,xs,xxs",
+      "info":"E.g: 4,3,2",
+      "default":"4,3,2"
+    },
+    {
+      "type":"range",
+      "id":"total",
+      "label":"Total items",
+      "min":1,
+      "max":20,
+      "step":1,
+      "default":12
+    },
+    {
+      "type":"checkbox",
+      "id":"padding_item",
+      "label":"Spacing items",
+      "default":true
+    },
+    {
+      "type":"header",
+      "content":"Section Heading"
+    },
+    {
+      "type":"text",
+      "id":"heading_text",
+      "label":"Heading"
+    },
+    {
+      "type":"text",
+      "id":"subheading_text",
+      "label":"Subheading"
+    },
+    {
+      "type":"textarea",
+      "id":"subheading2_text",
+      "label":"Subheading 2"
+    },
+    {
+      "type":"select",
+      "id":"heading_content_align",
+      "label":"Heading alignment",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"center",
+          "label":"Center"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ],
+      "default":"center"
+    },
+    {
+      "type":"color",
+      "id":"section_heading_color",
+      "label":"Heading color",
+      "info":"Blank to inherit color"
+    },
+    {
+      "type":"color",
+      "id":"section_subheading_color",
+      "label":"Subheading color",
+      "info":"Blank to inherit color"
+    },
+    {
+      "type":"color",
+      "id":"section_subheading2_color",
+      "label":"Subheading 2 color",
+      "info":"Blank to inherit color"
+    },
+    {
+      "type":"header",
+      "content":"Section button"
+    },
+    {
+      "type":"text",
+      "id":"button",
+      "label":"Button Label"
+    },
+    {
+      "type":"url",
+      "id":"button_link",
+      "label":"Button Link",
+      "info":"Remove link to hide"
+    },
+    {
+      "type":"select",
+      "id":"button_align",
+      "label":"Horizontal alignment",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"center",
+          "label":"Center"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ],
+      "default":"center"
+    },
+    {
+      "type":"checkbox",
+      "id":"button_corner",
+      "label":"Button Rounded Corners"
+    },
+    {
+      "type":"range",
+      "id":"button_inherit_style",
+      "label":"Inherit Button style:",
+      "min":0,
+      "max":3,
+      "default":1,
+      "info":"Set 0 to customize button"
+    },
+    {
+      "type":"color",
+      "id":"button_color",
+      "label":"Button Text color",
+      "default":"#000000"
+    },
+    {
+      "type":"color",
+      "id":"button_border",
+      "label":"Button Border color",
+      "default":"#000000"
+    },
+    {
+      "type":"color",
+      "id":"button_bg_color",
+      "label":"Button Background color",
+      "default":"#FFFFFF"
+    },
+    {
+      "type":"text",
+      "id":"button_icon",
+      "label":"Button font icon name"
+    },
+    {
+      "type":"color",
+      "id":"button_icon_color",
+      "label":"Button icon color",
+      "default":"#000000"
+    },
+    {
+      "type":"color",
+      "id":"button_icon_bg",
+      "label":"Button icon background color",
+      "default":"#ffffff"
+    },
+    {
+       "type":"range",
+       "id"   :"button_icon_size",
+       "label":"Button icon font size",
+       "min"   :10,
+       "max"   :100,
+       "step"  :1,
+       "unit"  :"px",
+       "default":29
+    },
+    {
+      "type":"select",
+      "id":"button_icon_position",
+      "label":"Button icon position",
+      "default":"left",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ]
+    },
+    {
+      "type":"header",
+      "content":"Slider settings"
+    },
+    {
+      "type":"checkbox",
+      "id":"carousel_layout",
+      "label":"Enable Slider"
+    },
+    {
+      "type":"checkbox",
+      "id":"autoplay",
+      "label":"Enable Autoplay"
+    },
+    {
+      "type":"checkbox",
+      "id":"loop",
+      "label":"Enable Loop"
+    },
+    {
+      "type":"checkbox",
+      "id":"nav",
+      "label":"Show Next & Prev arrows",
+      "default":true
+    },
+    {
+      "type":"checkbox",
+      "id":"dot",
+      "label":"Show Dots"
+    }
+  ],
+  "blocks": [
+    {
+       "type":"content",
+       "name":"Block content",
+       "settings":[
+         {
+            "type":"image_picker",
+            "id":"image",
+            "label":"Image"
+         },
+         {
+            "type":"text",
+            "id":"total_like",
+            "label":"Total Like",
+            "default": "99"
+         },
+         {
+            "type":"text",
+            "id":"total_comment",
+            "label":"Total comment",
+            "default": "99"
+         }
+       ]
+    }
+  ],
+  "presets":[
+    {
+      "name":"Instafeed",
+      "category":"Banner"
+    }
+  ]
+}
+{% endschema %}

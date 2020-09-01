@@ -1,0 +1,96 @@
+<div style="background: #F6F4F2;">
+  <div class="collection-grid-section">
+    {%- if section.settings.image !=blank -%}
+      <div class="collection-grid-bg">
+        <img class="lazyautosizes lazyloaded img-parallax" src="{{ section.settings.image | img_url: 'master' }}">
+      </div>
+    {%- endif -%}
+
+    <div class="collection-featured-content">
+      {%- if section.settings.header_title -%}
+        <div class="section-header">
+          {%- if section.settings.sub_header_title -%}
+            <p>{{ section.settings.sub_header_title }}</p>
+          {%- endif -%}
+
+          <h2>{{ section.settings.header_title }}</h2>
+        </div>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="collection-featured-rows">
+          {%- for block in section.blocks -%}
+          <div class="collection-featured-row">
+            <a id="js-a-text" style="cursor: pointer; position: relative; z-index: 2;" href="{{ block.settings.button_link }}">{{ block.settings.title }}</a>
+            <div style="position: relative; display: none; z-index: 1;">
+              <img src="{{ block.settings.hover_image | img_url: 'master' }}" style="width: 207px; height: 270px; position: absolute; left: 400px; top: -135px;">
+            </div>
+          </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% javascript %}
+$("a#js-a-text").hover(
+  function() {
+    $(this).next().show();
+  }, function() {
+    $(this).next().hide();
+  }
+);
+{% endjavascript %}
+
+{% schema %}
+  {
+    "name": "Collection Grid",
+    "settings": [
+	  {
+        "type":"image_picker",
+        "id":"image",
+        "label":"Image"
+      },
+	  {
+         "type":"text",
+         "id":"header_title",
+         "label":"Heading"
+      },
+	  {
+         "type":"text",
+         "id":"sub_header_title",
+         "label":"Sub Heading"
+      }
+	],
+	"blocks": [
+      {
+        "type": "text",
+        "name": "Row",
+        "settings": [
+	      {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+		  },
+          {
+            "type":"url",
+            "id":"button_link",
+            "label":"Button Link"
+          },
+          {
+            "type":"image_picker",
+            "id":"hover_image",
+            "label":"Hover Image"
+          }
+        ]
+      }
+    ],
+	"presets":[
+      {
+         "name":"Collection Grid",
+         "category":"Collection"
+      }
+    ]
+  }
+{% endschema %}

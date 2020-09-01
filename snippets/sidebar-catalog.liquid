@@ -1,0 +1,50 @@
+{%- assign no_sidebar_blocks = true -%}
+
+{%- if sb_type == 'blog' -%}
+<div id="sidebar-blog" class="sidebar sidebar-column">
+  {%- if section.blocks.size > 0 -%}
+  {%- for block in section.blocks -%}
+  {%- include 'block-type-snippet' -%}
+  {%- endfor -%}
+  {%- if no_sidebar_blocks -%}
+  <p>{{ 'homepage.onboarding.no_content' | t }}</p>
+  {%- endif -%}
+  {%- else -%}
+  <p>{{ 'homepage.onboarding.no_content' | t }}</p>
+  {%- endif -%}
+</div>
+{%- capture sidebar_css -%}
+{{- -}}.sb-title,.filter-block-title{color: {{section.settings.heading_sb_color | default: 'rgba(0,0,0,0)'}};font-weight: {{section.settings.heading_sb_fw | default: 400}};}
+{%- endcapture -%}
+{%- assign section_css = section_css | append: sidebar_css -%}
+
+{%- else -%}
+  <div id="sidebar" class="sidebar-column sb-type-{{section.settings.sidebar_filter_style}} {{ _sb_class }}">
+    <h3 class="sidebar-title">Filter by</h3>
+    
+    {%- if section.blocks.size > 0 -%}
+
+      {%- if section.settings.sb_filters == 'tags' and _filter_pos == 'sidebar_filter' -%}
+        <div class="sb-widget d-none d-lg-block" data-filter="{{_filters_style}}" data-prefix="tag">
+          {%- include 'filter-tag' -%}
+        </div>
+      {%- endif -%}
+
+      {%- for block in section.blocks -%}
+        {%- include 'block-type-snippet' -%}
+      {%- endfor -%}
+      {%- if no_sidebar_blocks -%}
+        <p>{{ 'homepage.onboarding.no_content' | t }}</p>
+      {%- endif -%}
+
+      {%- if _filter_pos == 'sidebar_filter' -%}
+        <div class="filter-component {{_filter_pos | replace: '_','-'}} {{ _filters_style }} hide"{{ block.shopify_attributes }}>
+          <h3 class="sidebar-title-mobile">Filter by</h3>
+          <div class="f-close{% if _filters_style != 'drawer' %} d-lg-none {% endif %}">{%- include 'icons', type: 'icon_free', name: 'icon-uniE90A' -%}</div>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <p>{{ 'homepage.onboarding.no_content' | t }}</p>
+    {%- endif -%}
+  </div>
+{%- endif -%}

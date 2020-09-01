@@ -1,0 +1,101 @@
+{%- if _type == 'carousel' -%}
+	{%- if block_type == 'block' -%}
+				{%- assign _s = block -%}
+	{%- else -%}{%- assign _s = section -%}{%- endif -%}
+
+	{%- assign owl_items = owl_items | default: _s.settings.items_resp -%}
+
+	{%- unless owl_items == blank -%}
+
+		{%- assign n_item_resp = owl_items | split: ',' -%}
+
+		{%- case n_item_resp.size -%}
+			{%- when 1 -%}
+				{%- assign owl_xs = n_item_resp[0] -%}
+			{%- when 2 -%}
+				{%- assign owl_md = n_item_resp[0] -%}
+				{%- assign owl_xs = n_item_resp[1] -%}
+
+			{%- when 3 -%}
+				{%- assign owl_lg = n_item_resp[0] -%}
+				{%- assign owl_md = n_item_resp[1] -%}
+				{%- assign owl_xs = n_item_resp[2] -%}
+
+			{%- when 4 -%}
+				{%- assign owl_lg = n_item_resp[0] -%}
+				{%- assign owl_md = n_item_resp[1] -%}
+				{%- assign owl_sm = n_item_resp[2] -%}
+				{%- assign owl_xs = n_item_resp[3] -%}
+
+			{%- when 5 -%}
+				{%- assign owl_xl = n_item_resp[0] -%}
+				{%- assign owl_lg = n_item_resp[1] -%}
+				{%- assign owl_md = n_item_resp[2] -%}
+				{%- assign owl_sm = n_item_resp[3] -%}
+				{%- assign owl_xs = n_item_resp[4] -%}
+
+			{%- else -%}
+				{%- assign owl_xl  = n_item_resp[0] -%}
+				{%- assign owl_lg  = n_item_resp[1] -%}
+				{%- assign owl_md  = n_item_resp[2] -%}
+				{%- assign owl_sm  = n_item_resp[3] -%}
+				{%- assign owl_xxs = n_item_resp[4] -%}
+				{%- assign owl_xs  = n_item_resp[5] -%}
+		{%- endcase -%}
+	{%- endunless -%}
+
+	{%- assign owl_navs  		= _s.settings.nav -%}
+	{%- assign owl_dots  		= _s.settings.dot -%}
+	{%- assign owl_loop  		= _s.settings.loop -%}
+	{%- assign owl_center 		= _s.settings.center -%}
+	{%- assign owl_auto  		= _s.settings.autoplay -%}
+	{%- assign owl_thumbs 		= _s.settings.thumbs -%}
+	{%- assign owl_effect_in 	= _s.settings.carousel_in -%}
+	{%- assign owl_effect_out 	= _s.settings.carousel_out -%}
+	{%- assign owl_duration 	= _s.settings.owl_duration | times: 1000 -%}
+	{%- assign owl_padding 		= owl_padding | default: _s.settings.padding_item -%}
+
+	{%- if owl_duration > 0 -%}{%- assign owl_auto = true -%}{%- endif -%}
+	{%- if owl_padding -%}
+		{%- assign owl_spacing = settings.owl_spc_items | split: ',' -%}
+		{%- case owl_spacing.size -%}
+		  {%- when 1 -%}
+			{%- assign owl_padding_lg = owl_spacing[0] -%}
+			{%- assign owl_padding_md = owl_spacing[0] -%}
+			{%- assign owl_padding_xs = owl_spacing[0] -%}
+		  {%- when 2 -%}
+			{%- assign owl_padding_lg = owl_spacing[0] -%}
+			{%- assign owl_padding_md = owl_spacing[0] -%}
+			{%- assign owl_padding_xs = owl_spacing[1] -%}
+		  {%- else -%}
+			{%- assign owl_padding_lg = owl_spacing[0] -%}
+		  	{%- assign owl_padding_md = owl_spacing[1] -%}
+		  	{%- assign owl_padding_xs = owl_spacing[2] -%}
+		{%- endcase -%}
+
+	{%- endif -%}
+
+ 	data-slider-id="{{ owl_id | default: _s.id}}"
+	{%- if owl_xl -%}data-owl-xl="{{-  owl_xl   | strip -}}"{%- endif -%}
+	{%- if owl_lg -%}data-owl-lg="{{-  owl_lg   | strip -}}"{%- endif -%}
+	{%- if owl_md -%}data-owl-md="{{-  owl_md   | strip -}}"{%- endif -%}
+	{%- if owl_sm -%}data-owl-sm="{{-  owl_sm   | strip -}}"{%- endif -%}
+	{%- if owl_xs -%}data-owl-xs="{{-  owl_xs   | strip -}}"{%- endif -%}
+	{%- if owl_xxs-%}data-owl-xxs="{{- owl_xxs  | strip -}}"{%- endif -%}
+	{%- if owl_navs  		-%} data-nav="{{-		 	owl_navs		| strip	-}}"{%- endif -%}
+	{%- if owl_dots  		-%} data-dot="{{-		 	owl_dots		| strip	-}}"{%- endif -%}
+	{%- if owl_loop  		-%} data-loop="{{-		 	owl_loop		| strip	-}}"{%- endif -%}
+	{%- if owl_center  		-%} data-center="{{-	 	owl_center		| strip	-}}"{%- endif -%}
+	{%- if owl_thumbs 		-%} data-thumbs="{{- 		owl_thumbs		| strip	-}}"{%- endif -%}
+	{%- if owl_duration > 0 -%} data-duration="{{- 		owl_duration  	| strip	-}}"{%- endif -%}
+	{%- if owl_auto  		-%} data-autoplay="{{-	 	owl_auto		| strip	-}}"{%- endif -%}
+	{%- if owl_effect_in 	-%} data-effect-in="{{-		owl_effect_in	| strip	-}}"{%- endif -%}
+	{%- if owl_effect_out 	-%} data-effect-out="{{- 	owl_effect_out	| strip	-}}"{%- endif -%}
+	{%- if owl_padding 		-%}	data-padding-lg="{{- 	owl_padding_lg  | strip -}}"{{- -}}
+								data-padding-md="{{- 	owl_padding_md  | strip -}}"{{- -}}
+								data-padding-xs="{{- 	owl_padding_xs  | strip -}}"{%- endif -%}
+	
+	{%- assign owl_items 	= nil -%}
+	{%- assign owl_padding 	= nil -%}
+	{%- assign owl_id 		= nil -%}
+{%- endif -%}

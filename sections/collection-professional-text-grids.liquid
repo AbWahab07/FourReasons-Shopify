@@ -1,0 +1,122 @@
+<div class="text-grid-wrapper">
+  <div class="container">
+  	{%- if section.settings.header_title != blank -%}
+      <div class="section-header">
+    	<h2>{{ section.settings.header_title }}</h2>
+      </div>
+    {%- endif -%}
+    
+    <div class="text-grid-container">
+      {%- if section.blocks.size > 0 -%}
+      
+        {%- assign index = 0 -%}
+      
+        <div class="grid-header">
+          {%- for block in section.blocks -%}
+          
+          	{%- assign index = index | plus: 1 -%}
+          
+            {%- if block.settings.title != blank-%}
+              <h2 class="grid-header-title {% if index == 1 %}active{% endif %}" data-slug="{{ index }}">{{ block.settings.title }}</h2>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      
+      	{%- assign index = 0 -%}
+      
+        {%- for block in section.blocks -%}
+      
+          {%- assign index = index | plus: 1 -%}
+      		
+      	  <div class="grid-content grid-content_{{ index }} {% if index == 1 %}active{% endif %}">
+            {%- if block.settings.text != blank -%}
+              <div class="text-wrap">
+                {{ block.settings.text }}
+              </div>
+            {%- endif -%}
+
+            <div class="grid-item-wrapper">
+              <div class="grid-item">
+                {%- if block.settings.title1 != blank -%}
+                  <span><div class="column-indicator"></div>01</span>
+                  <h3>{{ block.settings.title1 }}</h3>
+                {%- endif -%}
+              </div>
+
+              <div class="grid-item">
+                {%- if block.settings.title2 != blank -%}
+                  <span><div class="column-indicator"></div>02</span>
+                  <h3>{{ block.settings.title2 }}</h3>
+                {%- endif -%}
+              </div>
+
+              <div class="grid-item">
+                {%- if block.settings.title3 != blank -%}
+                  <span><div class="column-indicator"></div>03</span>
+                  <h3>{{ block.settings.title3 }}</h3>
+                {%- endif -%}
+              </div>
+
+              <div class="grid-item">
+                {%- if block.settings.title4 != blank -%}
+                  <span><div class="column-indicator"></div>04</span>
+                  <h3>{{ block.settings.title4 }}</h3>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Professional Text Grids",
+    "settings": [
+	  {
+	    "type":"text",
+		"id":"header_title",
+		"label":"Heading"
+	  }
+    ],
+	"blocks":[
+      {
+        "type":"text",
+        "name":"Grid",
+        "settings":[
+		  {
+		    "type":"text",
+		 	"id":"title",
+		 	"label":"Heading"
+	  	  },
+		  {
+            "type":"richtext",
+            "id":"text",
+            "label":"Text"
+          },
+	      {
+		 	"type":"text",
+		 	"id":"title1",
+		 	"label":"Title"
+	  	  },
+          {
+		 	"type":"text",
+		 	"id":"title2",
+		 	"label":"Title"
+	  	  },
+          {
+		 	"type":"text",
+		 	"id":"title3",
+		 	"label":"Title"
+	  	  },
+          {
+		 	"type":"text",
+		 	"id":"title4",
+		 	"label":"Title"
+	  	  }
+		]
+      }
+    ]
+  }
+{% endschema %}

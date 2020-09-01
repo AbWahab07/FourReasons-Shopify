@@ -1,0 +1,162 @@
+{%- assign _bg_color            = section.settings.bg_color -%}
+{%- assign _bg_image            = section.settings.bg_image -%}
+{%- assign _bg_size             = section.settings.bg_size -%}
+{%- assign _bg_repeat           = section.settings.bg_repeat -%}
+{%- assign _bg_position         = section.settings.bg_position -%}
+
+{%- capture bg_lazyload -%}{%- unless _bg_image == blank -%}{{_bg_image | img_url: '1024x'}}{%- endunless -%}{%- endcapture -%}
+
+<div class="text-box position-{{ _text_box_position }} mx-auto{% if _bg_image != blank %} bg-img{% if _lazyload %} lazyload" data-bgset="{{bg_lazyload}} 1024w{% endif %}{% endif %}">
+  {%- for block in section.blocks -%}
+
+    {%- unless block.type == 'image' -%}
+      {%- capture blockID -%}#newsletter_popup .block-{{block.id}}{%- endcapture -%}
+
+      <div class="text-box-content block-{{ block.type }} block-{{block.id}}{% if block.settings.hide_mobile %} d-none d-lg-block{% endif %}"{{ block.shopify_attributes }}>
+
+        {%- case block.type -%}
+
+          {%- when 'text' -%}
+            {%- assign _text    = block.settings.text -%}
+            {%- assign _color   = block.settings.color -%}
+            {%- assign _fs      = block.settings.font_size -%}
+            {%- assign _fw      = block.settings.font_weight -%}
+            {%- assign _tl      = block.settings.text_align | downcase -%}
+
+            {%- unless _text == blank -%}
+              <div class="text fw-{{ _fw}}">{{ _text }}</div>
+              {%- capture block_css -%}{{blockID}} .text{color: {{_color}};}
+                {%- include 'css-responsive', classID: blockID, nextClassID: ' .text', css_value: _fs, css_property: 'font-size' -%}
+                {%- include 'css-responsive', classID: blockID, nextClassID: ' .text', css_value: _tl, css_property: 'text-align' -%}
+              {%- endcapture -%}
+              {%- assign section_css = section_css | append: block_css -%}
+            {%- endunless -%}
+
+          {%- when 'form' -%}
+
+            {%- assign btn_position           = block.settings.button_position -%}
+            {%- assign frm_type               = block.settings.action_type -%}
+            {%- assign frm_action             = block.settings.action -%}
+            {%- assign frm_placeholder        = block.settings.placeholder -%}
+            {%- assign frm_btn_type           = block.settings.form_btn_display -%}
+            {%- assign frm_btn_icon           = block.settings.btn_icon -%}
+            {%- assign frm_btn_label          = block.settings.btn_text -%}
+            {%- assign frm_btn_style          = block.settings.btn_inherit -%}
+            {%- assign disabled_ajax          = block.settings.disabled_ajax | default: false -%}
+
+            {%- assign _frm_border_style      = block.settings.frm_border_style -%}
+            {%- assign _frm_txt_color         = block.settings.frm_txt_color      | default: 'rgba(0,0,0,0)' -%}
+            {%- assign _frm_bg_color          = block.settings.frm_bg_color       | default: 'rgba(0,0,0,0)' -%}
+            {%- assign _frm_border_color      = block.settings.frm_border_color   | default: 'rgba(0,0,0,0)' -%}
+            {%- assign _frm_border_size       = block.settings.frm_border_size -%}
+
+            {%- if disabled_ajax -%}
+              {%- assign klaviyo_ajax = false -%}
+            {%- else -%}
+              {%- if frm_type == 'mailchimp' -%}
+                {%- assign frm_action = frm_action | replace: 'post?u', 'post-json?u' | append: '&c=?' -%}
+              {%- endif -%}              
+              {%- assign klaviyo_ajax = true -%}
+            {%- endif -%}
+
+
+            <div class="box button-position-{{ btn_position }} newsletter-block--form-type" data-form-type="{{frm_type}}" disabled-ajax="{{ disabled_ajax }}">
+              {%- include 'include-form', type: frm_type, is_newsletterPopup: klaviyo_ajax -%}
+            </div>
+            {%- capture block_css -%}
+              {{- blockID }} input[type="email"]::-webkit-input-placeholder{color: {{_frm_txt_color | color_modify: 'alpha', 0.5 }};}
+              {{- blockID }} input[type="email"]{color: {{_frm_txt_color}};background-color: {{_frm_bg_color}};}
+              {{- blockID }} input[type="email"],
+              {{- blockID }} input[type="email"]:focus{
+                {%- if _frm_border_size > 0 -%}border{% if _frm_border_style == 'bottom' %}:none;border-bottom{% endif %}: {{_frm_border_size}}px solid {{_frm_border_color}};
+                {%- else -%}border: none;{%- endif -%}
+              }
+              {%- include 'css-responsive', classID: blockID, nextClassID: ' input[type="email"]', css_value: block.settings.frm_txt_fs    ,css_property: 'font-size' -%}
+              {%- include 'css-responsive', classID: blockID, nextClassID: ' input[type="email"]', css_value: block.settings.frm_border_rd ,css_property: 'border-radius' -%}
+              {%- include 'css-responsive', classID: blockID, nextClassID: ' input[type="email"]', css_value: block.settings.frm_height    ,css_property: 'height' -%}
+
+              {%- if frm_btn_style == 0 -%}
+                {%- assign btn_frm_color        = block.settings.btn_frm_color        | default: 'rgba(0,0,0,0)' -%}
+                {%- assign btn_frm_bg_color     = block.settings.btn_frm_bg_color     | default: 'rgba(0,0,0,0)' -%}
+                {%- assign btn_frm_border_color = block.settings.btn_frm_border_color | default: 'rgba(0,0,0,0)' -%}
+                {%- assign btn_frm_border_size  = block.settings.btn_frm_border_size  | default: 0 -%}
+
+                {{- blockID }} button.btn-0{font-weight: {{block.settings.btn_frm_fw}};
+                  {%- if btn_frm_color    != 'rgba(0,0,0,0)' -%}color: {{btn_frm_color}};{%- endif -%}
+                  {%- if btn_frm_bg_color != 'rgba(0,0,0,0)' -%}background-color: {{btn_frm_bg_color}};{%- endif -%}
+                  {%- if btn_frm_border_color != 'rgba(0,0,0,0)' and btn_frm_border_size > 0 -%}border: {{btn_frm_border_size}}px solid {{btn_frm_border_color}}{%- endif -%}
+                }
+                {%- include 'css-responsive', classID: blockID, nextClassID: ' button.btn-0', css_value: block.settings.btn_frm_padding -%}
+                {%- include 'css-responsive', classID: blockID, nextClassID: ' button.btn-0', css_value: block.settings.btn_frm_radius   ,css_property: 'border-radius' -%}
+                {%- include 'css-responsive', classID: blockID, nextClassID: ' button.btn-0', css_value: block.settings.btn_frm_fs       ,css_property: 'font-size' -%}
+                {%- include 'css-responsive', classID: blockID, nextClassID: ' button.btn-0', css_value: block.settings.btn_frm_lsp      ,css_property: 'letter-spacing' -%}
+              {%- endif -%}
+
+            {%- endcapture -%}
+            {%- assign section_css = section_css | append: block_css -%}
+
+          {%- when 'countdown' -%}
+            {%- assign _expire     = block.settings.expire -%}
+            {%- assign _background = block.settings.bg_color -%}
+            {%- assign _color      = block.settings.color -%}
+            {%- assign _text       = block.settings.text -%}
+
+            {%- unless _expire == blank -%}
+              <div class="box-countdown box-{{block.id}}">
+                <div class="block-countdown countdown-content">
+                  {%- unless _text == blank -%}<div class="offer-text">{{ _text }}</div>{% endunless %}
+                  {%- include 'include-countdown', countdown: _expire -%}
+                </div>
+              </div>
+
+              {%- capture block_css -%}
+                {{- blockID }} .countdown-content{color:{{_color}};}
+                {{- blockID }} .box-countdown{background-color:{{ _background }};}
+              {%- endcapture -%}
+              {%- assign section_css = section_css | append: block_css -%}
+            {%- endunless -%}
+
+          {%- when 'block_image' -%}
+            <div class="newsletter-block-image text-center">
+              {%- capture block_image_class -%}w-{{block.settings.image_wide_mode}}{%- endcapture -%}
+              {%- include 'image-style' ,image: block.settings.image ,image_class: block_image_class ,lazy_class: 'no-lazy' ,set_padding: 0 -%}
+            </div>
+
+          {%- when 'coupon' -%}
+            {%- assign _image      = block.settings.image -%}
+
+            <div class="coupon-placeholder">
+              {%- unless _image == blank -%}
+                <div class="coupon-image">
+                  {%- include 'image-style' with image: _image, image_size: _image_size  -%}
+                </div>
+              {%- endunless -%}
+            </div>
+
+          {%- when 'social' -%}
+            {%- assign _border_top = block.settings.border_top -%}
+            <div class="widget-social border-top-{{ _border_top }}">
+              {%- include 'social-media-icons' -%}
+            </div>
+
+            {%- capture block_css -%}{{- blockID }} a{color: {{block.settings.color | default: 'rgba(0,0,0,0)' }};}{%- endcapture -%}
+            {%- assign section_css = section_css | append: block_css -%}
+
+          {%- else -%}
+
+        {%- endcase -%}
+
+      </div>
+    {%- endunless -%}
+
+  {%- endfor -%}
+</div>
+
+{%- capture texbox_css -%}
+  #newsletter_popup .np-close:before{color: {{_close_color}};background-color: {{_close_bg_color}};}
+  #newsletter_popup .text-box, #newsletter_popup .subscribe-result{background-color: {{ _bg_color }};}
+  {%- include 'css-responsive', classID: '#newsletter-popup .newsletter-popup-content .text-box',css_value: section.settings.width ,css_property: 'width' -%}
+  {%- include 'css-responsive', classID: '#newsletter-popup .newsletter-popup-content .text-box',css_value: section.settings.width ,css_property: 'max-width' -%}
+  #newsletter_popup .text-box.bg-img, #newsletter_popup .subscribe-result.bg-img{background-size:{{_bg_size}};background-repeat:{{_bg_repeat}};background-position:{{_bg_position}};{%- unless _lazyload -%}background-image:url({{ bg_lazyload }};{%- endunless -%}}
+{%- endcapture -%}
+{%- assign section_css = section_css | append: texbox_css -%}

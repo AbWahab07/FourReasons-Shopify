@@ -1,0 +1,792 @@
+{%- if slideshow_v2 -%}
+  {%- assign _sb_image = block.settings.image -%}
+  {%- assign _sb_image_link         = block.settings.image_link | default: 'javascript:void(0);' -%}
+  {%- assign _sb_tit                = block.settings.banner_title -%}
+  {%- assign _sb_sub                = block.settings.banner_subtitle -%}
+  {%- assign _sb_btn                = block.settings.button_text -%}
+  {%- assign _sb_btn                = block.settings.button_text -%}
+  {%- capture _sb_content_size -%}{{_sb_tit}}{{_sb_sub}}{{_sb_btn}}{%- endcapture -%}
+  {%- capture block_ID -%}{{sectionID}} .ss-banner-item.block-{{block.id}}{%- endcapture -%}
+  {%- capture block_css -%}
+    {%- include 'css-responsive', classID: block_ID ,css_property: 'grid-column' ,css_value: block.settings.col_wide ,css_value_before: 'span ' -%}
+  {%- endcapture -%}
+  {%- assign slideshow_style = slideshow_style | append: block_css -%}
+
+  <div class="ss-banner-item block-{{block.id}}"{{block.shopify_attributes}}>
+    <div class="ss-banner-inner block-{{block.id}}">
+      <div class="image">
+        <a href="{{_sb_image_link}}">{%- include 'image-style', image: _sb_image -%}</a>
+      </div>
+      {%- unless _sb_content_size.size == 0 -%}
+        {%- assign _sb_align              = block.settings.align -%}
+        {%- assign _sb_banner_tit_color   = block.settings.banner_title_color -%}
+        {%- assign _sb_banner_sub_color   = block.settings.banner_subtitle_color -%}
+        {%- assign _sb_banner_tit_size    = block.settings.banner_title_size -%}
+        {%- assign _sb_banner_sub_size    = block.settings.banner_subtitle_size -%}
+        {%- assign _sb_margin_bt          = block.settings.margin_bt -%}
+        {%- assign _sb_banner_tit_bold    = block.settings.banner_title_bold -%}
+        {%- assign _sb_banner_sub_bold    = block.settings.banner_subtit_bold -%}
+        {%- assign _sb_banner_tit_lsp     = block.settings.banner_title_lsp -%}
+        {%- assign _sb_banner_sub_lsp     = block.settings.banner_subtitle_lsp -%}
+
+        <div class="ss-banner-content text-{{_sb_align}}">
+          {%- unless _sb_tit == blank -%}<div class="ss-banner-title">{{_sb_tit}}</div>{%- endunless -%}
+          {%- unless _sb_sub == blank -%}<div class="ss-banner-subtitle">{{_sb_sub}}</div>{%- endunless -%}
+
+          {%- unless _sb_btn == blank -%}
+            {%- assign _sb_btn_link     = block.settings.button_link | default: 'javascript:void(0);' -%}
+            {%- assign _sb_btn_inherit  = block.settings.button_inherit -%}
+
+            <div class="ss-banner-button">
+              <a href="{{_sb_btn_link}}" class="btn btn-{{_sb_btn_inherit}}">{{_sb_btn}}</a>
+            </div>
+          {%- endunless -%}
+
+          {%- if block.settings.content_style == 'custom' -%}
+            {%- capture sb_banner_id -%}.section-show-{{section.id}} .ss-banner-inner.block-{{block.id}}{%- endcapture -%}
+            {%- capture sb_banner_styles -%}
+
+              {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-content', css_value: block.settings.content_position, type: 'position' -%}
+              {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-content', css_value: block.settings.content_padding -%}
+
+              {%- unless _sb_tit == blank -%}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-title' ,css_value: _sb_banner_tit_size                        ,css_property: 'font-size' -%}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-title' ,css_value: block.settings.margin_tit                  ,css_property: 'margin' -%}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-title' ,css_value: _sb_banner_tit_lsp                         ,css_property: 'letter-spacing' -%}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-title' ,css_value: block.settings.banner_title_lh             ,css_property: 'line-height' -%}
+                {{- sb_banner_id}} .ss-banner-title{font-weight: {{_sb_banner_tit_bold}};color: {{_sb_banner_tit_color}};}
+              {%- endunless -%}
+
+              {%- unless _sb_sub == blank -%}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-subtitle' ,css_value: _sb_banner_sub_size                       ,css_property: 'font-size' -%}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-subtitle' ,css_value: block.settings.margin_sub                 ,css_property: 'margin' -%}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-subtitle' ,css_value: _sb_banner_sub_lsp                        ,css_property: 'letter-spacing' -%}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-subtitle' ,css_value: block.settings.banner_subtitle_lh         ,css_property: 'line-height' -%}
+                {{- sb_banner_id}} .ss-banner-subtitle{font-weight: {{_sb_banner_sub_bold}};color: {{_sb_banner_sub_color}};}
+              {%- endunless -%}
+
+              {%- if _sb_btn != blank and _sb_btn_inherit == 0 -%}
+                {%- assign _sb_btn_padding       = block.settings.button_padding -%}
+                {%- assign _sb_btn_radius        = block.settings.button_radius -%}
+                {%- assign _sb_btn_fsize         = block.settings.button_font_size -%}
+                {%- assign _sb_btn_lsp           = block.settings.button_lsp -%}
+                {%- assign _sb_btn_bold          = block.settings.button_weight -%}
+                {%- assign _sb_btn_color         = block.settings.button_text_color | default: 'rgba(0,0,0,0)' -%}
+                {%- assign _sb_btn_bg_color      = block.settings.button_text_bg_color | default: 'rgba(0,0,0,0)' -%}
+
+                {{- sb_banner_id}} .ss-banner-button > a{font-weight:{{_sb_btn_bold}};color: {{_sb_btn_color}};background-color: {{_sb_btn_bg_color}}}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-button > a',css_value: _sb_btn_padding -%}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-button > a',css_value: _sb_btn_fsize,  css_property: 'font-size' -%}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-button > a',css_value: _sb_btn_lsp,    css_property: 'letter-spacing' -%}
+                {%- include 'css-responsive', classID: sb_banner_id, nextClassID: ' .ss-banner-button > a',css_value: _sb_btn_radius, css_property: 'border-radius' -%}
+              {%- endif -%}
+            {%- endcapture -%}
+
+            {%- assign banner_styles = banner_styles | append: sb_banner_styles -%}
+          {%- endif -%}
+        </div>
+      {%- endunless -%}
+    </div>
+  </div>
+{%- else -%}
+
+  {%- capture blockID -%}.block-type-{{block.type}} .block-{{block.id}}{%- endcapture -%}
+
+  {%- case btype -%}
+
+    {%- comment -%}
+      ***
+      * LAYER IMAGE
+      *
+    {%- endcomment-%}
+    {%- when 'layer_image' -%}
+      <div class="image">
+        {%- unless block.settings.disable_lazyload -%}
+          {% include 'image-style', image: block.settings.image ,image_width: '[1024, 1920]' %}
+        {%- else -%}
+          {%- assign image = block.settings.image -%}
+          <span class="image--style" style="position:relative;padding-top:{% unless image == blank %}{{ 1 | divided_by: image.aspect_ratio | times: 100}}%{% else %}100%{% endunless %}">
+            <img class="img-lazy {{ image_class }}" src="{{ image | img_url: 'master' }}"/>
+          </span>
+        {%- endunless -%}
+      </div>
+
+      {%- unless block.settings.image == blank -%}
+        {%- capture layerImageID -%}{{sectionID}} .swiper-slide-active {{blockID}} .image{%- endcapture -%}
+        {%- assign layer_img_animation  = block.settings.img_animation -%}
+        {%- assign layer_img_delay      = block.settings.img_delay | append: 's' -%}
+        {%- assign layer_img_duration   = block.settings.img_duration | append: 's' -%}
+
+        {%- unless block.settings.animation_name == blank -%}
+          {%- assign layer_img_animation = block.settings.animation_name -%}
+        {%- endunless -%}
+
+        {%- capture layer_image_style -%}
+          animation-name: {{ layer_img_animation }};
+          animation-delay: {{ layer_img_delay }};
+          animation-duration: {{layer_img_duration}};
+          -webkit-animation-name: {{layer_img_animation }};
+          -webkit-animation-delay: {{ layer_img_delay }};
+          -webkit-animation-duration: {{layer_img_duration}};
+          {%- if block.settings.anim_infinite -%}
+            animation-iteration-count: infinite;
+          {%- endif -%}
+        {%- endcapture -%}
+
+        {%- capture layerimageStyle -%}{%- include 'css-responsive', classID: layerImageID, css_values: layer_image_style -%}{%- endcapture -%}
+        {%- assign slideshow_style = slideshow_style | append: layerimageStyle -%}
+      {%- endunless -%}
+
+    {%- comment -%}
+      ***
+      *  LAYER TEXT
+      *
+    {%- endcomment-%}
+    {%- when 'layer_text'   -%}
+
+      {%- assign b_title              = block.settings.text_title -%}
+      {%- assign b_subtitle           = block.settings.text_subtitle -%}
+      {%- assign b_alignment          = block.settings.alignment | remove: 'text-' -%}
+      {%- assign b_tit_color          = block.settings.title_color | default: 'rbga(0,0,0,0' -%}
+      {%- assign b_sub_color          = block.settings.subtitle_color | default: 'rbga(0,0,0,0' -%}
+      {%- assign b_tit_animation      = block.settings.title_animation -%}
+      {%- assign b_sub_animation      = block.settings.subtitle_animation -%}
+      {%- assign b_tit_duration       = block.settings.title_duration     | append: 's' -%}
+      {%- assign b_sub_duration       = block.settings.subtitle_duration  | append: 's' -%}
+      {%- assign b_tit_delay          = block.settings.title_delay        | append: 's' -%}
+      {%- assign b_subt_delay         = block.settings.subtitle_delay     | append: 's' -%}
+      {%- assign b_tit_bold           = block.settings.tit_bold -%}
+      {%- assign b_sub_bold           = block.settings.sub_bold -%}
+      {%- assign b_tit_size           = block.settings.title_font_size -%}
+      {%- assign b_sub_size           = block.settings.subtitle_font_size -%}
+      {%- assign b_tit_mb             = block.settings.tit_mb -%}
+      {%- assign b_sub_mb             = block.settings.sub_mb -%}
+      {%- assign b_tit_lsp            = block.settings.tit_lsp -%}
+      {%- assign b_sub_lsp            = block.settings.sub_lsp -%}
+      {%- assign b_tit_lh             = block.settings.tit_lh -%}
+      {%- assign b_sub_lh             = block.settings.sub_lh -%}
+      {%- assign b_padding            = block.settings.padding -%}
+      {%- assign b_bg_color           = block.settings.background_color | default: 'rgba(0,0,0,0)' -%}
+      {%- assign b_tit_opacity        = block.settings.title_opacity        | times: 0.01 -%}
+      {%- assign b_sub_opacity        = block.settings.subtitle_opacity     | times: 0.01 -%}
+      {%- assign b_bg_opacity         = block.settings.background_opacity   | times: 0.01 -%}
+
+
+      {%- if b_tit_opacity < 1 and b_tit_color != 'rgba(0,0,0,0)' -%}
+        {%- assign b_tit_color = b_tit_color | color_modify: 'alpha', b_tit_opacity -%}
+      {%- endif -%}
+
+      {%- if b_sub_opacity < 1 and b_sub_color != 'rgba(0,0,0,0)' -%}
+        {%- assign b_sub_color = b_sub_color | color_modify: 'alpha', b_sub_opacity -%}
+      {%- endif -%}
+
+      {%- unless b_bg_color == 'rgba(0,0,0,0)' -%}
+        {%- assign b_background_color = b_bg_color | color_modify: 'alpha', b_bg_opacity -%}
+      {%- else -%}
+        {%- assign b_background_color = b_bg_color -%}
+      {%- endunless -%}
+
+      {%- capture layerTextID -%}{{sectionID}} .swiper-slide-active {{blockID}} .content-box{%- endcapture -%}
+
+      {%- capture b_tit_style -%}
+        color: {{b_tit_color}};
+        font-weight: {{b_tit_bold}};
+        animation-name: {{ b_tit_animation }};
+        animation-delay: {{ b_tit_delay }};
+        animation-duration: {{b_tit_duration}};
+        -webkit-animation-name: {{b_tit_animation }};
+        -webkit-animation-delay: {{ b_tit_delay }};
+        -webkit-animation-duration: {{b_tit_duration}};
+      {%- endcapture -%}
+
+      {%- capture b_sub_style -%}
+        color: {{b_sub_color}};
+        font-weight: {{b_sub_bold}};
+        animation-name: {{ b_sub_animation }};
+        animation-delay: {{ b_sub_delay }};
+        animation-duration: {{b_sub_duration}};
+        -webkit-animation-name: {{b_sub_animation }};
+        -webkit-animation-delay: {{ b_sub_delay }};
+        -webkit-animation-duration: {{b_sub_duration}};
+      {%- endcapture -%}
+
+      <div class="container-box content-box">
+        {%- unless b_title    == blank -%}<div class="b_tit{% if block.settings.title_up %} text-uppercase{% endif %}">{{b_title}}</div>{%- endunless -%}
+        {%- unless b_subtitle == blank -%}<div class="b_sub{% if block.settings.subtitle_up %} text-uppercase{% endif %}">{{b_subtitle}}</div>{%- endunless -%}
+
+        {%- capture layerMultiCSS -%}
+          background-color: {{b_background_color}};
+          {%- if block.settings.layer_duration > 0 -%}
+            animation-name: {{              block.settings.layer_animation}};
+            animation-duration: {{          block.settings.layer_duration}}s;
+            animation-delay: {{             block.settings.layer_delay}}s;
+            -webkit-animation-name: {{      block.settings.layer_animation}};
+            -webkit-animation-duration: {{  block.settings.layer_duration}}s;
+            -webkit-animation-delay: {{     block.settings.layer_delay}}s;
+            -webkit-animation-fill-mode: backwards;
+            -moz-animation-fill-mode: backwards;
+            -ms-animation-fill-mode: backwards;
+            -o-animation-fill-mode: backwards;
+            animation-fill-mode: backwards;
+            -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+            {%- unless block.settings.text_rotate == blank -%}
+              display: flex;
+              flex-flow: column;
+              align-items: center;
+              justify-content: center;
+            {%- endunless -%}
+          {%- endif -%}
+        {%- endcapture -%}
+
+        {%- capture layerTextStyle -%}
+          {%- include 'css-responsive', classID: layerTextID, css_value: b_padding -%}
+          {%- include 'css-responsive', classID: layerTextID, css_value: b_alignment ,css_property: 'text-align' -%}
+          {%- include 'css-responsive', classID: layerTextID, css_values: layerMultiCSS -%}
+          {%- include 'css-responsive', classID: layerTextID, nextClassID: ' > div' css_value: block.settings.text_rotate , css_property: 'transform' ,css_value_proper: 'rotate' -%}
+          {%- unless block.settings.text_rotate == blank -%}
+          {%- include 'css-responsive', classID: layerTextID, nextClassID: ' > div' css_value: 'nowrap' , css_property: 'white-space'-%}
+          {%- endunless -%}
+
+          {%- unless b_title == blank -%}
+            {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .b_tit', css_values: b_tit_style -%}
+            {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .b_tit', css_value: b_tit_size ,css_property: 'font-size' -%}
+            {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .b_tit', css_value: b_tit_mb   ,css_property: 'margin-bottom' -%}
+            {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .b_tit', css_value: b_tit_lsp  ,css_property: 'letter-spacing' -%}
+            {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .b_tit', css_value: b_tit_lh   ,css_property: 'line-height' -%}
+          {%- endunless -%}
+
+          {%- unless b_subtitle == blank -%}
+            {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .b_sub', css_values: b_sub_style -%}
+            {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .b_sub', css_value: b_sub_size ,css_property: 'font-size' -%}
+            {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .b_sub', css_value: b_sub_mb   ,css_property: 'margin-bottom' -%}
+            {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .b_sub', css_value: b_sub_lsp  ,css_property: 'letter-spacing' -%}
+            {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .b_sub', css_value: b_sub_lh   ,css_property: 'line-height' -%}
+          {%- endunless -%}
+        {%- endcapture -%}
+        {%- assign slideshow_style = slideshow_style | append: layerTextStyle -%}
+
+        {%- for i in (1..2) -%}
+          {%- assign tempo_text = 'text_' | append: i -%}
+
+          {%- unless block.settings[tempo_text] == blank -%}
+            {%- capture textID -%}{{layerTextID}} .text-{{i}}{%- endcapture -%}
+            {%- assign tempo_text_fw         = 'text_fw_'           | append: i -%}
+            {%- assign tempo_text_color      = 'text_color_'        | append: i -%}
+            {%- assign tempo_text_animation  = 'text_animation_'    | append: i -%}
+            {%- assign tempo_text_duration   = 'text_duration_'     | append: i -%}
+            {%- assign tempo_text_delay      = 'text_delay_'        | append: i -%}
+            {%- assign tempo_text_fs         = 'text_fs_'           | append: i -%}
+            {%- assign tempo_text_mb         = 'text_mb_'           | append: i -%}
+            {%- assign tempo_text_lsp        = 'text_lsp_'          | append: i -%}
+            {%- assign tempo_text_lh         = 'text_lh_'           | append: i -%}
+            {%- assign tempo_text_opa        = 'text_opacity_'      | append: i -%}
+
+            {%- assign slide_txt_color      = block.settings[tempo_text_color] | default: 'rgba(0,0,0,0)' -%}
+            {%- assign slide_txt_color_opa  = block.settings[tempo_text_opa] | times: 0.01 -%}
+            {%- assign slide_txt_animation  = block.settings[tempo_text_animation] -%}
+            {%- assign slide_txt_delay      = block.settings[tempo_text_delay] | append: 's' -%}
+            {%- assign slide_txt_duration   = block.settings[tempo_text_duration] | append: 's' -%}
+
+
+            {%- if slide_txt_color_opa < 1 and slide_txt_color != 'rgba(0,0,0,0)' -%}
+              {%- assign slide_txt_color = block.settings[tempo_text_color] | color_modify: 'alpha', slide_txt_color_opa -%}
+            {%- endif -%}
+
+            <div class="text-{{i}} fw-{{block.settings[tempo_text_fw]}}">{{block.settings[tempo_text]}}</div>
+
+            {%- capture text_single_css -%}
+              /*  TEXT {{textID}}*/
+              color:{{slide_txt_color}};
+              animation-name:{{slide_txt_animation}};
+              animation-delay:{{slide_txt_delay}};
+              animation-duration:{{slide_txt_duration}};
+              -webkit-animation-name:{{slide_txt_animation}};
+              -webkit-animation-delay:{{slide_txt_delay}};
+              -webkit-animation-duration:{{slide_txt_duration}};
+            {%- endcapture -%}
+
+            {%- capture layer_sub_text -%}
+              {%- include 'css-responsive', classID: textID ,css_values: text_single_css -%}
+              {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_fs]  ,css_property: 'font-size' -%}
+              {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_mb]  ,css_property: 'margin-bottom' -%}
+              {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_lsp] ,css_property: 'letter-spacing' -%}
+              {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_lh]  ,css_property: 'line-height' -%}
+            {%- endcapture -%}
+            {%- assign slideshow_style = slideshow_style | append: layer_sub_text -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+
+    {%- comment -%}
+      ***
+      * LAYER BUTTON
+      *
+    {%- endcomment-%}
+    {%- when 'layer_button' -%}
+
+      {%- assign _button_text       = block.settings.button_text -%}
+      {%- assign _button_link       = block.settings.button_link | default: 'javascript:void(0);' -%}
+      {%- assign _btn_inherit       = block.settings.btn_inherit -%}
+      {%- assign _btn_size          = block.settings.btn_size -%}
+      {%- assign _btn_padding       = block.settings.btn_padding -%}
+      {%- assign _btn_radius        = block.settings.btn_radius -%}
+      {%- assign _btn_lsp           = block.settings.btn_lsp -%}
+      {%- assign _btn_lh            = block.settings.btn_lh -%}
+      {%- assign _btn_color         = block.settings.btn_color -%}
+      {%- assign _btn_background    = block.settings.btn_background -%}
+      {%- assign _btn_bold          = block.settings.btn_bold -%}
+      {%- assign _btn_animation     = block.settings.btn_animation -%}
+      {%- assign _btn_duration      = block.settings.btn_duration | append: 's' -%}
+      {%- assign _btn_delay         = block.settings.btn_delay | append: 's' -%}
+      {%- assign inline_button      = inline_button | default: false -%}
+      {%- assign btn_index          = slide_index | plus: forloop.index -%}
+      {%- assign _alignment         = block.settings.alignment | replace: 'text-', '' -%}
+
+      <div class="container-box{% if section.blocks[btn_index].settings.inline %} d-sm-flex{% endif %}{% if inline_button %} block-{{block.id}}{% endif %}">
+        <div class="button-link">
+          <a class="btn slider-btn btn-{{_btn_inherit}}" href="{{ _button_link }}">{{ _button_text }}</a>
+        </div>
+
+        {%- capture btn_ID -%}{{sectionID}} .swiper-slide-active .block-type-{{block.type}} .block-{{block.id}} .slider-btn{%- endcapture -%}
+        {%- capture btn_styles -%}
+            {%- if _btn_inherit == 0 -%}
+            font-weight: {{_btn_bold}};
+            color: {{_btn_color}};
+            background-color: {{_btn_background}};
+            {%- endif -%}
+            white-space: nowrap;
+            animation-name:{{ _btn_animation  }};
+            animation-delay:{{ _btn_delay  }};
+            animation-duration:{{ _btn_duration  }};
+            -webkit-animation-name:{{ _btn_animation  }};
+            -webkit-animation-delay:{{ _btn_delay  }};
+            -webkit-animation-duration:{{ _btn_duration  }};
+        {%- endcapture -%}
+
+        {%- capture layer_btn_css -%}
+          {%- include 'css-responsive', css_values: btn_styles, classID: btn_ID -%}
+          {%- include 'css-responsive', css_value: _alignment, classID: blockID ,nextClassID: ' .container-box' ,css_property: 'text-align' -%}
+          {%- if _btn_inherit == 0 -%}
+            {%- include 'css-responsive', classID: btn_ID, css_value: _btn_padding -%}
+            {%- include 'css-responsive', classID: btn_ID, css_value: _btn_size     , css_property: 'font-size' -%}
+            {%- include 'css-responsive', classID: btn_ID, css_value: _btn_radius   , css_property: 'border-radius' -%}
+            {%- include 'css-responsive', classID: btn_ID, css_value: _btn_lsp      , css_property: 'letter-spacing' -%}
+            {%- include 'css-responsive', classID: btn_ID, css_value: _btn_lh       , css_property: 'line-height' -%}
+          {%- endif -%}
+        {%- endcapture -%}
+
+        {%- assign slideshow_style = slideshow_style | append: layer_btn_css -%}
+
+        {%- unless inline_button -%}
+          {%- for block in section.blocks offset: btn_index -%}
+            {%- if block.type == 'layer_button' and block.settings.inline -%}
+              {%- assign first_btn_in_block = true -%}
+                {%- include 'snippet-slideshow', inline_button: true -%}
+            {%- elsif block.type == 'image' -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- capture blockID -%}.block-type-{{block.type}} .block-{{block.id}}{%- endcapture -%}
+        {%- endunless -%}
+      </div>
+
+    {%- comment -%}
+      ***
+      * LAYER TEXT FULL
+      *
+    {%- endcomment-%}
+    {%- when 'layer_text_full' -%}
+
+      {%- assign b_alignment          = block.settings.alignment | replace: 'text-', '' -%}
+      {%- assign b_bg_color           = block.settings.background_color -%}
+      {%- assign b_bg_opacity         = block.settings.background_opacity | times: 0.01 -%}
+
+      {%- unless b_bg_color == 'rgba(0,0,0,0)' -%}
+        {%- assign b_background_color = b_bg_color | color_modify: 'alpha', b_bg_opacity -%}
+      {%- else -%}
+        {%- assign b_background_color = b_bg_color -%}
+      {%- endunless -%}
+
+      {%- capture layerTextID -%}{{sectionID}} .swiper-slide-active {{blockID}} .container-box{%- endcapture -%}
+
+      <div class="container-box content-box">
+        {%- capture layerMultiCSS -%}
+          background-color: {{b_background_color}};
+          {%- if block.settings.layer_duration > 0 -%}
+          animation-name: {{              block.settings.layer_animation}};
+          animation-duration: {{          block.settings.layer_duration}}s;
+          animation-delay: {{             block.settings.layer_delay}}s;
+          -webkit-animation-name: {{      block.settings.layer_animation}};
+          -webkit-animation-duration: {{  block.settings.layer_duration}}s;
+          -webkit-animation-delay: {{     block.settings.layer_delay}}s;
+          -webkit-animation-fill-mode: backwards;
+          -moz-animation-fill-mode: backwards;
+          -ms-animation-fill-mode: backwards;
+          -o-animation-fill-mode: backwards;
+          animation-fill-mode: backwards;
+          -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+        {%- endif -%}
+        {%- endcapture -%}
+
+        {%- capture layerTextStyle -%}
+          {%- include 'css-responsive', classID: layerTextID, css_values: layerMultiCSS -%}
+          {%- include 'css-responsive', classID: layerTextID, css_value: block.settings.padding -%}
+          {%- include 'css-responsive', classID: layerTextID, css_value: b_alignment ,css_property: 'text-align' -%}
+        {%- endcapture -%}
+        {%- assign slideshow_style = slideshow_style | append: layerTextStyle -%}
+
+        {%- for i in (1..4) -%}
+          {%- assign tempo_text = 'text_' | append: i -%}
+
+          {%- unless block.settings[tempo_text] == blank -%}
+            {%- capture textID -%}{{layerTextID}} .text-{{i}}{%- endcapture -%}
+            {%- assign tempo_text_fw         = 'text_fw_'           | append: i -%}
+            {%- assign tempo_text_color      = 'text_color_'        | append: i -%}
+            {%- assign tempo_text_color_opa  = 'text_opacity_'      | append: i -%}
+            {%- assign tempo_text_animation  = 'text_animation_'    | append: i -%}
+            {%- assign tempo_text_duration   = 'text_duration_'     | append: i -%}
+            {%- assign tempo_text_delay      = 'text_delay_'        | append: i -%}
+            {%- assign tempo_text_fs         = 'text_fs_'           | append: i -%}
+            {%- assign tempo_text_mb         = 'text_margin_'       | append: i -%}
+            {%- assign tempo_text_lsp        = 'text_lsp_'          | append: i -%}
+            {%- assign tempo_text_lh         = 'text_lh_'           | append: i -%}
+            {%- assign tempo_text_up         = 'text_up_'           | append: i -%}
+
+            {%- assign slide_txt_color      = block.settings[tempo_text_color] | default: 'rgba(0,0,0,0)' -%}
+            {%- assign slide_txt_color_opa  = block.settings[tempo_text_color_opa] | times: 0.01 -%}
+            {%- assign slide_txt_animation  = block.settings[tempo_text_animation] -%}
+            {%- assign slide_txt_delay      = block.settings[tempo_text_delay] | append: 's' -%}
+            {%- assign slide_txt_duration   = block.settings[tempo_text_duration] | append: 's' -%}
+
+            {%- if slide_txt_color_opa < 1 and slide_txt_color != 'rgba(0,0,0,0)' -%}
+              {%- assign slide_txt_color = block.settings[tempo_text_color] | color_modify: 'alpha', slide_txt_color_opa -%}
+            {%- endif -%}
+
+            <div class="text-{{i}} fw-{{block.settings[tempo_text_fw]}}{% if block.settings[tempo_text_up] %} text-uppercase{% endif %}">
+              {{- block.settings[tempo_text] -}}
+            </div>
+
+            {%- capture text_single_css -%}
+              color:{{slide_txt_color}};
+              {%- if block.settings[tempo_text_duration] > 0 -%}
+                animation-name:{{slide_txt_animation}};
+                animation-delay:{{slide_txt_delay}};
+                animation-duration:{{slide_txt_duration}};
+                -webkit-animation-name:{{slide_txt_animation}};
+                -webkit-animation-delay:{{slide_txt_delay}};
+                -webkit-animation-duration:{{slide_txt_duration}};
+              {%- endif -%}
+            {%- endcapture -%}
+
+            {%- capture layer_text_css -%}
+              {%- include 'css-responsive', classID: textID ,css_values: text_single_css -%}
+              {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_fs]  ,css_property: 'font-size' -%}
+              {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_mb]  ,css_property: 'margin' -%}
+              {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_lsp] ,css_property: 'letter-spacing' -%}
+              {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_lh]  ,css_property: 'line-height' -%}
+            {%- endcapture -%}
+            {%- assign slideshow_style = slideshow_style | append: layer_text_css -%}
+          {%- endunless -%}
+        {%- endfor -%}
+
+        {%- if block.settings.btn_text_1 != blank or block.settings.btn_text_2 != blank -%}
+          <div class="button-group">
+            {%- for i in (1..2) -%}
+              {%- assign _te_btn_text          = 'btn_text_'        | append: i -%}
+
+              {%- unless block.settings[_te_btn_text] == blank -%}
+                {%- capture btn_ID -%}{{layerTextID}} .btn-tt-{{i}}{%- endcapture -%}
+                {%- assign _te_btn_link     = 'btn_link_'             | append: i -%}
+                {%- assign _te_btn_inherit  = 'btn_inherit_'          | append: i -%}
+                {%- assign _te_btn_top      = 'btn_border_top_'      | append: i -%}
+                {%- assign _te_btn_right    = 'btn_border_right_'    | append: i -%}
+                {%- assign _te_btn_bottom   = 'btn_border_bottom_'   | append: i -%}
+                {%- assign _te_btn_left     = 'btn_border_left_'     | append: i -%}
+
+                {%- capture _te_btn_border -%}
+                  {% unless block.settings[_te_btn_top]      %} border-top-0{% endunless -%}
+                  {% unless block.settings[_te_btn_right]    %} border-right-0{% endunless -%}
+                  {% unless block.settings[_te_btn_bottom]   %} border-bottom-0{% endunless -%}
+                  {% unless block.settings[_te_btn_left]     %} border-left-0{% endunless -%}
+                {%- endcapture -%}
+
+                <a href="{{block.settings[_te_btn_link] | default: 'javascript:void(0);' }}" class="btn-tt-{{i}} btn-{{block.settings[_te_btn_inherit]}} btn {{_te_btn_border}}">
+                  <span class="btn-label">{{block.settings[_te_btn_text]}}</span>
+                </a>
+
+                {%- if block.settings[_te_btn_inherit] == 0 -%}
+                  {%- assign tempo_btn_padding       = 'btn_padding_'     | append: i -%}
+                  {%- assign tempo_btn_size          = 'btn_size_'        | append: i -%}
+                  {%- assign tempo_btn_color         = 'btn_color_'       | append: i -%}
+                  {%- assign tempo_btn_background    = 'btn_background_'  | append: i -%}
+                  {%- assign tempo_btn_border        = 'btn_border_'      | append: i -%}
+                  {%- assign tempo_btn_border_size   = 'btn_border_size_' | append: i -%}
+                  {%- assign tempo_btn_fw            = 'btn_bold_'        | append: i -%}
+                  {%- assign _btn_padding            = block.settings[tempo_btn_padding] -%}
+                  {%- assign _btn_size               = block.settings[tempo_btn_size] -%}
+                  {%- assign _btn_color              = block.settings[tempo_btn_color]      | default: 'rgba(0,0,0,0)' -%}
+                  {%- assign _btn_background         = block.settings[tempo_btn_background] | default: 'rgba(0,0,0,0)' -%}
+                  {%- assign _btn_border_size        = block.settings[tempo_btn_border_size] -%}
+                  {%- assign _btn_border             = block.settings[tempo_btn_border]     | default: 'rgba(0,0,0,0)' -%}
+                {%- endif -%}
+
+                {%- assign tempo_btn_margin        = 'btn_margin_'     | append: i -%}
+                {%- assign tempo_btn_radius        = 'btn_radius_'      | append: i -%}
+                {%- assign tempo_btn_lsp           = 'btn_lsp_'         | append: i -%}
+                {%- assign tempo_btn_lh            = 'btn_lh_'          | append: i -%}
+                {%- assign _btn_margin             = block.settings[tempo_btn_margin] -%}
+                {%- assign _btn_radius             = block.settings[tempo_btn_radius] -%}
+                {%- assign _btn_lsp                = block.settings[tempo_btn_lsp] -%}
+                {%- assign _btn_lh                 = block.settings[tempo_btn_lh] -%}
+
+                {%- assign tempo_btn_animation     = 'btn_animation_'   | append: i -%}
+                {%- assign tempo_btn_duration      = 'btn_duration_'    | append: i -%}
+                {%- assign tempo_btn_delay         = 'btn_delay_'       | append: i -%}
+
+                {%- capture btn_animation -%}
+                  {%- if block.settings[tempo_btn_duration] > 0 -%}
+                    white-space: nowrap;
+                    animation-name:{{              block.settings[tempo_btn_animation] }};
+                    animation-delay:{{             block.settings[tempo_btn_delay]     }}s;
+                    animation-duration:{{          block.settings[tempo_btn_duration]  }}s;
+                    -webkit-animation-name:{{      block.settings[tempo_btn_animation] }};
+                    -webkit-animation-delay:{{     block.settings[tempo_btn_delay]     }}s;
+                    -webkit-animation-duration:{{  block.settings[tempo_btn_duration]  }}s;
+                  {%- endif -%}
+                {%- endcapture -%}
+
+                {%- capture layer_btn_css -%}
+                  {%- include 'css-responsive', css_values: btn_animation, classID: btn_ID -%}
+                  {{btn_ID}}{
+                    {%- if block.settings[_te_btn_inherit] == 0 -%}
+                      font-weight: {{block.settings[tempo_btn_fw]}};
+                      {%- unless _btn_color       == 'rgba(0,0,0,0)' -%}color: {{_btn_color}};{%- endunless -%}
+                      {%- unless _btn_background  == 'rgba(0,0,0,0)' -%}background-color: {{_btn_background}};{%- endunless -%}
+                      {%- if _btn_border != 'rgba(0,0,0,0)' and _btn_border_size > 0 -%}border: {{_btn_border_size}}px solid {{_btn_border}};{%- endif -%}
+                      {%- unless _btn_padding == blank or _btn_padding contains ',' -%}padding:{{_btn_padding}};       {%- endunless -%}
+                      {%- unless _btn_size    == blank or _btn_size    contains ',' -%}font-size: {{_btn_size}};       {%- endunless -%}
+                    {%- endif -%}
+                      {%- unless _btn_radius  == blank or _btn_radius  contains ',' -%}border-radius: {{_btn_radius}}; {%- endunless -%}
+                      {%- unless _btn_margin  == blank or _btn_margin  contains ',' -%}margin:{{_btn_margin}};         {%- endunless -%}
+                      {%- unless _btn_lsp     == blank or _btn_lsp     contains ',' -%}letter-spacing: {{_btn_lsp}};   {%- endunless -%}
+                      {%- unless _btn_lh      == blank or _btn_lh      contains ',' -%}line-height: {{_btn_lh}};       {%- endunless -%}
+                    }
+                    {%- if block.settings[_te_btn_inherit] == 0 -%}
+                      {%- if _btn_padding contains ',' -%}{%- include 'css-responsive', classID: btn_ID, css_value: _btn_padding -%}{%- endif -%}
+                      {%- if _btn_size    contains ',' -%}{%- include 'css-responsive', classID: btn_ID, css_value: _btn_size     , css_property: 'font-size' -%}{%- endif -%}
+                    {%- endif -%}
+                      {%- if _btn_radius  contains ',' -%}{%- include 'css-responsive', classID: btn_ID, css_value: _btn_radius   , css_property: 'border-radius' -%}{%- endif -%}
+                      {%- if _btn_lsp     contains ',' -%}{%- include 'css-responsive', classID: btn_ID, css_value: _btn_lsp      , css_property: 'letter-spacing' -%}{%- endif -%}
+                      {%- if _btn_lh      contains ',' -%}{%- include 'css-responsive', classID: btn_ID, css_value: _btn_lh       , css_property: 'line-height' -%}{%- endif -%}
+                      {%- if _btn_margin  contains ',' -%}{%- include 'css-responsive', classID: btn_ID, css_value: _btn_margin   , css_property: 'margin'-%}{%- endif -%}
+                {%- endcapture -%}
+
+                {%- assign slideshow_style = slideshow_style | append: layer_btn_css -%}
+
+              {%- endunless -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+    {%- comment -%}
+      ***
+      * LAYER SHAPE
+      *
+    {%- endcomment-%}
+    {%- when 'layer_shape' -%}
+
+      <div class="block-shape"></div>
+
+      {%- capture shapeID -%}{{sectionID}} .swiper-slide-active {{blockID}} .block-shape{%- endcapture -%}
+      {%- assign layer_animation      = block.settings.layer_animation -%}
+      {%- assign layer_delay          = block.settings.layer_delay | append: 's' -%}
+      {%- assign layer_duration       = block.settings.layer_duration | append: 's' -%}
+      {%- assign layer_color          = block.settings.color | default: 'rgba(0,0,0,0)'-%}
+      {%- assign layer_color_overlay  = block.settings.color_overlay | times: 0.01 -%}
+
+      {%- unless layer_color == 'rgba(0,0,0,0)' -%}
+        {%- assign shape_color = layer_color | color_modify: 'alpha', layer_color_overlay -%}
+      {%- else -%}
+        {%- assign shape_color = layer_color -%}
+      {%- endunless -%}
+      {%- capture layer_css_content -%}
+        background-color: {{shape_color}};
+        {%- if block.settings.layer_duration > 0 -%}
+        animation-name: {{ layer_animation }};
+        animation-delay: {{ layer_delay }};
+        animation-duration: {{layer_duration}};
+        -webkit-animation-name: {{layer_animation }};
+        -webkit-animation-delay: {{ layer_delay }};
+        -webkit-animation-duration: {{layer_duration}};
+        {%- endif -%}
+      {%- endcapture -%}
+
+      {%- capture layer_css -%}
+        {%- include 'css-responsive', classID: shapeID, css_values: layer_css_content -%}
+        {%- include 'css-responsive', classID: shapeID, css_value: block.settings.shape, css_property: '-webkit-clip-path' ,css_value_proper: 'polygon' ,css_split: ';' -%}
+        {%- include 'css-responsive', classID: shapeID, css_value: block.settings.shape, css_property: 'clip-path' ,css_value_proper: 'polygon' ,css_split: ';' -%}
+      {%- endcapture -%}
+      {%- assign slideshow_style = slideshow_style | append: layer_css -%}
+
+    {%- comment -%}
+      ***
+      * LAYER_IMG_WITH_TEXT
+      *
+    {%- endcomment-%}
+    {%- when 'layer_img_with_text' -%}
+      {%- liquid
+        assign b_alignment          = block.settings.alignment | remove: 'text-'
+        assign b_padding            = block.settings.padding
+        assign b_bg_color           = block.settings.background_color | default: 'rgba(0,0,0,0)'
+        assign b_bg_opacity         = block.settings.background_opacity   | times: 0.01
+      -%}
+
+      {%- unless b_bg_color == 'rgba(0,0,0,0)' -%}
+        {%- assign b_background_color = b_bg_color | color_modify: 'alpha', b_bg_opacity -%}
+      {%- else -%}
+        {%- assign b_background_color = b_bg_color -%}
+      {%- endunless -%}
+
+      {%- capture layerTextID -%}{{sectionID}} .swiper-slide-active {{blockID}} .content-box{%- endcapture -%}
+
+      {%- capture layerMultiCSS -%}
+        background-color: {{b_background_color}};
+        {%- if block.settings.layer_duration > 0 -%}
+          animation-name: {{              block.settings.layer_animation}};
+          animation-duration: {{          block.settings.layer_duration}}s;
+          animation-delay: {{             block.settings.layer_delay}}s;
+          -webkit-animation-name: {{      block.settings.layer_animation}};
+          -webkit-animation-duration: {{  block.settings.layer_duration}}s;
+          -webkit-animation-delay: {{     block.settings.layer_delay}}s;
+          -webkit-animation-fill-mode: backwards;
+          -moz-animation-fill-mode: backwards;
+          -ms-animation-fill-mode: backwards;
+          -o-animation-fill-mode: backwards;
+          animation-fill-mode: backwards;
+          -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+          {%- unless block.settings.text_rotate == blank -%}
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+          {%- endunless -%}
+        {%- endif -%}        
+      {%- endcapture -%}
+
+      {%- capture layerTextStyle -%}
+        {%- include 'css-responsive', classID: layerTextID, css_values: layerMultiCSS -%}
+        {%- include 'css-responsive', classID: layerTextID, css_value: b_padding -%}
+        {%- include 'css-responsive', classID: layerTextID, css_value: b_alignment ,css_property: 'text-align' -%}
+        {%- unless block.settings.text_rotate == blank -%}
+          {%- include 'css-responsive', classID: layerTextID, nextClassID: ' > div' css_value: block.settings.text_rotate , css_property: 'transform' ,css_value_proper: 'rotate' -%}
+          {%- include 'css-responsive', classID: layerTextID, nextClassID: ' > div' css_value: 'nowrap' , css_property: 'white-space'-%}
+        {%- endunless -%}        
+        {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .content-box_inner', css_value: block.settings.image_max_w ,css_property: 'grid-template-columns' ,css_value_after: ' 1fr' -%}
+        {%- include 'css-responsive', classID: layerTextID, nextClassID: ' .content-box_inner', css_value: block.settings.spc_with_text ,css_property: 'grid-gap' -%}
+      {%- endcapture -%}
+      {%- assign slideshow_style = slideshow_style | append: layerTextStyle -%}
+
+
+      <div class="container-box content-box">
+        <div class="content-box_inner">
+          <div class="content-box_image">
+            {% include 'image-style', image: block.settings.image %}
+          </div>
+
+          <div class="content-box_text">
+            {%- for i in (1..2) -%}
+              {%- assign tempo_text = 'text_' | append: i -%}
+
+              {%- unless block.settings[tempo_text] == blank -%}
+                {%- capture textID -%}{{layerTextID}} .text-{{i}}{%- endcapture -%}
+                {%- liquid
+                  assign tempo_text_fw         = 'text_fw_'           | append: i
+                  assign tempo_text_color      = 'text_color_'        | append: i
+                  assign tempo_text_animation  = 'text_animation_'    | append: i
+                  assign tempo_text_duration   = 'text_duration_'     | append: i
+                  assign tempo_text_delay      = 'text_delay_'        | append: i
+                  assign tempo_text_fs         = 'text_fs_'           | append: i
+                  assign tempo_text_mb         = 'text_mb_'           | append: i
+                  assign tempo_text_lsp        = 'text_lsp_'          | append: i
+                  assign tempo_text_lh         = 'text_lh_'           | append: i
+                  assign tempo_text_opa        = 'text_opacity_'      | append: i
+
+                  assign slide_txt_color      = block.settings[tempo_text_color] | default: 'rgba(0,0,0,0)'
+                  assign slide_txt_color_opa  = block.settings[tempo_text_opa] | times: 0.01
+                  assign slide_txt_animation  = block.settings[tempo_text_animation]
+                  assign slide_txt_delay      = block.settings[tempo_text_delay] | append: 's'
+                  assign slide_txt_duration   = block.settings[tempo_text_duration] | append: 's'
+                -%}
+
+
+                {%- if slide_txt_color_opa < 1 and slide_txt_color != 'rgba(0,0,0,0)' -%}
+                  {%- assign slide_txt_color = block.settings[tempo_text_color] | color_modify: 'alpha', slide_txt_color_opa -%}
+                {%- endif -%}
+
+                <div class="text-{{i}} fw-{{block.settings[tempo_text_fw]}}">{{block.settings[tempo_text]}}</div>
+
+                {%- capture text_single_css -%}
+                  color:{{slide_txt_color}};
+                  animation-name:{{slide_txt_animation}};
+                  animation-delay:{{slide_txt_delay}};
+                  animation-duration:{{slide_txt_duration}};
+                  -webkit-animation-name:{{slide_txt_animation}};
+                  -webkit-animation-delay:{{slide_txt_delay}};
+                  -webkit-animation-duration:{{slide_txt_duration}};
+                {%- endcapture -%}
+
+                {%- capture layer_sub_text -%}
+                  {%- include 'css-responsive', classID: textID ,css_values: text_single_css -%}
+                  {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_fs]  ,css_property: 'font-size' -%}
+                  {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_mb]  ,css_property: 'margin-bottom' -%}
+                  {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_lsp] ,css_property: 'letter-spacing' -%}
+                  {%- include 'css-responsive', classID: textID ,css_value:  block.settings[tempo_text_lh]  ,css_property: 'line-height' -%}
+                {%- endcapture -%}
+                {%- assign slideshow_style = slideshow_style | append: layer_sub_text -%}
+              {%- endunless -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+
+    {%- comment -%}
+      ***
+      * 
+      *
+    {%- endcomment-%}
+  {%- endcase -%}
+
+  {%- capture block_css -%}
+    {%- unless btype == 'layer_image' -%}
+        {%- assign nextBlockID = ' > div' -%}
+      {%- else -%}
+        {%- assign nextBlockID = '' -%}
+    {%- endunless -%}
+
+    {%- assign layer_width  = block.settings.width -%}
+
+    {%- if block.settings.inline -%}
+      {%- include 'css-responsive', classID: blockID, nextClassID: nextBlockID, css_property: 'padding', css_value: block.settings.position -%}
+    {%- else -%}
+      {%- include 'css-responsive', classID: blockID, nextClassID: nextBlockID, type: 'position', css_value: block.settings.position -%}
+      {%- include 'css-responsive', classID: blockID, nextClassID: nextBlockID, css_values: 'position:absolute;' -%}
+    {%- endif -%}
+
+    {%- if btype == 'layer_image' -%}
+      {%- include 'css-responsive', classID: blockID, css_value: layer_width, css_property: 'width' -%}
+      {%- include 'css-responsive', classID: blockID, css_value: block.settings.height, css_property: 'height' -%}
+      {%- include 'css-responsive', classID: blockID, nextClassID: ' *' ,css_value: block.settings.height, css_property: 'height' -%}
+    {%- else -%}
+      {%- include 'css-responsive', classID: blockID, nextClassID: ' > div', css_value: layer_width             ,css_property: 'width' -%}
+      {%- include 'css-responsive', classID: blockID, nextClassID: ' > div', css_value: block.settings.height   ,css_property: 'height' -%}
+    {%- endif -%}
+
+  {%- endcapture -%}
+
+  {%- assign slideshow_style = slideshow_style | append: block_css -%}
+
+{%- endif -%}

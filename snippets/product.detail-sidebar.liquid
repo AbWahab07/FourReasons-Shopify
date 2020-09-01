@@ -1,0 +1,171 @@
+<div id="product-sidebar" class="product-sidebar {{p_sidebar_class}}" data-small-layout="{{ section.settings.small_type }}">
+	<div class="product-sidebar-inner">
+		{%- for block in section.blocks -%}
+			{%- if block.type contains 'sb_' -%}
+				<div class="product-detail_{{block.type}} sb-block-{{block.id}}">
+					{%- capture blockID -%}.sb-block-{{block.id}}{%- endcapture -%}
+					{%- unless block.settings.heading == blank -%}
+						<div class="sb-heading-container">
+							<div class="sb-heading">
+								<span>{{block.settings.heading}}</span>
+							</div>
+						</div>
+					{%- endunless -%}
+
+					{%- case block.type -%}
+						{%- when 'sb_related' -%}
+							<div class="sb-product-list sb-product-carousel" data-owl-xs="1" data-nav="true">
+								{%- assign _collection_type	= block.settings.collection_type -%}
+								{%- assign _limit 			= block.settings.limited -%}
+
+								{%- case _collection_type -%}
+								  {%- when 'metafield' -%}
+								  	{%- assign _sb_collection 	= collections[_product_metafields.sidebar_related_products] -%}
+								  {%- when 'collection' -%}
+									{%- assign _block_collection = block.settings.collection -%}
+									{%- assign _sb_collection 	 = collections[_block_collection] -%}
+								  {%- else -%}
+									{%- assign _sb_collection 	= product.collections[0] -%}
+								{%- endcase -%}
+
+								{%- unless _sb_collection == blank -%}
+								    {%- assign _itemsColumn = block.settings.number_to_show | divided_by: 1.0 -%}
+								    {%- assign _limit_loop  = _limit | divided_by: _itemsColumn | ceil -%}
+								    {%- assign _limited     = _limit | minus: 1 -%}
+
+								    {%- if _limit_loop > 1 -%}
+								      {%- assign _i = 0 -%}
+								      {%- assign n_itemsColumn = _itemsColumn | round -%}
+								      {%- for i in (1.._limit_loop) -%}
+								        <div class="sb-p-item">
+								          {%- for j in (1..n_itemsColumn) -%}
+								            {%- if _i > _limited -%}{% break %}{%- endif -%}
+								            {%- include 'product-item' ,product:  _sb_collection.products[_i] ,type: 'sb-product-item' -%}
+								            {%- assign _i = _i | plus: 1 -%}
+								          {%- endfor -%}
+								        </div>
+								      {%- endfor -%}
+
+								    {%- else -%}
+								      <div class="sb-p-item">
+								        {%- assign n_itemsColumn = _itemsColumn | minus: 1 -%}
+								        {%- for i in (0..n_itemsColumn) -%}
+								          {%- if i > _limited -%}{% break %}{%- endif -%}
+								          {%- include 'product-item' ,product:  _sb_collection.products[i] ,type: 'sb-product-item' -%}
+								        {%- endfor -%}
+								      </div>
+								    {%- endif -%}
+
+								{%- else -%}
+
+								  {%- for i in (1.._limit) -%}
+								    <div class="product-item py-1">
+								      <div class="d-flex">
+								        <div class="col-4 px-0">
+								          {%- include 'svgset', type: 'product' -%}
+								        </div>
+								        <div class="col-8">
+								          <div class="pc-inner">
+								           <h5 class="product-name">{{ 'homepage.onboarding.product_title' | t }}</h5>
+								           <div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+								         </div>
+								       </div>
+								     </div>
+								    </div>
+								  {%- endfor -%}
+								{%- endunless -%}
+							</div>
+						{%- when 'sb_offer' -%}
+							<div class="sb-product-offer">
+								{%- for i in (1..3) -%}
+									{%- assign t_image 		= 'image_' 	 | append: i -%}
+									{%- assign t_content 	= 'content_' | append: i -%}
+									{%- assign _image 		= block.settings[t_image] -%}
+									{%- assign _content 	= block.settings[t_content] -%}
+
+									{%- unless _image == blank and _content == blank -%}
+										<div class="offer-item">
+											<div class="offer-item-inner">
+												<div class="row align-items-center">
+													<div class="col-3">
+														<div class="text-center mx-auto">
+															<img class="w-auto" src="{{_image | img_url: 'master' }}">
+														</div>
+													</div>
+													<div class="col-9">
+														<div><span>{{_content}}</span></div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+									{%- endunless -%}
+								{%- endfor -%}
+							</div>
+						{%- when 'sb_qrcode' -%}
+							<div class="sb-product-code">
+								{%- assign _description = block.settings.description -%}
+								<div class="sb-product-code-inner">
+									<div class="qr-code-content"><span>{{_description}}</span></div>
+									<div class="qr-code-image">
+										{%- assign _qr_image = _product_metafields.qr_code -%}
+										{%- unless _qr_image == blank -%}
+											<a class="fancybox" href="{{_qr_image}}">
+												<img src="{{_qr_image}}">
+											</a>
+										{%- endunless -%}
+									</div>
+								</div>
+							</div>
+
+						{%- when 'sb_img_with_text' -%}
+							{%- assign sb_image = block.settings.image -%}
+
+							<div class="text-{{block.settings.alignment}}{% if block.settings.border_full %} border-full{% endif %}">
+								<div class="sb-image">
+									<div class="sb-image-inner">
+										{%- include 'image-style' ,image: sb_image -%}
+										{%- capture block_css -%}
+											{%- include 'css-responsive', classID: blockID, nextClassID: ' .sb-image-inner' ,css_value: block.settings.image_max_wide ,css_property: 'max-width' -%}
+										{%- endcapture -%}
+										{%- assign section_css = section_css | append: block_css -%}
+									</div>
+								</div>
+								{%- for i in (1..3) -%}
+									{%- assign sb_text = 'text_' | append: i -%}
+									{%- unless block.settings[sb_text] == blank -%}
+										<div class="sb-text-{{i}}"><span>{{ block.settings[sb_text] }}</span></div>
+
+										{%- assign sb_text_fs = 'text_fs_' | append: i -%}
+										{%- assign sb_text_fw = 'text_fw_' | append: i -%}
+										{%- assign sb_text_cl = 'text_cl_' | append: i -%}
+										{%- assign sb_text_mg = 'text_margin_' | append: i -%}
+										{%- assign sb_text_cl = block.settings[sb_text_cl] | default: 'rgba(0,0,0,0)' -%}
+
+										{%- capture sb_text_id -%}{{blockID}} .sb-text-{{i}}{%- endcapture -%}
+										{%- capture block_css -%}
+											{{- sb_text_id }}{font-weight: {{block.settings[sb_text_fw]}};
+											{%- unless sb_text_cl == 'rgba(0,0,0,0)' -%}color: {{sb_text_cl}};{%- endunless -%}
+											}
+											{%- include 'css-responsive', classID: sb_text_id, css_value: block.settings[sb_text_fs] ,css_property: 'font-size' -%}
+											{%- include 'css-responsive', classID: sb_text_id, css_value: block.settings[sb_text_mg] ,css_property: 'margin' -%}
+
+											{%- if i == 3 and block.settings.border_width > 0 -%}
+												{%- assign sb_border_width 		= block.settings.border_width -%}
+												{%- assign sb_border_color 		= block.settings.border_color | default: 'rgba(0,0,0,0)' -%}
+												{%- assign sb_border_style 		= block.settings.border_style -%}
+												{%- assign sb_border_padding 	= block.settings.border_padding -%}
+												{{- sb_text_id }}{border: {{sb_border_width}}px {{sb_border_style}} {{sb_border_color}};}
+												{%- include 'css-responsive', classID: sb_text_id, css_value: sb_border_padding -%}
+											{%- endif -%}
+										{%- endcapture -%}
+										{%- assign section_css = section_css | append: block_css -%}
+									{%- endunless -%}
+								{%- endfor -%}
+							</div>
+					{%- endcase -%}
+				</div>
+			{%- endif -%}
+		{%- endfor -%}
+	</div>
+</div>

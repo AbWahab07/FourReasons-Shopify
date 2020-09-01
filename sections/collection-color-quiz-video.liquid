@@ -1,0 +1,42 @@
+<div class="collection-video-wrapper">
+  <div class="container">
+  	{%- if section.settings.image != blank -%}
+      <div class="video-wrap">
+    	<img class="lazyautosizes lazyloaded" src="{{ section.settings.image | img_url: 'master' }}">
+      </div>
+    {% endif %}
+    
+    {%- if section.settings.header_title !=blank -%}
+      <div class="text-wrap">
+		<h2>{{ section.settings.header_title }}</h2>
+        
+        {%- if section.settings.header_text != blank -%}
+          {{ section.settings.header_text }}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Color Quiz Video",
+    "settings": [
+      {
+        "type":"image_picker",
+        "id":"image",
+        "label":"Image"
+      },
+	  {
+        "type":"text",
+        "id":"header_title",
+        "label":"Heading"
+      },
+      {
+        "type":"richtext",
+        "id":"header_text",
+        "label":"Text"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,379 @@
+{%- include 'snippet-custom-content-v2' ,type: 'init' -%}
+{% schema %}
+{
+   "name": "Custom content",
+   "tag": "section",
+   "settings": [
+      {
+         "type": "paragraph",
+         "content": "Created by 'Custom content' section"
+      },
+      {
+         "type": "text",
+         "id": "title",
+         "label": "Section Label"
+      },
+      {
+         "type": "header",
+         "content": "LAYOUT"
+      },
+      {
+         "type": "checkbox",
+         "id": "boxed_layout",
+         "label": "Boxed layout",
+         "default": true
+      },
+      {
+         "type": "text",
+         "id": "section_padding",
+         "label": "Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type": "color",
+         "id": "section_bg_color",
+         "label": "Background color",
+         "default": "#FFFFFF"
+      },
+      {
+         "type": "image_picker",
+         "id": "section_bg_image",
+         "label": "Background image"
+      },
+      {
+         "type": "select",
+         "id": "section_bg_size",
+         "label": "Background Size",
+         "default": "cover",
+         "options": [
+            {
+               "value": "auto",
+               "label": "Auto"
+            },
+            {
+               "value": "cover",
+               "label": "Cover"
+            },
+            {
+               "value": "contain",
+               "label": "Contain"
+            }
+         ]
+      },
+      {
+         "type": "select",
+         "id": "section_bg_repeat",
+         "label": "Background Image Repeat:",
+         "default": "no-repeat",
+         "options": [
+            {
+               "value": "no-repeat",
+               "label": "No Repeat"
+            },
+            {
+               "value": "repeat",
+               "label": "Repeat"
+            },
+            {
+               "value": "repeat-x",
+               "label": "Repeat X"
+            },
+            {
+               "value": "repeat-y",
+               "label": "Repeat Y"
+            }
+         ]
+      },
+      {
+         "type": "select",
+         "id": "section_bg_position",
+         "label": "Background Image Position:",
+         "default": "center center",
+         "options": [
+            {
+               "value": "left top",
+               "label": "Left Top"
+            },
+            {
+               "value": "center top",
+               "label": "Center Top"
+            },
+            {
+               "value": "right top",
+               "label": "Right Top"
+            },
+            {
+               "value": "left center",
+               "label": "Left Center"
+            },
+            {
+               "value": "center center",
+               "label": "Center Center"
+            },
+            {
+               "value": "right center",
+               "label": "Right Center"
+            },
+            {
+               "value": "left bottom",
+               "label": "Left Bottom"
+            },
+            {
+               "value": "center bottom",
+               "label": "Center Bottom"
+            },
+            {
+               "value": "right bottom",
+               "label": "Right Bottom"
+            }
+         ]
+      },
+      {
+         "type": "header",
+         "content": "Section Heading"
+      },
+      {
+         "type": "text",
+         "id": "heading_text",
+         "label": "Heading"
+      },
+      {
+         "type": "text",
+         "id": "subheading_text",
+         "label": "Subheading"
+      },
+      {
+         "type": "textarea",
+         "id": "subheading2_text",
+         "label": "Subheading 2"
+      },
+      {
+         "type": "select",
+         "id": "heading_content_align",
+         "label": "Heading alignment",
+         "options": [
+            {
+               "value": "left",
+               "label": "Left"
+            },
+            {
+               "value": "center",
+               "label": "Center"
+            },
+            {
+               "value": "right",
+               "label": "Right"
+            }
+         ],
+         "default": "center"
+      },
+      {
+         "type": "color",
+         "id": "section_heading_color",
+         "label": "Heading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type": "color",
+         "id": "section_subheading_color",
+         "label": "Subheading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type": "color",
+         "id": "section_subheading2_color",
+         "label": "Subheading 2 color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type": "header",
+         "content": "Layout content"
+      },
+      {
+         "type":"text",
+         "id":"col_resp",
+         "label":"Max number of items per row",
+         "default": "2,1",
+         "placeholder": "E.g: 4,2,1"
+      },
+      {
+         "type":"text",
+         "id":"col_spc",
+         "label":"Column spacing",
+         "default": "15px",
+         "placeholder": "E:g 15px"
+      }
+   ],
+   "blocks": [
+   {
+      "type": "block_row",
+      "name": "Row",
+      "settings": [
+         {
+            "type":"text",
+            "id":"col_resp",
+            "label":"Max number of items per row",
+            "default": "2,1",
+            "placeholder": "E.g: 4,2,1"
+         },
+         {
+            "type":"text",
+            "id":"col_spc",
+            "label":"Column spacing",
+            "default": "15px",
+            "placeholder": "E:g 15px"
+         }
+      ]
+   },
+   {
+      "type": "block_image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "image_link",
+          "label": "Image link"
+        },
+        {
+           "type":"header",
+           "content":"Content settings"
+        },
+        {
+          "type": "text",
+          "id": "image_border_rd",
+          "label": "Image Border radius",
+          "placeholder": "E.g: 4px"
+        },
+        {
+          "type": "text",
+          "id": "img_max_width",
+          "label": "Image max width",
+          "placeholder": "E.g: 50% or 300px"
+        },
+        {
+          "type": "select",
+          "id": "effect",
+          "label": "Hover effect",
+          "default": "1",
+          "options": [
+            {
+              "value": "1",
+              "label": "None"
+            },
+            {
+              "value": "2",
+              "label": "Fade Image"
+            },
+            {
+              "value": "3",
+              "label": "Zoom In"
+            },
+            {
+              "value": "4",
+              "label": "Flash Zoom"
+            },
+            {
+              "value": "7",
+              "label": "Black & White"
+            },
+            {
+              "value": "9",
+              "label": "Grey Scale"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "img_height_method",
+          "label": "Image Size Mode",
+          "default": "auto",
+          "options": [
+            {
+              "value": "auto",
+              "label": "Default"
+            },
+            {
+              "value": "fit",
+              "label": "Default (Middle align)"
+            },
+            {
+              "value": "fill",
+              "label": "Fill"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "img_position",
+          "label": "Image position",
+          "default": "center center",
+          "placeholder": "E.g: left center",
+          "info": "Only Image Size Mode = Fill"
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Image"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "range",
+          "id": "border_size",
+          "label": "Border size",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    }
+   ]
+}
+{% endschema %}

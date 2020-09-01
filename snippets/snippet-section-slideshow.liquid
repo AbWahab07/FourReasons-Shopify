@@ -1,0 +1,408 @@
+{%- comment -%}
+  ============
+    NOTE*: Not use for slideshow v3
+  ============
+{%- endcomment-%}
+
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- if slideshow_version == '2' -%}
+  {%- assign slideshow_v2       = true -%}
+  {%- assign sb_banner_count    = 0 -%}
+  {%- assign _slideshow_height  = section.settings.slideshow_height -%}
+  {%- assign _sidebar_pos       = section.settings.sidebar_banner_position -%}
+{%- endif -%}
+{%- assign _lazyload          = settings.use_lazyload -%}
+{%- assign slide_height       = section.settings.slide_height -%}
+{%- assign _nav_pag_style     = section.settings.nav_pag_style -%}
+{%- assign parallax           = section.settings.parallax -%}
+{%- assign autoplay_speed     = section.settings.autoplay_speed | default: 0 | times: 1000 -%}
+{%- assign animation          = section.settings.animation -%}
+{%- assign _slide_active      = section.settings.slide_active | minus: 1 -%}
+{%- assign _slide_view        = section.settings.slide_view   | times: 1 | default: 1  -%}
+{%- assign _slide_loop        = section.settings.slide_loop   | default: false -%}
+{%- assign _slide_center      = section.settings.slide_center | default: false -%}
+{%- assign _bg_image          = section.settings.section_bg_image -%}
+{%- assign _content_overlay   = section.settings.slide_content_overlay -%}
+
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+
+{%- if autoplay_speed > 0 -%}{%- assign autoplay = true -%}{%- endif -%}
+
+{%- if slide_height == 'adapt-first-slide' -%}
+  {%- assign _adapt_first_slide  = true -%}
+  {%- assign first_block         = section.blocks[0] -%}
+  {%- assign min_aspect_ratio    = first_block.settings.image.aspect_ratio | default: 2.0 -%}
+  {%- assign image_padding_adapt = 100 | divided_by: min_aspect_ratio | append: '%' -%}
+
+{%- elsif slide_height == 'full-screen' -%}
+  {%- assign _full_height         = true -%}
+  {%- assign image_padding_adapt  = '100vh' -%}
+{%- endif -%}
+{%- capture sectionID -%}.section-show-{{section.id}}{%- endcapture -%}
+
+
+<div class="slideshow-catalog-wrapper slideshow-{{section.id}} layout-{{_layout}} section-show-{{section.id}} {{slideshow_ver}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="slideshow" data-section-id="{{section.id}}"{% if _adapt_first_slide %} style="overflow:hidden;"{% endif %}>
+    {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+      {%- if slideshow_v2 -%}
+        {%- capture slideshow_w -%}{%- include 'set-width-bootstrap',in_type: 'width', number: section.settings.slideshow_width -%}{{_out}}{%- endcapture -%}
+        {%- capture sb_banner_w -%}{%- include 'set-width-bootstrap',in_type: 'width', number: section.settings.sb_banner_width -%}{{_out}}{%- endcapture -%}
+
+        <div class="main-grid-container slideshow-grid-container">
+          {%- if _sidebar_pos == 'left' -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'sidebar_banner' -%}
+                {%- assign sb_banner_count = sb_banner_count | plus: 1 -%}
+                {%- include 'snippet-slideshow' -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if sb_banner_count == 0 -%}<div></div>{%- endif -%}
+          {%- endif -%}
+          <div class="main-slideshow slideshow-v2_height-{{_slideshow_height}}">
+      {%- endif -%}
+
+        <div class="bc-wrapper slide-height-{{slide_height}} navigator-style-{{_nav_pag_style}} pagination-position_{{section.settings.pagination_position}}{% if _content_overlay == false %} content-overlay--disabled{%- endif -%}">
+          {%- if section.blocks.size > 0 -%}
+            <div class="home-slideshow-wrapper swiper-container swiper-container-{{section.id}}" data-autoplay="{{autoplay | default: false }}" data-parallax="{{parallax}}" data-time="{{autoplay_speed}}" data-animation="{{animation}}"data-style="{{_nav_pag_style}}" data-direction="horizontal" data-touch="true" data-slide-active="{{_slide_active}}" data-slide-view="{{_slide_view}}" data-loop="{{_slide_loop}}" data-center="{{_slide_center}}">
+              <div class="home-slideshow swiper-wrapper">
+
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'slide' -%}
+                    {%- assign slide_index              = forloop.index -%}
+                    {%- assign slide_id                 = block.id -%}
+                    {%- assign image                    = block.settings.image     -%}
+                    {%- assign video                    = block.settings.video     -%}
+                    {%- assign link                     = block.settings.link | default: 'javascript:void(0);' -%}
+                    {%- assign textAlign                = block.settings.alignment -%}
+                    {%- assign headingText              = block.settings.title_text    -%}
+                    {%- assign subheadingText           = block.settings.subtitle_text -%}
+                    {%- assign captionText              = block.settings.caption_text  -%}
+                    {%- assign buttonText               = block.settings.button_text   -%}
+                    {%- assign button_link              = block.settings.button_link | default: 'javascript:void(0);'  -%}
+                    {%- assign buttonText_2             = block.settings.button_text_2   -%}
+                    {%- assign button_link_2            = block.settings.button_link_2 | default: 'javascript:void(0);'  -%}
+                    {%- assign _opacity                 = block.settings.image_overlay -%}
+                    {%- assign _textbox_style           = block.settings.textbox_style -%}
+                    {%- assign _use_text                = true -%}
+
+
+                    {%- capture slideContent -%}{{headingText}}{{subheadingText}}{{captionText}}{{buttonText}}{%- endcapture -%}
+                    {%- capture blockID -%}.section-show-{{section.id}} .swiper-slide.swiper-slide-{{ block.id }}{%- endcapture -%}
+                    {%- if slideContent.size == 0 or _textbox_style == 'hide' -%}{%- assign _use_text = false -%}{%- endif -%}
+
+                    <div class="swiper-slide swiper-slide-{{ block.id }}{% if link == 'javascript:void(0);' %} slide-link--disabled{% endif %}{% if video != blank %} has-video{% endif %}"{{ block.shopify_attributes }}>
+                      {%- if video != blank -%}
+                        <div class="video-slide" style="display: none;" data-full-height="{{_full_height}}">
+                          {%- if video contains 'iframe' -%}
+                            {{ video }}
+                          {%- else -%}
+                            <video class="video" autoplay muted loop playsinline preload="auto" data-width="0" data-height="0" poster="{{image | img_url: '1920x' }}">
+                              <source src="{{ video }}" type="video/mp4">
+                            </video>
+                          {%- endif -%}
+                        </div>
+                      {%- else -%}
+                        <a href="{{ link }}" class="slider-layer layer-opacity-{{_opacity}}">
+                          {%- if image != blank -%}
+                            {% include 'image-style' with image:image, set_padding: image_padding_adapt %}
+                          {%- else -%}
+                            {%- if slideshow_v2 -%}
+                              {%- include 'svgset' -%}
+                            {%- else -%}
+                              {%- include 'svgset', type: 'lifestyle' -%}
+                            {%- endif -%}
+                          {%- endif -%}
+                        </a>
+                      {%- endif -%}
+
+                      {%- if slideshow_ver == 'slideshow-v4' -%}
+
+                      {%- else -%}
+                        {%- if _use_text -%}
+                          <div class="swiper-content slide-{{ forloop.index }} container">
+                            <div class="container-box {{ textAlign }}">
+                                {%- unless headingText == blank -%}
+                                  <div class="heading{% if block.settings.title_up %} text-uppercase{% endif %}"><span>{{ headingText }}</span></div>
+                                {%- endunless -%}
+
+                                {%- unless subheadingText == blank -%}
+                                  <div class="subheading{% if block.settings.subtitle_up %} text-uppercase{% endif %}"><span>{{ subheadingText }}</span></div>
+                                {%- endunless -%}
+
+                                {%- unless captionText == blank -%}
+                                  <div class="cation{% if block.settings.caption_up %} text-uppercase{% endif %}"><span> {{ captionText }} </span></div>
+                                {%- endunless -%}
+
+                                {%- unless buttonText == blank and buttonText_2 == blank -%}
+                                  <div class="button-link">
+                                    {%- unless buttonText == blank -%}
+
+                                      {%- assign _slider_btn   = '' -%}
+                                      {%- assign _btn_inherit  = block.settings.button_inherit -%}
+                                      {%- assign _underline    = block.settings.button_underline -%}
+                                      {%- assign _use_as_link  = block.settings.use_as_link -%}
+                                      {%- assign _btn_icon     = block.settings.btn_icon -%}
+                                      {%- assign _ic_pos       = block.settings.icon_position -%}
+
+                                      {%- unless _use_as_link -%}
+                                        {%- assign _slider_btn = _slider_btn | append: ' btn' -%}
+                                      {%- endunless -%}
+                                      {%- if _btn_inherit > 0 and _use_as_link == false -%}
+                                        {%- assign _slider_btn = _slider_btn | append: ' btn-' | append: _btn_inherit -%}
+                                      {%- endif -%}
+                                      {%- if _btn_inherit == 0 -%}
+                                        {%- assign _slider_btn = _slider_btn | append: ' slider-btn-custom' -%}
+                                      {%- endif -%}
+                                      {%- if _underline -%}
+                                        {%- assign _slider_btn = _slider_btn | append: ' text-underline' -%}
+                                      {%- endif -%}
+                                      {%- if border_button -%}
+                                        {%- assign _slider_btn = _slider_btn | append: ' button-radius' -%}
+                                      {%- endif -%}
+
+                                        <a class="slider-button{{_slider_btn}}" href="{{ button_link }}">
+                                          {%- if _ic_pos == 'left' and _btn_icon != blank -%}
+                                            <span class="slider-btn-icon">{%- include 'icons' ,type: 'icon_free' ,name: _btn_icon -%}</span>
+                                          {%- endif -%}
+                                          <span>{{ buttonText }}</span>
+                                          {%- if _ic_pos == 'right' and _btn_icon != blank -%}
+                                            <span class="slider-btn-icon">{%- include 'icons' ,type: 'icon_free' ,name: _btn_icon -%}</span>
+                                          {%- endif -%}
+                                        </a>
+                                      {%- endunless -%}
+
+                                    {%- unless buttonText_2 == blank -%}
+
+                                      {%- assign _slider_btn_2   = '' -%}
+                                      {%- assign _btn_inherit_2  = block.settings.button_inherit_2 -%}
+                                      {%- assign _underline_2    = block.settings.button_underline_2 -%}
+                                      {%- assign _use_as_link_2  = block.settings.use_as_link_2 -%}
+                                      {%- assign _btn_icon_2     = block.settings.btn_icon_2 -%}
+                                      {%- assign _ic_pos_2       = block.settings.icon_position_2 -%}
+
+                                      {%- unless _use_as_link_2 -%}
+                                        {%- assign _slider_btn_2 = _slider_btn_2 | append: ' btn' -%}
+                                      {%- endunless -%}
+                                      {%- if _btn_inherit_2 > 0 and _use_as_link_2 == false -%}
+                                        {%- assign _slider_btn_2 = _slider_btn_2 | append: ' btn-' | append: _btn_inherit_2 -%}
+                                      {%- endif -%}
+                                      {%- if _btn_inherit_2 == 0 -%}
+                                        {%- assign _slider_btn_2 = _slider_btn_2 | append: ' slider-btn-custom-2' -%}
+                                      {%- endif -%}
+                                      {%- if _underline_2 -%}
+                                        {%- assign _slider_btn_2 = _slider_btn_2 | append: ' text-underline' -%}
+                                      {%- endif -%}
+                                      {%- if border_button -%}
+                                        {%- assign _slider_btn_2 = _slider_btn_2 | append: ' button-radius' -%}
+                                      {%- endif -%}
+
+                                        <a class="slider-button-2{{_slider_btn_2}}" href="{{ button_link_2 }}">
+                                          {%- if _ic_pos_2 == 'left' and _btn_icon_2 != blank -%}
+                                            <span class="slider-btn-icon-2">{%- include 'icons' ,type: 'icon_free' ,name: _btn_icon_2 -%}</span>
+                                          {%- endif -%}
+                                          <span>{{ buttonText_2 }}</span>
+                                          {%- if _ic_pos_2 == 'right' and _btn_icon_2 != blank -%}
+                                            <span class="slider-btn-icon-2">{%- include 'icons' ,type: 'icon_free' ,name: _btn_icon_2 -%}</span>
+                                          {%- endif -%}
+                                        </a>
+                                      {%- endunless -%}
+                                  </div>
+                                {%- endunless -%}
+                            </div>
+                          </div>
+                        {%- endif -%}
+
+                        {%- capture slide_item_style -%}
+                          {%- include 'css-responsive', classID: blockID ,nextClassID: ' .slider-layer img', css_property: 'object-position', css_value: block.settings.image_position -%}
+                        {%- endcapture -%}
+                        {%- assign slideshow_style = slideshow_style | append: slide_item_style -%}
+
+                        {%- if _textbox_style == 'custom' and slideContent.size > 0 -%}
+                          {%- include 'snippet-slideshow-css' -%}
+                          {%- assign slideshow_style = slideshow_style | append: slide_item_style -%}
+                        {%- endif -%}
+                      {%- endif -%}
+
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+
+              <div class="wrap-thumb-slide hide">
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'slide' -%}
+                    {%- assign _image = block.settings.image_thumb -%}
+                    {%- if thumbCount > 4 -%}{% break %}{%- endif -%}
+                    {%- unless _image == blank -%}
+                      {%- assign _text          = block.settings.thumb_text -%}
+                      {%- assign has_thumbnail  = true -%}
+                      {%- assign thumbCount     = thumbCount | plus: 1 -%}
+                      <span class="thumb-slide" data-index="{{ forloop.index0 }}" data-text="{{_text}}" data-src="{{- _image | img_url: '280x' -}}"{{block.shopify_attributes}}></span>
+                    {%- endunless -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+              {%- if section.settings.pagination -%}<div class="swiper-pagination swiper-container{% if thumbCount > 4 %} d-md-none{% endif %}{% if section.settings.pag_hide_mobile %} d-none d-md-block{% endif %}"></div>{%- endif -%}
+              {%- if section.settings.navigator -%}
+                <div class="swiper-button-next swiper-button-white{% if section.settings.nav_hide_mobile %} d-none d-md-block{% endif %}"></div>
+                <div class="swiper-button-prev swiper-button-white{% if section.settings.nav_hide_mobile %} d-none d-md-block{% endif %}"></div>
+              {%- endif -%}
+            </div>
+
+            {%- if thumbCount > 4 -%}
+              <div class="swiper-container gallery-thumbs gallery-thumbs-{{section.id}}" data-view= "7" data-view-md="4" data-spacing="30">
+                  <div class="swiper-wrapper">
+                    {%- for block in section.blocks -%}
+                      {%- if block.type == 'slide' -%}
+                        {%- assign _image = block.settings.image_thumb -%}
+                        {%- assign _text  = block.settings.thumb_text -%}
+
+                        {%- unless _image == blank -%}
+                          {%- assign has_thumbnail = true -%}
+                          <div class="swiper-slide"{{block.shopify_attributes}}>
+                            <div class="image">
+                              {%- include 'image-style', image_width: '[280]', image: _image -%}
+                            </div>
+
+                            {%- unless _text == blank -%}
+                              <div class="slide-content text-center thumb-text">{{_text}}</div>
+                            {%- endunless -%}
+                          </div>
+                        {%- endunless -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+              </div>
+              {%- capture thumb_img_css -%}
+                {%- include 'css-responsive', classID: sectionID, nextClassID: ' .gallery-thumbs .image',   css_value: section.settings.thumb_img_max_width,  css_property: 'max-width' -%}
+              {%- endcapture -%}
+              {%- assign slideshow_style = slideshow_style | append: thumb_img_css -%}
+            {%- endif -%}
+
+          {%- else -%}
+
+            <div class="home-slideshow-wrapper swiper-container">
+                <div class="home-slideshow swiper-wrapper">
+                    <div class="swiper-slide">
+                        <a href="javascript:void(0);">
+                          <div class="image no-image">
+                            {%- include 'svgset', type: 'lifestyle' -%}
+                          </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+          {%- endif -%}
+        </div>
+
+      {%- if slideshow_v2 -%}
+          </div>
+          {%- if _sidebar_pos == 'right' -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'sidebar_banner' -%}
+                {%- assign sb_banner_count = sb_banner_count | plus: 1 -%}
+                {%- include 'snippet-slideshow' -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if sb_banner_count == 0 -%}<div></div>{%- endif -%}
+          {%- endif -%}
+        </div>
+        
+        {%- assign bt_banner_count = 0 -%}
+        <div class="bottom-banner-container">
+          <div class="slideshow-grid-container">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'bottom_banner' -%}
+                {%- assign bt_banner_count = bt_banner_count | plus: 1 -%}
+                {%- include 'snippet-slideshow' -%}                
+              {%- endif -%}
+
+              {%- if block.type == 'general_banner_style' -%}
+                {%- assign _gbt_banner_tit_color   = block.settings.banner_title_color | default: 'rgba(0,0,0,0)' -%}
+                {%- assign _gbt_banner_sub_color   = block.settings.banner_subtitle_color | default: 'rgba(0,0,0,0)' -%}
+                {%- assign _gbt_banner_tit_size    = block.settings.banner_title_size -%}
+                {%- assign _gbt_banner_sub_size    = block.settings.banner_subtitle_size -%}
+                {%- assign _gbt_margin_tit         = block.settings.margin_tit -%}
+                {%- assign _gbt_margin_sub         = block.settings.margin_sub -%}
+                {%- assign _gbt_banner_tit_bold    = block.settings.banner_title_bold -%}
+                {%- assign _gbt_banner_sub_bold    = block.settings.banner_subtit_bold -%}
+                {%- assign _gbt_banner_tit_lsp     = block.settings.banner_title_lsp -%}
+                {%- assign _gbt_banner_sub_lsp     = block.settings.banner_subtitle_lsp -%}
+                {%- assign _gbt_lineheight_tit     = block.settings.banner_title_lh -%}
+                {%- assign _gbt_lineheight_sub     = block.settings.banner_subtitle_lh -%}
+
+                {%- capture bt_banner_id -%}.section-show-{{section.id}} .ss-banner-inner{%- endcapture -%}
+
+                {%- capture general_banner_css -%}
+
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-content', css_value: block.settings.content_position, type: 'position' -%}
+
+                  {{bt_banner_id}} .ss-banner-title{font-weight: {{_gbt_banner_tit_bold}};{% unless _gbt_banner_tit_color == 'rgba(0,0,0,0)' %}color: {{_gbt_banner_tit_color}};{% endunless %}}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-title' ,css_value: _gbt_banner_tit_size   , css_property: 'font-size' -%}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-title' ,css_value: _gbt_banner_tit_lsp    , css_property: 'letter-spacing' -%}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-title' ,css_value: _gbt_margin_tit        , css_property: 'margin' -%}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-title' ,css_value: _gbt_lineheight_tit    , css_property: 'line-height' -%}
+
+                  {{bt_banner_id}} .ss-banner-subtitle{font-weight: {{_gbt_banner_sub_bold}};{%- unless _gbt_banner_sub_color == 'rgba(0,0,0,0)' -%}color: {{_gbt_banner_sub_color}};{%- endunless -%}}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-subtitle' ,css_value: _gbt_banner_sub_size  , css_property: 'font-size' -%}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-subtitle' ,css_value: _gbt_banner_sub_lsp   , css_property: 'letter-spacing' -%}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-subtitle' ,css_value: _gbt_margin_sub       , css_property: 'margin' -%}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-subtitle' ,css_value: _gbt_lineheight_sub   , css_property: 'line-height' -%}
+
+                  {{- bt_banner_id}} .ss-banner-button > a.btn--1{font-weight:{{block.settings.button_weight}};color: {{block.settings.button_text_color}};background-color: {{block.settings.button_text_bg_color}}}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-button > a.btn--1' ,css_value: block.settings.button_padding -%}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-button > a.btn--1' ,css_value: block.settings.button_font_size  , css_property: 'font-size' -%}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-button > a.btn--1' ,css_value: block.settings.button_lsp        , css_property: 'letter-spacing' -%}
+                  {%- include 'css-responsive', classID: bt_banner_id, nextClassID: ' .ss-banner-button > a.btn--1' ,css_value: block.settings.button_radius     , css_property: 'border-radius' -%}
+                {%- endcapture -%}
+                {%- assign banner_styles = banner_styles | append: general_banner_css -%}
+              {%- endif -%}
+
+            {%- endfor -%}
+          </div>
+        </div>
+        {%- assign _main_grid_layout      = section.settings.main_grid_layout -%}
+        {%- assign _grid_banner_spc       = section.settings.slideshow_banner_spc -%}
+        {%- assign _bottom_grid_layout    = section.settings.banner_bottom_grid_layout -%}
+        {%- assign _grid_banner_max_w     = _grid_banner_spc | append: ',0px' -%}
+
+        {%- capture _spacing_css -%}
+          {{- -}}.slideshow-grid-container{display: grid;}
+          {%- if sb_banner_count > 0 -%}
+          {%- include 'css-responsive', classID: sectionID ,nextClassID: ' .main-grid-container.slideshow-grid-container' ,css_property: 'max-width', css_value: _grid_banner_max_w ,css_value_before: 'calc(100% - ' ,css_value_after: ')'-%}
+          {%- endif -%}
+
+          {%- if sb_banner_count == 0 -%}{%- assign sb_banner_count = 1 -%}{%- endif -%}
+          {{- sectionID}} .main-slideshow{grid-row: span {{sb_banner_count}};position: relative;}
+          {%- include 'css-responsive', classID: sectionID ,nextClassID: ' .main-grid-container.slideshow-grid-container' ,css_property: 'grid-template-columns', css_value: _main_grid_layout -%}
+          {%- include 'css-responsive', classID: sectionID ,nextClassID: ' .bottom-banner-container .slideshow-grid-container' ,css_property: 'grid-template-columns' ,css_value: _bottom_grid_layout ,css_value_before: 'repeat(' ,css_value_after: ', 1fr)' -%}
+          {%- include 'css-responsive', classID: sectionID ,nextClassID: ' .slideshow-grid-container' ,css_property: 'grid-gap' ,css_value: _grid_banner_spc -%}
+          {%- if bt_banner_count > 0 -%}
+          {%- include 'css-responsive', classID: sectionID ,nextClassID: ' .bottom-banner-container .slideshow-grid-container' ,css_property: 'padding-top' ,css_value: _grid_banner_spc -%}            
+          {%- endif -%}
+
+        {%- endcapture -%}
+        {%- assign slideshow_style = slideshow_style | append: _spacing_css -%}
+
+      {%- endif -%}
+
+    {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'general_slide_style' -%}
+        {%- if slideshow_ver == 'slideshow-v4' -%}
+
+        {%- else -%}
+          {%- include 'snippet-slideshow-css', type: 'general' -%}
+          {%- assign slideshow_style = slideshow_style | append: slide_item_style -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    <style type="text/css">
+      {%- include 'section-general-css' -%}
+      {{- }}.section-show-{{section.id}} .slider-layer img{height: 100%;object-fit:{% if _slide_center %}contain{% else %}cover{% endif %};}
+      {%- if has_thumbnail -%}.slideshow-{{section.id}} .thumb-text{color: {{section.settings.thumb_text_color}};}{%- endif -%}
+      {%- include 'snippet-slideshow-css', type: 'navigation_css' -%}
+      {{- slideshow_style -}}{{- banner_styles -}}
+    </style>
+</div>

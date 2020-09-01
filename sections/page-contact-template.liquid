@@ -1,0 +1,902 @@
+{%- include 'breadcrumb' -%}
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _lazyload          = settings.use_lazyload -%}
+{%- assign _min_height        = section.settings.min_height -%}
+{%- assign _faq_heading_size  = section.settings.faq_heading_size -%}
+{%- assign _contact_info      = section.settings.contact_info -%}
+{%- assign has_social         = false -%}
+{%- assign has_faq            = false -%}
+{%- assign _frm_label_align   = section.settings.frm_label_align -%}
+
+<div id="col-main" class="page-contact layout-{{_layout }}" data-section-type="contact-page" data-section-id="{{section.id}}">
+  {%- if section.settings.show_map -%}
+    {%- assign _pin = 'pin.png' | asset_url -%}
+
+    {%- capture block_css -%}
+      {%- include 'css-responsive', classID: '#col-main .map-element', css_value: _min_height, css_property: 'min-height' -%}
+      #col-main .map-element:empty{background: center / cover no-repeat url({{'map-placeholder.jpg' | asset_url }});}
+    {%- endcapture -%}
+    {%- assign section_css = section_css | append: block_css -%}
+
+    <div class="map-container">
+      <div class="map-wrapper map-element-ui"
+        data-latlong="{{ section.settings.contact_latlong | strip }}"
+        data-zoom="{{ section.settings.contact_zoom_lv }}"
+        data-scroll="{{ section.settings.contact_scroll }}"
+        data-icon="{{ _pin }}"
+        data-content="{{ shop.address.street }}, {{ shop.address.city }}, {{ shop.address.country }}">
+        <div id="map_{{section.id}}" class="map map-element"></div>
+      </div>
+
+      {%- if settings.gg_map_api != blank -%}
+        <div class="contact-info-container">
+          {%- unless _contact_info == blank -%}
+            <div class="contact-info">{{_contact_info}}</div>
+          {%- endunless -%}
+          <div class="social-content">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'social' -%}
+                {%- assign has_social = true -%}
+                <div class="social-icon"{{block.shopify_attributes}}>
+                  {%- assign _social_icon = block.settings.social_icon -%}
+                  {%- assign _social_link = block.settings.social_link | default: 'javascript:void(0);' -%}
+                  {%- unless _social_icon == blank -%}
+                  <a href="{{_social_link}}">
+                    {%- include 'icons', type: 'icon_free', name: _social_icon -%}
+                  </a>
+                  {%- endunless -%}
+                </div>
+              {%- endif -%}
+              {%- if block.type == 'faq' -%}
+                {%- assign has_faq = true -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+    <div class="contact-content">
+      <div class="row">
+        <div class="{% if has_faq %}col-md-6 {% endif %}col-12">
+          <div class="contact-type-contact">
+            {%- assign _heading_text                = section.settings.heading_text -%}
+            {%- assign _subheading_text             = section.settings.subheading_text -%}
+            {%- assign _heading_align               = section.settings.heading_content_align -%}
+            {%- assign _fheading_size               = section.settings.heading_size -%}
+            {%- assign _form_color                  = section.settings.form_color -%}
+            {%- assign _form_border                 = section.settings.form_border -%}
+            {%- assign _fbg_color                   = section.settings.bg_color -%}
+
+            <div class="contact-form-inner">
+              {%- unless _heading_text == blank and _subheading_text == blank -%}
+              <div class="form-heading-content text-{{_heading_align}}">
+                {%- unless _heading_text == blank -%}
+                <div class="heading h{{_fheading_size}}">{{_heading_text}}</div>
+                {%- endunless -%}
+                {%- unless _subheading_text == blank -%}
+                <div class="subheading">{{_subheading_text}}</div>
+                {%- endunless -%}
+              </div>
+              {%- endunless -%}
+
+              {%- include 'include-form', _text_align: section.settings.text_align ,form_label: true -%}
+            </div>
+            {%- capture block_css -%}
+              {{- -}}.contact-type-contact input,
+              {{- -}}.contact-type-contact input:focus,
+              {{- -}}.contact-type-contact textarea,
+              {{- -}}.contact-type-contact textarea:focus{color:{{_form_color}};border: 1px solid {{_form_border}};}
+            {%- endcapture -%}
+            {%- assign section_css = section_css | append: block_css -%}
+          </div>
+        </div>
+
+        {%- if has_faq -%}
+          <div class="col-md-6 col-12">
+            {%- include 'faq-column', faq_heading_size: _faq_heading_size, page_name: 'contact' -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+  <style>{{- section_css | strip_newlines -}}#col-main{background-color:{{section.settings.background_color | default: 'rgba(0,0,0,0)'}};}
+  {%- unless has_social -%}.contact-info-container{display: none;}{%- endunless -%}
+  </style>
+</div>
+{% schema %}
+{
+   "name": "Contact Page",
+   "tag": "section",
+   "settings": [
+      {
+         "type": "checkbox",
+         "id": "boxed_layout",
+         "label": "Boxed layout",
+         "default": true
+      },
+      {
+         "type": "color",
+         "id": "background_color",
+         "label": "Background color",
+         "default": "rgba(0,0,0,0)"
+      },
+      {
+         "type": "header",
+         "content": "Breadcrumb"
+      },
+      {
+         "type": "checkbox",
+         "id": "show_breabcrumb",
+         "label": "Show Breadcrumb",
+         "default": true
+      },
+      {
+         "type": "checkbox",
+         "id": "breadcrumb_image_inherit",
+         "label": "Inherit Background image",
+         "info": "Please upload image in Theme settings > Breadcrumb",
+         "default": true
+      },
+      {
+         "type": "image_picker",
+         "id": "breadcrumb_image",
+         "label": "Breadcrumb Image"
+      },
+      {
+         "type": "paragraph",
+         "content": "To customize breadcrumb, please add block 'Breadcrumb'."
+      },
+      {
+         "type": "header",
+         "content": "Map Settings"
+      },
+      {
+         "type": "paragraph",
+         "content": "Please make sure you already inserted API Key in Theme settings > App Integrations > Google Map"
+      },
+      {
+         "type": "checkbox",
+         "id": "show_map",
+         "label": "Show Map",
+         "default": true
+      },
+      {
+         "type": "text",
+         "id": "min_height",
+         "label": "Min Height",
+         "default": "500px"
+      },
+      {
+         "type": "text",
+         "id": "contact_latlong",
+         "label": "Latitude and Longitude",
+         "info": "Please click [here](http://latlong.net) to get Latitude and Longitude",
+         "default": "51.514863, -0.133689"
+      },
+      {
+         "type": "range",
+         "id": "contact_zoom_lv",
+         "label": "Select Zoom Level",
+         "min": 0,
+         "max": 21,
+         "step": 1,
+         "default": 17
+      },
+      {
+         "type": "checkbox",
+         "id": "contact_scroll",
+         "label": "Scroll Wheel"
+      },
+      {
+         "type": "header",
+         "content": "Contact Information"
+      },
+      {
+         "type": "richtext",
+         "id": "contact_info",
+         "label": "Information"
+      },
+      {
+         "type": "header",
+         "content": "Form Heading"
+      },
+      {
+         "type": "text",
+         "id": "heading_text",
+         "label": "Heading",
+         "default": "SEND US AN EMAIL"
+      },
+      {
+         "type": "textarea",
+         "id": "subheading_text",
+         "label": "Subheading",
+         "default": "If you’d like further information about Xstore and you can’t find it in our FAQs, please get in touch. Simply fill out the form, include your message, and we’ll get back to you as soon as we can."
+      },
+      {
+         "type": "select",
+         "id": "heading_content_align",
+         "label": "Heading alignment",
+         "options": [
+            {
+               "value": "left",
+               "label": "Left"
+            },
+            {
+               "value": "center",
+               "label": "Center"
+            },
+            {
+               "value": "right",
+               "label": "Right"
+            }
+         ],
+         "default": "center"
+      },
+      {
+         "type": "range",
+         "id": "heading_size",
+         "label": "Heading font size (h1 -> h6)",
+         "min": 1,
+         "max": 6,
+         "default": 3
+      },
+      {
+         "type": "header",
+         "content": "Form Settings"
+      },
+      {
+         "type": "select",
+         "id": "frm_label_align",
+         "label": "Label alignment",
+         "default": "left",
+         "options": [
+            {
+               "value": "left",
+               "label": "Left"
+            },
+            {
+               "value": "center",
+               "label": "Center"
+            },
+            {
+               "value": "right",
+               "label": "Right"
+            }
+         ]
+      },
+      {
+         "type": "select",
+         "id": "text_align",
+         "label": "Input content alignment",
+         "default": "left",
+         "options": [
+            {
+               "value": "left",
+               "label": "Left"
+            },
+            {
+               "value": "center",
+               "label": "Center"
+            },
+            {
+               "value": "right",
+               "label": "Right"
+            }
+         ]
+      },
+      {
+         "type": "color",
+         "id": "form_color",
+         "label": "Form text color",
+         "default": "#000000"
+      },
+      {
+         "type": "color",
+         "id": "form_border",
+         "label": "Form border color",
+         "default": "#000000"
+      },
+      {
+         "type": "header",
+         "content": "FAQ Column"
+      },
+      {
+         "type": "text",
+         "id": "faq_heading_text",
+         "label": "Heading",
+         "default": "FAQ"
+      },
+      {
+         "type": "textarea",
+         "id": "faq_subheading_text",
+         "label": "Subheading",
+         "default": "Please read our FAQ before sending us a message."
+      },
+      {
+         "type": "select",
+         "id": "faq_heading_content_align",
+         "label": "Heading alignment",
+         "options": [
+            {
+               "value": "left",
+               "label": "Left"
+            },
+            {
+               "value": "center",
+               "label": "Center"
+            },
+            {
+               "value": "right",
+               "label": "Right"
+            }
+         ],
+         "default": "left"
+      },
+      {
+         "type": "range",
+         "id": "faq_heading_size",
+         "label": "Heading font size (h1 -> h6)",
+         "min": 1,
+         "max": 6,
+         "default": 3
+      },
+      {
+         "type": "select",
+         "id": "faq_text_align",
+         "label": "Text align for Item content",
+         "options": [
+            {
+               "value": "left",
+               "label": "Left"
+            },
+            {
+               "value": "center",
+               "label": "Center"
+            },
+            {
+               "value": "right",
+               "label": "Right"
+            }
+         ],
+         "default": "left"
+      }
+   ],
+   "blocks": [
+      {
+         "type": "breadcrumb",
+         "name": "Breadcrumb",
+         "limit": 1,
+         "settings": [
+            {
+               "type": "header",
+               "content": "Layout"
+            },
+            {
+               "type": "range",
+               "id": "breadcrumb_style",
+               "label": "Breadcrumb style",
+               "min": 0,
+               "max": 3,
+               "step": 1,
+               "default": 0,
+               "info": "0 to inherit from Theme settings"
+            },
+            {
+               "type": "color",
+               "id": "breadcrumb_bg_color",
+               "label": "Background color"
+            },
+            {
+               "type": "select",
+               "id": "breadcrumb_bg_size",
+               "label": "Background Image Size:",
+               "default": "auto",
+               "options": [
+                  {
+                     "value": "auto",
+                     "label": "Auto"
+                  },
+                  {
+                     "value": "contain",
+                     "label": "Contain"
+                  },
+                  {
+                     "value": "cover",
+                     "label": "Cover"
+                  },
+                  {
+                     "value": "150%",
+                     "label": "150%"
+                  },
+                  {
+                     "value": "200%",
+                     "label": "200%"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "breadcrumb_bg_repeat",
+               "label": "Background Image Repeat:",
+               "default": "no-repeat",
+               "options": [
+                  {
+                     "value": "no-repeat",
+                     "label": "No Repeat"
+                  },
+                  {
+                     "value": "repeat",
+                     "label": "Repeat"
+                  },
+                  {
+                     "value": "repeat-x",
+                     "label": "Repeat X"
+                  },
+                  {
+                     "value": "repeat-y",
+                     "label": "Repeat Y"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "breadcrumb_bg_position",
+               "label": "Background Image Position:",
+               "default": "center center",
+               "options": [
+                  {
+                     "value": "left top",
+                     "label": "Left Top"
+                  },
+                  {
+                     "value": "center top",
+                     "label": "Center Top"
+                  },
+                  {
+                     "value": "right top",
+                     "label": "Right Top"
+                  },
+                  {
+                     "value": "left center",
+                     "label": "Left Center"
+                  },
+                  {
+                     "value": "center center",
+                     "label": "Center Center"
+                  },
+                  {
+                     "value": "right center",
+                     "label": "Right Center"
+                  },
+                  {
+                     "value": "left bottom",
+                     "label": "Left Bottom"
+                  },
+                  {
+                     "value": "center bottom",
+                     "label": "Center Bottom"
+                  },
+                  {
+                     "value": "right bottom",
+                     "label": "Right Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "checkbox",
+               "id": "breadcrumb_bg_fixed",
+               "label": "Background Image Fixed"
+            },
+            {
+               "type": "text",
+               "id": "breadcrumb_padding",
+               "label": "Breadcrumb padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "text",
+               "id": "breadcrumb_margin",
+               "label": "Breadcrumb margin",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "text",
+               "id": "breadcrumb_shadow",
+               "label": "Breadcrumb Box shadow",
+               "placeholder": "Optional"
+            },
+            {
+               "type": "header",
+               "content": "Link settings"
+            },
+            {
+               "type": "text",
+               "id": "breadcrumb_text_fs",
+               "label": "Text font size",
+               "placeholder": "E.g: 14px"
+            },
+            {
+               "type": "color",
+               "id": "breadcrumb_text_color",
+               "label": "Text color"
+            },
+            {
+               "type": "select",
+               "id": "breadcrumb_text_fw",
+               "label": "Text font weight",
+               "default": "400",
+               "options": [
+                  {
+                     "value": "inherit",
+                     "label": "Auto"
+                  },
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "breadcrumb_text_ff",
+               "label": "Text font family",
+               "default": "inherit",
+               "options": [
+                  {
+                     "value": "inherit",
+                     "label": "Auto"
+                  },
+                  {
+                     "value": "ff-head",
+                     "label": "Header font"
+                  },
+                  {
+                     "value": "ff-body",
+                     "label": "Body font"
+                  },
+                  {
+                     "value": "ff-1",
+                     "label": "Custom font 1"
+                  },
+                  {
+                     "value": "ff-2",
+                     "label": "Custom font 2"
+                  },
+                  {
+                     "value": "ff-3",
+                     "label": "Custom font 3"
+                  },
+                  {
+                     "value": "ff-4",
+                     "label": "Custom font 4"
+                  },
+                  {
+                     "value": "ff-5",
+                     "label": "Custom font 5"
+                  }
+               ]
+            },
+            {
+               "type": "header",
+               "content": "Active Link settings"
+            },
+            {
+               "type": "checkbox",
+               "id": "show_breadcrumb_active",
+               "label": "Show Active Link/Title page",
+               "default": true
+            },
+            {
+               "type": "checkbox",
+               "id": "breadcrumb_active_up",
+               "label": "Show Active text UPPERCASE"
+            },
+            {
+               "type": "text",
+               "id": "breadcrumb_active_fs",
+               "label": "Active text font size",
+               "placeholder": "E.g: 18px or auto",
+               "info": "Blank to default"
+            },
+            {
+               "type": "color",
+               "id": "breadcrumb_active_color",
+               "label": "Active text color"
+            },
+            {
+               "type": "select",
+               "id": "breadcrumb_active_fw",
+               "label": "Active text font weight",
+               "default": "inherit",
+               "options": [
+                  {
+                     "value": "inherit",
+                     "label": "Auto"
+                  },
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "breadcrumb_active_ff",
+               "label": "Active text font family",
+               "default": "ff-body",
+               "options": [
+                  {
+                     "value": "ff-head",
+                     "label": "Header font"
+                  },
+                  {
+                     "value": "ff-body",
+                     "label": "Body font"
+                  },
+                  {
+                     "value": "ff-1",
+                     "label": "Custom font 1"
+                  },
+                  {
+                     "value": "ff-2",
+                     "label": "Custom font 2"
+                  },
+                  {
+                     "value": "ff-3",
+                     "label": "Custom font 3"
+                  },
+                  {
+                     "value": "ff-4",
+                     "label": "Custom font 4"
+                  },
+                  {
+                     "value": "ff-5",
+                     "label": "Custom font 5"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "breadcrumb_active_lsp",
+               "label": "Active text letter spacing",
+               "placeholder": "E.g: 2px"
+            },
+            {
+               "type": "header",
+               "content": "Breacrumb Previous"
+            },
+            {
+               "type": "checkbox",
+               "id": "show_previous_page",
+               "label": "Show Previous page",
+               "default": true
+            },
+            {
+               "type": "checkbox",
+               "id": "breadcrumbs_prev_uc",
+               "label": "Text UPPERCASE"
+            },
+            {
+               "type": "text",
+               "id": "breadcrumb_prev_fs",
+               "label": "Text font size",
+               "placeholder": "E.g: 14px",
+               "info": "Blank to use Link font size"
+            },
+            {
+               "type": "color",
+               "id": "breadcrumb_prev_color",
+               "label": "Text color",
+               "info": "Blank to use Link color"
+            },
+            {
+               "type": "select",
+               "id": "breadcrumb_prev_fw",
+               "label": "Text font weight",
+               "default": "inherit",
+               "options": [
+                  {
+                     "value": "inherit",
+                     "label": "Auto"
+                  },
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "breadcrumb_prev_ff",
+               "label": "Text font family",
+               "default": "inherit",
+               "options": [
+                  {
+                     "value": "inherit",
+                     "label": "Auto"
+                  },
+                  {
+                     "value": "ff-head",
+                     "label": "Header font"
+                  },
+                  {
+                     "value": "ff-body",
+                     "label": "Body font"
+                  },
+                  {
+                     "value": "ff-1",
+                     "label": "Custom font 1"
+                  },
+                  {
+                     "value": "ff-2",
+                     "label": "Custom font 2"
+                  },
+                  {
+                     "value": "ff-3",
+                     "label": "Custom font 3"
+                  },
+                  {
+                     "value": "ff-4",
+                     "label": "Custom font 4"
+                  },
+                  {
+                     "value": "ff-5",
+                     "label": "Custom font 5"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "type": "faq",
+         "limit": 10,
+         "name": "FAQ Content",
+         "settings": [
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Block label",
+               "default": "FAQ Block label"
+            },
+            {
+               "type": "text",
+               "id": "heading",
+               "label": "Heading",
+               "default": "FAQ Heading"
+            },
+            {
+               "type": "textarea",
+               "id": "content",
+               "label": "Content",
+               "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod lorem solo tempor incididunt ut labore et dolore magna aliqua."
+            }
+         ]
+      },
+      {
+         "type": "social",
+         "name": "Social icon",
+         "limit": 10,
+         "settings": [
+            {
+               "type": "paragraph",
+               "content": "Make sure Map is available"
+            },
+            {
+               "type": "text",
+               "id": "social_icon",
+               "label": "Social font icon name",
+               "default": "icon-uni0E14"
+            },
+            {
+               "type": "url",
+               "id": "social_link",
+               "label": "Social icon link"
+            }
+         ]
+      }
+   ]
+}
+{% endschema %}

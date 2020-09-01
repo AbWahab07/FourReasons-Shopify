@@ -1,0 +1,2126 @@
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+{%- assign slideshow_ver = 'slideshow-v1' -%}
+
+{%- include 'snippet-section-slideshow' -%}
+
+{% schema %}
+{
+   "name": "Simple Slideshow",
+   "tag": "section",
+   "settings": [
+      {
+         "type": "paragraph",
+         "content": "Created by 'Slideshow v1' section. Please try to keep your slideshow images, videos the same size"
+      },
+      {
+         "id": "title",
+         "type": "text",
+         "label": "Section Label [:id]","default": "Slideshow v1"
+      },
+      {
+         "type": "header",
+         "content": "LAYOUT"
+      },
+      {
+         "type": "checkbox",
+         "id": "boxed_layout",
+         "label": "Boxed layout"
+      },
+      {
+         "type": "text",
+         "id": "section_padding",
+         "label": "Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type": "color",
+         "id": "section_bg_color",
+         "label": "Background color",
+         "default": "#FFFFFF"
+      },
+      {
+         "type": "image_picker",
+         "id": "section_bg_image",
+         "label": "Background image"
+      },
+      {
+         "type": "select",
+         "id": "section_bg_size",
+         "label": "Background Size",
+         "default": "cover",
+         "options": [
+            {
+               "value": "auto",
+               "label": "Auto"
+            },
+            {
+               "value": "cover",
+               "label": "Cover"
+            },
+            {
+               "value": "contain",
+               "label": "Contain"
+            }
+         ]
+      },
+      {
+         "type": "select",
+         "id": "section_bg_repeat",
+         "label": "Background Image Repeat:",
+         "default": "no-repeat",
+         "options": [
+            {
+               "value": "no-repeat",
+               "label": "No Repeat"
+            },
+            {
+               "value": "repeat",
+               "label": "Repeat"
+            },
+            {
+               "value": "repeat-x",
+               "label": "Repeat X"
+            },
+            {
+               "value": "repeat-y",
+               "label": "Repeat Y"
+            }
+         ]
+      },
+      {
+         "type": "select",
+         "id": "section_bg_position",
+         "label": "Background Image Position:",
+         "default": "center center",
+         "options": [
+            {
+               "value": "left top",
+               "label": "Left Top"
+            },
+            {
+               "value": "center top",
+               "label": "Center Top"
+            },
+            {
+               "value": "right top",
+               "label": "Right Top"
+            },
+            {
+               "value": "left center",
+               "label": "Left Center"
+            },
+            {
+               "value": "center center",
+               "label": "Center Center"
+            },
+            {
+               "value": "right center",
+               "label": "Right Center"
+            },
+            {
+               "value": "left bottom",
+               "label": "Left Bottom"
+            },
+            {
+               "value": "center bottom",
+               "label": "Center Bottom"
+            },
+            {
+               "value": "right bottom",
+               "label": "Right Bottom"
+            }
+         ]
+      },
+      {
+         "type": "header",
+         "content": "Slideshow settings"
+      },
+      {
+         "type": "select",
+         "id": "slide_height",
+         "label": "Slider Height type",
+         "default": "auto",
+         "options": [
+            {
+               "value": "auto",
+               "label": "Auto"
+            },
+            {
+               "value": "adapt-first-slide",
+               "label": "Adapt to First Slide"
+            },
+            {
+               "value": "full-screen",
+               "label": "Full Screen"
+            }
+         ]
+      },
+      {
+         "type": "text",
+         "id": "slide_height_mob",
+         "label": "Slider height"
+      },
+      {
+         "type": "checkbox",
+         "id": "parallax",
+         "label": "Use Parallax"
+      },
+      {
+         "type": "range",
+         "id": "slide_active",
+         "label": "Set active slide by default",
+         "min": 1,
+         "max": 10,
+         "default": 1
+      },
+      {
+         "type": "checkbox",
+         "id": "slide_loop",
+         "label": "Loop"
+      },
+      {
+         "type": "checkbox",
+         "id": "slide_center",
+         "label": "Center slide"
+      },
+      {
+         "type": "checkbox",
+         "id": "slide_content_overlay",
+         "label": "Slide content overlay",
+         "default": true
+      },
+      {
+         "type": "text",
+         "id": "slide_view",
+         "label": "Slide view (Optional)"
+      },
+      {
+         "type": "header",
+         "content": "AUTO SLIDES "
+      },
+      {
+         "type":"text",
+         "id":"autoplay_speed",
+         "label":"Change slides every (in second)",
+         "default":"5",
+         "placeholder": "E.g: 5"
+      },
+      {
+         "type": "select",
+         "id": "animation",
+         "label": "Slideshow Animation",
+         "default": "slide",
+         "options": [
+            {
+               "value": "coverflow",
+               "label": "Coverflow"
+            },
+            {
+               "value": "cube",
+               "label": "Cube"
+            },
+            {
+               "value": "fade",
+               "label": "Fade"
+            },
+            {
+               "value": "flip",
+               "label": "Flip"
+            },
+            {
+               "value": "slide",
+               "label": "Slide"
+            }
+         ]
+      },
+      {
+         "type": "header",
+         "content": "NAVIGATOR"
+      },
+      {
+         "type": "checkbox",
+         "id": "navigator",
+         "label": "Show Navigator Next Prev",
+         "default": true
+      },
+      {
+         "type": "checkbox",
+         "id": "nav_hide_mobile",
+         "label": "Hide Navigator on mobile"
+      },
+      {
+         "type": "color",
+         "id": "nav_bg_color",
+         "label": "Navigation background color",
+         "default": "rgba(0,0,0,0)"
+      },
+      {
+         "type": "range",
+         "id": "nav_bg_opacity",
+         "label": "Background transparent",
+         "min": 0,
+         "max": 100,
+         "step": 10,
+         "unit": "%",
+         "default": 90
+      },
+      {
+         "type": "color",
+         "id": "nav_color",
+         "label": "Navigation color",
+         "default": "rgba(0,0,0,0)"
+      },
+      {
+         "type": "text",
+         "id": "nav_size",
+         "label": "Navigation arrows size",
+         "placeholder": "E.g: 24px"
+      },
+      {
+         "type": "header",
+         "content": "Pagination"
+      },
+      {
+         "type": "checkbox",
+         "id": "pagination",
+         "label": "Show Pagination",
+         "default": true
+      },
+      {
+         "type": "checkbox",
+         "id": "pag_hide_mobile",
+         "label": "Hide Pagnation on mobile"
+      },
+      {
+         "type": "range",
+         "id": "nav_pag_style",
+         "label": "Pagination Style",
+         "min": 1,
+         "max": 8,
+         "step": 1,
+         "default": 1
+      },
+      {
+         "type": "color",
+         "id": "dots_color",
+         "label": "Pagination color",
+         "default": "rgba(0,0,0,0)"
+      },
+      {
+         "type": "color",
+         "id": "dots_border_color",
+         "label": "Pagination border color",
+         "default": "rgba(0,0,0,0)"
+      },
+      {
+         "type": "range",
+         "id": "dots_border_size",
+         "label": "Pagination border size",
+         "min": 0,
+         "max": 10,
+         "unit": "px",
+         "default": 0
+      },
+      {
+         "type": "text",
+         "id": "pagination_width",
+         "label": "Pagination dots width",
+         "default": "10px",
+         "placeholder": "E.g: 10px"
+      },
+      {
+         "type": "text",
+         "id": "pagination_height",
+         "label": "Pagination dots height",
+         "default": "10px",
+         "placeholder": "E.g: 10px"
+      },
+      {
+         "type": "text",
+         "id": "pagination_margin",
+         "label": "Pagination dots margin",
+         "default": "5px",
+         "placeholder": "E.g: 5px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type": "select",
+         "id": "pagination_position",
+         "label": "Pagination position",
+         "default": "bottom-center",
+         "options": [
+            {
+               "value": "middle-left",
+               "label": "Middle left"
+            },
+            {
+               "value": "middle-right",
+               "label": "Middle right"
+            },
+            {
+               "value": "bottom-left",
+               "label": "Bottom left"
+            },
+            {
+               "value": "bottom-center",
+               "label": "Bottom center"
+            },
+            {
+               "value": "bottom-right",
+               "label": "Bottom right"
+            }
+         ]
+      },
+      {
+         "type": "text",
+         "id": "thumb_img_max_width",
+         "label": "Thumb image max width",
+         "placeholder": "E.g: 20px"
+      },
+      {
+         "type": "color",
+         "id": "thumb_text_color",
+         "label": "Thumbnail text color",
+         "default": "#000000"
+      }
+   ],
+   "blocks": [
+      {
+         "type": "general_slide_style",
+         "name": "General Slides styles",
+         "limit": 1,
+         "settings": [
+            {
+               "type": "range",
+               "id": "position_left",
+               "label": "Horizontal Position",
+               "min": 0,
+               "max": 100,
+               "step": 1,
+               "unit": "%",
+               "default": 50
+            },
+            {
+               "type": "range",
+               "id": "position_top",
+               "label": "Vertical Position",
+               "min": 0,
+               "max": 100,
+               "step": 1,
+               "unit": "%",
+               "default": 50
+            },
+            {
+               "type": "text",
+               "id": "content_width",
+               "label": "Content max width (in %)",
+               "info": "E.g: 80%, 100%"
+            },
+            {
+               "type": "text",
+               "id": "content_padding",
+               "label": "Padding content",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "color",
+               "id": "content_bg",
+               "label": "Content background color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "range",
+               "id": "content_bg_opacity",
+               "label": "Background transparent",
+               "min": 0,
+               "max": 100,
+               "step": 10,
+               "unit": "%",
+               "default": 50
+            },
+            {
+               "type": "header",
+               "content": "Heading style"
+            },
+            {
+               "type": "text",
+               "id": "title_font_size",
+               "label": "Heading font size:",
+               "default": "44px"
+            },
+            {
+               "type": "color",
+               "id": "title_color",
+               "label": "Heading",
+               "default": "#000000"
+            },
+            {
+               "type": "select",
+               "id": "tit_bold",
+               "label": "Heading font weight",
+               "default": "300",
+               "options": [
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "title_mb",
+               "label": "Heading margin bottom:"
+            },
+            {
+               "type": "text",
+               "id": "tit_lh",
+               "label": "Heading line height"
+            },
+            {
+               "type": "text",
+               "id": "title_lsp",
+               "label": "Heading letters spacing:"
+            },
+            {
+               "type": "header",
+               "content": "Subheading style"
+            },
+            {
+               "type": "text",
+               "id": "subtitle_font_size",
+               "label": "Subheading font size:",
+               "default": "34px"
+            },
+            {
+               "type": "color",
+               "id": "subtitle_color",
+               "label": "Subheading",
+               "default": "#000000"
+            },
+            {
+               "type": "select",
+               "id": "sub_bold",
+               "label": "Subheading font weight",
+               "default": "300",
+               "options": [
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "subtitle_mb",
+               "label": "Subheading margin bottom:"
+            },
+            {
+               "type": "text",
+               "id": "sub_lh",
+               "label": "Subheading line height"
+            },
+            {
+               "type": "text",
+               "id": "subtitle_lsp",
+               "label": "Subheading letters spacing:"
+            },
+            {
+               "type": "header",
+               "content": "Subheading 2 style"
+            },
+            {
+               "type": "text",
+               "id": "caption_font_size",
+               "label": "Subheading 2 font size:",
+               "default": "24px"
+            },
+            {
+               "type": "color",
+               "id": "caption_color",
+               "label": "Subheading 2",
+               "default": "#000000"
+            },
+            {
+               "type": "select",
+               "id": "cap_bold",
+               "label": "Subheading 2 font weight",
+               "default": "300",
+               "options": [
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "caption_mb",
+               "label": "Subheading 2 margin bottom:"
+            },
+            {
+               "type": "text",
+               "id": "cap_lh",
+               "label": "Subheading 2 line height"
+            },
+            {
+               "type": "text",
+               "id": "caption_lsp",
+               "label": "Subheading 2 letters spacing:"
+            },
+            {
+               "type": "header",
+               "content": "1. Button style"
+            },
+            {
+               "type": "text",
+               "id": "padding_button",
+               "label": "Button padding",
+               "default": "6px 20px",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "margin_button",
+               "label": "Button margin",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "button_radius",
+               "label": "Button corners radius",
+               "placeholder": "E.g: 4px 4px 4px 4px"
+            },
+            {
+               "type": "text",
+               "id": "button_font_size",
+               "label": "Button font size:",
+               "default": "14px"
+            },
+            {
+               "type": "color",
+               "id": "button_color",
+               "label": "Button text",
+               "default": "#000000"
+            },
+            {
+               "type": "color",
+               "id": "button_bg_color",
+               "label": "Button background color",
+               "default": "#ffffff"
+            },
+            {
+               "type":"color",
+               "id":"button_border_color",
+               "label":"Button border color",
+               "default": "#000000"
+            },
+            {
+               "type":"range",
+               "id":"button_border_size",
+               "label":"Button border size",
+               "min":0,
+               "max":10,
+               "step":1,
+               "unit":"px",
+               "default":0
+            },
+            {
+               "type": "select",
+               "id": "btn_bold",
+               "label": "Button font weight",
+               "default": "300",
+               "options": [
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "btn_lh",
+               "label": "Button line height"
+            },
+            {
+               "type": "text",
+               "id": "button_lsp",
+               "label": "Button letters spacing:"
+            },
+            {
+               "type": "header",
+               "content": "2. Button style"
+            },
+            {
+               "type": "text",
+               "id": "padding_button_2",
+               "label": "Button 2 padding",
+               "default": "6px 20px",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "margin_button_2",
+               "label": "Button 2 margin",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "button_radius_2",
+               "label": "Button 2 corners radius",
+               "placeholder": "E.g: 4px 4px 4px 4px"
+            },
+            {
+               "type": "text",
+               "id": "button_font_size_2",
+               "label": "Button 2 font size:",
+               "default": "14px"
+            },
+            {
+               "type": "color",
+               "id": "button_color_2",
+               "label": "Button 2 text",
+               "default": "#000000"
+            },
+            {
+               "type": "color",
+               "id": "button_bg_color_2",
+               "label": "Button 2 background color",
+               "default": "#ffffff"
+            },
+            {
+               "type":"color",
+               "id":"button_border_color_2",
+               "label":"Button 2 border color",
+               "default": "#000000"
+            },
+            {
+               "type":"range",
+               "id":"button_border_size_2",
+               "label":"Button 2 border size",
+               "min":0,
+               "max":10,
+               "step":1,
+               "unit":"px",
+               "default":0
+            },
+            {
+               "type": "select",
+               "id": "btn_bold_2",
+               "label": "Button 2 font weight",
+               "default": "300",
+               "options": [
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "btn_lh_2",
+               "label": "Button 2 line height"
+            },
+            {
+               "type": "text",
+               "id": "button_lsp_2",
+               "label": "Button 2 letters spacing:"
+            },
+            {
+               "type": "header",
+               "content": "1. Button icon"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_fs",
+               "label": "Icon font size",
+               "default": "14px"
+            },
+            {
+               "type": "color",
+               "id": "btn_ic_color",
+               "label": "Icon color",
+               "default": "#000000"
+            },
+            {
+               "type": "color",
+               "id": "btn_ic_bg_color",
+               "label": "Icon background color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_padding",
+               "label": "Icon padding",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_margin",
+               "label": "Icon margin",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_rd",
+               "label": "Icon border radius",
+               "placeholder": "E.g: 5px 5px 5px 5px"
+            },
+            {
+               "type": "header",
+               "content": "2. Button icon"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_fs_2",
+               "label": "Icon 2 font size",
+               "default": "14px"
+            },
+            {
+               "type": "color",
+               "id": "btn_ic_color_2",
+               "label": "Icon 2 color",
+               "default": "#000000"
+            },
+            {
+               "type": "color",
+               "id": "btn_ic_bg_color_2",
+               "label": "Icon 2 background color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_padding_2",
+               "label": "Icon 2 padding",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_margin_2",
+               "label": "Icon 2 margin",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_rd_2",
+               "label": "Icon 2 border radius",
+               "placeholder": "E.g: 5px 5px 5px 5px"
+            },
+            {
+               "type": "header",
+               "content": "Animation"
+            },
+            {
+               "type": "select",
+               "id": "title_animation",
+               "label": "Heading animation",
+               "default": "fadeIn",
+               "options": [
+                  {
+                     "value": "fadeIn",
+                     "label": "Fade In"
+                  },
+                  {
+                     "value": "moveFromLeft",
+                     "label": "Move From Left"
+                  },
+                  {
+                     "value": "moveFromRight",
+                     "label": "Move From Right"
+                  },
+                  {
+                     "value": "moveFromTop",
+                     "label": "Move From Top"
+                  },
+                  {
+                     "value": "moveFromBottom",
+                     "label": "Move From Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "subtitle_animation",
+               "label": "Subheading animation",
+               "default": "fadeIn",
+               "options": [
+                  {
+                     "value": "fadeIn",
+                     "label": "Fade In"
+                  },
+                  {
+                     "value": "moveFromLeft",
+                     "label": "Move From Left"
+                  },
+                  {
+                     "value": "moveFromRight",
+                     "label": "Move From Right"
+                  },
+                  {
+                     "value": "moveFromTop",
+                     "label": "Move From Top"
+                  },
+                  {
+                     "value": "moveFromBottom",
+                     "label": "Move From Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "caption_animation",
+               "label": "Subheading 2 animation",
+               "default": "fadeIn",
+               "options": [
+                  {
+                     "value": "fadeIn",
+                     "label": "Fade In"
+                  },
+                  {
+                     "value": "moveFromLeft",
+                     "label": "Move From Left"
+                  },
+                  {
+                     "value": "moveFromRight",
+                     "label": "Move From Right"
+                  },
+                  {
+                     "value": "moveFromTop",
+                     "label": "Move From Top"
+                  },
+                  {
+                     "value": "moveFromBottom",
+                     "label": "Move From Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "button_animation",
+               "label": "Button animation",
+               "default": "fadeIn",
+               "options": [
+                  {
+                     "value": "fadeIn",
+                     "label": "Fade In"
+                  },
+                  {
+                     "value": "moveFromLeft",
+                     "label": "Move From Left"
+                  },
+                  {
+                     "value": "moveFromRight",
+                     "label": "Move From Right"
+                  },
+                  {
+                     "value": "moveFromTop",
+                     "label": "Move From Top"
+                  },
+                  {
+                     "value": "moveFromBottom",
+                     "label": "Move From Bottom"
+                  }
+               ]
+            },
+            
+            {
+               "type": "range",
+               "id": "title_animation_delay",
+               "label": "Heading animation delay",
+               "min": 0,
+               "max": 5,
+               "step": 0.1,
+               "default": 0,
+               "unit": "s"
+            },
+            {
+               "type": "range",
+               "id": "subtitle_animation_delay",
+               "label": "Subheading animation delay",
+               "min": 0,
+               "max": 5,
+               "step": 0.1,
+               "default": 0,
+               "unit": "s"
+            },
+            {
+               "type": "range",
+               "id": "caption_animation_delay",
+               "label": "Subheading 2 animation delay",
+               "min": 0,
+               "max": 5,
+               "step": 0.1,
+               "default": 0,
+               "unit": "s"
+            },
+            {
+               "type": "range",
+               "id": "button_animation_delay",
+               "label": "Button animation delay",
+               "min": 0,
+               "max": 5,
+               "step": 0.1,
+               "default": 0,
+               "unit": "s"
+            }
+            
+         ]
+      },
+      {
+         "type": "slide",
+         "name": "Slide item",
+         "limit": 10,
+         "settings": [
+            {
+               "type": "image_picker",
+               "id": "image",
+               "label": "Image"
+            },
+            {
+               "type": "text",
+               "id": "image_position",
+               "label": "Image position",
+               "default": "center center",
+               "info": "E.g: left center, 80% center"
+            },
+            {
+               "type": "textarea",
+               "id": "video",
+               "label": "Video link",
+               "placeholder": "Go to Settings > Files > click 'Upload files' to upload your video, then copy the url and paste to here."
+            },
+            {
+               "type": "image_picker",
+               "id": "image_thumb",
+               "label": "Thumbnail image"
+            },
+            {
+               "type": "text",
+               "id": "thumb_text",
+               "label": "Thumbnail text",
+               "info": "Only work with Thumbnail image"
+            },
+            {
+               "type": "color",
+               "id": "overlay_color",
+               "label": "Overlay color",
+               "default": "#000000"
+            },
+            {
+               "type": "range",
+               "id": "image_overlay",
+               "label": "Overlay opacity",
+               "min": 0,
+               "max": 100,
+               "step": 10,
+               "default": 0,
+               "unit": "%"
+            },
+            {
+               "type": "url",
+               "id": "link",
+               "label": "Slide link",
+               "info": "Blank to use link from button"
+            },
+            {
+               "type": "header",
+               "content": "Text box layout"
+            },
+            {
+               "type": "select",
+               "id": "textbox_style",
+               "label": "Textbox content style",
+               "default": "inherit",
+               "options": [
+                  {
+                     "value": "inherit",
+                     "label": "Inherit General style"
+                  },
+                  {
+                     "value": "custom",
+                     "label": "Customize style"
+                  },
+                  {
+                     "value": "hide",
+                     "label": "Hide content"
+                  }
+               ]
+            },
+            {
+               "type": "range",
+               "id": "position_left",
+               "label": "Horizontal Position",
+               "min": 0,
+               "max": 100,
+               "step": 1,
+               "unit": "%",
+               "default": 50
+            },
+            {
+               "type": "range",
+               "id": "position_top",
+               "label": "Vertical Position",
+               "min": 0,
+               "max": 100,
+               "step": 1,
+               "unit": "%",
+               "default": 50
+            },
+            {
+               "type": "select",
+               "id": "alignment",
+               "label": "Text box alignment",
+               "default": "text-center",
+               "options": [
+                  {
+                     "value": "text-left",
+                     "label": "Left"
+                  },
+                  {
+                     "value": "text-center",
+                     "label": "Center"
+                  },
+                  {
+                     "value": "text-right",
+                     "label": "Right"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "content_width",
+               "label": "Content max width (in %)",
+               "info": "E.g: 80%, 100%"
+            },
+            {
+               "type": "text",
+               "id": "content_padding",
+               "label": "Padding content",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "color",
+               "id": "content_bg",
+               "label": "Content background color",
+               "default": "#ffffff"
+            },
+            {
+               "type": "range",
+               "id": "content_bg_opacity",
+               "label": "Background transparent",
+               "min": 0,
+               "max": 100,
+               "step": 10,
+               "unit": "%",
+               "default": 50
+            },
+            {
+               "type": "header",
+               "content": "Text box content"
+            },
+            {
+               "type": "text",
+               "id": "title_text",
+               "label": "Heading"
+            },
+            {
+               "type": "text",
+               "id": "subtitle_text",
+               "label": "Subheading"
+            },
+            {
+               "type": "textarea",
+               "id": "caption_text",
+               "label": "Subheading 2"
+            },
+            {
+               "type": "checkbox",
+               "id": "title_up",
+               "label": "Heading uppercase"
+            },
+            {
+               "type": "checkbox",
+               "id": "subtitle_up",
+               "label": "Subheading uppercase"
+            },
+            {
+               "type": "checkbox",
+               "id": "caption_up",
+               "label": "Subheading 2 uppercase"
+            },
+            {
+               "type": "text",
+               "id": "button_text",
+               "label": "1. Button Label"
+            },
+            {
+               "type": "url",
+               "id": "button_link",
+               "label": "1. Button Link"
+            },
+            {
+               "type": "text",
+               "id": "button_text_2",
+               "label": "2. Button Label"
+            },
+            {
+               "type": "url",
+               "id": "button_link_2",
+               "label": "2. Button Link"
+            },
+            {
+               "type": "text",
+               "id": "btn_icon",
+               "label": "Font icon name"
+            },
+            {
+               "type": "text",
+               "id": "btn_icon_2",
+               "label": "Font icon name 2"
+            },
+            {
+               "type": "header",
+               "content": "Heading style"
+            },
+            {
+               "type": "text",
+               "id": "title_font_size",
+               "label": "Heading font size:"
+            },
+            {
+               "type": "color",
+               "id": "title_color",
+               "label": "Heading color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "select",
+               "id": "tit_bold",
+               "label": "Heading font weight",
+               "default": "inherit",
+               "options": [
+                  {
+                     "value": "inherit",
+                     "label": "Inherit"
+                  },
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "title_mb",
+               "label": "Heading margin bottom:"
+            },
+            {
+               "type": "text",
+               "id": "title_lsp",
+               "label": "Heading letters spacing:"
+            },
+            {
+               "type": "header",
+               "content": "Subheading style"
+            },
+            {
+               "type": "text",
+               "id": "subtitle_font_size",
+               "label": "Subheading font size:"
+            },
+            {
+               "type": "color",
+               "id": "subtitle_color",
+               "label": "Subheading color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "select",
+               "id": "sub_bold",
+               "label": "Subheading font weight",
+               "default": "inherit",
+               "options": [
+                  {
+                     "value": "inherit",
+                     "label": "Inherit"
+                  },
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "subtitle_mb",
+               "label": "Subheading margin bottom:"
+            },
+            {
+               "type": "text",
+               "id": "subtitle_lsp",
+               "label": "Subheading letters spacing:"
+            },
+            {
+               "type": "header",
+               "content": "Subheading 2 style"
+            },
+            {
+               "type": "text",
+               "id": "caption_font_size",
+               "label": "Subheading 2 font size:"
+            },
+            {
+               "type": "color",
+               "id": "caption_color",
+               "label": "Subheading 2 color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "select",
+               "id": "cap_bold",
+               "label": "Subheading 2 font weight",
+               "default": "inherit",
+               "options": [
+                  {
+                     "value": "inherit",
+                     "label": "Inherit"
+                  },
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "caption_mb",
+               "label": "Subheading 2 margin bottom:"
+            },
+            {
+               "type": "text",
+               "id": "caption_lsp",
+               "label": "Subheading 2 letters spacing:"
+            },
+            {
+               "type": "header",
+               "content": "Button style"
+            },
+            {
+               "type": "checkbox",
+               "id": "button_underline",
+               "label": "Underline for button label/link"
+            },
+            {
+               "type": "checkbox",
+               "id": "use_as_link",
+               "label": "Use button as link"
+            },
+            {
+               "type": "range",
+               "id": "button_inherit",
+               "label": "Inherit Button style:",
+               "min": 0,
+               "max": 3,
+               "default": 1,
+               "info": "Set 0 to customize button"
+            },
+            {
+               "type": "text",
+               "id": "padding_button",
+               "label": "Button padding",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "margin_button",
+               "label": "Button margin",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "button_radius",
+               "label": "Button corners radius",
+               "placeholder": "E.g: 4px 4px 4px 4px"
+            },
+            {
+               "type": "text",
+               "id": "button_font_size",
+               "label": "Button font size:"
+            },
+            {
+               "type": "color",
+               "id": "button_color",
+               "label": "Button text",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "color",
+               "id": "button_bg_color",
+               "label": "Button background color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type":"color",
+               "id":"button_border_color",
+               "label":"Button border color",
+               "default": "#000000"
+            },
+            {
+               "type":"range",
+               "id":"button_border_size",
+               "label":"Button border size",
+               "min":0,
+               "max":10,
+               "step":1,
+               "unit":"px",
+               "default":0
+            },
+            {
+               "type": "select",
+               "id": "btn_bold",
+               "label": "Button font weight",
+               "default": "inherit",
+               "options": [
+                  {
+                     "value": "inherit",
+                     "label": "Inherit"
+                  },
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "btn_lh",
+               "label": "Button line height"
+            },
+            {
+               "type": "text",
+               "id": "button_lsp",
+               "label": "Button letters spacing:"
+            },
+            {
+               "type": "header",
+               "content": "Button 2 style"
+            },
+            {
+               "type": "checkbox",
+               "id": "button_underline_2",
+               "label": "Underline for button label/link"
+            },
+            {
+               "type": "checkbox",
+               "id": "use_as_link_2",
+               "label": "Use button as link"
+            },
+            {
+               "type": "range",
+               "id": "button_inherit_2",
+               "label": "Inherit Button style:",
+               "min": 0,
+               "max": 3,
+               "default": 1,
+               "info": "Set 0 to customize button"
+            },
+            {
+               "type": "text",
+               "id": "padding_button_2",
+               "label": "Button 2 padding",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "margin_button_2",
+               "label": "Button 2 margin",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "button_radius_2",
+               "label": "Button 2 corners radius",
+               "placeholder": "E.g: 4px 4px 4px 4px"
+            },
+            {
+               "type": "text",
+               "id": "button_font_size_2",
+               "label": "Button 2 font size:"
+            },
+            {
+               "type": "color",
+               "id": "button_color_2",
+               "label": "Button 2 text",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "color",
+               "id": "button_bg_color_2",
+               "label": "Button 2 background color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type":"color",
+               "id":"button_border_color_2",
+               "label":"Button 2 border color",
+               "default": "#000000"
+            },
+            {
+               "type":"range",
+               "id":"button_border_size_2",
+               "label":"Button 2 border size",
+               "min":0,
+               "max":10,
+               "step":1,
+               "unit":"px",
+               "default":0
+            },
+            {
+               "type": "select",
+               "id": "btn_bold_2",
+               "label": "Button 2 font weight",
+               "default": "inherit",
+               "options": [
+                  {
+                     "value": "inherit",
+                     "label": "Inherit"
+                  },
+                  {
+                     "value": "100",
+                     "label": "100 Thin (Hairline)"
+                  },
+                  {
+                     "value": "200",
+                     "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                     "value": "300",
+                     "label": "300 Light"
+                  },
+                  {
+                     "value": "400",
+                     "label": "400 Normal"
+                  },
+                  {
+                     "value": "500",
+                     "label": "500 Medium"
+                  },
+                  {
+                     "value": "600",
+                     "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                     "value": "700",
+                     "label": "700 Bold"
+                  },
+                  {
+                     "value": "800",
+                     "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                     "value": "900",
+                     "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "btn_lh_2",
+               "label": "Button 2 line height"
+            },
+            {
+               "type": "text",
+               "id": "button_lsp_2",
+               "label": "Button 2 letters spacing:"
+            },
+            {
+               "type": "header",
+               "content": "Button icon style"
+            },
+            {
+               "type": "select",
+               "id": "icon_position",
+               "label": "Icon position",
+               "options": [
+                  {
+                     "value": "left",
+                     "label": "Left"
+                  },
+                  {
+                     "value": "right",
+                     "label": "Right"
+                  }
+               ],
+               "default": "left"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_fs",
+               "label": "Icon font size"
+            },
+            {
+               "type": "color",
+               "id": "btn_ic_color",
+               "label": "Icon color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "color",
+               "id": "btn_ic_bg_color",
+               "label": "Icon background color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_padding",
+               "label": "Icon padding",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_margin",
+               "label": "Icon margin",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_rd",
+               "label": "Icon border radius",
+               "placeholder": "E.g: 5px 5px 5px 5px"
+            },
+            {
+               "type": "header",
+               "content": "Button 2 icon style"
+            },
+            {
+               "type": "select",
+               "id": "icon_position_2",
+               "label": "Icon 2 position",
+               "options": [
+                  {
+                     "value": "left",
+                     "label": "Left"
+                  },
+                  {
+                     "value": "right",
+                     "label": "Right"
+                  }
+               ],
+               "default": "left"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_fs_2",
+               "label": "Icon 2 font size"
+            },
+            {
+               "type": "color",
+               "id": "btn_ic_color_2",
+               "label": "Icon 2 color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "color",
+               "id": "btn_ic_bg_color_2",
+               "label": "Icon 2 background color",
+               "default": "rgba(0,0,0,0)"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_padding_2",
+               "label": "Icon 2 padding",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_margin_2",
+               "label": "Icon 2 margin",
+               "placeholder": "E.g: 5px 10px 10px 5px",
+               "info": "Order: top right bottom left"
+            },
+            {
+               "type": "text",
+               "id": "btn_ic_rd_2",
+               "label": "Icon 2 border radius",
+               "placeholder": "E.g: 5px 5px 5px 5px"
+            },
+            {
+               "type": "header",
+               "content": "Animation"
+            },
+            {
+               "type": "select",
+               "id": "title_animation",
+               "label": "Heading animation",
+               "default": "fadeIn",
+               "options": [
+                  {
+                     "value": "fadeIn",
+                     "label": "Fade In"
+                  },
+                  {
+                     "value": "moveFromLeft",
+                     "label": "Move From Left"
+                  },
+                  {
+                     "value": "moveFromRight",
+                     "label": "Move From Right"
+                  },
+                  {
+                     "value": "moveFromTop",
+                     "label": "Move From Top"
+                  },
+                  {
+                     "value": "moveFromBottom",
+                     "label": "Move From Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "subtitle_animation",
+               "label": "Subheading animation",
+               "default": "fadeIn",
+               "options": [
+                  {
+                     "value": "fadeIn",
+                     "label": "Fade In"
+                  },
+                  {
+                     "value": "moveFromLeft",
+                     "label": "Move From Left"
+                  },
+                  {
+                     "value": "moveFromRight",
+                     "label": "Move From Right"
+                  },
+                  {
+                     "value": "moveFromTop",
+                     "label": "Move From Top"
+                  },
+                  {
+                     "value": "moveFromBottom",
+                     "label": "Move From Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "caption_animation",
+               "label": "Subheading 2 animation",
+               "default": "fadeIn",
+               "options": [
+                  {
+                     "value": "fadeIn",
+                     "label": "Fade In"
+                  },
+                  {
+                     "value": "moveFromLeft",
+                     "label": "Move From Left"
+                  },
+                  {
+                     "value": "moveFromRight",
+                     "label": "Move From Right"
+                  },
+                  {
+                     "value": "moveFromTop",
+                     "label": "Move From Top"
+                  },
+                  {
+                     "value": "moveFromBottom",
+                     "label": "Move From Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "button_animation",
+               "label": "Button animation",
+               "default": "fadeIn",
+               "options": [
+                  {
+                     "value": "fadeIn",
+                     "label": "Fade In"
+                  },
+                  {
+                     "value": "moveFromLeft",
+                     "label": "Move From Left"
+                  },
+                  {
+                     "value": "moveFromRight",
+                     "label": "Move From Right"
+                  },
+                  {
+                     "value": "moveFromTop",
+                     "label": "Move From Top"
+                  },
+                  {
+                     "value": "moveFromBottom",
+                     "label": "Move From Bottom"
+                  }
+               ]
+            },            
+            {
+               "type": "range",
+               "id": "title_animation_delay",
+               "label": "Heading animation delay",
+               "min": 0,
+               "max": 5,
+               "step": 0.1,
+               "default": 0,
+               "unit": "s"
+            },
+            {
+               "type": "range",
+               "id": "subtitle_animation_delay",
+               "label": "Subheading animation delay",
+               "min": 0,
+               "max": 5,
+               "step": 0.1,
+               "default": 0,
+               "unit": "s"
+            },
+            {
+               "type": "range",
+               "id": "caption_animation_delay",
+               "label": "Subheading 2 animation delay",
+               "min": 0,
+               "max": 5,
+               "step": 0.1,
+               "default": 0,
+               "unit": "s"
+            },
+            {
+               "type": "range",
+               "id": "button_animation_delay",
+               "label": "Button animation delay",
+               "min": 0,
+               "max": 5,
+               "step": 0.1,
+               "default": 0,
+               "unit": "s"
+            }
+            
+         ]
+      }
+   ],
+   "presets": [
+      {
+         "name": "Simple Slideshow",
+         "category": "Slideshow",
+         "blocks": [
+            {
+               "type": "general_slide_style"
+            },
+            {
+               "type": "slide"
+            },
+            {
+               "type": "slide"
+            }
+         ]
+      }
+   ]
+}
+{% endschema %}

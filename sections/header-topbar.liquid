@@ -1,0 +1,336 @@
+{%- if section.blocks.size > 0 -%}
+  {% if section.settings.topbar_boxed_layout %}{% assign _layout = 'boxed' %}{% else %}{% assign _layout = 'full' %}{% endif %}
+  {%- assign _padding               = section.settings.padding -%}
+  {%- assign _show_border           = section.settings.show_border -%}
+  {%- assign topbar_border          = section.settings.topbar_border | default: 'rgba(0,0,0,0)' -%}
+  {%- assign topbar_border_size     = section.settings.border_width -%}
+  {%- assign topbar_border_opacity  = section.settings.border_color_opacity | times: 0.01 -%}
+  {%- if topbar_border_size > 0 and topbar_border != 'rgba(0,0,0,0)' -%}
+    {%- assign topbar_border = topbar_border | color_modify: 'alpha', topbar_border_opacity -%}
+  {%- endif -%}
+
+  <div id="topbar" data-section-type="header" data-section-id="{{section.id}}" class="layout-{{_layout}}{% if section.settings.break_container %} f-break{% endif %}">
+    <div class="topbar{% if _show_border %} border-items{% endif %}{% if settings.topbar_text_uppercase %} text-uppercase{% endif %}">
+      {% if _layout == 'boxed' %}<div class="container">{% endif %}
+
+        <div class="table-row">
+          {%- assign colum_count = 0 -%}
+
+          {%- for block in section.blocks -%}
+            {%- if forloop.first and block.type != 'column' -%}
+              <div id="topbar-col-{{colum_count}}" class="topbar-column text-center w-100"{{block.shopify_attributes}}>
+               <div class="tb-col-content justify-content-center">
+                 {%- for block in section.blocks -%}
+                   {%- include 'include-topbar-content' -%}
+                 {%- endfor -%}
+               </div>
+              </div>
+
+            {%- elsif block.type == 'column' -%}
+              {%- assign colum_count    = colum_count | plus: 1 -%}
+              {%- assign i              = forloop.index -%}
+              {%- assign visibility     = block.settings.visibility -%}
+              {%- assign _carousel      = block.settings.animation_content -%}
+              {%- assign item_align     = block.settings.colum_align | downcase -%}
+              {%- assign colum_width    = block.settings.colum_width -%}
+              {%- capture columnID -%}#topbar-col-{{colum_count}}{%- endcapture -%}
+
+              {% capture column_visible %} {%- case visibility -%}{%- when 'hide' -%}d-none{%- when 'hide_mobile' -%}d-none d-lg-block{%- when 'hide_desktop' -%}d-lg-none{%- else -%}{%- endcase -%}{% endcapture %}
+
+              {%- assign alignResp = item_align | split: ',' -%}
+              {%- capture align_class -%}
+                {%- case alignResp.size -%}
+                  {%- when 1 -%}text-lg-{{alignResp[0] | strip }} text-md-{{alignResp[0] | strip }} text-{{- alignResp[0] | strip -}}
+                  {%- when 2 -%}text-lg-{{alignResp[0] | strip }} text-md-{{alignResp[0] | strip }} text-{{- alignResp[1] | strip -}}
+                  {%- else -%}  text-lg-{{alignResp[0] | strip }} text-md-{{alignResp[1] | strip }} text-{{- alignResp[2] | strip -}}
+                  {%- endcase -%}{%- endcapture -%}
+
+              <div id="topbar-col-{{colum_count}}" class="topbar-column {{align_class}} {{ column_visible }}"{{block.shopify_attributes}}>
+               <div class="tb-col-content{% if _carousel %} d-block carousel slide" data-ride="carousel{% endif %}">
+                 {%- for block in section.blocks offset: i -%}
+                    {%- if _carousel and block.type != 'column' -%}<div class="carousel-item{% if forloop.first %} active{% endif %}">{%- endif -%}
+                      {%- include 'include-topbar-content' -%}
+                    {%- if _carousel and block.type != 'column' -%}</div>{%- endif -%}
+                 {%- endfor -%}
+               </div>
+              </div>
+              {%- capture block_css -%}{%- include 'css-responsive', classID: columnID, css_property: 'width', css_value: colum_width -%}{%- endcapture -%}
+              {%- assign section_css = section_css | append:  block_css -%}
+            {%- endif -%}
+         {%- endfor -%}
+        </div>
+      {% if _layout == 'boxed' %}</div>{% endif %}
+        <style>{{section_css}}
+          {%- include 'css-responsive', classID: '#topbar', css_value: _padding -%}          
+          {%- if topbar_border != 'rgba(0,0,0,0)' and topbar_border_size > 0 -%}#topbar{border-bottom: {{topbar_border_size}}px solid {{topbar_border}};}{%- endif -%}
+          {%- if topbar_border != 'rgba(0,0,0,0)' and section.settings.use_border_color_settings -%}
+          #topbar .topbar.border-items .table-row > div .tb-col-content > div:not(:last-child):before{background: {{topbar_border}};opacity: 1;}{%- endif -%}
+        </style>
+
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+   "name":"Announcement Bar",
+   "tag" :"section",
+   "settings":[
+      {
+         "type":"checkbox",
+         "id":"topbar_boxed_layout",
+         "label":"Boxed layout",
+         "default":true
+      },
+      {
+         "type":"checkbox",
+         "id"   :"break_container",
+         "label":"Break out container",
+         "info": "In Boxed layout"
+      },
+      {
+         "type":"checkbox",
+         "id"   :"show_border",
+         "label":"Show border between items"
+      },
+      {
+         "type":"checkbox",
+         "id":"use_border_color_settings",
+         "label":"Use Border bottom color for Border between items"
+      },
+      {
+         "type"  :"text",
+         "id"    :"padding",
+         "label" :"Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"header",
+         "content":"Border bottom"
+      },
+      {
+         "type":"range",
+         "id"   :"border_width",
+         "label": "Border size",
+         "min"   :0,
+         "max"   :10,
+         "step"  :1,
+         "unit"  :"px",
+         "default":0
+      },
+      {
+         "type":"color",
+         "id"   :"topbar_border",
+         "label":"Border color",
+         "default": "#FAFAFA"
+      },
+      {
+        "type": "range",
+        "id": "border_color_opacity",
+        "label": "Border color opacity",
+        "min": 0,
+        "max": 100,
+        "step": 10,
+        "unit": "%",
+        "default": 100
+      }
+   ],
+   "blocks":[
+      {
+         "type":"column",
+         "name":"Topbar Column",
+         "limit":5,
+         "settings":[
+            {
+               "type":"text",
+               "id":"title",
+               "label":"Column Label",
+               "default":"Topbar Column"
+            },
+            {
+               "type":"select",
+               "id":"visibility",
+               "label":"Visibility",
+               "default":"hide_mobile",
+               "options":[
+                  {
+                     "value":"hide",
+                     "label":"Hide"
+                  },
+                  {
+                     "value":"hide_desktop",
+                     "label":"Show on Medium/Small Devices"
+                  },
+                  {
+                     "value":"hide_mobile",
+                     "label":"Show on Large Devices"
+                  },
+                  {
+                     "value":"all",
+                     "label":"Show All"
+                  }
+               ]
+            },
+            {
+               "type"  :"checkbox",
+               "id"    :"animation_content",
+               "label" :"Enable Slider"
+            },
+            {
+               "type"  :"text",
+               "id"    :"colum_width",
+               "label" :"Column width",
+               "placeholder": "lg,md,sm",
+               "default": "100%"
+            },
+            {
+               "type"  :"text",
+               "id"    :"colum_align",
+               "label" :"Column content alignment",
+               "placeholder": "lg,md,sm",
+               "default": "center"
+            }
+         ]
+      },
+      {
+         "type":"text",
+         "name":"+ Text",
+         "settings":[
+            {
+               "type":"text",
+               "id":"title",
+               "label":"Block label",
+               "default":"+ Text"
+            },
+            {
+               "type":"html",
+               "id":"text",
+               "label":"Text"
+            },
+            {
+               "type"  :"url",
+               "id"    :"tb_text_link",
+               "label" :"Optional - Text link"
+            },
+            {
+               "type":"text",
+               "id":"icon",
+               "label":"Optional - Font Icon name",
+               "info":"Include 'icon_here' in your content to show icon. By default the icon is in front of the content"
+            },
+            {
+               "type":"text",
+               "id":"countdown",
+               "label":"Optional - Countdown date",
+               "placeholder":"MM/DD/YYYY"
+            },
+            {
+               "type"  :"textarea",
+               "id"    :"css_text",
+               "label" :"Optional - Custom CSS:"
+            }
+         ]
+      },
+      {
+         "type":"logo",
+         "name":"+ Logo",
+         "limit":2,
+         "settings":[
+            {
+               "type":"image_picker",
+               "id":"logo",
+               "label":"Footer logo image"
+            },
+            {
+               "type":"range",
+               "id":"logo_max_width",
+               "min":100,
+               "max":1180,
+               "step":20,
+               "unit":"px",
+               "label":"Logo maximum width",
+               "default":100
+            }
+         ]
+      },
+      {
+         "type":"tb_menu",
+         "name":"+ Menu List",
+         "settings":[
+            {
+               "type":"text",
+               "id":"title",
+               "label":"Block label",
+               "default":"+ Menu List"
+            },
+           {
+             "type":"link_list",
+             "id":"nav_linklist",
+             "label":"Menu"
+           },
+           {
+            "type":"select",
+            "id":"menu_align",
+            "label":"Menu alignment",
+            "options":[
+              {
+                "value":"text-left",
+                "label":"Left"
+              },
+              {
+                "value":"text-center",
+                "label":"Center"
+              },
+              {
+                "value":"text-right",
+                "label":"Right"
+              }
+            ],
+            "default":"text-center"
+          }
+         ]
+      },
+      {
+         "type"  :"tb_icons",
+         "name"    :"+ Icons",
+         "settings" :[
+           {
+              "type"  :"text",
+              "id"    :"title",
+              "label" :"Block label",
+              "default":"+ Icon"
+           },
+           {
+              "type"  :"select",
+              "id"    :"icon_type",
+              "label" :"Icon type:",
+              "options":[
+                {"value":"account"      ,"label":"+ Account"},
+                {"value":"cart-mobile"  ,"label":"+ Cart"},
+                {"value":"compare"      ,"label":"+ Compare"},
+                {"value":"currencies"   ,"label":"+ Currencies"},
+                {"value":"languages"    ,"label":"+ Languages"},
+                {"value":"newsletter"   ,"label":"+ Newsletter"},
+                {"value":"search"       ,"label":"+ Search"},
+                {"value":"social"       ,"label":"+ Social Icons"},
+                {"value":"wishlist"     ,"label":"+ Wishlist"}
+              ]
+           },
+           {
+              "type":"text",
+              "id":"tb_ic_fs",
+              "label":"Icon font size",
+              "placeholder": "E.g: 16px"
+           },
+           {
+              "type":"checkbox",
+              "id":"tb_ic_show_label",
+              "label":"Show label",
+              "info": "Not for Currencies, Languages, Social Icons"
+           }
+         ]
+      }
+   ]
+}
+{% endschema %}

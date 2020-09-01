@@ -1,0 +1,147 @@
+{%- case settings.lang_type -%}
+	{%- comment -%}		============			WEGLOT TRANSLATE		============	{%- endcomment-%}
+  	{%- when 'weglot' -%}
+		{%- if type == 'init' -%}
+			{%- if settings.api_translate != blank -%}
+				<!--Start Weglot Settings-->
+				{%- assign weglot_flag_style = settings.weglot_flag_style -%}
+
+				{{ "//cdn.weglot.com/weglot.min.js" | script_tag }}
+				<script>
+					if (typeof Weglot != 'undefined') {
+						Weglot.initialize({
+							api_key 				: "{{settings.api_translate}}"
+							,auto_switch 			: JSON.parse('{{ settings.auto_switch }}')
+							,auto_switch_fallback 	: "{{settings.weglot_language_fallback | downcase | default: 'en' }}"
+							,wait_transition		: true
+							,cache					: true
+							,translate_search 		: true
+							,search_parameter 		: "q"
+							,search_forms 			: "#bc-product-search"
+							,dynamic 				: ".text-date, .related-dynamic, .add-to-cart-sticky, .snize, input, .search-results .result-item"
+							,excluded_blocks: [
+								{value: ".no-translate"}
+							]
+							,switchers: [
+								{
+									button_style:{
+										full_name 	: true
+										,with_name 	: true
+										,is_dropdown: true
+										,with_flags : JSON.parse("{% if weglot_flag_style != 'none' %}true{% else %}false{% endif %}")
+										,flag_type 	: "{% if weglot_flag_style != 'none' %}{{weglot_flag_style}}{% else %}rectangle_mat{% endif %}"
+									},
+									location: {
+										target : ".translate-position",
+										sibling: null
+									}
+								},
+								{
+									button_style:{
+										full_name 	: true
+										,with_name 	: true
+										,is_dropdown: false
+										,with_flags : JSON.parse("{% if weglot_flag_style != 'none' %}true{% else %}false{% endif %}")
+										,flag_type 	: "{% if weglot_flag_style != 'none' %}{{weglot_flag_style}}{% else %}rectangle_mat{% endif %}"
+									},
+									location: {
+										target : ".translate-list",
+										sibling: null
+									}
+								}
+							]
+						});
+						Weglot.on("initialized", function(){
+							let name = Weglot.getLanguageName(Weglot.getCurrentLang());
+							$('div[data-target="#popup_languages"] span').html(name);
+						})
+						Weglot.on("languageChanged", function(){
+							let name = Weglot.getLanguageName(Weglot.getCurrentLang());
+							$('div[data-target="#popup_languages"] span').html(name);
+						})
+					}
+				</script>
+			{%- endif -%}
+		{%- else -%}
+			{%- if trans_type == 'list' -%}
+				<div class="translate-list notranslate"></div>
+			{%- else -%}
+				<div class="translate-position notranslate"></div>
+			{%- endif -%}
+		{%- endif -%}
+
+
+	{%- comment -%}		============			GOOGLE TRANSLATE		============	{%- endcomment-%}
+  	{%- when 'google' -%}
+	  	{%- assign _lang = settings.gg_languages | downcase | replace: " ",""  -%}
+
+	  	{%- if type == 'init' -%}
+		  	<script type="text/javascript">
+		  		function googleTranslateElementInit() {new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,{{ _lang }}'}, 'google_translate_element');}
+		  		function triggerHtmlEvent(element, eventName) {
+		  			var event;
+		  			if(document.createEvent) {
+		  				event = document.createEvent('HTMLEvents');
+		  				event.initEvent(eventName, true, true);
+		  				element.dispatchEvent(event);
+		  			} else {
+		  				event = document.createEventObject();
+		  				event.eventType = eventName;
+		  				element.fireEvent('on' + event.eventType, event);
+		  			}
+		  		}
+		  		var _findDefaultLang = ()=>{
+	  				let en 	= $('#google_translate_element').find('option[value="en"]');
+	  				en.length && !$('.li-lang[data-lang="en"]').length && $('.gg-translate-ui > ul').prepend('<li class="li-lang" data-lang="en">'+en.html()+'</li>');
+		  		}
+		  		function langHandle(lang){
+		  			jQuery.cookie('lang-cookie', lang,  {expires: 1, path: '/'});
+
+		  			$('#google_translate_element option').each(function(){
+		  				if($(this).val().includes(lang)) {
+		  					$(this).parent().val($(this).val());
+		  					var container = document.getElementById('google_translate_element');
+		  					var select = container.getElementsByTagName('select')[0];
+							triggerHtmlEvent(select, 'change');
+		  				}
+		  			});
+
+					_findDefaultLang();
+
+	  				let l = $('.li-lang[data-lang="'+lang+'"]');
+	  				$('.li-lang').removeClass('active');
+	  				if (l.length) {
+	  					l.addClass('active').closest('.gg-translate-ui').children('a').html(l.html());
+	  				}else{
+	  					$('.li-lang').closest('.gg-translate-ui').children('a').first().html('{{ "general.header.select_languages" | t }}');
+	  				}
+		  		}
+		  		$(window).on('load' ,function() {
+		  			if (jQuery.cookie('lang-cookie') == null) {
+		  				$('.gg-translate-ui > a').first().html('{{ "general.header.select_languages" | t }}');
+		  			}else{
+		  				langHandle(jQuery.cookie('lang-cookie'));
+		  			}
+
+					$('.gg-translate-ui > ul').length && $('#google_translate_element').find('option').each(function(i,v){
+						let val = $(this).val(), html = $(this).html();
+						val.length && $('.gg-translate-ui > ul').append('<li class="li-lang" data-lang="'+val+'">'+html+'</li>');
+					})
+		  			$('#popup_languages').on('shown.bs.modal', _findDefaultLang);
+		  		});
+
+		  		$(document).on('click','.li-lang' ,function(e) {
+		  			e.preventDefault();
+		  			langHandle($(this).data('lang'));
+		  		});
+
+		  	</script>
+		    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+		{%- else -%}
+			<div class="translate-position gg-translate-ui notranslate">
+				<a href="javascript:void(0);" class="hide"></a>
+				<ul class="gtrans-el"></ul>
+			</div>
+	  	{%- endif -%}
+
+{%- endcase -%}

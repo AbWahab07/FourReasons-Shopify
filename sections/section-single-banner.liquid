@@ -1,0 +1,1388 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _lazyload  			= settings.use_lazyload -%}
+{%- assign _padding   			= section.settings.section_padding -%}
+{%- assign _bg_color  			= section.settings.section_bg_color -%}
+{%- assign _bg_color_custom  	= section.settings.section_bg_color_custom -%}
+{%- assign _bg_image  			= section.settings.section_bg_image -%}
+{%- assign _bg_size           	= section.settings.section_bg_size -%}
+{%- assign _bg_repeat         	= section.settings.section_bg_repeat -%}
+{%- assign _bg_position       	= section.settings.section_bg_position -%}
+{%- assign _item_spc       			= section.settings.item_spc -%}
+{%- unless _bg_color_custom == blank -%}{%- assign _bg_color = _bg_color_custom -%}{%- endunless -%}
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="home-single-banner layout-{{_layout }} section-show-{{section.id}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    {%- include 'head-title' -%}
+
+    <div class="s-banner-content">
+    	<div class="row{% unless _item_spc %} no-gutters{% endunless %}">
+    		{%- if section.blocks.size > 0 -%}
+	    		{%- for block in section.blocks -%}
+	    			{%- assign _width_resp = block.settings.width_resp -%}
+					{%- capture _bannerClass -%}{%- unless _width_resp == blank -%}{%- include 'set-width-bootstrap',in_type: 'width', number: _width_resp -%}{{_out}}{%- endunless -%}{%- endcapture -%}
+
+	              	<div class="banner-item {{_bannerClass}}"{{block.shopify_attributes}}>
+	              		<div class="banner-item-inner block-{{block.id}} block-type-{{block.type}}">
+
+	              			{%- capture blockID -%}.section-show-{{section.id}} .block-{{block.id}}{%- endcapture -%}
+		              		{%- case block.type -%}
+		              		  	{%- when 'image' -%}
+			              		  	{%- assign image 		 	= block.settings.image -%}
+			              		  	{%- assign _image_width 	= block.settings.image_width -%}
+
+			              		  	<div class="image image-{{_image_width}}">{%- include 'image-style' -%}</div>
+			              		  	{%- unless image == blank -%}
+				              		  	{%- capture block_css -%}{%- include 'css-responsive', classID: blockID ,nextClassID: ' .image' ,css_property: 'margin' ,css_value: block.settings.image_margin -%}{%- endcapture -%}
+				              		  	{%- assign section_css = section_css | append: block_css -%}
+			              		  	{%- endunless -%}
+
+		              		  	{%- when 'text' -%}
+
+			              		 	<div class="textbox-content">
+
+		                                {%- for i in (1..4) -%}
+		                                  {%- assign textID     = ' .text-' | append: i -%}
+		                                  {%- assign _temp_text = 'text_' | append: i -%}
+		                                  {%- assign _b_text    = block.settings[_temp_text] -%}
+
+		                                  {%- unless _b_text == blank -%}
+		                                    {%- assign _temp_fw = 'text_fw_'      | append: i -%}
+		                                    {%- assign _temp_cl = 'text_color_'   | append: i -%}
+		                                    {%- assign _temp_fs = 'text_fs_'      | append: i -%}
+		                                    {%- assign _temp_mr = 'text_margin_'  | append: i -%}
+		                                    {%- assign _temp_ls = 'text_lsp_'     | append: i -%}
+		                                    {%- assign _temp_lh = 'text_lh_'      | append: i -%}
+
+		                                    {%- assign _b_text_fw = block.settings[_temp_fw]  -%}
+		                                    {%- assign _b_text_fs = block.settings[_temp_fs]  -%}
+		                                    {%- assign _b_text_cl = block.settings[_temp_cl] | default: 'rgba(0,0,0,0)' -%}
+
+		                                    <div class="text-{{i}} fw-{{_b_text_fw}}{% if _b_text_fs contains 'h' %} {{_b_text_fs}}{% endif %}{% unless _b_text_cl == 'rgba(0,0,0,0)' %}" style="color: {{_b_text_cl}};{% endunless %}">{{_b_text}}</div>
+		                                    {%- capture block_css -%}
+		                                      {%- unless _b_text_fs contains 'h' -%}
+		                                      {%- include 'css-responsive' ,classID: blockID ,nextClassID: textID ,css_property: 'font-size'      ,css_value: _b_text_fs -%}{%- endunless -%}
+		                                      {%- include 'css-responsive' ,classID: blockID ,nextClassID: textID ,css_property: 'margin'         ,css_value: block.settings[_temp_mr] -%}
+		                                      {%- include 'css-responsive' ,classID: blockID ,nextClassID: textID ,css_property: 'letter-spacing' ,css_value: block.settings[_temp_ls] -%}
+		                                      {%- include 'css-responsive' ,classID: blockID ,nextClassID: textID ,css_property: 'line-height'	  ,css_value: block.settings[_temp_lh] -%}
+		                                    {%- endcapture -%}
+		                                    {%- assign section_css = section_css | append: block_css -%}
+		                                  {%- endunless -%}
+		                                {%- endfor -%}
+
+				              		  	<div class="button-group">
+				              		  		{%- include 'include-button', type: 'init', number_button: 2, button_class: 'btn-banner' -%}
+				              		  	</div>
+				              		  	{%- capture block_css -%}
+				              		  		{%- include 'css-responsive' ,classID: blockID, nextClassID: ' .button-group .btn-tt-1' ,css_property: 'margin' ,css_value: block.settings.btn_margin_1 -%}
+				              		  		{%- include 'css-responsive' ,classID: blockID, nextClassID: ' .button-group .btn-tt-2' ,css_property: 'margin' ,css_value: block.settings.btn_margin_2 -%}
+				              		  	{%- endcapture -%}
+				              		  	{%- assign section_css = section_css | append: block_css -%}
+			              		  	</div>
+
+			              		{%- when 'text_with_video' -%}
+
+			              		    <div class="textbox-content">
+		                                {%- for i in (1..4) -%}
+		                                  {%- assign textID     = ' .text-' | append: i -%}
+		                                  {%- assign _temp_text = 'text_' | append: i -%}
+		                                  {%- assign _b_text    = block.settings[_temp_text] -%}
+
+		                                  {%- unless _b_text == blank -%}
+		                                    {%- assign _temp_fw = 'text_fw_'      | append: i -%}
+		                                    {%- assign _temp_cl = 'text_color_'   | append: i -%}
+		                                    {%- assign _temp_fs = 'text_fs_'      | append: i -%}
+		                                    {%- assign _temp_mr = 'text_margin_'  | append: i -%}
+		                                    {%- assign _temp_ls = 'text_lsp_'     | append: i -%}
+		                                    {%- assign _temp_lh = 'text_lh_'      | append: i -%}
+
+		                                    {%- assign _b_text_fw = block.settings[_temp_fw]  -%}
+		                                    {%- assign _b_text_fs = block.settings[_temp_fs]  -%}
+		                                    {%- assign _b_text_cl = block.settings[_temp_cl] | default: 'rgba(0,0,0,0)' -%}
+
+		                                    <div class="text-{{i}} fw-{{_b_text_fw}}{% if _b_text_fs contains 'h' %} {{_b_text_fs}}{% endif %}{% unless _b_text_cl == 'rgba(0,0,0,0)' %}" style="color: {{_b_text_cl}};{% endunless %}">{{_b_text}}</div>
+		                                    {%- capture block_css -%}
+		                                      {%- unless _b_text_fs contains 'h' -%}
+		                                      {%- include 'css-responsive' ,classID: blockID ,nextClassID: textID ,css_property: 'font-size'      ,css_value: _b_text_fs -%}{%- endunless -%}
+		                                      {%- include 'css-responsive' ,classID: blockID ,nextClassID: textID ,css_property: 'margin'         ,css_value: block.settings[_temp_mr] -%}
+		                                      {%- include 'css-responsive' ,classID: blockID ,nextClassID: textID ,css_property: 'letter-spacing' ,css_value: block.settings[_temp_ls] -%}
+		                                      {%- include 'css-responsive' ,classID: blockID ,nextClassID: textID ,css_property: 'line-height'	  ,css_value: block.settings[_temp_lh] -%}
+		                                    {%- endcapture -%}
+		                                    {%- assign section_css = section_css | append: block_css -%}
+		                                  {%- endunless -%}
+		                                {%- endfor -%}
+
+		                                {%- assign b_video_link 		= block.settings.video_link -%}
+										{%- unless b_video_link == blank -%}
+											{%- assign b_btn_label 			= block.settings.btn_label -%}
+											{%- assign b_btn_icon 			= block.settings.btn_icon -%}
+											{%- assign b_btn_inherit 		= block.settings.btn_inherit -%}
+											{%- assign b_btn_class 			= '' -%}
+
+											{%- if b_btn_inherit > 0 -%}
+												{%- assign b_btn_class = b_btn_class | append: ' btn-' | append: b_btn_inherit -%}
+											{%- endif -%}
+
+					              		   	<div class="button-group">
+					              		   		<a href="javascript:void(0)" class="btn-s-banner d-inline-flex{{b_btn_class}}" data-toggle="modal" data-target="#videoModal_{{section.id}}_{{block.id}}">
+					              		   			{%- unless b_btn_icon == blank -%}{%- include 'icons', type: 'icon_free', name: b_btn_icon -%}{%- endunless -%}
+					              		   			<span class="btn-label fw-{{block.settings.btn_fw}}">{{b_btn_label}}</span>
+					              		   		</a>
+					              		   	</div>
+
+
+					              		   	<div class="modal fade modal-video" id="videoModal_{{section.id}}_{{block.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					              		   		<div class="modal-dialog modal-dialog-centered" role="document">
+					              		   			<div class="modal-content">
+					              		   				<div class="modal-body p-0">
+					              		   					<div class="embed-responsive embed-responsive-16by9">
+					              		   						{%- unless b_video_link contains 'iframe' -%}
+					              		   							<video class="embed-responsive-item" controls autoplay muted loop playsinline preload="auto"><source src="{{b_video_link}}" type="video/mp4"></video>
+					              		   						{%- else -%}
+					              		   							{{b_video_link}}
+					              		   						{%- endunless -%}
+				              		   						</div>
+				              		   					</div>
+				              		   				</div>
+				              		   			</div>
+				              		   		</div>
+
+					              		   	{%- capture block_css -%}
+				              		  			{%- include 'css-responsive' ,classID: blockID, nextClassID: ' .button-group .btn-s-banner' ,css_value: block.settings.btn_padding -%}
+				              		  			{%- include 'css-responsive' ,classID: blockID, nextClassID: ' .button-group' 				,css_value: block.settings.btn_margin 	,css_property: 'margin' -%}
+				              		  			{%- include 'css-responsive' ,classID: blockID, nextClassID: ' .btn-s-banner .btn-label'  	,css_value: block.settings.btn_fs 		,css_property: 'font-size' -%}
+				              		  			{%- include 'css-responsive' ,classID: blockID, nextClassID: ' .button-group .btn-s-banner' ,css_value: block.settings.btn_rd 		,css_property: 'border-radius' -%}
+
+												{%- if b_btn_inherit == 0 -%}
+													{%- assign b_btn_color 			= block.settings.btn_color 		| default: 'rgba(0,0,0,0)' -%}
+													{%- assign b_btn_bg_color 		= block.settings.btn_bg_color 	| default: 'rgba(0,0,0,0)' -%}
+													{%- assign b_btn_border 		= block.settings.btn_border 	| default: 'rgba(0,0,0,0)' -%}
+													{{blockID}} .button-group .btn-s-banner{color: {{b_btn_color}};background-color: {{b_btn_bg_color}};
+														{%- unless b_btn_border == 'rgba(0,0,0,0)' -%}border: 1px solid {{b_btn_border}};{%- endunless -%}
+													}
+												{%- endif -%}
+
+												{%- unless b_btn_icon == blank -%}
+													{{blockID}} .btn-s-banner .demo-icon{color: {{block.settings.btn_ic_color | default: 'rgba(0,0,0,0)' }};}
+				              		  				{%- include 'css-responsive' ,classID: blockID, nextClassID: ' .btn-s-banner .icon-type' ,css_value: block.settings.btn_ic_padding -%}
+				              		  				{%- include 'css-responsive' ,classID: blockID, nextClassID: ' .btn-s-banner .icon-type' ,css_property: 'font-size' ,css_value: block.settings.btn_ic_fs -%}
+												{%- endunless -%}
+
+					              		   	{%- endcapture -%}
+					              		   	{%- assign section_css = section_css | append: block_css -%}
+				              		   	{%- endunless -%}
+			              		   	</div>
+		              		    {%- else -%}
+		              		{%- endcase -%}
+
+		              		{%- capture block_css%}
+			              		{%- include 'css-responsive' ,classID: blockID ,css_value: block.settings.block_padding -%}
+			                    {%- include 'css-responsive' ,classID: blockID ,css_property: 'margin' ,css_value: block.settings.block_margin -%}
+			              		{%- include 'css-responsive' ,classID: blockID ,nextClassID: ' > div'  ,css_property: 'text-align' ,css_value: block.settings.text_align -%}
+			                    {%- unless block.settings.block_margin == blank -%}{{blockID}}{position:relative;z-index: 99;}{%- endunless -%}
+			                    {%- if block.settings.border_size > 0 -%}{{blockID}} {border: {{block.settings.border_size}}px solid {{block.settings.border_color | default: 'rgba(0,0,0,0)' }};}{%- endif -%}
+		                    {%- endcapture -%}
+		                    {%- assign section_css = section_css | append: block_css -%}
+	              		</div>
+	              	</div>
+	    		{%- endfor -%}
+    		{%- else -%}
+    			<div class="col-md-6">
+    				<div class="image">{%- include 'svgset' -%}</div>
+    			</div>
+    			<div class="col-md-6 col-12 align-center">
+    				<div class="text-left">
+    					<div class="custom-block-heading-text h2">Talk about your brand</div>
+    					<div class="custom-block-body-text h4">Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</div>
+    				</div>
+    			</div>
+    		{%- endif -%}
+    	</div>
+    </div>
+
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+  <style>{%- include 'section-general-css' -%}{{- section_css -}}</style>
+</div>
+
+{% schema %}{
+	"name":"Single Banner",
+	"tag":"section",
+	"settings":[
+		{
+			"type":"paragraph",
+			"content":"Created by 'Single Banner' section"
+		},
+		{
+			"type":"text",
+			"id":"title",
+			"label":"Section Label [:id]","default": "Single banner"
+		},
+		{
+			"type":"header",
+			"content":"LAYOUT"
+		},
+		{
+			"type":"checkbox",
+			"id":"boxed_layout",
+			"label":"Boxed layout",
+			"default":true
+		},
+		{
+		   "type":"checkbox",
+		   "id":"item_spc",
+		   "label":"Item spacing",
+		   "default": true
+		},
+		{
+			"type"  :"text",
+			"id"    :"section_padding",
+			"label" :"Section Padding",
+			"placeholder": "E.g: 5px 20px 5px 20px",
+			"info": "Order: Top Right Bottom Left"
+		},
+		{
+			"type":"color",
+			"id":"section_bg_color",
+			"label":"Background color",
+			"default":"#FFFFFF"
+		},
+		{
+			"type":"text",
+			"id":"section_bg_color_custom",
+			"label":"Background color custom"
+		},
+		{
+			"type":"image_picker",
+			"id":"section_bg_image",
+			"label":"Background image"
+		},
+		{
+			"type":"select",
+			"id"   :"section_bg_size",
+			"label":"Background Size",
+			"default": "cover",
+			"options":[
+			{"value":"auto","label":"Auto"},
+			{"value":"cover","label":"Cover"},
+			{"value":"contain","label":"Contain"}
+			]
+		},
+		{
+			"type": "select",
+			"id": "section_bg_repeat",
+			"label": "Background Image Repeat:",
+			"default": "no-repeat",
+			"options": [
+			{"value":"no-repeat","label":"No Repeat"},
+			{"value":"repeat","label":"Repeat"},
+			{"value":"repeat-x","label":"Repeat X"},
+			{"value":"repeat-y","label":"Repeat Y"}
+			]
+		},
+		{
+			"type": "select",
+			"id": "section_bg_position",
+			"label": "Background Image Position:",
+			"default": "center center",
+			"options": [
+			{"value":"left top","label":"Left Top"},
+			{"value":"center top","label":"Center Top"},
+			{"value":"right top","label":"Right Top"},
+			{"value":"left center","label":"Left Center"},
+			{"value":"center center","label":"Center Center"},
+			{"value":"right center","label":"Right Center"},
+			{"value":"left bottom","label":"Left Bottom"},
+			{"value":"center bottom","label":"Center Bottom"},
+			{"value":"right bottom","label":"Right Bottom"}
+			]
+		}
+	],
+	"blocks":[
+		{
+			"type":"image",
+			"name":"Image",
+			"settings":[
+				{
+					"type":"image_picker",
+					"id":"image",
+					"label":"Image"
+				},
+				{
+					"type":"text",
+					"id":"image_margin",
+					"label":"Image Margin",
+					"placeholder":"E.g: 5px 20px 5px 20px",
+					"info":"Order: Top Right Bottom Left"
+				},
+				{
+				   "type":"select",
+				   "id"	 :"image_width",
+				   "label":"Image width",
+				   "default": "auto",
+				   "options":[
+				   	{
+				   	  "value": "auto",
+				   	  "label": "Auto"
+				   	},
+				   	{
+				   	  "value": "fill",
+				   	  "label": "Fill"
+				   	}
+				   ]
+				},
+			    {
+			       "type":"text",
+			       "id"   :"width_resp",
+			       "label":"Width (1->12)",
+			       "placeholder": "xl,lg,md,sm,xs,xxs",
+			       "default": "6,12",
+			       "info": "0 to hide. E.g: 4,6,12"
+			    }
+			]
+		},
+		{
+			"type":"text",
+			"name":"Textbox",
+			"settings":[
+			  {
+			    "type": "text",
+			    "id": "text_1",
+			    "label": "Text #1",
+			    "default": "Talk about your brand"
+			  },
+			  {
+			    "type": "textarea",
+			    "id": "text_2",
+			    "label": "Text #2",
+			    "default": "Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store."
+			  },
+			  {
+			    "type": "textarea",
+			    "id": "text_3",
+			    "label": "Text #3"
+			  },
+			  {
+			    "type": "textarea",
+			    "id": "text_4",
+			    "label": "Text #4"
+			  },
+			  {
+			    "type": "text",
+			    "id": "button_1",
+			    "label": "Button label"
+			  },
+			  {
+			    "type": "url",
+			    "id": "button_link_1",
+			    "label": "Button link"
+			  },
+			  {
+			    "type": "text",
+			    "id": "button_2",
+			    "label": "Button 2 label"
+			  },
+			  {
+			    "type": "url",
+			    "id": "button_link_2",
+			    "label": "Button 2 link"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_align",
+			    "label": "Text alignment",
+			    "default": "center",
+			    "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+			  },
+			  {
+			    "type": "header",
+			    "content": "Text 1 settings"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_fs_1",
+			    "label": "Text 1 font size",
+			    "default": "h3"
+			  },
+			  {
+			    "type": "color",
+			    "id": "text_color_1",
+			    "label": "Text 1 color",
+			    "default": "#000000"
+			  },
+			  {
+			    "type": "select",
+			    "id": "text_fw_1",
+			    "label": "Text 1 font weight",
+			    "default": "300",
+			    "options": [
+			      {
+			        "value": "100",
+			        "label": "100 Thin (Hairline)"
+			      },
+			      {
+			        "value": "200",
+			        "label": "200 Extra Light (Ultra Light)"
+			      },
+			      {
+			        "value": "300",
+			        "label": "300 Light"
+			      },
+			      {
+			        "value": "400",
+			        "label": "400 Normal"
+			      },
+			      {
+			        "value": "500",
+			        "label": "500 Medium"
+			      },
+			      {
+			        "value": "600",
+			        "label": "600 Semi Bold (Demi Bold)"
+			      },
+			      {
+			        "value": "700",
+			        "label": "700 Bold"
+			      },
+			      {
+			        "value": "800",
+			        "label": "800 Extra Bold (Ultra Bold)"
+			      },
+			      {
+			        "value": "900",
+			        "label": "900 Black (Heavy)"
+			      }
+			    ]
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_margin_1",
+			    "label": "Text 1 margin",
+			    "info": "Order: Top Right Bottom Left.",
+			    "placeholder": "E.g: 5px 20px 5px 20px"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_lsp_1",
+			    "label": "Text 1 letter spacing",
+			    "placeholder": "E.g: 2px"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_lh_1",
+			    "label": "Text 1 line height",
+			    "placeholder": "E.g: 24px"
+			  },
+			  {
+			    "type": "header",
+			    "content": "Text 2 settings"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_fs_2",
+			    "label": "Text 2 font size",
+			    "default": "h4"
+			  },
+			  {
+			    "type": "color",
+			    "id": "text_color_2",
+			    "label": "Text 2 color",
+			    "default": "#000000"
+			  },
+			  {
+			    "type": "select",
+			    "id": "text_fw_2",
+			    "label": "Text 2 font weight",
+			    "default": "300",
+			    "options": [
+			      {
+			        "value": "100",
+			        "label": "100 Thin (Hairline)"
+			      },
+			      {
+			        "value": "200",
+			        "label": "200 Extra Light (Ultra Light)"
+			      },
+			      {
+			        "value": "300",
+			        "label": "300 Light"
+			      },
+			      {
+			        "value": "400",
+			        "label": "400 Normal"
+			      },
+			      {
+			        "value": "500",
+			        "label": "500 Medium"
+			      },
+			      {
+			        "value": "600",
+			        "label": "600 Semi Bold (Demi Bold)"
+			      },
+			      {
+			        "value": "700",
+			        "label": "700 Bold"
+			      },
+			      {
+			        "value": "800",
+			        "label": "800 Extra Bold (Ultra Bold)"
+			      },
+			      {
+			        "value": "900",
+			        "label": "900 Black (Heavy)"
+			      }
+			    ]
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_margin_2",
+			    "label": "Text 2 margin",
+			    "info": "Order: Top Right Bottom Left.",
+			    "placeholder": "E.g: 5px 20px 5px 20px"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_lsp_2",
+			    "label": "Text 2 letter spacing",
+			    "placeholder": "E.g: 2px"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_lh_2",
+			    "label": "Text 2 line height",
+			    "placeholder": "E.g: 24px"
+			  },
+			  {
+			    "type": "header",
+			    "content": "Text 3 settings"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_fs_3",
+			    "label": "Text 3 font size",
+			    "default": "14px"
+			  },
+			  {
+			    "type": "color",
+			    "id": "text_color_3",
+			    "label": "Text 3 color",
+			    "default": "#000000"
+			  },
+			  {
+			    "type": "select",
+			    "id": "text_fw_3",
+			    "label": "Text 3 font weight",
+			    "default": "300",
+			    "options": [
+			      {
+			        "value": "100",
+			        "label": "100 Thin (Hairline)"
+			      },
+			      {
+			        "value": "200",
+			        "label": "200 Extra Light (Ultra Light)"
+			      },
+			      {
+			        "value": "300",
+			        "label": "300 Light"
+			      },
+			      {
+			        "value": "400",
+			        "label": "400 Normal"
+			      },
+			      {
+			        "value": "500",
+			        "label": "500 Medium"
+			      },
+			      {
+			        "value": "600",
+			        "label": "600 Semi Bold (Demi Bold)"
+			      },
+			      {
+			        "value": "700",
+			        "label": "700 Bold"
+			      },
+			      {
+			        "value": "800",
+			        "label": "800 Extra Bold (Ultra Bold)"
+			      },
+			      {
+			        "value": "900",
+			        "label": "900 Black (Heavy)"
+			      }
+			    ]
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_margin_3",
+			    "label": "Text 3 margin",
+			    "info": "Order: Top Right Bottom Left.",
+			    "placeholder": "E.g: 5px 20px 5px 20px"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_lsp_3",
+			    "label": "Text 3 letter spacing",
+			    "placeholder": "E.g: 2px"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_lh_3",
+			    "label": "Text 3 line height",
+			    "placeholder": "E.g: 24px"
+			  },
+			  {
+			    "type": "header",
+			    "content": "Text 4 settings"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_fs_4",
+			    "label": "Text 4 font size",
+			    "default": "14px"
+			  },
+			  {
+			    "type": "color",
+			    "id": "text_color_4",
+			    "label": "Text 4 color",
+			    "default": "#000000"
+			  },
+			  {
+			    "type": "select",
+			    "id": "text_fw_4",
+			    "label": "Text 4 font weight",
+			    "default": "300",
+			    "options": [
+			      {
+			        "value": "100",
+			        "label": "100 Thin (Hairline)"
+			      },
+			      {
+			        "value": "200",
+			        "label": "200 Extra Light (Ultra Light)"
+			      },
+			      {
+			        "value": "300",
+			        "label": "300 Light"
+			      },
+			      {
+			        "value": "400",
+			        "label": "400 Normal"
+			      },
+			      {
+			        "value": "500",
+			        "label": "500 Medium"
+			      },
+			      {
+			        "value": "600",
+			        "label": "600 Semi Bold (Demi Bold)"
+			      },
+			      {
+			        "value": "700",
+			        "label": "700 Bold"
+			      },
+			      {
+			        "value": "800",
+			        "label": "800 Extra Bold (Ultra Bold)"
+			      },
+			      {
+			        "value": "900",
+			        "label": "900 Black (Heavy)"
+			      }
+			    ]
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_margin_4",
+			    "label": "Text 4 margin",
+			    "info": "Order: Top Right Bottom Left.",
+			    "placeholder": "E.g: 5px 20px 5px 20px"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_lsp_4",
+			    "label": "Text 4 letter spacing",
+			    "placeholder": "E.g: 2px"
+			  },
+			  {
+			    "type": "text",
+			    "id": "text_lh_4",
+			    "label": "Text 4 line height",
+			    "placeholder": "E.g: 24px"
+			  },
+			  {
+			    "type": "header",
+			    "content": "Button 1 settings"
+			  },
+			  {
+			    "type": "text",
+			    "id": "btn_margin_1",
+			    "label": "Button margin",
+			    "placeholder": "E.g: 5px 20px 5px 20px",
+			    "info": "Order: Top Right Bottom Left."
+			  },
+			  {
+			    "type": "range",
+			    "id": "btn_inherit_1",
+			    "label": "Inherit Button style:",
+			    "min": 0,
+			    "max": 3,
+			    "default": 1,
+			    "info": "0 to customize"
+			  },
+			  {
+			    "type": "text",
+			    "id": "button_rd_1",
+			    "label": "Button 1 Rounded Corners",
+			    "placeholder": "E.g: 5px 5px 5px 5px"
+			  },
+			  {
+			    "type": "color",
+			    "id": "button_color_1",
+			    "label": "Button Text color",
+			    "default": "#000000"
+			  },
+			  {
+			    "type": "color",
+			    "id": "button_border_1",
+			    "label": "Button Border color",
+			    "default": "#000000"
+			  },
+			  {
+			    "type": "color",
+			    "id": "button_bg_color_1",
+			    "label": "Button Background color",
+			    "default": "#FFFFFF"
+			  },
+			  {
+			    "type": "header",
+			    "content": "Button 2 settings"
+			  },
+			  {
+			    "type": "text",
+			    "id": "btn_margin_2",
+			    "label": "Button margin",
+			    "placeholder": "E.g: 5px 20px 5px 20px",
+			    "info": "Order: Top Right Bottom Left."
+			  },
+			  {
+			    "type": "range",
+			    "id": "btn_inherit_2",
+			    "label": "Inherit Button style:",
+			    "min": 0,
+			    "max": 3,
+			    "default": 1,
+			    "info": "0 to customize"
+			  },
+			  {
+			    "type": "text",
+			    "id": "button_rd_2",
+			    "label": "Button 2 Rounded Corners",
+			    "placeholder": "E.g: 5px 5px 5px 5px"
+			  },
+			  {
+			    "type": "color",
+			    "id": "button_color_2",
+			    "label": "Button 2 Text color",
+			    "default": "#000000"
+			  },
+			  {
+			    "type": "color",
+			    "id": "button_border_2",
+			    "label": "Button 2 Border color",
+			    "default": "#000000"
+			  },
+			  {
+			    "type": "color",
+			    "id": "button_bg_color_2",
+			    "label": "Button 2 Background color",
+			    "default": "#FFFFFF"
+			  },
+			  {
+			    "type": "header",
+			    "content": "Block settings"
+			  },
+			  {
+			    "type": "text",
+			    "id": "width_resp",
+			    "label": "Width (1->12)",
+			    "placeholder": "xl,lg,md,sm,xs,xxs",
+			    "default": "6,12",
+			    "info": "0 to hide. E.g: 4,6,12"
+			  },
+			  {
+			    "type": "color",
+			    "id": "border_color",
+			    "label": "Border color",
+			    "default": "#000000"
+			  },
+			  {
+			    "type": "range",
+			    "id": "border_size",
+			    "label": "Border size",
+			    "min": 0,
+			    "max": 10,
+			    "unit": "px",
+			    "default": 0
+			  },
+			  {
+			    "type": "text",
+			    "id": "block_padding",
+			    "label": "Block padding",
+			    "placeholder": "xl,lg,md,sm,xs,xxs",
+			    "info": "E.g: 10px 20px 10px 20px"
+			  },
+			  {
+			    "type": "text",
+			    "id": "block_margin",
+			    "label": "Block margin",
+			    "placeholder": "xl,lg,md,sm,xs,xxs",
+			    "info": "E.g: 10px 20px 10px 20px"
+			  }
+			]
+		},
+		{
+		  "type": "text_with_video",
+		  "name": "Textbox & Video",
+		  "settings": [
+		    {
+		      "type": "text",
+		      "id": "text_1",
+		      "label": "Text #1",
+		      "default": "Talk about your brand"
+		    },
+		    {
+		      "type": "textarea",
+		      "id": "text_2",
+		      "label": "Text #2",
+		      "default": "Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store."
+		    },
+		    {
+		      "type": "textarea",
+		      "id": "text_3",
+		      "label": "Text #3"
+		    },
+		    {
+		      "type": "textarea",
+		      "id": "text_4",
+		      "label": "Text #4"
+		    },
+		    {
+		      "type": "textarea",
+		      "id": "video_link",
+		      "label": "Video link*"
+		    },
+		    {
+		      "type": "text",
+		      "id": "btn_label",
+		      "label": "Button label",
+		      "default": "SEE MORE"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_align",
+		      "label": "Text alignment",
+		      "default": "center",
+		      "placeholder": "xl,lg,md,sm,xs,xxs"
+		    },
+		    {
+		      "type": "header",
+		      "content": "Text 1 Settings"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_fs_1",
+		      "label": "Text 1 font size",
+		      "default": "h3"
+		    },
+		    {
+		      "type": "color",
+		      "id": "text_color_1",
+		      "label": "Text 1 color",
+		      "default": "#000000"
+		    },
+		    {
+		      "type": "select",
+		      "id": "text_fw_1",
+		      "label": "Text 1 font weight",
+		      "default": "300",
+		      "options": [
+		        {
+		          "value": "100",
+		          "label": "100 Thin (Hairline)"
+		        },
+		        {
+		          "value": "200",
+		          "label": "200 Extra Light (Ultra Light)"
+		        },
+		        {
+		          "value": "300",
+		          "label": "300 Light"
+		        },
+		        {
+		          "value": "400",
+		          "label": "400 Normal"
+		        },
+		        {
+		          "value": "500",
+		          "label": "500 Medium"
+		        },
+		        {
+		          "value": "600",
+		          "label": "600 Semi Bold (Demi Bold)"
+		        },
+		        {
+		          "value": "700",
+		          "label": "700 Bold"
+		        },
+		        {
+		          "value": "800",
+		          "label": "800 Extra Bold (Ultra Bold)"
+		        },
+		        {
+		          "value": "900",
+		          "label": "900 Black (Heavy)"
+		        }
+		      ]
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_margin_1",
+		      "label": "Text 1 margin",
+		      "info": "Order: Top Right Bottom Left.",
+		      "placeholder": "E.g: 5px 20px 5px 20px"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_lsp_1",
+		      "label": "Text 1 letter spacing",
+		      "placeholder": "E.g: 2px"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_lh_1",
+		      "label": "Text 1 line height",
+		      "placeholder": "E.g: 24px"
+		    },
+		    {
+		      "type": "header",
+		      "content": "Text 2 settings"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_fs_2",
+		      "label": "Text 2 font size",
+		      "default": "h4"
+		    },
+		    {
+		      "type": "color",
+		      "id": "text_color_2",
+		      "label": "Text 2 color",
+		      "default": "#000000"
+		    },
+		    {
+		      "type": "select",
+		      "id": "text_fw_2",
+		      "label": "Text 2 font weight",
+		      "default": "300",
+		      "options": [
+		        {
+		          "value": "100",
+		          "label": "100 Thin (Hairline)"
+		        },
+		        {
+		          "value": "200",
+		          "label": "200 Extra Light (Ultra Light)"
+		        },
+		        {
+		          "value": "300",
+		          "label": "300 Light"
+		        },
+		        {
+		          "value": "400",
+		          "label": "400 Normal"
+		        },
+		        {
+		          "value": "500",
+		          "label": "500 Medium"
+		        },
+		        {
+		          "value": "600",
+		          "label": "600 Semi Bold (Demi Bold)"
+		        },
+		        {
+		          "value": "700",
+		          "label": "700 Bold"
+		        },
+		        {
+		          "value": "800",
+		          "label": "800 Extra Bold (Ultra Bold)"
+		        },
+		        {
+		          "value": "900",
+		          "label": "900 Black (Heavy)"
+		        }
+		      ]
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_margin_2",
+		      "label": "Text 2 margin",
+		      "info": "Order: Top Right Bottom Left.",
+		      "placeholder": "E.g: 5px 20px 5px 20px"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_lsp_2",
+		      "label": "Text 2 letter spacing",
+		      "placeholder": "E.g: 2px"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_lh_2",
+		      "label": "Text 2 line height",
+		      "placeholder": "E.g: 24px"
+		    },
+		    {
+		      "type": "header",
+		      "content": "Text 3 settings"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_fs_3",
+		      "label": "Text 3 font size",
+		      "default": "14px"
+		    },
+		    {
+		      "type": "color",
+		      "id": "text_color_3",
+		      "label": "Text 3 color",
+		      "default": "#000000"
+		    },
+		    {
+		      "type": "select",
+		      "id": "text_fw_3",
+		      "label": "Text 3 font weight",
+		      "default": "300",
+		      "options": [
+		        {
+		          "value": "100",
+		          "label": "100 Thin (Hairline)"
+		        },
+		        {
+		          "value": "200",
+		          "label": "200 Extra Light (Ultra Light)"
+		        },
+		        {
+		          "value": "300",
+		          "label": "300 Light"
+		        },
+		        {
+		          "value": "400",
+		          "label": "400 Normal"
+		        },
+		        {
+		          "value": "500",
+		          "label": "500 Medium"
+		        },
+		        {
+		          "value": "600",
+		          "label": "600 Semi Bold (Demi Bold)"
+		        },
+		        {
+		          "value": "700",
+		          "label": "700 Bold"
+		        },
+		        {
+		          "value": "800",
+		          "label": "800 Extra Bold (Ultra Bold)"
+		        },
+		        {
+		          "value": "900",
+		          "label": "900 Black (Heavy)"
+		        }
+		      ]
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_margin_3",
+		      "label": "Text 3 margin",
+		      "info": "Order: Top Right Bottom Left.",
+		      "placeholder": "E.g: 5px 20px 5px 20px"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_lsp_3",
+		      "label": "Text 3 letter spacing",
+		      "placeholder": "E.g: 2px"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_lh_3",
+		      "label": "Text 3 line height",
+		      "placeholder": "E.g: 24px"
+		    },
+		    {
+		      "type": "header",
+		      "content": "Text 4 settings"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_fs_4",
+		      "label": "Text 4 font size",
+		      "default": "14px"
+		    },
+		    {
+		      "type": "color",
+		      "id": "text_color_4",
+		      "label": "Text 4 color",
+		      "default": "#000000"
+		    },
+		    {
+		      "type": "select",
+		      "id": "text_fw_4",
+		      "label": "Text 4 font weight",
+		      "default": "300",
+		      "options": [
+		        {
+		          "value": "100",
+		          "label": "100 Thin (Hairline)"
+		        },
+		        {
+		          "value": "200",
+		          "label": "200 Extra Light (Ultra Light)"
+		        },
+		        {
+		          "value": "300",
+		          "label": "300 Light"
+		        },
+		        {
+		          "value": "400",
+		          "label": "400 Normal"
+		        },
+		        {
+		          "value": "500",
+		          "label": "500 Medium"
+		        },
+		        {
+		          "value": "600",
+		          "label": "600 Semi Bold (Demi Bold)"
+		        },
+		        {
+		          "value": "700",
+		          "label": "700 Bold"
+		        },
+		        {
+		          "value": "800",
+		          "label": "800 Extra Bold (Ultra Bold)"
+		        },
+		        {
+		          "value": "900",
+		          "label": "900 Black (Heavy)"
+		        }
+		      ]
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_margin_4",
+		      "label": "Text 4 margin",
+		      "info": "Order: Top Right Bottom Left.",
+		      "placeholder": "E.g: 5px 20px 5px 20px"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_lsp_4",
+		      "label": "Text 4 letter spacing",
+		      "placeholder": "E.g: 2px"
+		    },
+		    {
+		      "type": "text",
+		      "id": "text_lh_4",
+		      "label": "Text 4 line height",
+		      "placeholder": "E.g: 24px"
+		    },
+		    {
+		      "type": "header",
+		      "content": "Button settings"
+		    },
+		    {
+		      "type": "range",
+		      "id": "btn_inherit",
+		      "label": "Inherit Button style:",
+		      "min": 0,
+		      "max": 3,
+		      "default": 1,
+		      "info": "0 to customize"
+		    },
+		    {
+		      "type": "text",
+		      "id": "btn_fs",
+		      "label": "Button font size",
+		      "default": "14px"
+		    },
+		    {
+		      "type": "select",
+		      "id": "btn_fw",
+		      "label": "Button font weight",
+		      "default": "300",
+		      "options": [
+		        {
+		          "value": "100",
+		          "label": "100 Thin (Hairline)"
+		        },
+		        {
+		          "value": "200",
+		          "label": "200 Extra Light (Ultra Light)"
+		        },
+		        {
+		          "value": "300",
+		          "label": "300 Light"
+		        },
+		        {
+		          "value": "400",
+		          "label": "400 Normal"
+		        },
+		        {
+		          "value": "500",
+		          "label": "500 Medium"
+		        },
+		        {
+		          "value": "600",
+		          "label": "600 Semi Bold (Demi Bold)"
+		        },
+		        {
+		          "value": "700",
+		          "label": "700 Bold"
+		        },
+		        {
+		          "value": "800",
+		          "label": "800 Extra Bold (Ultra Bold)"
+		        },
+		        {
+		          "value": "900",
+		          "label": "900 Black (Heavy)"
+		        }
+		      ]
+		    },
+		    {
+		      "type": "text",
+		      "id": "btn_margin",
+		      "label": "Button margin",
+		      "placeholder": "E.g: 5px 20px 5px 20px",
+		      "info": "Order: Top Right Bottom Left."
+		    },
+		    {
+		      "type": "text",
+		      "id": "btn_padding",
+		      "label": "Button padding",
+		      "placeholder": "E.g: 5px 20px 5px 20px",
+		      "info": "Order: Top Right Bottom Left."
+		    },
+		    {
+		      "type": "text",
+		      "id": "btn_rd",
+		      "label": "Button Rounded Corners",
+		      "placeholder": "E.g: 5px 5px 5px 5px"
+		    },
+		    {
+		      "type": "color",
+		      "id": "btn_color",
+		      "label": "Button Text color",
+		      "default": "#000000"
+		    },
+		    {
+		      "type": "color",
+		      "id": "btn_border",
+		      "label": "Button Border color",
+		      "default": "#000000"
+		    },
+		    {
+		      "type": "color",
+		      "id": "btn_bg_color",
+		      "label": "Button Background color",
+		      "default": "#FFFFFF"
+		    },
+		    {
+		      "type": "header",
+		      "content": "Button icon"
+		    },
+		    {
+		      "type": "text",
+		      "id": "btn_icon",
+		      "label": "Button icon"
+		    },
+		    {
+		      "type": "text",
+		      "id": "btn_ic_fs",
+		      "label": "Button icon font size",
+		      "default": "16px"
+		    },
+		    {
+		      "type": "color",
+		      "id": "btn_ic_color",
+		      "label": "Button icon color",
+		      "default": "#000000"
+		    },
+		    {
+		      "type": "text",
+		      "id": "btn_ic_padding",
+		      "label": "Button icon padding",
+		      "placeholder": "E.g: 5px 20px 5px 20px",
+		      "info": "Order: Top Right Bottom Left."
+		    },
+		    {
+		      "type": "header",
+		      "content": "Block settings"
+		    },
+		    {
+		      "type": "text",
+		      "id": "width_resp",
+		      "label": "Width (1->12)",
+		      "placeholder": "xl,lg,md,sm,xs,xxs",
+		      "default": "6,12",
+		      "info": "0 to hide. E.g: 4,6,12"
+		    },
+		    {
+		      "type": "color",
+		      "id": "border_color",
+		      "label": "Border color",
+		      "default": "#000000"
+		    },
+		    {
+		      "type": "range",
+		      "id": "border_size",
+		      "label": "Border size",
+		      "min": 0,
+		      "max": 10,
+		      "unit": "px",
+		      "default": 0
+		    },
+		    {
+		      "type": "text",
+		      "id": "block_padding",
+		      "label": "Block padding",
+		      "placeholder": "xl,lg,md,sm,xs,xxs",
+		      "info": "E.g: 10px 20px 10px 20px"
+		    },
+		    {
+		      "type": "text",
+		      "id": "block_margin",
+		      "label": "Block margin",
+		      "placeholder": "xl,lg,md,sm,xs,xxs",
+		      "info": "E.g: 10px 20px 10px 20px"
+		    }
+		  ]
+		}
+	],
+	"presets":[
+		{
+			"name":"Single Banner",
+			"category":"Banner",
+			"blocks":[
+
+			]
+		}
+	]
+}
+{% endschema %}

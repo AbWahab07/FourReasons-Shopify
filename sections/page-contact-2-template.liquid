@@ -1,0 +1,258 @@
+{%- include 'breadcrumb' -%}
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _lazyload          = settings.use_lazyload -%}
+{%- assign _min_height        = section.settings.min_height -%}
+{%- assign _heading_text      = section.settings.heading_text -%}
+{%- assign _subheading_text   = section.settings.subheading_text -%}
+{%- assign _heading_align     = section.settings.heading_content_align -%}
+{%- assign _fheading_size     = section.settings.heading_size -%}
+{%- assign _api_key           = section.settings.api_key -%}
+
+{%- include 'include-item-per-row' -%}
+<div id="col-main" class="page-contact layout-{{_layout }}" data-section-type="contact-page" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+    {%- unless _heading_text == blank and _subheading_text == blank -%}
+      <div class="form-heading-content text-{{_heading_align}} mx-auto">
+        {%- unless _heading_text == blank -%}
+          <div class="heading h{{_fheading_size}}">{{_heading_text}}</div>
+        {%- endunless -%}
+        {%- unless _subheading_text == blank -%}
+          <div class="subheading">{{_subheading_text}}</div>
+        {%- endunless -%}
+      </div>
+    {%- endunless -%}
+
+    {%- if section.blocks.size > 0 -%}
+      {%- assign _ib_align = section.settings.ib_align -%}
+
+      <div class="iconbox-container">
+        <div class="row">
+          {%- for block in section.blocks -%}
+            {%- assign _ib_icon     = block.settings.ib_icon -%}
+            {%- assign _ib_title    = block.settings.title -%}
+            {%- assign _ib_content  = block.settings.content -%}
+
+            <div class="{{items_resp}}}"{{block.shopify_attributes}}>
+              <div class="ib-item text-{{_ib_align}}">
+                <div class="ib-icon">
+                  {%- include 'icons', type: 'icon_free', name: _ib_icon -%}
+                </div>
+                <div class="ib-info">
+                  {%- unless _ib_title == blank -%}
+                    <div class="ib-heading">{{_ib_title}}</div>
+                  {%- endunless -%}
+
+                  {%- unless _ib_content == blank -%}
+                    <div class="ib-content">{{_ib_content}}</div>
+                  {%- endunless -%}
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.show_map -%}
+      {%- assign _pin = 'pin.png' | asset_url -%}
+
+      <div class="map-container">
+        <div class="map-wrapper map-element-ui"
+          data-latlong="{{ section.settings.contact_latlong | strip }}"
+          data-zoom="{{ section.settings.contact_zoom_lv }}"
+          data-scroll="{{ section.settings.contact_scroll }}"
+          data-icon="{{ _pin }}"
+          data-content="{{ shop.address.street }}, {{ shop.address.city }}, {{ shop.address.country }}">
+          <div id="map_{{section.id}}" class="map map-element"></div>
+        </div>
+      </div>
+
+      {%- capture block_css -%}
+        {%- include 'css-responsive', classID: '#col-main .map-element', css_value: _min_height, css_property: 'min-height' -%}
+        #col-main .map-element:empty {background: center / cover no-repeat url({{'map-placeholder.jpg' | asset_url }});}
+      {%- endcapture -%}
+      {%- assign section_css = section_css | append: block_css -%}
+
+    {%- endif -%}
+
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+  <style>
+    {{- section_css -}}
+    #col-main{background-color:{{section.settings.background_color | default: 'rgba(0,0,0,0)' }};
+    {%- include 'css-responsive', classID: '.page-contact .form-heading-content', css_value: section.settings.content_max_width, css_property: 'max-width' -%}
+  </style>
+</div>
+
+{% schema %}
+{
+  "name":"Contact 2 Page",
+  "tag":"section",
+  "settings":[
+    {
+      "type":"checkbox",
+      "id":"boxed_layout",
+      "label":"Boxed layout",
+      "default":true
+    },
+    {
+       "type":"color",
+       "id"    :"background_color",
+       "label":"Background color",
+       "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type":"header",
+      "content":"Map Settings"
+    },
+    {
+      "type":"paragraph",
+      "content":"Please make sure you already inserted API Key in Theme settings > App Integrations > Google Map"
+    },
+    {
+       "type":"checkbox",
+       "id":"show_map",
+       "label":"Show Map",
+       "default": true
+    },
+    {
+      "type":"text",
+      "id":"min_height",
+      "label":"Min Height",
+      "default":"500px"
+    },
+    {
+      "type":"text",
+      "id":"contact_latlong",
+      "label":"Latitude and Longitude",
+      "info":"Please click [here](http:\/\/latlong.net) to get Latitude and Longitude",
+      "default":"51.514863, -0.133689"
+    },
+    {
+      "type":"range",
+      "id":"contact_zoom_lv",
+      "label":"Select Zoom Level",
+      "min":0,
+      "max":21,
+      "step":1,
+      "default":17
+    },
+    {
+      "type":"checkbox",
+      "id":"contact_scroll",
+      "label":"Scroll Wheel"
+    },
+    {
+      "type":"header",
+      "content":"Heading content"
+    },
+    {
+      "type":"text",
+      "id":"heading_text",
+      "label":"Heading",
+      "default":"OUR CONTACTS"
+    },
+    {
+      "type":"textarea",
+      "id":"subheading_text",
+      "label":"Subheading",
+      "default":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."
+    },
+    {
+      "type":"select",
+      "id":"heading_content_align",
+      "label":"Heading alignment",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"center",
+          "label":"Center"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ],
+      "default":"left"
+    },
+    {
+      "type":"range",
+      "id":"heading_size",
+      "label":"Heading font size (h1 -> h6)",
+      "min":1,
+      "max":6,
+      "default":3
+    },
+    {
+      "type":"text",
+      "id":"content_max_width",
+      "label":"Content Max Width",
+      "default":"50%,100%",
+      "info":"Support breakpoint"
+    },
+    {
+      "type":"header",
+      "content":"Icon box settings"
+    },
+    {
+      "type":"select",
+      "id":"ib_align",
+      "label":"Horizontal alignment",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"center",
+          "label":"Center"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ],
+      "default":"center"
+    },
+    {
+      "type":"text",
+      "id":"items_resp",
+      "label":"Max number of items per row",
+      "placeholder":"xl,lg,md,sm,xs,xxs",
+      "info":"E.g: 4,3,2",
+      "default":"3,1"
+    }
+  ],
+  "blocks":[
+    {
+      "type":"iconbox",
+      "name":"Icon box",
+      "limit":10,
+      "settings":[
+        {
+          "type":"text",
+          "id":"ib_icon",
+          "label":"Font icon name",
+          "default":"icon-uniE93A"
+        },
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Heading",
+          "default":"Ridiculus Mus"
+        },
+        {
+          "type":"textarea",
+          "id":"content",
+          "label":"Content",
+          "default":"Eu augue ut lectus arcu bibendum at varius vel pharetra"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

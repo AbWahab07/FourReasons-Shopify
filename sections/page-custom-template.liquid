@@ -1,0 +1,1601 @@
+{%- include 'page-block-custom' -%}
+<style>
+  .is-overlay{position: absolute;z-index: 2;}
+  .custom-content > div{
+    grid-template-columns: repeat(3, 1fr);
+  }
+</style>
+
+{% schema %}{
+   "name": "Custom content",
+   "tag": "section",
+   "settings": [
+      {
+         "type": "paragraph",
+         "content": "Created by 'Custom content' section"
+      },
+      {
+         "type": "text",
+         "id": "title",
+         "label": "Section Label"
+      },
+      {
+         "type": "header",
+         "content": "LAYOUT"
+      },
+      {
+         "type": "checkbox",
+         "id": "boxed_layout",
+         "label": "Boxed layout",
+         "default": true
+      },
+      {
+         "type": "text",
+         "id": "section_padding",
+         "label": "Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type": "color",
+         "id": "section_bg_color",
+         "label": "Background color",
+         "default": "#FFFFFF"
+      },
+      {
+         "type": "image_picker",
+         "id": "section_bg_image",
+         "label": "Background image"
+      },
+      {
+         "type": "select",
+         "id": "section_bg_size",
+         "label": "Background Size",
+         "default": "cover",
+         "options": [
+            {
+               "value": "auto",
+               "label": "Auto"
+            },
+            {
+               "value": "cover",
+               "label": "Cover"
+            },
+            {
+               "value": "contain",
+               "label": "Contain"
+            }
+         ]
+      },
+      {
+         "type": "select",
+         "id": "section_bg_repeat",
+         "label": "Background Image Repeat:",
+         "default": "no-repeat",
+         "options": [
+            {
+               "value": "no-repeat",
+               "label": "No Repeat"
+            },
+            {
+               "value": "repeat",
+               "label": "Repeat"
+            },
+            {
+               "value": "repeat-x",
+               "label": "Repeat X"
+            },
+            {
+               "value": "repeat-y",
+               "label": "Repeat Y"
+            }
+         ]
+      },
+      {
+         "type": "select",
+         "id": "section_bg_position",
+         "label": "Background Image Position:",
+         "default": "center center",
+         "options": [
+            {
+               "value": "left top",
+               "label": "Left Top"
+            },
+            {
+               "value": "center top",
+               "label": "Center Top"
+            },
+            {
+               "value": "right top",
+               "label": "Right Top"
+            },
+            {
+               "value": "left center",
+               "label": "Left Center"
+            },
+            {
+               "value": "center center",
+               "label": "Center Center"
+            },
+            {
+               "value": "right center",
+               "label": "Right Center"
+            },
+            {
+               "value": "left bottom",
+               "label": "Left Bottom"
+            },
+            {
+               "value": "center bottom",
+               "label": "Center Bottom"
+            },
+            {
+               "value": "right bottom",
+               "label": "Right Bottom"
+            }
+         ]
+      },
+      {
+         "type": "header",
+         "content": "Section Heading"
+      },
+      {
+         "type": "text",
+         "id": "heading_text",
+         "label": "Heading"
+      },
+      {
+         "type": "text",
+         "id": "subheading_text",
+         "label": "Subheading"
+      },
+      {
+         "type": "textarea",
+         "id": "subheading2_text",
+         "label": "Subheading 2"
+      },
+      {
+         "type": "select",
+         "id": "heading_content_align",
+         "label": "Heading alignment",
+         "options": [
+            {
+               "value": "left",
+               "label": "Left"
+            },
+            {
+               "value": "center",
+               "label": "Center"
+            },
+            {
+               "value": "right",
+               "label": "Right"
+            }
+         ],
+         "default": "center"
+      },
+      {
+         "type": "color",
+         "id": "section_heading_color",
+         "label": "Heading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type": "color",
+         "id": "section_subheading_color",
+         "label": "Subheading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type": "color",
+         "id": "section_subheading2_color",
+         "label": "Subheading 2 color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type": "header",
+         "content": "Section button"
+      },
+      {
+         "type": "text",
+         "id": "button",
+         "label": "Button Label"
+      },
+      {
+         "type": "url",
+         "id": "button_link",
+         "label": "Button Link",
+         "info": "Remove link to hide"
+      },
+      {
+         "type": "select",
+         "id": "button_align",
+         "label": "Horizontal alignment",
+         "options": [
+            {
+               "value": "left",
+               "label": "Left"
+            },
+            {
+               "value": "center",
+               "label": "Center"
+            },
+            {
+               "value": "right",
+               "label": "Right"
+            }
+         ],
+         "default": "center"
+      },
+      {
+         "type": "checkbox",
+         "id": "button_corner",
+         "label": "Button Rounded Corners"
+      },
+      {
+         "type": "range",
+         "id": "button_inherit_style",
+         "label": "Inherit Button style:",
+         "min": 0,
+         "max": 3,
+         "default": 1,
+         "info": "Set 0 to customize button"
+      },
+      {
+         "type": "color",
+         "id": "button_color",
+         "label": "Button Text color",
+         "default": "#000000"
+      },
+      {
+         "type": "color",
+         "id": "button_border",
+         "label": "Button Border color",
+         "default": "#000000"
+      },
+      {
+         "type": "color",
+         "id": "button_bg_color",
+         "label": "Button Background color",
+         "default": "#FFFFFF"
+      },
+      {
+         "type": "header",
+         "content": "Layout item"
+      },
+      {
+         "type": "checkbox",
+         "id": "spacing_items",
+         "label": "Spacing items"
+      }
+   ],
+   "blocks": [
+      {
+         "type": "html",
+         "name": "Custom HTML",
+         "settings": [
+            {
+               "type": "html",
+               "id": "code",
+               "label": "HTML",
+               "default": "<div><p>Write your own custom HTML content.</p></div>"
+            },
+            {
+               "type": "header",
+               "content": "Nested with above Block"
+            },
+            {
+               "type": "checkbox",
+               "id": "nested",
+               "label": "Enable Nested"
+            },
+            {
+               "type": "header",
+               "content": "Block settings"
+            },
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Block label",
+               "default": "Custom HTML"
+            },
+            {
+               "type": "text",
+               "id": "width_resp",
+               "label": "Width (1->12)",
+               "placeholder": "xl,lg,md,sm,xs,xxs",
+               "default": "6,12",
+               "info": "0 to hide. E.g: 4,6,12"
+            },
+            {
+               "type": "select",
+               "id": "alignment",
+               "label": "Vertical alignment",
+               "default": "top",
+               "options": [
+                  {
+                     "value": "top",
+                     "label": "Top"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Middle"
+                  },
+                  {
+                     "value": "bottom",
+                     "label": "Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "align_text",
+               "label": "Horizontal alignment",
+               "default": "left",
+               "options": [
+                  {
+                     "value": "left",
+                     "label": "Left"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Center"
+                  },
+                  {
+                     "value": "right",
+                     "label": "Right"
+                  }
+               ]
+            },
+            {
+               "type": "color",
+               "id": "background_color",
+               "label": "Background color"
+            },
+            {
+               "type": "text",
+               "id": "item_padding",
+               "label": "Item Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            }
+         ]
+      },
+      {
+         "type": "menu",
+         "name": "Menu item",
+         "settings": [
+            {
+               "type": "text",
+               "id": "heading_text",
+               "label": "Heading",
+               "default": "Talk about your brand"
+            },
+            {
+               "type": "link_list",
+               "id": "menu",
+               "label": "Menu item"
+            },
+            {
+               "type": "color",
+               "id": "heading_color",
+               "label": "Heading Color",
+               "default": "#3a3a3a"
+            },
+            {
+               "type": "color",
+               "id": "paragraph_color",
+               "label": "Paragraph Color",
+               "default": "#4a4a4a"
+            },
+            {
+               "type": "range",
+               "id": "heading_size",
+               "label": "Heading Font size (h1-> h6)",
+               "min": 1,
+               "max": 6,
+               "step": 1,
+               "default": 2
+            },
+            {
+               "type": "range",
+               "id": "paragraph_size",
+               "label": "Paragraph Font size (h1-> h6)",
+               "min": 1,
+               "max": 6,
+               "step": 1,
+               "default": 4
+            },
+            {
+               "type": "header",
+               "content": "Nested with above Block"
+            },
+            {
+               "type": "checkbox",
+               "id": "nested",
+               "label": "Enable Nested"
+            },
+            {
+               "type": "header",
+               "content": "Block settings"
+            },
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Block label",
+               "default": "Menu item"
+            },
+            {
+               "type": "text",
+               "id": "width_resp",
+               "label": "Width (1->12)",
+               "placeholder": "xl,lg,md,sm,xs,xxs",
+               "default": "6,12",
+               "info": "0 to hide. E.g: 4,6,12"
+            },
+            {
+               "type": "select",
+               "id": "alignment",
+               "label": "Vertical alignment",
+               "default": "none",
+               "options": [
+                  {
+                     "value": "none",
+                     "label": "No alignment"
+                  },
+                  {
+                     "value": "top",
+                     "label": "Top"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Middle"
+                  },
+                  {
+                     "value": "bottom",
+                     "label": "Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "align_text",
+               "label": "Horizontal alignment",
+               "default": "left",
+               "options": [
+                  {
+                     "value": "left",
+                     "label": "Left"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Center"
+                  },
+                  {
+                     "value": "right",
+                     "label": "Right"
+                  }
+               ]
+            },
+            {
+               "type": "color",
+               "id": "background_color",
+               "label": "Background color"
+            },
+            {
+               "type": "text",
+               "id": "item_padding",
+               "label": "Item Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            }
+         ]
+      },
+      {
+         "type": "iconbox",
+         "name": "Icon box group",
+         "settings": [
+            {
+               "type": "select",
+               "id": "font_icon_type",
+               "label": "Font icon type",
+               "default": "font_icon",
+               "options": [
+                  {
+                     "value": "font_icon",
+                     "label": "Font icon"
+                  },
+                  {
+                     "value": "image",
+                     "label": "Image"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "font_1",
+               "label": "Font icon name #1",
+               "default": "et-info"
+            },
+            {
+               "type": "image_picker",
+               "id": "font_image_1",
+               "label": "Image #1"
+            },
+            {
+               "type": "textarea",
+               "id": "text_1",
+               "label": "Text #1",
+               "default": "Here your content. "
+            },
+            {
+               "type": "text",
+               "id": "font_2",
+               "label": "Font icon name #2"
+            },
+            {
+               "type": "image_picker",
+               "id": "font_image_2",
+               "label": "Image #2"
+            },
+            {
+               "type": "textarea",
+               "id": "text_2",
+               "label": "Text #2"
+            },
+            {
+               "type": "text",
+               "id": "font_3",
+               "label": "Font icon name #3"
+            },
+            {
+               "type": "image_picker",
+               "id": "font_image_3",
+               "label": "Image #3"
+            },
+            {
+               "type": "textarea",
+               "id": "text_3",
+               "label": "Text #3"
+            },
+            {
+               "type": "text",
+               "id": "font_4",
+               "label": "Font icon name #4"
+            },
+            {
+               "type": "image_picker",
+               "id": "font_image_4",
+               "label": "Image #4"
+            },
+            {
+               "type": "textarea",
+               "id": "text_4",
+               "label": "Text #4"
+            },
+            {
+               "type": "checkbox",
+               "id": "ib_content_inline",
+               "label": "Show Font icon & Text same row",
+               "default": true
+            },
+            {
+               "type": "checkbox",
+               "id": "ib_inline",
+               "label": "Show Icon box item same row"
+            },
+            {
+               "type": "color",
+               "id": "icon_color",
+               "label": "Icon color",
+               "default": "#000000"
+            },
+            {
+               "type": "color",
+               "id": "text_color",
+               "label": "Text color",
+               "default": "#000000"
+            },
+            {
+               "type": "header",
+               "content": "Nested with above Block"
+            },
+            {
+               "type": "checkbox",
+               "id": "nested",
+               "label": "Enable Nested"
+            },
+            {
+               "type": "header",
+               "content": "Block settings"
+            },
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Block label",
+               "default": "Icon box group"
+            },
+            {
+               "type": "text",
+               "id": "width_resp",
+               "label": "Width (1->12)",
+               "placeholder": "xl,lg,md,sm,xs,xxs",
+               "default": "6,12",
+               "info": "0 to hide. E.g: 4,6,12"
+            },
+            {
+               "type": "select",
+               "id": "alignment",
+               "label": "Vertical alignment",
+               "default": "top",
+               "options": [
+                  {
+                     "value": "top",
+                     "label": "Top"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Middle"
+                  },
+                  {
+                     "value": "bottom",
+                     "label": "Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "align_text",
+               "label": "Horizontal alignment",
+               "default": "left",
+               "options": [
+                  {
+                     "value": "left",
+                     "label": "Left"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Center"
+                  },
+                  {
+                     "value": "right",
+                     "label": "Right"
+                  }
+               ]
+            },
+            {
+               "type": "color",
+               "id": "background_color",
+               "label": "Background color"
+            },
+            {
+               "type": "text",
+               "id": "item_padding",
+               "label": "Item Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            }
+         ]
+      },
+      {
+         "type": "social",
+         "name": "Social Icon",
+         "settings": [
+            {
+               "type": "header",
+               "content": "Social icon name"
+            },
+            {
+               "type": "text",
+               "id": "font1",
+               "label": "Font icon name #1",
+               "default": "icon-uni0E10"
+            },
+            {
+               "type": "text",
+               "id": "font2",
+               "label": "Font icon name #2",
+               "default": "icon-uni0E10"
+            },
+            {
+               "type": "text",
+               "id": "font3",
+               "label": "Font icon name #3",
+               "default": "icon-uni0E10"
+            },
+            {
+               "type": "text",
+               "id": "font4",
+               "label": "Font icon name #4",
+               "default": "icon-uni0E10"
+            },
+            {
+               "type": "text",
+               "id": "font5",
+               "label": "Font icon name #5",
+               "default": "icon-uni0E10"
+            },
+            {
+               "type": "header",
+               "content": "Social icon link"
+            },
+            {
+               "type": "url",
+               "id": "font_url1",
+               "label": "Social icon #1"
+            },
+            {
+               "type": "url",
+               "id": "font_url2",
+               "label": "Social icon #2"
+            },
+            {
+               "type": "url",
+               "id": "font_url3",
+               "label": "Social icon #3"
+            },
+            {
+               "type": "url",
+               "id": "font_url4",
+               "label": "Social icon #4"
+            },
+            {
+               "type": "url",
+               "id": "font_url5",
+               "label": "Social icon #5"
+            },
+            {
+               "type": "header",
+               "content": "Social icon color"
+            },
+            {
+               "type": "color",
+               "id": "font_color1",
+               "label": "Social #1 color",
+               "default": "#ffffff"
+            },
+            {
+               "type": "color",
+               "id": "font_color2",
+               "label": "Social #2 color",
+               "default": "#ffffff"
+            },
+            {
+               "type": "color",
+               "id": "font_color3",
+               "label": "Social #3 color",
+               "default": "#ffffff"
+            },
+            {
+               "type": "color",
+               "id": "font_color4",
+               "label": "Social #4 color",
+               "default": "#ffffff"
+            },
+            {
+               "type": "color",
+               "id": "font_color5",
+               "label": "Social #5 color",
+               "default": "#ffffff"
+            },
+            {
+               "type": "header",
+               "content": "Social icon background color"
+            },
+            {
+               "type": "color",
+               "id": "bg_font1",
+               "label": "Social #1 background color",
+               "default": "#3a5795"
+            },
+            {
+               "type": "color",
+               "id": "bg_font2",
+               "label": "Social #2 background color",
+               "default": "#1eb7ec"
+            },
+            {
+               "type": "color",
+               "id": "bg_font3",
+               "label": "Social #3 background color",
+               "default": "#bd2126"
+            },
+            {
+               "type": "color",
+               "id": "bg_font4",
+               "label": "Social #4 background color",
+               "default": "#e2282e"
+            },
+            {
+               "type": "color",
+               "id": "bg_font5",
+               "label": "Social #5 background color",
+               "default": "#7cc04b"
+            },
+            {
+               "type": "header",
+               "content": "Nested with above Block"
+            },
+            {
+               "type": "checkbox",
+               "id": "nested",
+               "label": "Enable Nested"
+            },
+            {
+               "type": "header",
+               "content": "Block settings"
+            },
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Block label",
+               "default": "Social icon"
+            },
+            {
+               "type": "text",
+               "id": "width_resp",
+               "label": "Width (1->12)",
+               "placeholder": "xl,lg,md,sm,xs,xxs",
+               "default": "6,12",
+               "info": "0 to hide. E.g: 4,6,12"
+            },
+            {
+               "type": "color",
+               "id": "background_color",
+               "label": "Background color"
+            },
+            {
+               "type": "text",
+               "id": "item_padding",
+               "label": "Item Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "text",
+               "id": "item_margin",
+               "label": "Item Margin",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            }
+         ]
+      },
+      {
+         "type": "image",
+         "name": "Image",
+         "settings": [
+            {
+               "type": "image_picker",
+               "id": "block_image",
+               "label": "Image"
+            },
+            {
+               "type": "url",
+               "id": "block_image_link",
+               "label": "Image link"
+            },
+            {
+               "type": "checkbox",
+               "id": "image_rd",
+               "label": "Image Corners Rounded"
+            },
+            {
+               "type": "range",
+               "id": "img_max_width",
+               "label": "Image max width",
+               "min": 0,
+               "max": 100,
+               "step": 1,
+               "unit": "%",
+               "default": 100,
+               "info": "Set 0 to Auto"
+            },
+            {
+               "type": "select",
+               "id": "effect",
+               "label": "Hover effect",
+               "default": "1",
+               "options": [
+                  {
+                     "value": "1",
+                     "label": "None"
+                  },
+                  {
+                     "value": "2",
+                     "label": "Fade Image"
+                  },
+                  {
+                     "value": "3",
+                     "label": "Zoom In"
+                  },
+                  {
+                     "value": "4",
+                     "label": "Flash Zoom"
+                  },
+                  {
+                     "value": "7",
+                     "label": "Black & White"
+                  }
+               ]
+            },
+            {
+               "type": "header",
+               "content": "Nested with above Block"
+            },
+            {
+               "type": "checkbox",
+               "id": "nested",
+               "label": "Enable Nested"
+            },
+            {
+               "type": "header",
+               "content": "Block settings"
+            },
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Block label",
+               "default": "Image"
+            },
+            {
+               "type": "text",
+               "id": "width_resp",
+               "label": "Width (1->12)",
+               "placeholder": "xl,lg,md,sm,xs,xxs",
+               "default": "6,12",
+               "info": "0 to hide. E.g: 4,6,12"
+            },
+            {
+               "type": "select",
+               "id": "alignment",
+               "label": "Vertical alignment",
+               "default": "none",
+               "options": [
+                  {
+                     "value": "none",
+                     "label": "No alignment"
+                  },
+                  {
+                     "value": "top",
+                     "label": "Top"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Middle"
+                  },
+                  {
+                     "value": "bottom",
+                     "label": "Bottom"
+                  }
+               ],
+               "info": "Use when Image max width is greater than 0"
+            },
+            {
+               "type": "color",
+               "id": "background_color",
+               "label": "Background color"
+            },
+            {
+               "type": "text",
+               "id": "item_padding",
+               "label": "Item Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            }
+         ]
+      },
+      {
+         "type": "text",
+         "name": "Paragraph",
+         "settings": [
+            {
+               "type": "text",
+               "id": "heading_text",
+               "label": "Heading",
+               "default": "Talk about your brand"
+            },
+            {
+               "type": "textarea",
+               "id": "paragraph_text",
+               "label": "Paragraph",
+               "default": "Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store."
+            },
+            {
+               "type": "textarea",
+               "id": "paragraph_text_2",
+               "label": "Paragraph #2"
+            },
+            {
+               "type": "header",
+               "content": "Content styles"
+            },
+            {
+               "type": "color",
+               "id": "heading_color",
+               "label": "Heading Color",
+               "default": "#3a3a3a"
+            },
+            {
+               "type": "color",
+               "id": "paragraph_color",
+               "label": "Paragraph Color",
+               "default": "#4a4a4a"
+            },
+            {
+               "type": "color",
+               "id": "paragraph_color_2",
+               "label": "Paragraph #2 Color",
+               "default": "#4a4a4a"
+            },
+            {
+               "type": "range",
+               "id": "heading_size",
+               "label": "Heading Font size (h1-> h6)",
+               "min": 1,
+               "max": 6,
+               "step": 1,
+               "default": 2
+            },
+            {
+               "type": "range",
+               "id": "paragraph_size",
+               "label": "Paragraph Font size (h1-> h6)",
+               "min": 1,
+               "max": 6,
+               "step": 1,
+               "default": 4
+            },
+            {
+               "type": "range",
+               "id": "paragraph_size_2",
+               "label": "Paragraph #2 Font size (h1-> h6)",
+               "min": 1,
+               "max": 6,
+               "step": 1,
+               "default": 4
+            },
+            {
+               "type": "header",
+               "content": "Button styles"
+            },
+            {
+               "type": "text",
+               "id": "button",
+               "label": "Button Label",
+               "default": "Button Label"
+            },
+            {
+               "type": "url",
+               "id": "button_link",
+               "label": "Button Link"
+            },
+            {
+               "type": "checkbox",
+               "id": "as_link",
+               "label": "Show as normal link"
+            },
+            {
+               "type": "checkbox",
+               "id": "button_corner",
+               "label": "Button Rounded Corners"
+            },
+            {
+               "type": "checkbox",
+               "id": "button_inherit",
+               "label": "Inherit Color from Primary Button",
+               "default": true
+            },
+            {
+               "type": "color",
+               "id": "button_color",
+               "label": "Button Text color",
+               "default": "#000000"
+            },
+            {
+               "type": "color",
+               "id": "button_border",
+               "label": "Button Border color",
+               "default": "#000000"
+            },
+            {
+               "type": "color",
+               "id": "button_bg_color",
+               "label": "Button Background color",
+               "default": "#FFFFFF"
+            },
+            {
+               "type": "header",
+               "content": "Nested with above Block"
+            },
+            {
+               "type": "checkbox",
+               "id": "nested",
+               "label": "Enable Nested"
+            },
+            {
+               "type": "header",
+               "content": "Block settings"
+            },
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Block label",
+               "default": "Paragraph"
+            },
+            {
+               "type": "text",
+               "id": "width_resp",
+               "label": "Width (1->12)",
+               "placeholder": "xl,lg,md,sm,xs,xxs",
+               "default": "6,12",
+               "info": "0 to hide. E.g: 4,6,12"
+            },
+            {
+               "type": "select",
+               "id": "alignment",
+               "label": "Vertical alignment",
+               "default": "none",
+               "options": [
+                  {
+                     "value": "none",
+                     "label": "No alignment"
+                  },
+                  {
+                     "value": "top",
+                     "label": "Top"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Middle"
+                  },
+                  {
+                     "value": "bottom",
+                     "label": "Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "select",
+               "id": "align_text",
+               "label": "Horizontal alignment",
+               "default": "left",
+               "options": [
+                  {
+                     "value": "left",
+                     "label": "Left"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Center"
+                  },
+                  {
+                     "value": "right",
+                     "label": "Right"
+                  }
+               ]
+            },
+            {
+               "type": "color",
+               "id": "background_color",
+               "label": "Background color"
+            },
+            {
+               "type": "color",
+               "id": "border_color",
+               "label": "Border color"
+            },
+            {
+               "type": "range",
+               "id": "border_size",
+               "label": "Border size",
+               "min": 0,
+               "max": 20,
+               "step": 1,
+               "unit": "px",
+               "default": 0
+            },
+            {
+               "type": "text",
+               "id": "item_padding",
+               "label": "Item Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "text",
+               "id": "item_margin",
+               "label": "Item Margin",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            }
+         ]
+      },
+      {
+         "type": "image_with_text",
+         "name": "Image with text",
+         "settings": [
+            {
+               "type": "image_picker",
+               "id": "block_image",
+               "label": "Image"
+            },
+            {
+               "type": "url",
+               "id": "block_image_link",
+               "label": "Image link"
+            },
+            {
+               "type": "checkbox",
+               "id": "image_rd",
+               "label": "Image Corners Rounded"
+            },
+            {
+               "type": "range",
+               "id": "img_max_width",
+               "label": "Image max width",
+               "min": 0,
+               "max": 100,
+               "step": 1,
+               "unit": "%",
+               "default": 100,
+               "info": "Set 0 to Auto"
+            },
+            {
+               "type": "select",
+               "id": "effect",
+               "label": "Hover effect",
+               "default": "1",
+               "options": [
+                  {
+                     "value": "1",
+                     "label": "None"
+                  },
+                  {
+                     "value": "2",
+                     "label": "Fade Image"
+                  },
+                  {
+                     "value": "3",
+                     "label": "Zoom In"
+                  },
+                  {
+                     "value": "4",
+                     "label": "Flash Zoom"
+                  },
+                  {
+                     "value": "7",
+                     "label": "Black & White"
+                  }
+               ]
+            },
+            {
+               "type": "header",
+               "content": "Text content"
+            },
+            {
+               "type": "text",
+               "id": "heading_text",
+               "label": "Heading",
+               "default": "Augue lacus"
+            },
+            {
+               "type": "textarea",
+               "id": "paragraph_text",
+               "label": "Paragraph",
+               "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+               "type": "select",
+               "id": "align_text",
+               "label": "Horizontal alignment",
+               "default": "left",
+               "options": [
+                  {
+                     "value": "left",
+                     "label": "Left"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Center"
+                  },
+                  {
+                     "value": "right",
+                     "label": "Right"
+                  }
+               ]
+            },
+            {
+               "type": "color",
+               "id": "heading_color",
+               "label": "Heading Color",
+               "default": "#3a3a3a"
+            },
+            {
+               "type": "color",
+               "id": "paragraph_color",
+               "label": "Paragraph Color",
+               "default": "#4a4a4a"
+            },
+            {
+               "type": "range",
+               "id": "heading_size",
+               "label": "Heading Font size (h1-> h6)",
+               "min": 1,
+               "max": 6,
+               "step": 1,
+               "default": 2
+            },
+            {
+               "type": "range",
+               "id": "paragraph_size",
+               "label": "Paragraph Font size (h1-> h6)",
+               "min": 1,
+               "max": 6,
+               "step": 1,
+               "default": 4
+            },
+            {
+               "type": "header",
+               "content": "Nested with above Block"
+            },
+            {
+               "type": "checkbox",
+               "id": "nested",
+               "label": "Enable Nested"
+            },
+            {
+               "type": "header",
+               "content": "Block settings"
+            },
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Block label",
+               "default": "Image with text"
+            },
+            {
+               "type": "text",
+               "id": "width_resp",
+               "label": "Width (1->12)",
+               "placeholder": "xl,lg,md,sm,xs,xxs",
+               "default": "6,12",
+               "info": "0 to hide. E.g: 4,6,12"
+            },
+            {
+               "type": "select",
+               "id": "alignment",
+               "label": "Vertical alignment",
+               "default": "none",
+               "options": [
+                  {
+                     "value": "none",
+                     "label": "No alignment"
+                  },
+                  {
+                     "value": "top",
+                     "label": "Top"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Middle"
+                  },
+                  {
+                     "value": "bottom",
+                     "label": "Bottom"
+                  }
+               ],
+               "info": "Use when Image max width is greater than 0"
+            },
+            {
+               "type": "color",
+               "id": "background_color",
+               "label": "Background color"
+            },
+            {
+               "type": "text",
+               "id": "item_padding",
+               "label": "Item Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            }
+         ]
+      },
+      {
+         "type": "merge",
+         "name": "Merge blocks",
+         "settings": [
+            {
+               "type": "select",
+               "id": "type",
+               "label": "Merge method:",
+               "default": "start",
+               "options": [
+                  {
+                     "value": "start",
+                     "label": "Start"
+                  },
+                  {
+                     "value": "end",
+                     "label": "End"
+                  }
+               ]
+            },
+            {
+               "type": "paragraph",
+               "content": "Use with method Start Merge. Nested and Slider not work together"
+            },
+            {
+               "type": "header",
+               "content": "Nested with above Block"
+            },
+            {
+               "type": "checkbox",
+               "id": "nested",
+               "label": "Enable Nested"
+            },
+            {
+               "type": "color",
+               "id": "background_nested",
+               "label": "Background color for Nested block"
+            },
+            {
+               "type": "text",
+               "id": "nested_padding",
+               "label": "Padding for Block Nested",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type": "text",
+               "id": "nested_corners",
+               "label": "Rounded Corners for Block Nested",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top-left Top-right Bottom-right Bottom-Left"
+            },
+            {
+               "type": "text",
+               "id": "nested_shadow",
+               "label": "Box Shadow for Block nested"
+            },
+            {
+               "type": "checkbox",
+               "id": "use_as_content_overlay",
+               "label": "Use as Overlay content"
+            },
+            {
+               "type": "range",
+               "id": "position_top",
+               "label": "Vertical position",
+               "min": 0,
+               "max": 100,
+               "step": 1,
+               "unit": "%",
+               "default": 50
+            },
+            {
+               "type": "range",
+               "id": "position_left",
+               "label": "Horizontal position",
+               "min": 0,
+               "max": 100,
+               "step": 1,
+               "unit": "%",
+               "default": 50
+            },
+            {
+               "type": "range",
+               "id": "overlay_content_width",
+               "label": "Content width",
+               "min": 0,
+               "max": 100,
+               "step": 1,
+               "unit": "%",
+               "default": 100
+            },
+            {
+               "type": "header",
+               "content": "Slider settings (Optional)"
+            },
+            {
+               "type": "paragraph",
+               "content": "Setting width on each blocks will be disabled when Enable Slider is active"
+            },
+            {
+               "type": "checkbox",
+               "id": "carousel_layout",
+               "label": "Enable Slider"
+            },
+            {
+               "type": "checkbox",
+               "id": "autoplay",
+               "label": "Enable Autoplay"
+            },
+            {
+               "type": "checkbox",
+               "id": "loop",
+               "label": "Enable Loop"
+            },
+            {
+               "type": "checkbox",
+               "id": "nav",
+               "label": "Show Next & Prev arrows",
+               "default": true
+            },
+            {
+               "type": "checkbox",
+               "id": "dot",
+               "label": "Show Dots",
+               "default": false
+            },
+            {
+               "type": "checkbox",
+               "id": "padding_item",
+               "label": "Spacing Items"
+            },
+            {
+               "type": "text",
+               "id": "items_resp",
+               "label": "Max number of items per row",
+               "placeholder": "xl,lg,md,sm,xs,xxs",
+               "info": "E.g: 4,3,2",
+               "default": "4,3,2"
+            },
+            {
+               "type": "header",
+               "content": "Block settings"
+            },
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Block label",
+               "default": "Merge Block"
+            },
+            {
+               "type": "text",
+               "id": "width_resp",
+               "label": "Width (1->12)",
+               "placeholder": "xl,lg,md,sm,xs,xxs",
+               "default": "6,12",
+               "info": "0 to hide. E.g: 4,6,12"
+            },
+            {
+               "type": "color",
+               "id": "background_color",
+               "label": "Background color"
+            },
+            {
+               "type": "select",
+               "id": "alignment",
+               "label": "Vertical alignment",
+               "default": "none",
+               "options": [
+                  {
+                     "value": "none",
+                     "label": "No alignment"
+                  },
+                  {
+                     "value": "top",
+                     "label": "Top"
+                  },
+                  {
+                     "value": "center",
+                     "label": "Middle"
+                  },
+                  {
+                     "value": "bottom",
+                     "label": "Bottom"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "item_padding",
+               "label": "Item Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            }
+         ]
+      }
+   ]
+}
+{% endschema %}

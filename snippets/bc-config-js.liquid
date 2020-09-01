@@ -1,0 +1,12 @@
+{%- assign currency_type 	= settings.currency_type -%}
+{%- capture enable_multi_currency -%}{%- if currency_type == '2' or currency_type == '1' and shop.enabled_currencies.size > 1 -%}true{%- else -%}false{%- endif -%}{%- endcapture -%}
+<script type="text/javascript">
+  var _bc_config = {
+    "show_multiple_currencies" 	: "{{enable_multi_currency}}"
+    ,"money_format" 			: '{{ shop.money_format }}'
+    ,"enable_title_blance"		: "{%- if settings.card_balance == 'title' -%}true{%- else -%}false{%- endif -%}"
+    ,"enable_rtl"				: "{{ settings.enable_rtl | default: false }}"
+    ,"enable_disqus" 			: "{{ settings.disqus_enabled | default: false }}"
+    ,"disqus_shortname" 		: "{{ settings.disqus_shortname }}"
+  };
+</script> 

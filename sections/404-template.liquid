@@ -1,0 +1,219 @@
+{%- include 'breadcrumb' -%}
+
+<div id="col-main" class="page-404">
+  <div class="container text-center">
+    <div class="heading-404">404</div>
+    <div class="box-404-text">
+      {%- unless section.settings.content == blank -%}
+        <p class="heading-content">{{section.settings.content}}</p>
+      {%- endunless -%}
+
+      {%- unless section.settings.sub_content == blank -%}
+        <p class="subheading-content">{{section.settings.sub_content}}</p>
+      {%- endunless -%}
+
+      {%- if section.settings.show_search -%}
+        <div class="searchbox search-404">
+          <form id="search" class="navbar-form search" action="/search" method="get">
+            <input type="hidden" name="type" value="" />
+            <input type="text" name="q" class="form-control search-form-404"  placeholder="{{ 'search.general.search_placeholder' | t }}" autocomplete="off" />
+            <button type="submit" class="btn btn-{{section.settings.btn_inherit}}">
+              {% include 'icons', type: 'icon_type', f: 'search' %}
+            </button>
+          </form>
+        </div>
+
+          {%- assign _frm_txt_color     = section.settings.frm_txt_color      | default: 'rgba(0,0,0,0)' -%}
+          {%- assign _frm_bg_color      = section.settings.frm_bg_color       | default: 'rgba(0,0,0,0)' -%}
+          {%- assign _frm_border_color  = section.settings.frm_border_color   | default: 'rgba(0,0,0,0)' -%}
+          {%- assign _frm_border_size   = section.settings.frm_border_size -%}
+          {%- capture formID -%}#col-main .search-404{%- endcapture -%}
+
+          {%- capture block_css -%}
+            {{- formID }} input[type="text"]::-webkit-input-placeholder{color: {{_frm_txt_color}};}
+            {{- formID }} input[type="text"]{color: {{_frm_txt_color}};background-color: {{_frm_bg_color}};}
+            {{- formID }} input[type="text"],
+            {{- formID }} input[type="text"]:focus{
+              {%- if _frm_border_size > 0 -%}border: {{_frm_border_size}}px solid {{_frm_border_color}};{%- else -%}border: none;{%- endif -%}
+            }
+            {%- include 'css-responsive', classID: formID, nextClassID: ' form', css_value: section.settings.search_max_wide ,css_property: 'max-width' -%}
+            {%- if section.settings.btn_inherit == 0 -%}
+              {%- assign btn_frm_color        = section.settings.btn_frm_color          | default: 'rgba(0,0,0,0)' -%}
+              {%- assign btn_frm_bg_color     = section.settings.btn_frm_bg_color       | default: 'rgba(0,0,0,0)' -%}
+              {%- assign btn_frm_border_color = section.settings.btn_frm_border_color   | default: 'rgba(0,0,0,0)' -%}
+              {%- assign btn_frm_border_size  = section.settings.btn_frm_border_size    | default: 0 -%}
+
+              {{- formID}} button.btn-0{
+                {%- if btn_frm_color    != 'rgba(0,0,0,0)' -%}color: {{btn_frm_color}};{%- endif -%}
+                {%- if btn_frm_bg_color != 'rgba(0,0,0,0)' -%}background-color: {{btn_frm_bg_color}};{%- endif -%}
+                {%- if btn_frm_border_color != 'rgba(0,0,0,0)' and btn_frm_border_size > 0 -%}border: {{btn_frm_border_size}}px solid {{btn_frm_border_color}}{%- endif -%}
+              }
+              {%- include 'css-responsive', classID: formID, nextClassID: ' button.btn-0', css_value: section.settings.btn_frm_padding -%}
+              {%- include 'css-responsive', classID: formID, nextClassID: ' button.btn-0', css_value: section.settings.btn_frm_radius   ,css_property: 'border-radius' -%}
+              {%- include 'css-responsive', classID: formID, nextClassID: ' button.btn-0', css_value: section.settings.btn_frm_fs       ,css_property: 'font-size' -%}
+            {%- endif -%}
+          {%- endcapture -%}
+          {%- assign section_css = section_css | append: block_css -%}
+      {%- endif -%}
+    </div>
+  </div>
+
+
+  <style>
+    {{- section_css -}}#col-main{background-color:{{section.settings.background_color | default: 'rgba(0,0,0,0)' }};}
+    {%- include 'css-responsive', classID: '#col-main' ,css_value: section.settings.section_padding -%}
+    {%- include 'css-responsive', classID: 'body:not(.templateIndex) #body-content' ,css_value: section.settings.section_margin ,css_property: 'margin' -%}
+  </style>
+</div>
+
+{% schema %}
+{
+  "name": "404 page",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breabcrumb",
+      "label": "Show Breadcrumb"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "rgba(0,0,0,0)"
+    },
+      {
+         "type"  :"text",
+         "id"    :"section_padding",
+         "label" :"Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type"  :"text",
+         "id"    :"section_margin",
+         "label" :"Section Margin",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+    {
+      "type": "text",
+      "id": "content",
+      "label": "Content",
+      "default": "THAT PAGE CAN'T BE FOUND"
+    },
+    {
+      "type": "textarea",
+      "id": "sub_content",
+      "label": "Content 2",
+      "default": "It look like nothing was found at this location. Try using the search"
+    },
+    {
+      "type": "header",
+      "content": "Search Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": true
+    },
+    {
+       "type":"text",
+       "id":"search_max_wide",
+       "label":"Search max width",
+       "placeholder": "E.g: 300px"
+    },
+    {
+      "type": "paragraph",
+      "content": "+ FORM SETTINGS"
+    },
+    {
+      "type": "color",
+      "id": "frm_txt_color",
+      "label": "Form text color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "frm_bg_color",
+      "label": "Form background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "frm_border_color",
+      "label": "Form border color",
+      "default": "#222222"
+    },
+    {
+       "type":"range",
+       "id":"frm_border_size",
+       "label":"Form border size",
+       "min":0,
+       "max":10,
+       "unit":"px",
+       "default":1
+    },
+    {
+      "type": "paragraph",
+      "content": "+ BUTTON SETTINGS"
+    },
+    {
+      "type": "range",
+      "id": "btn_inherit",
+      "label": "Button style",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "info": "0 to customize"
+    },
+    {
+      "type": "text",
+      "id": "btn_frm_padding",
+      "label": "Button padding",
+      "placeholder": "top right left bottom",
+      "info": "E.g: 10px 5px 10px 5px"
+    },
+    {
+      "type": "text",
+      "id": "btn_frm_radius",
+      "label": "Button radius corners",
+      "placeholder": "E.g: 4px 4px 4px 4px"
+    },
+    {
+      "type": "text",
+      "id": "btn_frm_fs",
+      "label": "Button font size",
+      "placeholder": "E.g: 14px"
+    },
+    {
+      "type": "color",
+      "id": "btn_frm_color",
+      "label": "Button icon color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_frm_bg_color",
+      "label": "Button background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "btn_frm_border_color",
+      "label": "Border color"
+    },
+    {
+      "type": "range",
+      "id": "btn_frm_border_size",
+      "label": "Border size",
+      "min": 0,
+      "max": 10,
+      "unit": "px",
+      "default": 1
+    }
+  ]
+}
+{% endschema %}

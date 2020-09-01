@@ -1,0 +1,158 @@
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+{%- if section.blocks.size > 0 -%}
+    {%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+    {%- assign background_color  = section.settings.background_color -%}
+    {%- assign bg_color_type     = section.settings.bg_color_type -%}
+    {%- assign text_color 		 = section.settings.text_color -%}
+    {%- assign text_align 		 = section.settings.text_align -%}
+
+    <div class="text-slider-wrap layout-{{_layout }} section-show-{{section.id}}{% unless bg_color_type == 'boxed' %}" style="background: {{background_color}};overflow: hidden;{% endunless %}" data-section-id="{{section.id}}" data-section-type="text-slider">
+    	{%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    		<div class="carousel slide" data-ride="carousel" style="min-height: 25px;{% if bg_color_type == 'boxed' %} background: {{background_color}};{% endif %}">
+    				{% for block in section.blocks %}
+    					{%- assign text 	      = block.settings.text -%}
+    					{%- assign text_link      = block.settings.text_link -%}
+    					{%- assign link 	      = block.settings.link | default: 'javascript:void(0);'-%}
+                        {%- assign icon           = block.settings.icon -%}
+                        {%- capture _icon -%}{%- unless icon == blank -%}{%- include 'icons', type: 'icon_free', name: icon -%}{%- endunless -%}{%- endcapture -%}
+
+    					<div class="carousel-item text-{{text_align}}{% if forloop.first %} active{% endif %}"{{block.shopify_attributes}}>
+    						{%- unless text == blank -%}
+    						  <span>{%- unless text contains '[icon]' -%}{{_icon}}{%- endunless -%}{{text | replace: '[icon]', _icon }}</span>{%- unless text_link == blank -%}<a href="{{link}}">{{text_link | replace: '[icon]', _icon }}</a>{%- endunless -%}
+    						{%- endunless -%}
+    					</div>
+    				{% endfor %}
+    		</div>
+    	{%- if _layout == 'boxed' -%}</div>{%- endif -%}
+    </div>
+    <style>
+        {%- include 'section-general-css' -%}
+    	{{- _secionID }} .carousel-item *{color: {{text_color}};}
+    	{{- _secionID }} .carousel-item a{text-decoration: underline;}
+    </style>
+{%- endif -%}
+{% schema %}
+{
+    "name":"Text Slider",
+    "tag":"section",
+    "settings":[
+        {
+            "type":"paragraph",
+            "content":"Created by 'Text Slider' section"
+        },
+        {
+            "type":"text",
+            "id":"title",
+            "label":"Section Label [:id]","default": "Text slider"
+        },
+        {
+            "type":"header",
+            "content":"LAYOUT"
+        },
+        {
+            "type":"checkbox",
+            "id":"boxed_layout",
+            "label":"Boxed layout",
+            "default":true
+        },
+        {
+           "type"  :"text",
+           "id"    :"section_padding",
+           "label" :"Section Padding",
+           "placeholder": "E.g: 5px 20px 5px 20px",
+           "info": "Order: Top Right Bottom Left"
+        },
+        {
+            "type":"color",
+            "id":"background_color",
+            "label":"Background color",
+            "default":"#000000"
+        },
+        {
+            "type":"color",
+            "id":"text_color",
+            "label":"Text color",
+            "default":"#ffffff"
+        },
+        {
+           "type":"select",
+           "id":"bg_color_type",
+           "label":"Background color style",
+           "options":[
+               {
+                 "value":"full",
+                 "label":"Full width"
+               },
+               {
+                 "value":"boxed",
+                 "label":"Boxed"
+               }
+           ],
+           "default":"full"
+        },
+        {
+            "type":"select",
+            "id":"text_align",
+            "label":"Text align",
+            "options":[
+                {
+                    "value":"left",
+                    "label":"Left"
+                },
+                {
+                    "value":"center",
+                    "label":"Center"
+                },
+                {
+                    "value":"right",
+                    "label":"Right"
+                }
+            ],
+            "default":"center"
+        }
+    ],
+    "blocks":[
+        {
+            "type":"text",
+            "name":"Text content",
+            "settings":[
+                {
+                    "type":"textarea",
+                    "id":"text",
+                    "label":"Content",
+                    "default":"You can add anything from Theme Option"
+                },
+                {
+                    "type":"text",
+                    "id":"icon",
+                    "label":"Font icon name",
+                    "placeholder": "Optional",
+                    "info": "Use [icon] to place icon."
+                },
+                {
+                    "type":"text",
+                    "id":"text_link",
+                    "label":"Link label",
+                    "placeholder": "Optional"
+                },
+                {
+                    "type":"url",
+                    "id":"link",
+                    "label":"Link"
+                }
+            ]
+        }
+    ],
+    "presets":[
+        {
+            "name":"Text Slider",
+            "category":"Banner",
+            "blocks":[
+                {
+                    "type":"text"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

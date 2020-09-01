@@ -1,0 +1,62 @@
+{%- case type -%}
+  {%- when 'section_id' -%}
+    {%- if section.settings.title contains '[:' -%}
+      {%- assign __section_id = section.settings.title | split: '[:' | last -%}
+      {%- capture __section_id -%}{{ __section_id | split: ']' | first | strip }}{%- endcapture -%}
+      <div id="{{__section_id}}"></div>
+    {%- endif -%}
+
+  {%- else -%}
+    {%- unless settings.catalog_mode == 'disabled' -%}
+      {%- assign __catalog_mode = ' category-mode' -%}
+      {%- if settings.catalog_mode == 'enable_not_product' -%}
+        {%- assign __catalog_mode = __catalog_mode | append: '-2' -%}
+        {%- if  template contains 'product' -%}{%- assign __catalog_mode = '' -%}{%- endif -%}
+      {%- endif -%}
+      {%- assign theme_class = theme_class | append: __catalog_mode -%}
+    {%- endunless -%}
+
+    {%- if settings.button_rounded_border -%}
+    	{%- assign theme_class = theme_class | append: ' btn-rounded' -%}
+    {%- endif -%}
+
+    {%- if settings.enable_rtl -%}
+    	{%- assign theme_class = theme_class | append: ' theme-rtl--active btn-theme-rtl' -%}
+    {%- endif -%}
+
+    {%- assign btn1_default = settings.btn1_default_style | times: 1 -%}
+    {%- assign btn2_default = settings.btn2_default_style | times: 1 -%}
+    {%- assign btn3_default = settings.btn3_default_style | times: 1 -%}
+
+    {%- if btn1_default > 0 -%}
+    	{%- assign theme_class = theme_class | append: ' btn1-default-' | append: btn1_default -%}
+    {%- endif -%}
+    {%- if btn2_default > 0 -%}
+    	{%- assign theme_class = theme_class | append: ' btn2-default-' | append: btn2_default -%}
+    {%- endif -%}
+    {%- if btn3_default > 0 -%}
+    	{%- assign theme_class = theme_class | append: ' btn3-default-' | append: btn3_default -%}
+    {%- endif -%}
+
+    {%- if settings.product_label_style != '1' -%}
+      {%- assign theme_class = theme_class | append: ' label-style-' | append: settings.product_label_style -%}
+    {%- endif -%}
+
+    {%- if settings.card_balance == 'all' -%}
+      {%- assign theme_class = theme_class | append: ' card-blanced--all' -%}
+    {%- endif -%}
+
+    {%- assign desk_h_overlay         = settings.desk_h_overlay  -%}
+    {%- assign mobi_h_overlay         = settings.mobi_header_overlay  -%}
+
+    {%- case desk_h_overlay -%}
+      {%- when 'homepage' -%}{%- if template == 'index' -%}{%- assign h_desk_absolute = ' h-desk-absolute' -%}{%- endif -%}
+      {%- when 'all_pages' -%}{%- assign h_desk_absolute = ' h-desk-absolute' -%}
+    {%- endcase -%}
+    {%- case mobi_h_overlay -%}
+      {%- when 'homepage' -%}{%- if template == 'index' -%}{%- assign h_mobi_absolute = ' h-mobi-absolute' -%}{%- endif -%}
+      {%- when 'all_pages' -%}{%- assign h_mobi_absolute = ' h-mobi-absolute' -%}
+    {%- endcase -%}
+
+    {%- capture header_class -%}{{h_desk_absolute}}{{h_mobi_absolute}}{%- endcapture -%}
+{%- endcase -%}

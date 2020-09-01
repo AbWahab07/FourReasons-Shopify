@@ -1,0 +1,225 @@
+{%- assign _cart_styles 		 = settings.cart_styles -%}
+{%- assign _free_shipping_price  = settings.free_shipping_price | strip | default: 0 | times: 100 -%}
+{%- assign dis_ajax              = settings.disable_ajax_cart -%}
+{%- assign cart_change_qty       = settings.cart_sb_change_qty -%}
+{%- assign enable_free_shipping  = settings.enable_free_shipping -%}
+{%- assign free_shipping_text  	 = settings.free_shipping_text -%}
+{%- assign free_shipping_icon  	 = settings.free_shipping_icon -%}
+{%- assign enable_term           = settings.enable_term -%}
+{%- assign link_term             = settings.link_term | default: 'javascript:void(0);' -%}
+
+{%- if _free_shipping_price == 0 or settings.currency_type == '1' -%}{%- assign enable_free_shipping = false -%}{%- endif -%}
+
+{%- case _cart_styles -%}
+	{%- when 'dropdown' -%}
+		<div class="layer-addcart-modal">
+		  <div class="layer-addcart-modals">
+		    <div class="am-close" title="{{ 'customer.general.close' | t }}"><i class="demo-icon icon-M"></i></div>
+			<div class="cart-table">
+				<p><i class="demo-icon icon-ok"></i>{{ 'cart.cart_modal.add_product_success' | t }}:</p>
+				<div class="cart-table-wrapper">
+					<div class="cart-left">
+						<div class="cart-img"></div>
+						<div class="cart-info">
+						    <p class="prod-title"></p>
+						    <p class="prod-subtitle"></p>
+						    <p class="prod-price"></p>
+						</div>
+					</div>
+
+					<div class="cart-right">
+						<p class="layercart-count">{{ 'cart.cart_modal.your_cart' | t }}: <span class="cart-count"></span></p>
+						<div class="layercart-total">{{ 'cart.cart_modal.subtotal' | t }}:<span id="layer-cart-total" class="float-right"></span></div>
+
+						{%- if settings.enable_term -%}
+							{%- assign link_term   = settings.link_term | default: 'javascript:void(0);' -%}
+							<div class="terms-conditions d-none d-md-block">
+							  <input type="checkbox" class="agree">
+							  <a href="{{link_term}}" target="_blank" rel="noopener">{{'cart.general.terms_conditions' | t }}</a>
+							</div>
+						{%- endif -%}
+						<div class="d-none d-md-block"><a href="/checkout" name="checkout" class="btn btn-checkout btn-{{settings.btn_checkout_style}}" data-term="{{enable_term}}">{{ 'cart.cart_modal.checkout' | t }}</a></div>
+						<div><a href="/cart" class="btn btn-view-cart btn-{{settings.btn_cart_style}}">{{ 'cart.cart_modal.view_cart' | t }}</a></div>
+					</div>
+
+				</div>
+			</div>
+			<div id="layer-cart--related" class="layer-related-wrapper" style="display: none;">
+				<p class="h5">{{"cart.cart_modal.related_product"|t}}</p>
+				<div id="layer-addcart-related--data" class="hide">{%- include 'include-carousel-attr' ,_type: 'carousel', owl_id: 'related-layer-cart' ,owl_items: '4,1' ,owl_padding: true -%}</div>
+				<div id="layer-addcart-related"></div>
+			</div>
+		  </div>
+		</div>
+
+	{%- when 'sidebar' -%}
+	  	<div class="cart-layer-content cart-sb">
+	  		<style>.cart-sb:not(.opened) img{display: none;}</style>
+	  		<form action="/cart" method="post">
+	  			<div class="cart-sb-title">
+	  				<div class="c-icon">
+	  					{%- include 'icons', type: 'icon_type' ,f: 'cart' -%}
+	  					<span class="number cart-total-count">{{ cart.item_count }}</span>
+	  				</div>
+	  				<a href="/cart" class="c-title">{{ "cart.header.title" | t }}</a>
+	  				<span class="c-close"><i class="demo-icon icon-M" aria-hidden="true"></i></span>
+	  			</div>
+
+	  			<div class="cart-info{% unless enable_free_shipping %} free-shipping__disabled{% endunless %}">
+	  				<div class="cart-content">
+	  					<div class="loading"></div>
+	  				</div>
+	  			</div>
+	  		</form>
+	  	</div>
+{%- endcase -%}
+
+
+<div class="cart-layer--script hide">
+
+	{%- if _cart_styles == 'dropdown' or _cart_styles == 'sidebar' -%}
+		{%- capture _freeShip_Price -%}
+			<div class="freeshipping-price">
+				<p>
+					{%- unless free_shipping_icon == blank -%}
+						{%- include 'icons' ,type: 'icon_free' ,name: free_shipping_icon -%}
+					{%- endunless -%}
+					<span class="fs-text">{{free_shipping_text}}</span>
+					<span class="fs-price">{{ _free_shipping_price | money }}</span>
+				</p>
+			</div>
+		{%- endcapture -%}
+		{%- comment -%}
+			============
+				Cart empty
+			============
+		{%- endcomment-%}
+		<div id="cart-item-empty">
+			<div class="cart-item-empty"><p>{{ 'cart.header.cart_empty_html' | t }}</p></div>
+
+			<div class="wrap-action">
+				<div class="wrap-total">{{_freeShip_Price}}</div>
+			</div>
+		</div>
+
+		{%- comment -%}
+			============
+				Cart item HTML
+			============
+		{%- endcomment-%}
+		<div id="cart-item-html">
+			<div class="cart-item--content">
+				<div class="items-inner">
+					<div class="cart-item-image">
+						<a href="javascript:void(0);" class="cart-item-url">
+							<span class="image--style">
+								<img data-src=""/>
+							</span>
+						</a>
+					</div>
+					<div class="cart-item-info">
+						<div class="cart-item-main-title"><a href="javascript:void(0);" class="cart-item-url cart-item-title">Product title</a></div>
+						<div class="cart-item-variants"><span class="cart-item-variant-title">Variant title</span></div>
+
+
+						{%- if _cart_styles == 'sidebar' and cart_change_qty and dis_ajax == false -%}
+							<div class="cart-item--price">$9.99</div>
+							<div class="cart-item-quantity d-block">
+								<div class="quantity">
+									<div class="qty-wrapper" data-id="[item_id]">
+										<span class="qty-inner"><span class="qty-down-[item_id] qty-down ajax-down">{%- include 'icons', type: 'icon_free', name: 'icon-K' -%}</span></span>
+
+										<input class="replace input-cart-qty" id="[item_id]" value="[item_qty]" type="text" readonly name="item-quantity">
+
+										<span class="qty-inner"><span class="qty-up-[item_id] qty-up ajax-up">{%- include 'icons', type: 'icon_free', name: 'icon-L' -%}</span></span>
+									</div>
+								</div>
+							</div>
+
+						{%- else -%}
+							<div class="cart-item-price">
+								<span class="cart-item-qty">[item_qty]
+									{%- include 'icons', type: 'icon_free', name: 'icon-M' -%}
+								</span>
+								<span class="cart-item--price">$0.00</span>
+							</div>
+						{%- endif -%}
+					</div>
+					<a data-cart-item-id="[item_id]" class="cart-close" title="{{ 'cart.header.remove' | t }}" href="javascript:void(0);">
+						{%- include 'icons', type: 'icon_free', name: 'icon-M' -%}
+					</a>
+				</div>
+			</div>
+		</div>
+
+		{%- comment -%}
+			============
+				Cart Footer HTML
+			============
+		{%- endcomment-%}
+		<div id="cart-layer-footer">
+			{%- case _cart_styles -%}
+				{%- when 'dropdown' -%}
+					<div class="total">
+						<div class="cart-total-col">
+							<a href="/cart">
+								<span>{{ 'cart.header.title' | t }}</span>
+								(<span class="cart-total-count">{{ cart.item_count }}</span>)
+							</a>
+						</div>
+						<div class="cart-total-col">
+							<span>{{ 'cart.header.subtotal' | t }}:</span>
+							<span class="cart-item-total-price cart-tt-price"></span>
+						</div>
+					</div>
+					<div class="action">
+						<a href="/cart" class="btn btn-view-cart btn-{{settings.btn_cart_style}}">{{ 'cart.header.view_shopping_bag' | t }}</a>
+						<button class="btn btn-checkout btn-{{settings.btn_checkout_style}}" type="submit" name="checkout" data-term="{{enable_term}}">{{ "cart.header.checkout" | t }}</button>
+					</div>
+					{%- if enable_term -%}
+					<div class="terms-conditions">
+						<input type="checkbox" class="agree">
+						<a href="{{link_term}}" target="_blank" rel="noopener">{{'cart.general.terms_conditions' | t }}</a>
+					</div>
+					{%- endif -%}
+
+			  	{%- when 'sidebar' -%}
+					<div class="cart-order-note">
+						<span>{{ "cart.general.add_note" | t }}</span>
+						<div class="cart-note">
+							<textarea name="note" id="CartSpecialInstructions"></textarea>
+						</div>
+					</div>
+					<div class="wrap-action">
+						<div class="wrap-total">
+							{%- comment -%}
+								{%- if enable_free_shipping -%}
+									<div class="wrap-progress">
+										<div class="sb-progress"></div>
+										<div class="sb-text"></div>
+									</div>
+								{%- endif -%}
+							{%- endcomment-%}
+							<div class="total"><span>{{ "cart.header.subtotal" | t }}</span>
+								<span class="cart-item-total-price">$0.00</span>
+							</div>
+							{%- if enable_term -%}
+								<div class="terms-conditions">
+									<input type="checkbox" class="agree">
+									<a href="{{link_term}}" target="_blank" rel="noopener">{{'cart.general.terms_conditions' | t }}</a>
+								</div>
+							{%- endif -%}
+							<div class="action">
+								<button class="btn btn-checkout btn-{{settings.btn_checkout_style}}" type="submit" name="checkout" data-term="{{enable_term}}">
+									<span class="buton-label">{{ "cart.header.checkout" | t }}</span>
+								</button>
+							</div>
+							{{_freeShip_Price}}
+						</div>
+					</div>
+			{%- endcase -%}
+		</div>
+	{%- endif -%}
+
+	{%- include 'cart-script-content' -%}
+</div>

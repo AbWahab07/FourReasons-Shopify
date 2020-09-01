@@ -1,0 +1,410 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _s_type    		= 'product-lookbook' -%}
+{%- assign _lazyload  		= settings.use_lazyload -%}
+{%- assign _padding   		= section.settings.section_padding -%}
+{%- assign _bg_color  		= section.settings.section_bg_color -%}
+{%- assign _lb_image  		= section.settings.lb_image -%}
+{%- assign _bg_image        = section.settings.section_bg_image -%}
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+{%- assign _pointer_style  	= section.settings.pointer_style -%}
+{%- if _pointer_style == '3' -%}
+{%- assign _pointer_img  		= section.settings.pointer_img -%}
+{%- endif -%}
+{%- assign _prod_col          = section.settings.product_col -%}
+{%- assign _product_col       = all_products[_prod_col] -%}
+{%- assign _prod_description  = section.settings.product_description -%}
+{%- if _prod_col != blank and _product_col.available -%}
+  {%- assign has_column = true -%}
+{%- endif -%}
+
+{%- assign _product_title_color  = section.settings.product_title_color | default: 'rgba(0,0,0,0)' -%}
+
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="home-product-lookbook layout-{{_layout }} section-show-{{section.id}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="{{_s_type}}" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    {%- include 'head-title' -%}
+
+
+    {%- if has_column -%}
+      <div class="row">
+        <div class="col-md-6 col-12">
+    {%- endif -%}
+
+      <!-- Main Lookbook -->
+      <div class="lb-content pointer-style-{{_pointer_style}}">
+      	<div class="lb-image">
+          {%- unless _lb_image == blank -%}
+      		  {%- include 'image-style', image: _lb_image -%}          
+          {%- else -%}
+            {%- include 'svgset', type: 'lifestyle' -%}
+          {%- endunless -%}
+      	</div>
+      	<div class="lb-pointer">
+      		{%- if section.blocks.size > 0 -%}
+      			{%- for block in section.blocks -%}
+      				{%- assign _product 	= block.settings.product -%}
+      				{%- assign product 		= all_products[_product] -%}
+      				{%- assign _tooltip		= block.settings.tooltip -%}
+      				{%- assign _posX 		= block.settings.posX | append: '%' -%}
+      				{%- assign _posY 		= block.settings.posY | append: '%' -%}
+
+      				{%- if _product != blank and product.available -%}
+      					<div class="pointer-item pointer-{{forloop.index}} tooltip-{{_tooltip}}"{{block.shopify_attributes}}>
+      						<div class="pointer-icon">
+      							<a href="{{product.url | within: 'collection'}}">
+  	    							{%- if _pointer_style == '3' -%}
+  	    								{%- include 'image-style', image:_pointer_img, image_width: '[100,200]' -%}
+  	    							{%- endif -%}
+      							</a>
+      						</div>
+      						<div class="product-item">
+      							<div class="product-item-inner">
+
+      								{%- unless _pointer_style == '3' -%}
+      									<div class="product-image">{%- include 'image-style', image: product.featured_image -%}</div>
+      								{%- endunless -%}
+      								<div class="product-name"><a href="{{product.url | within: collection}}">{{product.title}}</a></div>
+
+      								{%- if _pointer_style == '3' -%}
+  	    								{%- assign meta_shortdes = product.metafields.c_f -%}
+  	    								{%- unless meta_shortdes.description_excerpt == blank -%}
+  	    								<div class="product-description"><p>{{ meta_shortdes.description_excerpt }}</p></div>
+  	    								{%- endunless -%}
+      								{%- endif -%}
+
+      								<div class="product-price">{%- include 'product-price' -%}</div>
+      								<div class="product-button">
+      									<div class="product-add-cart{% unless product.available %} sold-out{% endunless %}">
+      										{%- unless settings.disable_ajax_cart -%}
+  	    										{%- if product.variants.size > 1 -%}
+  		    										<a href="{{ product.url | within: collection }}" class="btn-add-cart btn {{btn_class}} select-options" title="{{ 'products.product.select_options' | t }}">
+  		    											<span>{{- 'products.product.buy_now' | t -}}</span>
+  		    										</a>
+
+  	    										{%- else -%}
+  		    										<form action="/cart/add" method="post" enctype="multipart/form-data">
+  		    											<a href="javascript:void(0);" class="btn-add-cart btn {{btn_class}} add-to-cart" title="{{ 'products.product.add_to_cart' | t }}">
+  		    												<span>{{- 'products.product.buy_now' | t -}}</span>
+  		    											</a>
+  		    											<select class="d-none" name="id">
+  		    												{%- for variant in product.variants -%}<option value="{{ variant.id }}">{{ variant.title | escape }}</option>{%- endfor -%}
+  		    											</select>
+  		    										</form>
+  	    										{%- endif -%}
+
+      										{%- else -%}
+  	    										<a href="{{ product.url | within: collection }}" class="btn-add-cart btn {{btn_class}} select-options" title="{{ 'products.product.select_options' | t }}">
+  	    											<span>{{- 'products.product.buy_now' | t -}}</span>
+  	    										</a>
+      										{%- endunless -%}
+
+      									</div>
+      								</div>
+      							</div>
+      						</div>
+      						<style>.section-show-{{section.id}} .pointer-{{forloop.index}}{left:{{_posX}};top:{{_posY}};}</style>
+      					</div>
+      				{%- endif -%}
+      			{%- endfor -%}
+
+      		{%- endif -%}
+      	</div>
+      </div>
+      <!-- End -->
+
+    {%- if has_column -%}
+        </div>
+          
+        <div class="col-md-6 col-12">
+          <div class="product-column">
+            <div class="product-title">{{_product_col.title}}</div>
+            {%- unless _prod_description == blank -%}
+              <div class="product-description">{{_prod_description}}</div>
+            {%- endunless -%}
+
+            {%- include 'product-price', product: _product_col -%}
+
+            <div class="product-button">                          
+              <div class="product-add-cart{% unless product.available %} sold-out{% endunless %}">                
+                  {%- unless settings.disable_ajax_cart -%}
+                    {%- if _product_col.variants.size > 1 -%}
+                      <a href="{{ _product_col.url | within: collection }}" class="btn-add-cart btn btn-1 select-options" title="{{ 'products.product.select_options' | t }}">
+                        <span>{{- 'products.product.select_options' | t -}}</span>
+                      </a>
+
+                    {%- else -%}
+                      <form action="/cart/add" method="post" enctype="multipart/form-data">
+                        <a href="javascript:void(0);" class="btn-add-cart btn btn-1 add-to-cart" title="{{ 'products.product.add_to_cart' | t }}">
+                          <span>{{- 'products.product.add_to_cart' | t -}}</span>
+                        </a>
+                        <select class="d-none" name="id">
+                          {%- for variant in _product_col.variants -%}
+                          <option value="{{ variant.id }}">{{ variant.title | escape }}</option>
+                          {%- endfor -%}
+                        </select>
+                      </form>
+                    {%- endif -%}
+
+                  {%- else -%}
+                    <a href="{{ _product_col.url | within: collection }}" class="btn-add-cart btn btn-1 select-options" title="{{ 'products.product.select_options' | t }}">
+                      <span>{{- 'products.product.select_options' | t -}}</span>
+                    </a>
+                  {%- endunless -%}                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+    
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+  <style>
+    {%- include 'section-general-css' -%}
+    {%- unless _product_title_color == 'rgba(0,0,0,0)' -%}{{_secionID}} .product-item .product-name a{color: {{_product_title_color}}!important;}{%- endunless -%}
+  </style>
+</div>
+{% schema %}{
+  "name":"Product Lookbook",
+  "tag":"section",
+  "settings":[
+    {
+      "type":"paragraph",
+      "content":"Created by 'Products Lookbook' section"
+    },
+    {
+      "type":"text",
+      "id":"title",
+      "label":"Section Label [:id]","default": "Product lookbook"
+    },
+    {
+      "type":"header",
+      "content":"LAYOUT"
+    },
+    {
+      "type":"checkbox",
+      "id":"boxed_layout",
+      "label":"Boxed layout",
+      "default":true
+    },
+      {
+         "type"  :"text",
+         "id"    :"section_padding",
+         "label" :"Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+    {
+      "type":"color",
+      "id":"section_bg_color",
+      "label":"Background color",
+      "default":"#FFFFFF"
+    },
+    {
+      "type":"image_picker",
+      "id":"section_bg_image",
+      "label":"Background image"
+    },
+    {
+      "type":"select",
+      "id"   :"section_bg_size",
+      "label":"Background Size",
+      "default": "cover",
+      "options":[
+      {"value":"auto","label":"Auto"},
+      {"value":"cover","label":"Cover"},
+      {"value":"contain","label":"Contain"}
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_repeat",
+      "label": "Background Image Repeat:",
+      "default": "no-repeat",
+      "options": [
+      {"value":"no-repeat","label":"No Repeat"},
+      {"value":"repeat","label":"Repeat"},
+      {"value":"repeat-x","label":"Repeat X"},
+      {"value":"repeat-y","label":"Repeat Y"}
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_position",
+      "label": "Background Image Position:",
+      "default": "center center",
+      "options": [
+      {"value":"left top","label":"Left Top"},
+      {"value":"center top","label":"Center Top"},
+      {"value":"right top","label":"Right Top"},
+      {"value":"left center","label":"Left Center"},
+      {"value":"center center","label":"Center Center"},
+      {"value":"right center","label":"Right Center"},
+      {"value":"left bottom","label":"Left Bottom"},
+      {"value":"center bottom","label":"Center Bottom"},
+      {"value":"right bottom","label":"Right Bottom"}
+      ]
+    },
+    {
+      "type":"header",
+      "content":"Section Heading"
+    },
+    {
+      "type":"select",
+      "id":"heading_content_align",
+      "label":"Heading alignment",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"center",
+          "label":"Center"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ],
+      "default":"center"
+    },
+    {
+      "type":"text",
+      "id":"heading_text",
+      "label":"Heading"
+    },
+    {
+      "type":"text",
+      "id":"subheading_text",
+      "label":"Subheading"
+    },
+    {
+      "type":"textarea",
+      "id":"subheading2_text",
+      "label":"Subheading 2"
+    },
+    {
+      "type":"color",
+      "id":"section_heading_color",
+      "label":"Heading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type":"color",
+      "id":"section_subheading_color",
+      "label":"Subheading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type":"color",
+      "id":"section_subheading2_color",
+      "label":"Subheading 2 color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type":"header",
+      "content":"LAYOUT CONTENT"
+    },
+    {
+      "type":"image_picker",
+      "id":"lb_image",
+      "label":"Lookbook image"
+    },
+    {
+       "type":"paragraph",
+       "content": "POINTER SETTINGS"
+    },
+    {
+       "type":"select",
+       "id"	 :"pointer_style",
+       "label":"Pointer style",
+       "default": "1",
+       "options":[
+       	{"value":"1","label":"#1"},
+       	{"value":"2","label":"#2"},
+       	{"value":"3","label":"#3"},
+        {"value":"4","label":"#4"}
+       ]
+    },
+    {
+       "type":"image_picker",
+       "id"	 :"pointer_img",
+       "label":"Pointer Image",
+       "info": "Use for Pointer style #3"
+    },
+    {
+       "type":"color",
+       "id":"product_title_color",
+       "label":"Product title color",
+       "info": "Blank to auto"
+    },
+    {
+       "type":"header",
+       "content":"Column content"
+    },
+    {
+       "type":"product",
+       "id"   :"product_col",
+       "label":"Product item"
+    },
+    {
+       "type":"textarea",
+       "id"   :"product_description",
+       "label":"Description"
+    }
+  ],
+  "blocks":[
+    {
+      "type":"product",
+      "name":"Product",
+      "settings":[
+	      {
+	      	"type":"product",
+	      	"id"	 :"product",
+	      	"label":"Product item"
+	      },
+	      {
+	         "type":"range",
+	         "id"	 :"posX",
+	         "label":"Horizontal position",
+	         "min"	 :0,
+	         "max"	 :100,
+	         "step"	:1,
+	         "unit"	:"%",
+	         "default":50
+	      },
+	      {
+	         "type":"range",
+	         "id"	 :"posY",
+	         "label":"Vertical position",
+	         "min"	 :0,
+	         "max"	 :100,
+	         "step"	:1,
+	         "unit"	:"%",
+	         "default":50
+	      },
+	      {
+	         "type":"select",
+	         "id"	 :"tooltip",
+	         "label":"Tooltip Product item",
+	         "default":"bottom",
+	         "options":[
+	         	{"value":"top","label":"Top"},
+	         	{"value":"right","label":"Right"},
+	         	{"value":"bottom","label":"Bottom"},
+	         	{"value":"left","label":"Left"}
+	         ]
+	      }
+
+      ]
+    }
+  ],
+  "presets":[
+    {
+      "name":"Product Lookbook",
+      "category":"Collection"
+    }
+  ]
+}
+{% endschema %}

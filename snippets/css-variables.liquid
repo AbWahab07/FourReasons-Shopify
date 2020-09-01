@@ -1,0 +1,219 @@
+{%- include 'liquid-variables' -%}
+
+<style>  
+    :root {
+
+	--body-font-size: {{settings.body_font_size}}px;
+
+/* space */
+  --padding-xxs: 8px;
+  --padding-xs: 12px;
+  --padding-sm: 16px;
+  --padding-md: 20px;
+  --padding-lg: 25px; 
+  --padding-inset-xxs: 5px;
+  --padding-inset-xs: 10px;
+  --padding-inset-sm: 15px;
+  --padding-inset-md: 20px;
+  --padding-inset-lg: 30px;
+/* end space */
+
+/* font-weight */
+  --body-weight: {{ settings.body_font_weight }};
+  --heading-1-weight: {{ settings.heading_weight_1 }};
+  --heading-2-weight: {{ settings.heading_weight_2 }};
+  --heading-3-weight: {{ settings.heading_weight_3 }};
+  --heading-4-weight: {{ settings.heading_weight_4 }};
+  --heading-5-weight: {{ settings.heading_weight_5 }};
+  --heading-6-weight: {{ settings.heading_weight_6 }};
+  --topbar-weight: {{ settings.top_bar_weight }};
+  --product-title-weight: {{ settings.product_title_weight }};
+  --product-price-weight: {{ settings.product_price_weight }};
+  --product-list-title-weight: {{ settings.product_list_title_weight }};
+  --product-list-price-weight: {{ settings.product_list_price_weight }};
+  --product-detail-title-weight: {{ settings.product_detail_title_weight }};
+  --product-detail-price-weight: {{ settings.product_detail_price_weight }};
+  --nav-weight: {{ settings.nav_weight }};
+  --nav-sub-weight: {{ settings.nav_sub_weight }};
+  --footer-font-weight: {{ settings.footer_font_weight }};
+  --footerbt-font-weight: {{ settings.footer_bt_font_weight }};
+
+  --size-h1: {{settings.heading_size_1}};
+  --size-h2: {{settings.heading_size_2}};
+  --size-h3: {{settings.heading_size_3}};
+  --size-h4: {{settings.heading_size_4}};
+  --size-h5: {{settings.heading_size_5}};
+  --size-h6: {{settings.heading_size_6}};
+  --top-font-size: {{settings.top_bar_size}}px;
+  --product-font-size: {{settings.product_title_size}}px;
+  --product-price-size: {{settings.product_price_size}}px;
+  --product-detail-size: {{settings.product_detail_price_size}}px;
+  --product-detail-title-size: {{settings.product_detail_title_size}}px;
+  --product-list-title-size: {{ settings.product_list_title_size }}px;
+  --product-list-price-size: {{ settings.product_list_price_size }}px;
+  --footer-size: {{settings.footer_font_size}};
+  --footerbt-font-size: {{settings.footer_bt_font_size}};
+  --heading-section-size: {{settings.heading_section_size}}px;
+  --subheading-section-size: {{settings.subheading_section_size}}px;
+  --subheading2-section-size: {{settings.subheading2_section_size}}px;
+  --font-icon: 24px;
+  --font-small-icon: 20px;
+
+  --mobile-bg-color: {{settings.mobile_background_menu_color}};
+  --mobile-bg-transparent: {{settings.mobi_header_opacity}};
+  --header-bg: {{settings.header_bg_color}};
+  --top-bg-transparent: {{settings.topbar_bg_transparent}};
+  --header-bg-transparent: {{settings.desk_opacity}};
+  --main-color: {{settings.main_color}}; 
+  --main-color-text: {{settings.main_text_color}};
+  --header-fixed-bg: {{ settings.header_fixed_bg_color }}; 
+  --header-fixed-text-color: {{ settings.header_fixed_text_color }}; 
+  --border-header-fixed: {{ settings.header_fixed_border_color }};
+
+  --light-color: {{settings.light_color}};
+  --dark-color: {{settings.dark_color}};
+  --text-top-bar: {{settings.topbar_text_color}};
+  --icons-top-bar: {{settings.topbar_icons_color}};
+  --icons-top-bar-hover: {{settings.topbar_icons_color_hover}};
+  --bg-top-bar: {{settings.topbar_bg_color}};
+  --header-icon-color: {{settings.font_icons_color}};
+  --header-icon-hover-color: {{settings.font_icons_color_hover}};
+  --header-icon-bg: {{ settings.number_icons_bg_color }};
+  --bg-nav-color: {{settings.nav_link_background_color}};
+  --nav-font-size: {{settings.nav_size}};
+  --nav-sub-font-size: {{settings.nav_sub_size}}px;
+  --nav-border-color: {{settings.border_nav_color}};
+  --nav-link-color: {{settings.nav_link_color}};
+  --nav-link-hover-color: {{settings.nav_hover_color}};
+  --nav-dropdown-background: {{settings.dropdown_bg_color}};
+  --nav-dropdown-link-color: {{settings.dropdown_item_color}};
+  --nav-dropdown-link-hover-color: {{settings.dropdown_item_color_hover}};
+  --nav-icon-color: {{settings.font_nav_link_color}};
+  --nav-icon-hover-color: {{settings.font_nav_hover_color}};
+  --label-sale-bg: {{settings.menu_sale_label_bg}};
+  --label-new-bg: {{settings.menu_new_label_bg}};
+  --label-hot-bg: {{settings.menu_hot_label_bg}};
+  --vertical-menu-color: {{ settings.btn_vertical_menu_8 }};
+  --vertical-border-left-right: {{ settings.btn_border_vertical_menu_8 }};
+  --vertical-bg-vertical: {{ settings.btn_bg_vertical_menu_8 }};
+  --border-vertical-menu: {{ settings.border_vertical_menu_8 }};
+  --body-background-color: {{settings.body_bg_color}};
+  --body-second-color: {{settings.miscellaneous_color}};
+  --body-label-sale-background: {{settings.prod_sale_label_bg}};
+  --body-label-new-background: {{settings.prod_new_label_bg}};
+  --body-label-hot-background: {{settings.prod_hot_label_bg}};
+  --body-general-color: {{settings.body_general_color}};
+  --body-light-color: {{settings.body_light_color}};
+  --body-title-color: {{settings.body_title_color}};
+  --body-link-color: {{settings.body_link_color}};
+  --body-icons-color: {{settings.icons_color}};
+  --section-heading-color: {{settings.heading_section_color}};
+  --section-subheading-color: {{settings.subheading_section_color}};
+  --section-subheading2-color: {{settings.subheading2_section_color}};
+  --body-border-color: {{settings.body_border_color}};
+  --bg-miscellaneous: {{settings.background_miscellaneous}};
+  --body-ratting-color: {{settings.ratting_color}};
+  --body-ratting-empty-color: {{settings.ratting_color_empty}};
+  --body-price-color: {{settings.product_price_color}};
+  --body-price-compare-color: {{settings.product_sale_price_color}};
+  --body-price-special-color: {{settings.product_sepcial_price_color}};
+  --body-price-sold-out-color: {{settings.product_sold_out_price_color}};
+  --breadcrumb-bg-color: {{settings.breadcrumb_bg_color}};
+  --breadcrumb-text-color: {{ settings.breadcrumb_text_color }};
+  --product-card-bg: {{settings.card_bg_color}};
+  --product-card-btn-bg: {{ settings.card_btn_bg_color }};
+  --product-card-btn-color: {{ settings.card_btn_color }};
+  --product-card-btn-bg-hover: {{ settings.card_btn_bg_color_hover }};
+  --product-card-btn-color-hover: {{ settings.card_btn_color_hover }};
+  --product-card-buttons-border-color: {{ settings.card_btn_border }};
+  --product-card-buttons-border-hover: {{ settings.card_btn_border_hover }};
+
+  --footer-background-color: {{settings.footer_bg}};
+  --footer-bottom-bg-color: {{settings.bottom_footer_bg}};
+  --footer-static-text-color: {{settings.footer_text_color}};
+  --footer-link-color: {{settings.footer_color}};
+  --footer-top-link-weight: {{ settings.footer_top_link_fw }};
+  --footer-hover-color: {{settings.footer_color_hover}};
+  --footerbt-text-color: {{settings.footer_bt_text_color}};
+  --footerbt-link-color: {{settings.footer_bt_link_color}};
+  --footer-bottom-link-weight: {{ settings.footer_bottom_link_fw }};
+  --footerbt-hover-color: {{settings.footer_bt_color_hover}};
+
+  --type: {{ settings.btn_default_styles }};
+  --border-width-btn1: {{ settings.btn1_border_width }};
+  --button-btn1: {{ settings.btn1_bg}};
+  --color-btn1: {{ settings.btn1_text_color }};
+  --border-btn1: {{ settings.btn1_border_color }};
+  --button-hover-btn1: {{ settings.btn1_bg_hover}};
+  --color-hover-btn1: {{ settings.btn1_text_hover }};
+  --border-hover-btn1: {{ settings.btn1_border_hover }};
+  --font-size-btn1: {{ settings.btn1_font_size }};
+  --font-weight-btn1: {{ settings.btn1_font_weight }};
+  --border-width-btn2: {{ settings.btn2_border_width }};
+  --button-btn2: {{ settings.btn2_bg}};
+  --color-btn2: {{ settings.btn2_text_color }};
+  --border-btn2: {{ settings.btn2_border_color }};
+  --button-hover-btn2: {{ settings.btn2_bg_hover}};
+  --color-hover-btn2: {{ settings.btn2_text_hover }};
+  --border-hover-btn2: {{ settings.btn2_border_hover }};
+  --font-size-btn2: {{ settings.btn2_font_size }};
+  --font-weight-btn2: {{ settings.btn2_font_weight }};
+  --padding-btn3: {{ settings.btn3_padding }};
+  --border-width-btn3: {{ settings.btn3_border_width }};
+  --button-btn3: {{ settings.btn3_bg}};
+  --color-btn3: {{ settings.btn3_text_color }};
+  --border-btn3: {{ settings.btn3_border_color }};
+  --button-hover-btn3: {{ settings.btn3_bg_hover}};
+  --color-hover-btn3: {{ settings.btn3_text_hover }};
+  --border-hover-btn3: {{ settings.btn3_border_hover }};
+  --font-size-btn3: {{ settings.btn3_font_size }};
+  --font-weight-btn3: {{ settings.btn3_font_weight }};
+
+  --header-mb-color: {{settings.header_bg_color_mobile}};
+  --productImageRatioPercentage: {{ settings.collections_product_ratio }};
+  --productImageAutoCrop: {{ settings.collection_product_auto_crop }};
+  --productImageRatioPercentageList: {{ settings.collections_product_list_ratio }};
+  --color-swatch-width: {{settings.color_swatch_width}}px;
+  --color-swatch-height: {{settings.color_swatch_height}}px;
+  --image-swatch-width: {{settings.image_swatch_width}}px;
+  --image-swatch-height: {{settings.image_swatch_height}}px;
+  --button-swatch-width: {{settings.button_swatch_width}}px;
+  --button-swatch-height: {{settings.button_swatch_height}}px;
+  --padding-container: {{ settings.container_padding }};
+  --width-container: {{ settings.container_width }};
+
+  --nav-owl-color: {{ settings.nav_color }};    
+  --nav-owl-bg: {{ settings.nav_bg_color }};
+  --nav-owl-opacity: {{ settings.nav_bg_opacity }};
+
+  --enable_rtl: {{ settings.enable_rtl }};
+  --popup-bg-color: {{ settings.popup_bg_color }};  
+  
+/* backround & color rgba */
+--rgba-body-border-color: {{ settings.popup_bg_color | color_to_rgb | replace: 'rgb(', '' | replace: ')', '' }};
+
+
+/* Color replace for color contrast  */
+  --header_bg_color: {{ header_bg_color }};  
+  --number_icons_bg_color: {{ number_icons_bg_color }};
+  --menu_sale_label_bg : {{ menu_sale_label_bg }};
+  --menu_new_label_bg: {{ menu_new_label_bg }};
+  --menu_hot_label_bg: {{ menu_hot_label_bg }};
+  --prod_sale_label_bg: {{ prod_sale_label_bg }};
+  --prod_new_label_bg: {{ prod_new_label_bg }};
+  --prod_hot_label_bg: {{ prod_hot_label_bg }};
+  --header_bg_color_mobile: {{ header_bg_color_mobile }};
+  --nav_link_color: {{ nav_link_color }};
+  --nav_hover_color: {{ nav_hover_color }};
+  --body_link_color: {{ body_link_color }};
+  --body_bg_color: {{ body_bg_color }};
+  --body_title_color: {{ body_title_color }};
+  --footer_color_hover: {{ footer_color_hover }};
+  --footer_bt_color_hover: {{ footer_bt_color_hover }};
+  --body_border_color: {{ body_border_color }};
+
+  --mobile_background_menu_color: {{ mobile_background_menu_color }};
+  --light_color : {{ light_color }};
+  --dark_color : {{ dark_color }};
+  
+</style>

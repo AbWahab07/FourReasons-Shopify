@@ -1,0 +1,79 @@
+{%- assign _block                = block -%}
+{%- assign position              = _block.settings.position -%}
+{%- assign sp_image              = _block.settings.image -%}
+{%- assign sp_link               = _block.settings.link -%}
+{%- assign image_height          = _block.settings.image_height -%}
+{%- assign cont_padding          = _block.settings.content_padding -%}
+{%- assign sp_b_title            = _block.settings.b_title -%}
+{%- assign sp_b_content          = _block.settings.b_content -%}
+{%- assign sp_btn_text           = _block.settings.button_text -%}
+{%- assign sp_btn_link           = _block.settings.button_link -%}
+{%- assign sp_pos_top            = _block.settings.position_top  |append: '%' -%}
+{%- assign sp_pos_left           = _block.settings.position_left |append: '%' -%}
+{%- assign sp_tb_align           = _block.settings.tb_align -%}
+{%- assign sp_title_color        = _block.settings.title_color -%}
+{%- assign sp_content_color      = _block.settings.content_color -%}
+{%- assign sp_btn_corner         = _block.settings.button_corner -%}
+{%- assign sp_btn_inherit        = _block.settings.button_inherit -%}
+{%- assign sp_btn_bg_color       = _block.settings.button_bg_color -%}
+{%- assign sp_btn_color          = _block.settings.button_color -%}
+{%- assign sp_btn_border         = _block.settings.button_border -%}
+{%- assign tb_bg_color           = _block.settings.tb_bg_color -%}
+{%- assign tb_overlay            = _block.settings.overlay_content -%}
+
+
+{%- if image_height == 'fill' -%}{%- assign img_padding = '100%' -%}{%- endif -%}
+{%- capture i_class -%}{%- include 'set-width-bootstrap',in_type: 'width', number: _block.settings.featured_width -%}{{_out}}{%- endcapture -%}
+
+
+<div class="{{i_class}}">
+  <div class="spc-block spc-type-image image-height-{{image_height}}{% if tb_overlay %} content-overlay{% endif %}">
+
+    <div class="big-content-head">
+      {%- if sp_image != blank -%}
+        <a href="{{sp_link}}">{% include 'image-style' with image: sp_image, set_padding: img_padding %}</a>
+      {%- else -%}
+        {%- include 'svgset', type: 'image' -%}
+      {%- endif -%}
+    </div>
+
+    <div class="big-content-body">
+      {%- unless sp_b_title == blank and sp_b_content == blank and sp_btn_text == blank and sp_btn_link == blank-%}
+        <div class="content-group b-{{block.id}} text-{{sp_tb_align}}">
+          <div class="content-text">
+            {%- unless sp_b_title == blank -%}
+            <p class="b-title">{{sp_b_title}}</p>
+            {%- endunless -%}
+            {%- unless sp_b_content == blank -%}
+            <span class="b-content">{{sp_b_content}}</span>
+            {%- endunless -%}
+          </div>
+          {%- unless sp_btn_text == blank and sp_btn_link == blank -%}
+          <div class="btn-group">
+            <a class="btn{% if sp_btn_inherit %} btn-1{% else %} btn-spc{% endif %}{% if sp_btn_corner %} btn-rd{% endif %}" href="{{ sp_btn_link }}">{{ sp_btn_text }}</a>
+          </div>
+          {%- endunless -%}
+
+          <style>
+            .section-show-{{section.id}} .b-{{block.id}}{
+            {%- if tb_overlay -%}left:{{sp_pos_left}};top:{{sp_pos_top}};transform: translate(-{{sp_pos_left}} ,-{{sp_pos_top}});{%- endif -%}
+            {%- unless cont_padding == blank -%}padding:{{cont_padding}};{%- endunless -%}
+            {%- if tb_bg_color != blank and tb_bg_color != 'rgba(0,0,0,0)' -%}background-color: {{tb_bg_color}};{%- endif -%}
+            }{% if sp_title_color != blank and sp_title_color != 'rgba(0,0,0,0)' %}
+            .section-show-{{section.id}} .b-{{block.id}} .b-title{color: {{sp_title_color}};}
+            {%- endif -%}
+            {%- if sp_content_color != blank and sp_content_color != 'rgba(0,0,0,0)' -%}
+            .section-show-{{section.id}} .b-{{block.id}} .b-content{color: {{sp_content_color}};}
+            {%- endif -%}
+            {%- unless sp_btn_inherit -%}
+            .section-show-{{section.id}} .b-{{block.id}} .btn-spc{
+              background-color: {{sp_btn_bg_color}};
+              color: {{sp_btn_color}};
+              border: 1px solid {{sp_btn_border}};}
+              {%- endunless -%}
+          </style>
+        </div>
+      {%- endunless -%}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,877 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- if section.settings.carousel_layout -%}{%- assign _type = 'carousel' -%}{%- else -%}{%- assign _type = 'row' -%}{%- endif -%}
+
+{%- assign _lazyload          = settings.use_lazyload -%}
+{%- assign _bg_color          = section.settings.section_bg_color -%}
+{%- assign _bg_image          = section.settings.section_bg_image -%}
+{%- assign _padding           = section.settings.section_padding -%}
+{%- assign _padding_item      = section.settings.padding_item -%}
+{%- assign _total_items       = section.settings.total_items -%}
+{%- assign _collection_title  = section.settings.col_title -%}
+{%- assign _show_plus         = section.settings.show_plus -%}
+{%- assign _position          = section.blocks[0].settings.position -%}
+{%- assign _block_spacing     = section.blocks[0].settings.block_spacing -%}
+{%- assign collection         = collections[section.settings.collection] -%}
+{%- assign _block             = section.blocks[0] -%}
+{%- assign _s_product_style   = section.settings.product_item_style | default: 0 | times: 1 -%}
+
+{%- unless section.settings.text_align == 'auto' -%}
+  {%- assign _text_align = section.settings.text_align -%}
+{%- endunless -%}
+
+{%- if _s_product_style > 0 -%}
+  {%- assign _cardStyle = _s_product_style -%}
+{%- else -%}
+  {%- assign _cardStyle = settings.product_item_style -%}
+{%- endif -%}
+
+{% include 'include-item-per-row' %}
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="product-grid-v2 product-slider-section layout-{{_layout }} section-show-{{section.id}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="product-grid" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+    {%- include 'head-title' -%}
+
+    <div class="product-slider-content{% if _position != '0' and _block %} row{% unless _block_spacing %} no-gutters{% endunless %}{% endif %}">
+      {%- if _position == '1' -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'content' -%}
+            {%- include 'include-special-block', _type: 'row' -%}{%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- if _position != '0' and _block -%}
+
+        {%- capture grid_class -%}{%- include 'set-width-bootstrap',in_type: 'width', number: _block.settings.grid_width_resp -%}{{_out}}{%- endcapture -%}
+        <div class="{{ grid_class }}">
+      {%- endif -%}
+        <div class="product-content-inner{% if _show_plus %} has-plus-icon{% endif %}">
+          {%- unless _collection_title == blank -%}
+            <div class="collection-title text-center">{{_collection_title}}</div>
+          {%- endunless -%}
+          {%- unless collection == blank or collection.products_count == 0 -%}
+            <div class="{% unless _padding_item %}no-padding {% endunless %}{% if _type == 'row' %}row{% else %}ps-carousel owl-carousel{% endif %}"{% include 'include-carousel-attr' %}>
+              {%- for product in collection.products limit: _total_items -%}
+              <div class="products-grid-item{% if _type == 'row' %} {{ items_class }}{% endif %}">
+                {%- include 'product-item', showShort_Description: section.settings.show_short_description, product_style: _cardStyle -%}
+              </div>
+              {%- endfor -%}
+            </div>
+          {%- else -%}
+            <div class="row">
+              {% for i in (1..9) %}
+              <div class="{{ items_class }}">
+                {%- include 'svgset', type:'empty-product' -%}
+              </div>
+              {% endfor %}
+            </div>
+          {%- endunless -%}
+        </div>
+
+      {%- if _position != '0' and _block -%}</div>{%- endif -%}
+
+      {%- if _position == '2' -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'content' -%}
+            {%- include 'include-special-block', _type: 'row' -%}{%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+   <style>{%- include 'section-general-css' -%}{%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .product-content-inner' ,css_value: section.settings.product_container_padding -%}</style>
+</div>
+{% schema %}
+{
+   "name":"Product Grid v2",
+   "tag": "section",
+   "settings":[
+      {
+         "type":"paragraph",
+         "content":"Created by 'Products Grid v2' section"
+      },
+      {
+         "type":"text",
+         "id":"title",
+         "label":"Section Label [:id]","default": "Product grid v2"
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT"
+      },
+      {
+         "type":"checkbox",
+         "id":"boxed_layout",
+         "label":"Boxed layout",
+         "default":true
+      },
+      {
+         "type"  :"text",
+         "id"    :"section_padding",
+         "label" :"Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"color",
+         "id":"section_bg_color",
+         "label":"Background color",
+         "default": "#FFFFFF"
+      },
+      {
+        "type":"image_picker",
+        "id":"section_bg_image",
+        "label":"Background image"
+      },
+      {
+        "type":"select",
+        "id"   :"section_bg_size",
+        "label":"Background Size",
+        "default": "cover",
+        "options":[
+        {"value":"auto","label":"Auto"},
+        {"value":"cover","label":"Cover"},
+        {"value":"contain","label":"Contain"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_repeat",
+        "label": "Background Image Repeat:",
+        "default": "no-repeat",
+        "options": [
+        {"value":"no-repeat","label":"No Repeat"},
+        {"value":"repeat","label":"Repeat"},
+        {"value":"repeat-x","label":"Repeat X"},
+        {"value":"repeat-y","label":"Repeat Y"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_position",
+        "label": "Background Image Position:",
+        "default": "center center",
+        "options": [
+        {"value":"left top","label":"Left Top"},
+        {"value":"center top","label":"Center Top"},
+        {"value":"right top","label":"Right Top"},
+        {"value":"left center","label":"Left Center"},
+        {"value":"center center","label":"Center Center"},
+        {"value":"right center","label":"Right Center"},
+        {"value":"left bottom","label":"Left Bottom"},
+        {"value":"center bottom","label":"Center Bottom"},
+        {"value":"right bottom","label":"Right Bottom"}
+        ]
+      },
+      {
+         "type":"header",
+         "content":"Section Heading"
+      },
+      {
+         "type":"select",
+         "id":"heading_content_align",
+         "label":"Heading alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type":"text",
+         "id":"heading_text",
+         "label":"Heading"
+      },
+      {
+         "type":"text",
+         "id":"subheading_text",
+         "label":"Subheading"
+      },
+      {
+         "type":"textarea",
+         "id":"subheading2_text",
+         "label":"Subheading 2"
+      },
+      {
+         "type":"color",
+         "id":"section_heading_color",
+         "label":"Heading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading_color",
+         "label":"Subheading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading2_color",
+         "label":"Subheading 2 color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"header",
+         "content":"Slider settings"
+      },
+      {
+         "type":"checkbox",
+         "id":"carousel_layout",
+         "label":"Enable Slider"
+      },
+      {
+         "type":"checkbox",
+         "id":"loop",
+         "label":"Enable Loop"
+      },
+      {
+         "type":"checkbox",
+         "id":"nav",
+         "label":"Show Next & Prev arrows",
+         "default":true
+      },
+      {
+         "type":"checkbox",
+         "id":"dot",
+         "label":"Show Dots",
+         "default":false
+      },
+      {
+         "type":"range",
+         "id"  :"owl_duration",
+         "label":"Change slides every",
+         "min"   :0,
+         "max"   :10,
+         "step" :0.5,
+         "unit" :"s",
+         "default":0
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT CONTENT"
+      },
+      {
+         "id":"collection",
+         "type":"collection",
+         "label":"Collection item"
+      },
+      {
+         "type"  :"text",
+         "id"    :"items_resp",
+         "label":"Max number of items per row",
+         "placeholder": "xl,lg,md,sm,xs,xxs",
+         "info": "E.g: 4,3,2",
+         "default": "3,2"
+      },
+      {
+         "type":"text",
+         "id":"total_items",
+         "label":"Total items",
+         "default":"9"
+      },
+      {
+         "type":"checkbox",
+         "id":"padding_item",
+         "label":"Spacing items",
+         "default":true
+      },
+      {
+         "type":"select",
+         "id":"text_align",
+         "label":"Text align for Item content",
+         "options":[
+            {"value":"auto","label":"Auto"},
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"auto"
+      },
+      {
+        "type": "select",
+        "id": "product_item_style",
+        "label": "Product Styles:",
+        "options": [
+          {"value":"0","label":"Auto"},
+          {"value":"1","label":"Style 1"},
+          {"value":"2","label":"Style 2"},
+          {"value":"3","label":"Style 3"},
+          {"value":"4","label":"Style 4"},
+          {"value":"5","label":"Style 5"},
+          {"value":"6","label":"Style 6"},
+          {"value":"7","label":"Style 7"}
+        ]
+      },
+      {
+         "type"  :"checkbox",
+         "id"     :"show_short_description",
+         "label" :"Show Short Description"
+      },
+      {
+         "type":"checkbox",
+         "id"   :"show_plus",
+         "label":"Show plus icon between products"
+      },
+      {
+         "type":"text",
+         "id"   :"col_title",
+         "label":"Collection title",
+         "info": "Blank to hide"
+      },
+      {
+         "type"  :"text",
+         "id"    :"product_container_padding",
+         "label" :"Product Container Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      }
+   ],
+   "blocks":[
+      {
+         "type":"content",
+         "limit": 1,
+         "name":"Column Content",
+         "settings":[
+            {
+               "type":"select",
+               "id":"position",
+               "label":"Position",
+               "default":"1",
+               "options":[
+                  {"value":"0","label":"None"},
+                  {"value":"1","label":"Left"},
+                  {"value":"2","label":"Right"}
+               ]
+            },
+            {
+               "type"  :"header",
+               "content" :"RESPONSIVE COLUMN LAYOUT"
+            },
+            {
+               "type"  :"paragraph",
+               "content" :"Set 0 to Hide"
+            },
+            {
+               "type":"text",
+               "id":"grid_width_resp",
+               "label":"Grid item: Width (1->12)",
+               "placeholder":"xl,lg,md,sm,xs,xxs",
+               "default":"6,12",
+               "info":"E.g: 4,6,12"
+            },
+            {
+               "type":"text",
+               "id":"width_resp",
+               "label":"Featured item: Width (1->12)",
+               "placeholder":"xl,lg,md,sm,xs,xxs",
+               "default":"6,12",
+               "info":"E.g: 4,6,12"
+            },
+            {
+               "type":"checkbox",
+               "id":"block_spacing",
+               "label":"Block spacing",
+               "default": true
+            },
+            {
+               "type"  :"checkbox",
+               "id"    :"border_content",
+               "label" :"Show Border"
+            },
+            {
+               "type":"select",
+               "id":"content_type",
+               "label":"Content Type",
+               "default":"product",
+               "options":[
+                  {"value":"product","label":"Product"},
+                  {"value":"image","label":"Image"},
+                  {"value":"text","label":"Text content"},
+                  {"value":"slider","label":"Slider"}
+               ],
+               "info": "Slider Image use for Content type \"Slider\""
+            },
+            {
+               "type":"header",
+               "content":"Product"
+            },
+            {
+               "type":"product",
+               "id":"bproduct",
+               "label":"Product"
+            },
+            {
+               "type":"select",
+               "id":"text_align",
+               "label":"Text align for Item content",
+               "options":[
+                  {"value":"left","label":"Left"},
+                  {"value":"center","label":"Center"},
+                  {"value":"right","label":"Right"}
+               ],
+               "default":"left"
+            },
+            {
+              "type": "select",
+              "id": "product_item_style",
+              "label": "Product Styles:",
+              "options": [
+                {"value":"0","label":"Auto"},
+                {"value":"1","label":"Style 1"},
+                {"value":"2","label":"Style 2"},
+                {"value":"3","label":"Style 3"},
+                {"value":"4","label":"Style 4"},
+                {"value":"5","label":"Style 5"},
+                {"value":"6","label":"Style 6"}
+              ]
+            },
+            {
+               "type":"header",
+               "content":"Image/Slide"
+            },
+            {
+               "type":"image_picker",
+               "id":"image",
+               "label":"Image"
+            },
+            {
+               "type":"url",
+               "id":"link",
+               "label":"Image link",
+               "default":"/collections"
+            },
+            {
+               "type":"select",
+               "id":"image_height",
+               "label":"Image Height",
+               "default":"auto",
+               "options":[
+                  {"value":"auto","label":"Auto"},
+                  {"value":"fill","label":"Fill by Product Container"},
+                  {"value":"fill-section","label":"Fill by Section height"}
+               ]
+            },
+            {
+               "type"  :"header",
+               "content" :"Textbox"
+            },
+            {
+               "type"  :"text",
+               "id"    :"content_padding",
+               "label" :"Content Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type":"select",
+               "id":"textbox_position",
+               "label":"Position",
+               "default":"1",
+               "options":[
+                  {"value":"0","label":"None"},
+                  {"value":"1","label":"Top (Only for Product)"},
+                  {"value":"2","label":"Overlay"}
+               ]
+            },
+            {
+               "type":"text",
+               "id":"b_title",
+               "label":"Title"
+            },
+            {
+               "type":"textarea",
+               "id":"b_content",
+               "label":"Content"
+            },
+            {
+               "type":"text",
+               "id":"button_text",
+               "label":"Button label"
+            },
+            {
+               "type":"url",
+               "id":"button_link",
+               "label":"Button link"
+            },
+            {
+               "type":"text",
+               "id":"content_align",
+               "label":"Text content alignment",
+              "default": "center",
+               "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+            },
+            {
+              "type":"range",
+              "id":"position_left",
+              "label":"Horizontal position",
+              "min":0,
+              "max":100,
+              "step":1,
+              "unit":"%",
+              "default":50,
+              "info":"Use for Content style is 'Overlay'"
+            },
+            {
+              "type":"range",
+              "id":"position_top",
+              "label":"Vertical position",
+              "min":0,
+              "max":100,
+              "step":1,
+              "unit":"%",
+              "default":50,
+              "info":"Use for Content style is 'Overlay'"
+            },
+            {
+             "type":"header",
+             "content":"Title style"
+           },
+           {
+             "type":"text",
+             "id":"tit_fs",
+             "label":"Title font size"
+           },
+           {
+             "type"  :"color",
+             "id"    :"title_color",
+             "label" :"Title color"
+           },
+           {
+             "type":"select",
+             "id":"tit_fw",
+             "label":"Title font weight",
+             "default":"400",
+             "options":[
+             {"value":"100","label":"100 Thin (Hairline)"},
+             {"value":"200","label":"200 Extra Light (Ultra Light)"},
+             {"value":"300","label":"300 Light"},
+             {"value":"400","label":"400 Normal"},
+             {"value":"500","label":"500 Medium"},
+             {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+             {"value":"700","label":"700 Bold"},
+             {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+             {"value":"900","label":"900 Black (Heavy)"}
+             ]
+           },
+           {
+             "type":"text",
+             "id":"tit_margin",
+             "label":"Title margin"
+           },
+           {
+             "type":"text",
+             "id":"tit_lsp",
+             "label":"Title letter spacing"
+           },
+           {
+             "type":"text",
+             "id":"tit_lh",
+             "label":"Title line height"
+           },
+           {
+             "type":"header",
+             "content":"Content style"
+           },
+           {
+             "type":"text",
+             "id":"con_fs",
+             "label":"Content font size"
+           },
+           {
+             "type"  :"color",
+             "id"    :"content_color",
+             "label" :"Content color"
+           },
+           {
+             "type":"select",
+             "id":"con_fw",
+             "label":"Content font weight",
+             "default":"900",
+             "options":[
+             {"value":"100","label":"100 Thin (Hairline)"},
+             {"value":"200","label":"200 Extra Light (Ultra Light)"},
+             {"value":"300","label":"300 Light"},
+             {"value":"400","label":"400 Normal"},
+             {"value":"500","label":"500 Medium"},
+             {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+             {"value":"700","label":"700 Bold"},
+             {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+             {"value":"900","label":"900 Black (Heavy)"}
+             ]
+           },
+           {
+             "type":"text",
+             "id":"con_margin",
+             "label":"Content margin"
+           },
+           {
+             "type":"text",
+             "id":"con_lsp",
+             "label":"Content letter spacing"
+           },
+           {
+             "type":"text",
+             "id":"con_lh",
+             "label":"Content line height"
+           },
+           {
+             "type":"header",
+             "content":"Button style"
+           },
+           {
+             "type"  :"text",
+             "id"    :"button_rd",
+             "label" :"Button Rounded Corners",
+             "placeholder": "E.g: 30px"
+           },
+           {
+             "type"  :"range",
+             "id"    :"buttons_inherit",
+             "label" :"Inherit styles from Button",
+             "min"   :0,
+             "max"   :3,
+             "default":1,
+             "info": "Set 0 to customize button"
+           },
+           {
+             "type"  :"color",
+             "id"    :"button_color",
+             "label" :"Button Text color",
+             "default":"#000000"
+           },
+           {
+             "type"  :"color",
+             "id"    :"button_border",
+             "label" :"Button Border color",
+             "default":"#000000"
+           },
+           {
+             "type"  :"color",
+             "id"    :"button_bg_color",
+             "label" :"Button Background color",
+             "default":"#FFFFFF"
+           }
+         ]
+      },
+      {
+         "type":"image",
+         "limit": 3,
+         "name":"Slider image",
+         "settings":[
+            {
+               "type":"image_picker",
+               "id":"image",
+               "label":"Image"
+            },
+            {
+               "type":"url",
+               "id":"link",
+               "label":"Image link",
+               "default":"/collections"
+            },
+            {
+               "type"  :"header",
+               "content" :"Textbox"
+            },
+            {
+               "type"  :"text",
+               "id"    :"content_padding",
+               "label" :"Content Padding",
+               "placeholder": "E.g: 5px 20px 5px 20px",
+               "info": "Order: Top Right Bottom Left"
+            },
+            {
+               "type":"text",
+               "id":"b_title",
+               "label":"Title"
+            },
+            {
+               "type":"textarea",
+               "id":"b_content",
+               "label":"Content"
+            },
+            {
+               "type":"text",
+               "id":"button_text",
+               "label":"Button label"
+            },
+            {
+               "type":"url",
+               "id":"button_link",
+               "label":"Button link"
+            },
+            {
+               "type":"text",
+               "id":"content_align",
+               "label":"Text content alignment",
+               "default": "center",
+               "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+            },
+            {
+              "type":"range",
+              "id":"position_top",
+              "label":"Vertical position",
+              "min":0,
+              "max":100,
+              "step":1,
+              "unit":"%",
+              "default":50,
+              "info":"Use for Content style is 'Overlay'"
+            },
+            {
+              "type":"range",
+              "id":"position_left",
+              "label":"Horizontal position",
+              "min":0,
+              "max":100,
+              "step":1,
+              "unit":"%",
+              "default":50,
+              "info":"Use for Content style is 'Overlay'"
+            },
+            {
+             "type":"header",
+             "content":"Title style"
+           },
+           {
+             "type":"text",
+             "id":"tit_fs",
+             "label":"Title font size"
+           },
+           {
+             "type"  :"color",
+             "id"    :"title_color",
+             "label" :"Title color"
+           },
+           {
+             "type":"select",
+             "id":"tit_fw",
+             "label":"Title font weight",
+             "default":"400",
+             "options":[
+             {"value":"100","label":"100 Thin (Hairline)"},
+             {"value":"200","label":"200 Extra Light (Ultra Light)"},
+             {"value":"300","label":"300 Light"},
+             {"value":"400","label":"400 Normal"},
+             {"value":"500","label":"500 Medium"},
+             {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+             {"value":"700","label":"700 Bold"},
+             {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+             {"value":"900","label":"900 Black (Heavy)"}
+             ]
+           },
+           {
+             "type":"text",
+             "id":"tit_margin",
+             "label":"Title margin"
+           },
+           {
+             "type":"text",
+             "id":"tit_lsp",
+             "label":"Title letter spacing"
+           },
+           {
+             "type":"text",
+             "id":"tit_lh",
+             "label":"Title line height"
+           },
+           {
+             "type":"header",
+             "content":"Content style"
+           },
+           {
+             "type":"text",
+             "id":"con_fs",
+             "label":"Content font size"
+           },
+           {
+             "type"  :"color",
+             "id"    :"content_color",
+             "label" :"Content color"
+           },
+           {
+             "type":"select",
+             "id":"con_fw",
+             "label":"Content font weight",
+             "default":"900",
+             "options":[
+             {"value":"100","label":"100 Thin (Hairline)"},
+             {"value":"200","label":"200 Extra Light (Ultra Light)"},
+             {"value":"300","label":"300 Light"},
+             {"value":"400","label":"400 Normal"},
+             {"value":"500","label":"500 Medium"},
+             {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+             {"value":"700","label":"700 Bold"},
+             {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+             {"value":"900","label":"900 Black (Heavy)"}
+             ]
+           },
+           {
+             "type":"text",
+             "id":"con_margin",
+             "label":"Content margin"
+           },
+           {
+             "type":"text",
+             "id":"con_lsp",
+             "label":"Content letter spacing"
+           },
+           {
+             "type":"text",
+             "id":"con_lh",
+             "label":"Content line height"
+           },
+           {
+             "type":"header",
+             "content":"Button style"
+           },
+           {
+             "type"  :"text",
+             "id"    :"button_rd",
+             "label" :"Button Rounded Corners",
+             "placeholder": "E.g: 30px"
+           },
+           {
+             "type"  :"range",
+             "id"    :"buttons_inherit",
+             "label" :"Inherit styles from Button",
+             "min"   :0,
+             "max"   :3,
+             "default":1,
+             "info": "Set 0 to customize button"
+           },
+           {
+             "type"  :"color",
+             "id"    :"button_color",
+             "label" :"Button Text color",
+             "default":"#000000"
+           },
+           {
+             "type"  :"color",
+             "id"    :"button_border",
+             "label" :"Button Border color",
+             "default":"#000000"
+           },
+           {
+             "type"  :"color",
+             "id"    :"button_bg_color",
+             "label" :"Button Background color",
+             "default":"#FFFFFF"
+           }
+         ]
+      }
+   ],
+   "presets":[
+      {
+         "name":"Product Grid v2",
+         "category":"Collection",
+         "blocks": [{"type": "content"}]
+      }
+   ]
+}
+{% endschema %}

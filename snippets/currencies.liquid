@@ -1,0 +1,254 @@
+{%- liquid
+  assign currency_type    = settings.currency_type
+  assign flag_currency    = settings.flag_currency
+
+  if currency_type == '2' or currency_type == '1' and shop.enabled_currencies.size > 1
+    assign enable_currency = true
+  else
+    assign enable_currency = false
+  endif
+-%}
+
+{%- case type -%}
+  {%- when 'icon' -%}
+    <div class="currencies_btn currency-flag-btn d-flex align-items-center">
+      {%- if flag_currency != 'none' -%}<span class="currency-flag currency-flag-{{ cart.currency.iso_code | downcase }}"></span>{%- endif -%}
+      <span class="currency-code">{{ cart.currency.iso_code }} / {{ cart.currency.symbol }}</span>
+    </div>
+
+  {%- when 'icon2' -%}
+    <div class="topbar-popup"{% if enable_currency %} data-toggle="modal" data-target="#popup_currency"{% endif %}>
+      {% render 'currencies' ,type: 'icon' %}
+    </div>
+
+  {%- when 'mobile' -%}
+    {%- if enable_currency -%}
+      <div class="currency-mobile flex-fill">
+        <div class="topbar-popup{% if flag_currency != 'none' %}" data-toggle="modal" data-target="#popup_currency{% endif %}">
+          {%- render 'currencies' ,type: 'icon' -%}
+        </div>
+
+        {%- if flag_currency == 'none' -%}
+          {%- form 'currency' ,id: 'mobile-currency-form' -%}
+            <select name="currency" class="currency-element w-100 border-0">
+              {%- for currency in shop.enabled_currencies -%}
+                <option value="{{currency.iso_code}}" data-symbol="{{ currency.symbol }}"{% if currency == cart.currency %} selected="true"{% endif %}>{{currency.iso_code}}</option>
+              {%- endfor -%}
+            </select>
+          {%- endform -%}
+          {%- capture block_css -%}
+            {{- -}}.currency-mobile, .currency-mobile + div{position: relative;padding: 10px 0;}
+            {{- -}}.currency-mobile select{position: absolute;top: 0;left: 0;opacity: 0;}
+          {%- endcapture -%}
+          {%- assign section_css = section_css | append: block_css -%}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  {%- when 'layout' -%}
+    {%- comment -%}  ============    LAYOUT  ============{%- endcomment-%}
+
+    <div class="currencies-btn nostranslate{% unless trans_type == 'list' %} f-select{% endunless %}">
+      {%- if currency_type == '1' -%}
+        <ul class="currencies-list">
+          {%- for currency in shop.enabled_currencies -%}
+            <li class="{% if currency == cart.currency %}active{% endif %}">
+              <a href="javascript:void(0);" data-value="{{ currency.iso_code }}" data-symbol="{{currency.symbol}}">
+                {%- if flag_currency != 'none' -%}<span class="currency-flag currency-flag-{{ currency.iso_code | downcase }}"></span>{%- endif -%}
+                <span class="currency-code">{{ currency.iso_code }}</span>
+                <span class="currency-name">{{ currency.name }}<span class="currency-symbol ml-1">({{currency.symbol}})</span></span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+      {%- elsif currency_type == '2' -%}
+        {%- assign codes = 'USD,EUR,GBP,CAD,AFN,ALL,DZD,AOA,ARS,AMD,AWG,AUD,BBD,AZN,BDT,BSD,BHD,BIF,BYR,BZD,BMD,BTN,BAM,BRL,BOB,BWP,BND,BGN,MMK,KHR,CVE,KYD,XAF,CLP,CNY,COP,KMF,CDF,CRC,HRK,CZK,DKK,DOP,XCD,EGP,ETB,XPF,FJD,GMD,GHS,GTQ,GYD,GEL,HTG,HN,HKD,HUF,ISK,INR,IDR,ILS,IQD,JMD,JPY,JEP,JOD,KZT,KES,KWD,KGS,LAK,LVL,LBP,LSL,LRD,MGA,MKD,MOP,MWK,MVR,MXN,MYR,MUR,MDL,MAD,MNT,MZN,NAD,NPR,ANG,NZD,NIO,NGN,NOK,OMR,PAB,PKR,PGK,PYG,PEN,PHP,PLN,QAR,RON,RUB,RWF,WST,SAR,STD,RD,SCR,SGD,SDG,SYP,ZAR,KRW,SSP,SBD,LKR,SRD,SZL,SEK,CHF,TWD,THB,TZS,TTD,TND,TRY,TMT,UGX,UAH,AED,UYU,UZS,VUV,VEF,VND,XOF,YER,ZMW' | split: ',' -%}
+        {%- assign currency_name = 'US dollar (USD),Euro (EUR),British pound (GBP),Canadian dollar (CAD),Afghan Afghani (AFN),Albanian lek (ALL),Algerian dinar (DZD),Angolan kwanza (AOA),Argentine peso (ARS),Armenian dram (AMD),Aruban florin (AWG),Australian dollar (AUD),Barbadian dollar (BBD),Azerbaijani manat (AZN),Bangladeshi taka (BDT),Bahamian dollar (BSD),Bahraini dinar (BHD),Burundian franc (BIF),Belarusian ruble (BYR),Belize dollar (BZD),Bermudan dollar (BMD),Bhutanese ngultrum (BTN),Bosnia-Herzegovina convertible mark (BAM),Brazilian real (BRL),Bolivian boliviano (BOB),Botswanan pula (BWP),Brunei dollar (BND),Bulgarian lev (BGN),Myanmar kyat (MMK),Cambodian riel (KHR),Cape Verdean escudo (CVE),Cayman Islands dollar (KYD),Central African CFA franc (XAF),Chilean peso (CLP),Chinese yuan (CNY),Colombian peso (COP),Comorian franc (KMF),Congolese franc (CDF),Costa Rican colón (CRC),Croatian kuna (HRK),Czech koruna (CZK),Danish krone (DKK),Dominican peso (DOP),East Caribbean dollar (XCD),Egyptian pound (EGP),Ethiopian birr (ETB),CFP franc (XPF),Fijian dollar (FJD),Gambian dalasi (GMD),Ghanaian cedi (GHS),Guatemalan quetzal (GTQ),Guyanaese dollar (GYD),Georgian lari (GEL),Haitian gourde (HTG),Honduran lempira (HNL),Hong Kong dollar (HKD),Hungarian forint (HUF),Icelandic króna (ISK),Indian rupee (INR),Indonesian rupiah (IDR),Israeli new shekel (ILS),Iraqi dinar (IQD),Jamaican dollar (JMD),Japanese yen (JPY),Jersey pound (JEP),Jordanian dinar (JOD),Kazakhstani tenge (KZT),Kenyan shilling (KES),Kuwaiti dinar (KWD),Kyrgystani som (KGS),Laotian kip (LAK),Latvian lats (LVL),Lebanese pound (LBP),Lesotho loti (LSL),Liberian dollar (LRD),Malagasy ariary (MGA),Macedonian denar (MKD),Macanese pataca (MOP),Malawian kwacha (MWK),Maldivian rufiyaa (MVR),Mexican peso (MXN),Malaysian ringgit (MYR),Mauritian rupee (MUR),Moldovan leu (MDL),Moroccan dirham (MAD),Mongolian tugrik (MNT),Mozambican metical (MZN),Namibian dollar (NAD),Nepalese rupee (NPR),Netherlands Antillean guilder (ANG),New Zealand dollar (NZD),Nicaraguan córdoba (NIO),Nigerian naira (NGN),Norwegian krone (NOK),Omani rial (OMR),Panamanian balboa (PAB),Pakistani rupee (PKR),Papua New Guinean kina (PGK),Paraguayan guarani (PYG),Peruvian sol (PEN),Philippine piso (PHP),Polish zloty (PLN),Qatari rial (QAR),Romanian leu (RON),Russian ruble (RUB),Rwandan franc (RWF),Samoan tala (WST),Saudi riyal (SAR),São Tomé &amp; Príncipe dobra (STD),Serbian dinar (RSD),Seychellois rupee (SCR),Singapore dollar (SGD),Sudanese pound (SDG),Syrian pound (SYP),South African rand (ZAR),South Korean won (KRW),South Sudanese pound (SSP),Solomon Islands dollar (SBD),Sri Lankan rupee (LKR),Surinamese dollar (SRD),Swazi lilangeni (SZL),Swedish krona (SEK),Swiss franc (CHF),New Taiwan dollar (TWD),Thai baht (THB),Tanzanian shilling (TZS),Trinidad &amp; Tobago dollar (TTD),Tunisian dinar (TND),Turkish lira (TRY),Turkmenistani manat (TMT),Ugandan shilling (UGX),Ukrainian hryvnia (UAH),UAE dirham (AED),Uruguayan peso (UYU),Uzbekistani som (UZS),Vanuatu vatu (VUV),Venezuelan bolívar (VEF),Vietnamese dong (VND),West African CFA franc (XOF),Yemeni rial (YER),Zambian kwacha (ZMW)' -%}
+
+        {%- assign supported_currencies = settings.supported_currencies -%}
+
+        {%- if supported_currencies contains ',' -%}
+          {%- assign supported_codes = settings.default_currency | append: ',' | append: supported_currencies | remove: ' ' | split: ',' | uniq -%}
+        {%- else -%}
+          {%- assign supported_codes = settings.default_currency | append: ' ' | append: supported_currencies | split: ' ' | uniq -%}
+        {%- endif -%}
+
+        {%- capture ori_codes -%}++{{codes | join: '++' }}++{%- endcapture -%}
+
+        <ul class="currencies-list">
+          {%- for currency in supported_codes -%}
+            {%- assign currency = currency | strip -%}
+            {%- capture ck_codes -%}++{{currency}}++{%- endcapture -%}
+
+            {%- if ori_codes contains ck_codes -%}
+              <li class="{% if currency == cart.currency.iso_code %}active{% endif %}">
+                <a href="javascript:void(0);" data-value="{{ currency }}" data-symbol="">
+                  {%- if flag_currency != 'none' -%}<span class="currency-flag currency-flag-{{ currency | downcase }}"></span>{%- endif -%}
+                  <span class="currency-code">{{ currency }}</span>
+                  {%- assign current_currency_label = currency_name | split: currency | first | split: ',' | last | remove: '(' | remove: '"' | strip -%}
+                  <span class="currency-name">{{ current_currency_label }}<span class="currency-symbol ml-1 hide">({{currency}})</span></span>
+                </a>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+
+      {%- endif -%}
+
+      <input type="hidden" name="storeMulti_Currency" value="{{ currency_type }}">
+      {%- form 'currency' ,class: 'shopify-currency-form d-none hide' -%}
+        <select name="currency">
+          {%- for currency in shop.enabled_currencies -%}
+            <option data-value="{{currency.iso_code}}" data-symbol="{{ currency.symbol }}"{% if currency == cart.currency %} selected="true"{% endif %}>{{currency.iso_code}}</option>
+          {%- endfor -%}
+        </select>
+      {%- endform -%}
+    </div>
+
+  {%- when 'popup' -%}
+    {%- if enable_currency -%}
+      {%- comment -%}  ============    POPUP  ============{%- endcomment-%}
+      <div class="modal fade modal-ui-element" id="popup_currency" tabindex="-1" role="dialog" aria-labelledby="popup_currency" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <p class="modal-title topbar-title h3">{{'general.popup.currencies'| t }}:</p>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">
+                  <span class="topbar-popup-close"><i class="demo-icon icon-delete"></i></span>
+                </span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="topbar-currency currency-{{flag_currency}} notranslate">
+                {% include 'currencies' ,type: 'layout' %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {%- if settings.auto_currency -%}{% include 'currencies' ,type: 'auto_currency' %}{%- endif -%}
+
+      {%- if currency_type == '2' -%}
+        <script src="{{ '//cdn.shopify.com/s/javascripts/currencies.js' }}"></script>
+        <script src="{{ 'jquery.currencies.min.js' | asset_url  }}"></script>
+        <script type="text/javascript">
+          var shopCurrency = '',
+          defaultCurrency = '',
+          cookieCurrency = '';
+
+          function currenciesCallback (){
+            if (typeof Currency == 'undefined') {return}
+            {%- if settings.currency_format -%}
+            Currency.format = '{{ settings.currency_format }}';
+            {%- endif -%}
+
+            shopCurrency = '{{ shop.currency }}';
+
+            /* Sometimes merchants change their shop currency, let's tell our JavaScript file */
+            Currency.money_with_currency_format[shopCurrency] = "{{ shop.money_with_currency_format | strip_html | escape }}";
+            Currency.money_format[shopCurrency] = "{{ shop.money_format | strip_html | escape }}";
+
+
+            /* Default currency */
+            defaultCurrency = '{{ settings.default_currency }}' || shopCurrency;
+
+            /* Cookie currency */
+            cookieCurrency = Currency.cookie.read();
+
+            /* Fix for customer account pages */
+            jQuery('span.money span.money').each(function() {
+              jQuery(this).parents('span.money').removeClass('money');
+            });
+
+            /* Saving the current price */
+            jQuery('span.money').each(function() {
+              jQuery(this).attr('data-currency-{{ shop.currency }}', jQuery(this).html());
+            });
+
+            /*If there's no cookie.*/
+            if (cookieCurrency == null) {
+              if (shopCurrency !== defaultCurrency) {
+                Currency.convertAll(shopCurrency, defaultCurrency);
+              }
+              else {
+                Currency.currentCurrency = defaultCurrency;
+              }
+              Currency.cookie.write(defaultCurrency);
+            }
+            /*If the cookie value does not correspond to any value in the currency dropdown.*/
+            else if (jQuery('[name=currencies]').length && !jQuery('[name=currencies] option[value=' + cookieCurrency + ']').length) {
+              Currency.currentCurrency = shopCurrency;
+              Currency.cookie.write(shopCurrency);
+            }
+            else if (cookieCurrency === shopCurrency) {
+              Currency.currentCurrency = shopCurrency;
+            }
+            else {
+              cookieCurrency == 'undefined' && (cookieCurrency = defaultCurrency);
+              Currency.convertAll(shopCurrency, cookieCurrency);
+              AT_Main.currenciesChange(cookieCurrency);
+            }
+          }
+
+          function currenciesCallbackSpecial(id){
+            if (typeof Currency == 'undefined') {return}
+            /* Saving the current price */
+            jQuery(id).each(function() {
+              jQuery(this).attr('data-currency-{{ shop.currency }}', jQuery(this).html());
+            });
+
+            /* Update currency */
+            Currency.convertAll(shopCurrency, Currency.cookie.read(), id, '{{ settings.currency_format }}');
+          }
+
+          jQuery(document).ready(function($) {
+            if (("{{cart.currency.iso_code}}" != "{{shop.currency}}") && $(`.shopify-currency-form`).length){
+              let _target = $(`.shopify-currency-form option[data-value="{{shop.currency}}"]`);
+              _target.length && _target.prop('selected',true) && _target.closest('form').submit();
+              }
+            else{
+              currenciesCallback();
+            }
+          });
+        </script>
+
+      {%- endif -%}
+    {%- endif -%}
+
+  {%- when 'auto_currency' -%}
+    {%- capture shopEnableCurrencies -%}{%- for currency in shop.enabled_currencies -%}{{currency.iso_code | append: ' ' }}{%- endfor -%}{%- endcapture -%}
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        if (jQuery.cookie('currencycookie')) {
+          /*it hasn't been one days yet*/
+        }
+        else{
+          var currmap = {"BD": "BDT", "BE": "EUR", "BF": "XOF", "BG": "BGN", "BA": "BAM", "BB": "BBD", "WF": "XPF", "BL": "EUR", "BM": "BMD", "BN": "BND", "BO": "BOB", "BH": "BHD", "BI": "BIF", "BJ": "XOF", "BT": "BTN", "JM": "JMD", "BV": "NOK", "BW": "BWP", "WS": "WST", "BQ": "USD", "BR": "BRL", "BS": "BSD", "JE": "GBP", "BY": "BYR", "BZ": "BZD", "RU": "RUB", "RW": "RWF", "RS": "RSD", "TL": "USD", "RE": "EUR", "TM": "TMT", "TJ": "TJS", "RO": "RON", "TK": "NZD", "GW": "XOF", "GU": "USD", "GT": "GTQ", "GS": "GBP", "GR": "EUR", "GQ": "XAF", "GP": "EUR", "JP": "JPY", "GY": "GYD", "GG": "GBP", "GF": "EUR", "GE": "GEL", "GD": "XCD", "GB": "GBP", "GA": "XAF", "SV": "USD", "GN": "GNF", "GM": "GMD", "GL": "DKK", "GI": "GIP", "GH": "GHS", "OM": "OMR", "TN": "TND", "JO": "JOD", "HR": "HRK", "HT": "HTG", "HU": "HUF", "HK": "HKD", "HN": "HNL", "HM": "AUD", "VE": "VEF", "PR": "USD", "PS": "ILS", "PW": "USD", "PT": "EUR", "SJ": "NOK", "PY": "PYG", "IQ": "IQD", "PA": "PAB", "PF": "XPF", "PG": "PGK", "PE": "PEN", "PK": "PKR", "PH": "PHP", "PN": "NZD", "PL": "PLN", "PM": "EUR", "ZM": "ZMK", "EH": "MAD", "EE": "EUR", "EG": "EGP", "ZA": "ZAR", "EC": "USD", "IT": "EUR", "VN": "VND", "SB": "SBD", "ET": "ETB", "SO": "SOS", "ZW": "ZWL", "SA": "SAR", "ES": "EUR", "ER": "ERN", "ME": "EUR", "MD": "MDL", "MG": "MGA", "MF": "EUR", "MA": "MAD", "MC": "EUR", "UZ": "UZS", "MM": "MMK", "ML": "XOF", "MO": "MOP", "MN": "MNT", "MH": "USD", "MK": "MKD", "MU": "MUR", "MT": "EUR", "MW": "MWK", "MV": "MVR", "MQ": "EUR", "MP": "USD", "MS": "XCD", "MR": "MRO", "IM": "GBP", "UG": "UGX", "TZ": "TZS", "MY": "MYR", "MX": "MXN", "IL": "ILS", "FR": "EUR", "IO": "USD", "SH": "SHP", "FI": "EUR", "FJ": "FJD", "FK": "FKP", "FM": "USD", "FO": "DKK", "NI": "NIO", "NL": "EUR", "NO": "NOK", "NA": "NAD", "VU": "VUV", "NC": "XPF", "NE": "XOF", "NF": "AUD", "NG": "NGN", "NZ": "NZD", "NP": "NPR", "NR": "AUD", "NU": "NZD", "CK": "NZD", "XK": "EUR", "CI": "XOF", "CH": "CHF", "CO": "COP", "CN": "CNY", "CM": "XAF", "CL": "CLP", "CC": "AUD", "CA": "CAD", "CG": "XAF", "CF": "XAF", "CD": "CDF", "CZ": "CZK", "CY": "EUR", "CX": "AUD", "CR": "CRC", "CW": "ANG", "CV": "CVE", "CU": "CUP", "SZ": "SZL", "SY": "SYP", "SX": "ANG", "KG": "KGS", "KE": "KES", "SS": "SSP", "SR": "SRD", "KI": "AUD", "KH": "KHR", "KN": "XCD", "KM": "KMF", "ST": "STD", "SK": "EUR", "KR": "KRW", "SI": "EUR", "KP": "KPW", "KW": "KWD", "SN": "XOF", "SM": "EUR", "SL": "SLL", "SC": "SCR", "KZ": "KZT", "KY": "KYD", "SG": "SGD", "SE": "SEK", "SD": "SDG", "DO": "DOP", "DM": "XCD", "DJ": "DJF", "DK": "DKK", "VG": "USD", "DE": "EUR", "YE": "YER", "DZ": "DZD", "US": "USD", "UY": "UYU", "YT": "EUR", "UM": "USD", "LB": "LBP", "LC": "XCD", "LA": "LAK", "TV": "AUD", "TW": "TWD", "TT": "TTD", "TR": "TRY", "LK": "LKR", "LI": "CHF", "LV": "EUR", "TO": "TOP", "LT": "LTL", "LU": "EUR", "LR": "LRD", "LS": "LSL", "TH": "THB", "TF": "EUR", "TG": "XOF", "TD": "XAF", "TC": "USD", "LY": "LYD", "VA": "EUR", "VC": "XCD", "AE": "AED", "AD": "EUR", "AG": "XCD", "AF": "AFN", "AI": "XCD", "VI": "USD", "IS": "ISK", "IR": "IRR", "AM": "AMD", "AL": "ALL", "AO": "AOA", "AQ": "", "AS": "USD", "AR": "ARS", "AU": "AUD", "AT": "EUR", "AW": "AWG", "IN": "INR", "AX": "EUR", "AZ": "AZN", "IE": "EUR", "ID": "IDR", "UA": "UAH", "QA": "QAR", "MZ": "MZN"};
+          {%- comment -%}
+          var currName = {"BD":"Bangladeshi taka (BDT)","BE":"Euro (EUR)","BF":"West African CFA franc (XOF)","BG":"Bulgarian lev (BGN)","BA":"Bosnia-Herzegovina convertible mark (BAM)","BB":"Barbadian dollar (BBD)","WF":"CFP franc (XPF)","BL":"Euro (EUR)","BM":"Bermudan dollar (BMD)","BN":"Brunei dollar (BND)","BO":"Bolivian boliviano (BOB)","BH":"Bahraini dinar (BHD)","BI":"Burundian franc (BIF)","BJ":"West African CFA franc (XOF)","BT":"Bhutanese ngultrum (BTN)","JM":"Jamaican dollar (JMD)","BV":"Norwegian krone (NOK)","BW":"Botswanan pula (BWP)","WS":"Samoan tala (WST)","BQ":"US dollar (USD)","BR":"Brazilian real (BRL)","BS":"Bahamian dollar (BSD)","JE":"British pound (GBP)","BY":"Belarusian ruble (BYR)","BZ":"Belize dollar (BZD)","RU":"Russian ruble (RUB)","RW":"Rwandan franc (RWF)","RS":"Serbian dinar (RSD)","TL":"US dollar (USD)","RE":"Euro (EUR)","TM":"Turkmenistani manat (TMT)","TJ":"TJS","RO":"Romanian leu (RON)","TK":"New Zealand dollar (NZD)","GW":"West African CFA franc (XOF)","GU":"US dollar (USD)","GT":"Guatemalan quetzal (GTQ)","GS":"British pound (GBP)","GR":"Euro (EUR)","GQ":"Central African CFA franc (XAF)","GP":"Euro (EUR)","JP":"Japanese yen (JPY)","GY":"Guyanaese dollar (GYD)","GG":"British pound (GBP)","GF":"Euro (EUR)","GE":"Georgian lari (GEL)","GD":"East Caribbean dollar (XCD)","GB":"British pound (GBP)","GA":"Central African CFA franc (XAF)","SV":"US dollar (USD)","GN":"GNF","GM":"Gambian dalasi (GMD)","GL":"Danish krone (DKK)","GI":"GIP","GH":"Ghanaian cedi (GHS)","OM":"Omani rial (OMR)","TN":"Tunisian dinar (TND)","JO":"Jordanian dinar (JOD)","HR":"Croatian kuna (HRK)","HT":"Haitian gourde (HTG)","HU":"Hungarian forint (HUF)","HK":"Hong Kong dollar (HKD)","HN":"Honduran lempira (HNL)","HM":"Australian dollar (AUD)","VE":"Venezuelan bolívar (VEF)","PR":"US dollar (USD)","PS":"Israeli new shekel (ILS)","PW":"US dollar (USD)","PT":"Euro (EUR)","SJ":"Norwegian krone (NOK)","PY":"Paraguayan guarani (PYG)","IQ":"Iraqi dinar (IQD)","PA":"Panamanian balboa (PAB)","PF":"CFP franc (XPF)","PG":"Papua New Guinean kina (PGK)","PE":"Peruvian sol (PEN)","PK":"Pakistani rupee (PKR)","PH":"Philippine piso (PHP)","PN":"New Zealand dollar (NZD)","PL":"Polish zloty (PLN)","PM":"Euro (EUR)","ZM":"ZMK","EH":"Moroccan dirham (MAD)","EE":"Euro (EUR)","EG":"Egyptian pound (EGP)","ZA":"South African rand (ZAR)","EC":"US dollar (USD)","IT":"Euro (EUR)","VN":"Vietnamese dong (VND)","SB":"Solomon Islands dollar (SBD)","ET":"Ethiopian birr (ETB)","SO":"SOS","ZW":"ZWL","SA":"Saudi riyal (SAR)","ES":"Euro (EUR)","ER":"ERN","ME":"Euro (EUR)","MD":"Moldovan leu (MDL)","MG":"Malagasy ariary (MGA)","MF":"Euro (EUR)","MA":"Moroccan dirham (MAD)","MC":"Euro (EUR)","UZ":"Uzbekistani som (UZS)","MM":"Myanmar kyat (MMK)","ML":"West African CFA franc (XOF)","MO":"Macanese pataca (MOP)","MN":"Mongolian tugrik (MNT)","MH":"US dollar (USD)","MK":"Macedonian denar (MKD)","MU":"Mauritian rupee (MUR)","MT":"Euro (EUR)","MW":"Malawian kwacha (MWK)","MV":"Maldivian rufiyaa (MVR)","MQ":"Euro (EUR)","MP":"US dollar (USD)","MS":"East Caribbean dollar (XCD)","MR":"MRO","IM":"British pound (GBP)","UG":"Ugandan shilling (UGX)","TZ":"Tanzanian shilling (TZS)","MY":"Malaysian ringgit (MYR)","MX":"Mexican peso (MXN)","IL":"Israeli new shekel (ILS)","FR":"Euro (EUR)","IO":"US dollar (USD)","SH":"SHP","FI":"Euro (EUR)","FJ":"Fijian dollar (FJD)","FK":"FKP","FM":"US dollar (USD)","FO":"Danish krone (DKK)","NI":"Nicaraguan córdoba (NIO)","NL":"Euro (EUR)","NO":"Norwegian krone (NOK)","NA":"Namibian dollar (NAD)","VU":"Vanuatu vatu (VUV)","NC":"CFP franc (XPF)","NE":"West African CFA franc (XOF)","NF":"Australian dollar (AUD)","NG":"Nigerian naira (NGN)","NZ":"New Zealand dollar (NZD)","NP":"Nepalese rupee (NPR)","NR":"Australian dollar (AUD)","NU":"New Zealand dollar (NZD)","CK":"New Zealand dollar (NZD)","XK":"Euro (EUR)","CI":"West African CFA franc (XOF)","CH":"Swiss franc (CHF)","CO":"Colombian peso (COP)","CN":"Chinese yuan (CNY)","CM":"Central African CFA franc (XAF)","CL":"Chilean peso (CLP)","CC":"Australian dollar (AUD)","CA":"Canadian dollar (CAD)","CG":"Central African CFA franc (XAF)","CF":"Central African CFA franc (XAF)","CD":"Congolese franc (CDF)","CZ":"Czech koruna (CZK)","CY":"Euro (EUR)","CX":"Australian dollar (AUD)","CR":"Costa Rican colón (CRC)","CW":"Netherlands Antillean guilder (ANG)","CV":"Cape Verdean escudo (CVE)","CU":"CUP","SZ":"Swazi lilangeni (SZL)","SY":"Syrian pound (SYP)","SX":"Netherlands Antillean guilder (ANG)","KG":"Kyrgystani som (KGS)","KE":"Kenyan shilling (KES)","SS":"South Sudanese pound (SSP)","SR":"Surinamese dollar (SRD)","KI":"Australian dollar (AUD)","KH":"Cambodian riel (KHR)","KN":"East Caribbean dollar (XCD)","KM":"Comorian franc (KMF)","ST":"São Tomé &amp; Príncipe dobra (STD)","SK":"Euro (EUR)","KR":"South Korean won (KRW)","SI":"Euro (EUR)","KP":"KPW","KW":"Kuwaiti dinar (KWD)","SN":"West African CFA franc (XOF)","SM":"Euro (EUR)","SL":"SLL","SC":"Seychellois rupee (SCR)","KZ":"Kazakhstani tenge (KZT)","KY":"Cayman Islands dollar (KYD)","SG":"Singapore dollar (SGD)","SE":"Swedish krona (SEK)","SD":"Sudanese pound (SDG)","DO":"Dominican peso (DOP)","DM":"East Caribbean dollar (XCD)","DJ":"DJF","DK":"Danish krone (DKK)","VG":"US dollar (USD)","DE":"Euro (EUR)","YE":"Yemeni rial (YER)","DZ":"Algerian dinar (DZD)","US":"US dollar (USD)","UY":"Uruguayan peso (UYU)","YT":"Euro (EUR)","UM":"US dollar (USD)","LB":"Lebanese pound (LBP)","LC":"East Caribbean dollar (XCD)","LA":"Laotian kip (LAK)","TV":"Australian dollar (AUD)","TW":"New Taiwan dollar (TWD)","TT":"Trinidad &amp; Tobago dollar (TTD)","TR":"Turkish lira (TRY)","LK":"Sri Lankan rupee (LKR)","LI":"Swiss franc (CHF)","LV":"Euro (EUR)","TO":"TOP","LT":"LTL","LU":"Euro (EUR)","LR":"Liberian dollar (LRD)","LS":"Lesotho loti (LSL)","TH":"Thai baht (THB)","TF":"Euro (EUR)","TG":"West African CFA franc (XOF)","TD":"Central African CFA franc (XAF)","TC":"US dollar (USD)","LY":"LYD","VA":"Euro (EUR)","VC":"East Caribbean dollar (XCD)","AE":"UAE dirham (AED)","AD":"Euro (EUR)","AG":"East Caribbean dollar (XCD)","AF":"Afghan Afghani (AFN)","AI":"East Caribbean dollar (XCD)","VI":"US dollar (USD)","IS":"Icelandic króna (ISK)","IR":"IRR","AM":"Armenian dram (AMD)","AL":"Albanian lek (ALL)","AO":"Angolan kwanza (AOA)","AQ":"","AS":"US dollar (USD)","AR":"Argentine peso (ARS)","AU":"Australian dollar (AUD)","AT":"Euro (EUR)","AW":"Aruban florin (AWG)","IN":"Indian rupee (INR)","AX":"Euro (EUR)","AZ":"Azerbaijani manat (AZN)","IE":"Euro (EUR)","ID":"Indonesian rupiah (IDR)","UA":"Ukrainian hryvnia (UAH)","QA":"Qatari rial (QAR)","MZ":"Mozambican metical (MZN)"};
+          {%- endcomment-%}
+
+          jQuery.ajax({
+            url: 'https://get.geojs.io/v1/ip/geo.js',
+            type: 'POST',
+            dataType: 'jsonp',
+            success: function(location) {
+              if(location.country_code){
+                let mycurrency = currmap[location.country_code];
+                let _supported_codes = '{% if currency_type == "2" %}{{ settings.supported_currencies }}{% else %}{{shopEnableCurrencies}}{% endif %}';
+
+                if( mycurrency && _supported_codes.includes(mycurrency)){
+                  let target = $(`.currencies-list a[data-value="${mycurrency}"]`);
+                  target.length{% if currency_type == '1' %} && "{{ cart.currency.iso_code }}" != mycurrency{% endif %} && target.trigger('click');
+                }
+              }
+            }
+
+          });
+        }
+        jQuery.cookie('currencycookie', 'true', { expires: 7 });
+      });
+    </script>
+{%- endcase -%}

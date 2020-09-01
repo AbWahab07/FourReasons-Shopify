@@ -1,0 +1,117 @@
+{%- assign sticky_cart_btn = section.settings.sticky_cart_style | default: 2 -%}
+
+<div class="add-to-cart-sticky cart-sticky-{{section.settings.sticky_cart_position}}" data-pos="{{section.settings.sticky_cart_position}}">
+  <form action="/cart/add" method="post" class="product-action variants" enctype="multipart/form-data">
+    <div class="sticky-image">
+      {%- if product.images.size > 0 -%}
+        <img {% if _lazyload %} class="lazyload" data-{% endif %}src="{{product.featured_image | img_url: '300x'}}">
+      {%- else -%}
+        <img {% if _lazyload %} class="lazyload" data-{% endif %}src="{{product.featured_media.preview_image | img_url: '300x'}}">
+      {%- endif -%}
+      <div class="sticky-info">
+        <div class="sticky-name">{{product.title}}</div>
+        <div class="sticky-review">{% include 'include-reviews' with type: 'preview_badge' %}</div>
+      </div>
+    </div>
+
+    <div class="sticky-content">
+      <div class="sticky-variant-wrapper">
+
+        {%- for option in product.options -%}
+          {%- assign _option = option | downcase -%}
+          {%- unless _option contains 'title' -%}
+            {%- if swatch_styles contains _option -%}
+              {%- assign is_color  = false -%}
+              {%- assign use_image = false -%}
+
+              {%- if image_arr contains _option -%}
+                {%- assign swatch_type = 'image' -%}
+                {%- assign swt_shape   = settings.image_swatch_shape -%}
+                {%- assign is_color    = true -%}
+                {%- assign use_image   = true -%}
+
+              {%- elsif color_arr contains _option -%}
+                {%- assign swatch_type = 'color' -%}
+                {%- assign swt_shape   = settings.color_swatch_shape -%}
+                {%- assign is_color    = true -%}
+
+              {%- else -%}
+                {%- assign swatch_type = 'button' -%}
+                {%- assign swt_shape   = settings.button_swatch_shape -%}
+              {%- endif -%}
+
+              {%- include 'swatch' with option, is_color: is_color, use_image: use_image, swatch_type: swatch_type, swt_shape: swt_shape, swt_class: '-sticky' -%}
+
+            {%- else -%}
+              {%- assign product_option = product.options_by_name[option] -%}
+
+              <div class="sticky-option">
+                <label for="sticky--variant-{{option | handle }}">{{ option }}</label>
+                <select id="sticky--variant-{{option | handle }}" class="sticky-select-option" data-option-index="{{ product_option.position }}">
+                  {%- for value in product_option.values -%}
+                  <option value="{{ value | escape }}"{% if product_option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                  {%- endfor -%}
+                </select>
+              </div>
+            {%- endif -%}
+          {%- endunless -%}
+        {%- endfor -%}
+
+        <select id="product-sticky-select-{{ product.id }}" name="id" class="sticky-select{% unless product.variants.size > 1 %} hide{% endunless %}">
+          {%- for variant in product.variants -%}
+            {%- if variant.available -%}
+              <option data-check="{{ variant.title | downcase | replace: ' / ','/'}}" data-price="{{variant.price}}"{%- if variant == product.selected_or_first_available_variant %} selected="selected"{% endif %} value="{{ variant.id }}">{{ variant.title }}</option>
+            {%- else -%}
+              <option disabled="disabled">{{ variant.title }} - {{'products.product.sold_out' | t }}</option>
+            {%- endif -%}
+          {%- endfor -%}
+        </select>
+      </div>
+
+      <div class="sticky-action">
+        <ul class="wrap-quantity-add-cart product-cart--qty-{{section.settings.qty_style | default: 1 }}">
+          <li class="quantity-product">
+            <label>{{ 'products.product.quantity' | t }}</label>
+            <div class="qty-wrapper">
+              <span class="qty-inner">
+                <span class="qty-down" title="Decrease" data-src="#quantity">
+                  {%- include 'icons', type: 'icon_free', name:'icon-K' -%}
+                </span>
+              </span>
+              <input type="number" id="sticky-quantity" class="item-quantity" name="quantity" value="1" />
+              <span class="qty-inner">
+                <span class="qty-up" title="Increase" data-src="#quantity">
+                  {%- include 'icons', type: 'icon_free', name:'icon-L' -%}
+                </span>
+              </span>
+            </div>
+          </li>
+        </ul>
+        <div class="sticky-add-to-cart">
+
+          <div class="sticky-price">
+            <div class="d-inline-block"><span>{{'products.product.price' | t }}:</span></div>
+            <div class="d-inline-block ">
+              <div class="product-price product-detail_price-element notranslate">{{__productPrice}}</div>
+            </div>
+          </div>
+
+          {%- if _enable_order_btn -%}
+            <div class="pre-order hide">
+              <button type="button" class="btn-pre-order btn btn-2" data-toggle="modal" data-target="#pre-order">
+                <span class="btn-label">{{- 'products.product.pre_order' | t -}}</span>
+              </button>
+            </div>
+          {%- endif -%}
+
+          <div class="stciky-cart-button">
+            <button class="btn btn-{{sticky_cart_btn}} sticky-add-cart" type="button"{% unless product.available %} disabled="disabled"{% endunless %}>
+              {%- include 'icons', type: 'icon_free', name: icon_cart -%}
+              <span class="btn-label">{{ 'products.product.add_to_cart' | t }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

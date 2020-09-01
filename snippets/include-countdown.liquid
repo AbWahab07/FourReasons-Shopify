@@ -1,0 +1,14 @@
+{%- unless countdown == blank -%}
+  {%- assign countdown_id = countdown_id | default: block.id -%}
+  
+  <div class="block-countdown">
+    <div class="wrapper-countdown" data-id="{{countdown_id}}" data-date="{{countdown}}">
+      <div class="countdown_{{ countdown_id }}">
+        <span class="count-day"><span class="date-number">00</span><span class="text-date">{{-    "date_formats.day"     | t -}}</span></span>
+        <span class="count-hours"><span class="date-number">00</span><span class="text-date">{{-  "date_formats.hour"    | t -}}</span></span>
+        <span class="count-minutes"><span class="date-number">00</span><span class="text-date">{{-"date_formats.minute"  | t -}}</span></span>
+        <span class="count-seconds"><span class="date-number">00</span><span class="text-date">{{-"date_formats.second"  | t -}}</span></span>
+      </div>
+    </div>
+  </div>
+{%- endunless -%}

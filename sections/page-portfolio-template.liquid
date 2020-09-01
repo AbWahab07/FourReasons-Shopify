@@ -1,0 +1,245 @@
+{%- include 'breadcrumb' -%}
+{%- assign _lazyload            = settings.use_lazyload -%}
+{%- assign _spacing_items       = section.settings.spacing_items -%}
+{%- assign _page_heading        = section.settings.heading -%}
+{%- assign _bn_heading_size     = section.settings.heading_size -%}
+{%- assign _bn_content_size     = section.settings.content_size -%}
+{%- assign _bn_heading_color    = section.settings.heading_color -%}
+{%- assign _bn_content_color    = section.settings.content_color -%}
+{%- assign _show_filter         = section.settings.show_filter -%}
+
+{%- include 'include-item-per-row' -%}
+<div class="page-portfolio home-banner" data-section-type="portfolio-page" data-section-id="{{section.id}}">
+  
+  <style>
+  {{- '' -}}.page-portfolio{background-color:{{section.settings.background_color | default: 'rgba(0,0,0,0)' }};}
+  {{- '' -}}.page-portfolio .banner-item_heading{color: {{_bn_heading_color}};}
+  {{- '' -}}.page-portfolio .banner-item_content{color: {{_bn_content_color}};}
+  {{- '' -}}
+  </style>
+
+  <div class="container">
+    {%- if section.blocks.size > 0 -%}
+
+      {%- if _show_filter -%}
+        <div class="banner-filter-content">
+          {%- assign ar_group = '' -%}
+          {%- for block in section.blocks -%}
+            {%- assign _group = block.settings.banner_group | strip | downcase -%}
+            {%- unless _group == blank -%}
+              {%- if _group contains ',' -%}
+                {%- assign n_group = _group | split: ',' -%}
+                {%- for i in n_group -%}
+                  {%- capture new_i -%}{{ i | strip }}{%- endcapture -%}
+                  {%- assign ar_group = ar_group | append: ',' | append: new_i -%}
+                {%- endfor -%}
+
+              {%- else -%}
+                {%- assign ar_group = ar_group | append: ',' | append: _group -%}
+              {%- endif -%}
+            {%- endunless -%}
+          {%- endfor -%}
+
+          {%- assign arr_group_banner = ar_group | remove_first: ',' | split: ',' | uniq -%}
+          
+          <ul class="list-inline">
+            <li class="filter-item active" data-value="all">
+                <a href="javascript:void(0);">{{- 'general.text.show_all' | t -}}</a>
+            </li>
+            {%- for g in arr_group_banner -%}
+              <li class="filter-item" data-value="{{g | strip | handle}}">
+                <a href="javascript:void(0);">{{g | strip | capitalize }}</a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+      
+      <div class="home-banner-items">
+        <div class="home-banner-masonry masonry_{{section.id}}">
+          <div class="bc-masonry">
+            {%- for block in section.blocks -%}
+              {%- assign image              = block.settings.image -%}
+              {%- assign _link              = block.settings.link | default: 'javascript:void(0);' -%}
+              {%- assign _width_resp        = block.settings.width -%}
+              {%- assign _bn_heading        = block.settings.heading -%}
+              {%- assign _bn_content        = block.settings.content -%}
+              {%- assign _bn_group          = block.settings.banner_group -%}
+
+              {%- capture n_b_class -%}{%- unless _width_resp == blank -%}
+                {%- include 'set-width-bootstrap',in_type: 'width', number: _width_resp -%}{{_out}}
+              {%- else -%}{{items_resp}}{%- endunless -%}{%- endcapture -%}
+
+              {%- unless _bn_group == blank -%}
+                {%- if _bn_group contains ',' -%}
+                  {%- assign _temp_group = _bn_group | split: ',' -%}
+                  {%- capture _btn_group_class -%}{%- for c in _temp_group -%}{%- assign _c = c | strip -%}{{_c | handle | prepend: ' g-' }}{%- endfor -%}{%- endcapture -%}
+                {%- else -%}
+                  {%- assign _btn_group_class = _bn_group | strip | handle | prepend: 'g-' -%}
+                {%- endif -%}
+              {%- endunless -%}
+
+
+              <div class="banner-item {{n_b_class}} g-all {{_btn_group_class}}"{{block.shopify_attributes}}>
+                <div class="banner-item-inner">
+                  <a href="{{ _link }}" >
+                    {% include 'image-style' %}
+                  </a>
+
+                  <a class="fancybox" href="{{image | img_url: '1024x'}}">
+                    {%- include 'icons', type: 'icon_free', name: 'icon-uniE910-1' -%}
+                  </a>
+                  <div class="banner-content">
+                    <div class="banner-content-inner">
+                        {%- unless _bn_heading == blank -%}
+                          <div class="banner-item_heading h{{_bn_heading_size}}">{{_bn_heading}}</div>
+                        {%- endunless -%}
+                        {%- unless _bn_content == blank -%}
+                          <div class="banner-item_content h{{_bn_content_size}}">{{_bn_content}}</div>
+                        {%- endunless -%}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    {%- else -%}
+      <p>{{- 'general.text.no_content' | t -}}</p>
+    {%- endif -%}
+  </div>
+  <script>
+    jQuery(document).ready(function($) {
+
+      var i_sections = new theme.Sections(), $module;
+      i_sections.register('portfolio-page',function(){
+        jQuery(".fancybox").length && jQuery(".fancybox").jqPhotoSwipe();
+        var grid = '.page-portfolio .bc-masonry';
+        $module = new Muuri(grid, {
+          items: '.banner-item'
+          ,layout: {rounding: false}
+          ,layoutOnResize: true
+          ,layoutDuration: 800
+          ,layoutEasing: 'cubic-bezier(0.215, 0.61, 0.355, 1)'
+        });
+
+        $(document).on('click', 'li.filter-item', function(){
+          let $this = $(this), _va = '.g-'+$this.data('value');
+          $module.filter(_va);
+          $('li.filter-item').removeClass('active');
+          $this.addClass('active');
+        })
+      });
+    });
+  </script>
+</div>
+
+{% schema %}{
+  "name":"Portfolio page",
+  "tag": "section",
+  "max_blocks":20,
+  "settings":[
+      {
+         "type":"color",
+         "id"    :"background_color",
+         "label":"Background color",
+         "default": "rgba(0,0,0,0)"
+      },
+    {
+      "type":"image_picker",
+      "id":"breadcrumb_image",
+      "label":"Breadcrumb image"
+    },
+    {
+      "type":"checkbox",
+      "id":"spacing_items",
+      "label":"Spacing items",
+      "default": true
+    },
+    {
+       "type"  :"checkbox",
+       "id"    :"show_filter",
+       "label" :"Show Filter Items",
+       "default": true
+    },
+    {
+       "type"  :"text",
+       "id"    :"items_resp",
+       "label":"Max number of items per row",
+       "placeholder": "xl,lg,md,sm,xs,xxs",
+       "info": "E.g: 4,3,2",
+       "default": "3,2,1"
+    },
+    {
+       "type":"range",
+       "id"   :"heading_size",
+       "label":"Heading font size (h1-h6)",
+       "min"   :1,
+       "max"   :6,
+       "default":5
+    },
+    {
+       "type":"range",
+       "id"   :"content_size",
+       "label":"Content font size (h1-h6)",
+       "min"   :1,
+       "max"   :6,
+       "default":3
+    },
+    {
+       "type":"color",
+       "id"   :"heading_color",
+       "label":"Heading color",
+       "default": "#ffffff"
+    },
+    {
+       "type":"color",
+       "id"   :"content_color",
+       "label":"Content color",
+       "default": "#ffffff"
+    }
+  ],
+  "blocks":[
+    {
+      "type":"image",
+      "name":"Image",
+      "settings":[
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Image"
+        },
+        {
+          "type":"url",
+          "id":"link",
+          "label":"Link"
+        },
+        {
+          "type":"text",
+          "id":"width",
+          "label":"Width (1->12)",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "info":"0 to hide. Blank to auto. E.g: 4,6,12"
+        },
+        {
+           "type":"text",
+           "id"   :"heading",
+           "label":"Heading"
+        },
+        {
+           "type":"textarea",
+           "id"   :"content",
+           "label":"Content"
+        },
+        {
+           "type":"text",
+           "id"   :"banner_group",
+           "label":"Group name"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

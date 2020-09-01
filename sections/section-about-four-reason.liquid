@@ -1,0 +1,257 @@
+<div class="container section-about-us">
+  <div class="row group1">
+    <div class="col-12">
+      <div class="left-panel float-left">
+        <div class="title">
+          About Four Reasons
+        </div>
+        <img src="{{ section.settings.image_group1_left | img_url: 'master' }}"/>
+      </div>
+      <div class="right-panel float-left">
+        <div class="text-right">
+          <img class="img-right-panel" src="{{ section.settings.image_group1_right | img_url: 'master' }}"/>
+        </div>
+        <p class="sub-title">
+          {{ section.settings.group1_sub_title }}
+        </p>
+        <div class="description">
+          {{ section.settings.group1_description }}
+        </div>
+        
+        <div class="panel-logo">
+          {% include 'logo-rotate-text' %}
+        </div>
+        
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  
+  <div class="row group2">
+    <div class="col-12">
+      <div class="title">
+        {{ section.settings.group2_title }}
+      </div>
+      <div class="left-panel float-left">
+        <div class="description">
+          {{ section.settings.group2_description }}
+        </div>
+      </div>
+      <div class="right-panel float-left">
+        <img src="{{ section.settings.image_group2 | img_url: 'master' }}"/>
+        <div class="descriptions">
+          <div class="item-description">
+            <div class="item-title">
+              Slogan
+            </div>
+            <div class="item-text">
+              We Love the Real You
+            </div>
+          </div>
+          
+          <div class="item-description">
+            <div class="item-title">
+              Mission
+            </div>
+            <div class="item-text">
+              Feel beautiful
+            </div>
+          </div>
+          
+          <div class="item-description">
+            <div class="item-title">
+              Vision
+            </div>
+            <div class="item-text">
+              To inspire and empower people with sustainable products, the best service and a world-wide beauty community
+            </div>
+          </div>          
+          <div class="clearfix"></div>
+        </div>
+      </div>      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  
+  <div class="row group3">
+    <div class="col-12">
+      <div class="left-panel float-left">
+        <img src="{{ section.settings.image_group3 | img_url: 'master' }}"/>
+      </div>
+      <div class="right-panel float-left">
+        <div class="title">
+          {{ section.settings.group3_title }}
+        </div>
+      </div>
+    </div>
+    <div class="col-12" style="margin-top: 100px;">
+      <div class="left-panel2 float-left">
+        <div class="text">
+          {{ section.settings.group3_text }}
+        </div>
+      </div>
+      <div class="right-panel2 float-left">
+        <div class="description">
+          {{ section.settings.group3_description }}
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row group4">
+    <div class="col-lg-9 offset-lg-3 col-md-12">
+      <div class="sub-title">
+        {{ section.settings.group4_sub_title }}
+      </div>
+      
+      <div class="title">
+        {{ section.settings.group4_title }}
+      </div>
+      
+      <img src="{{ section.settings.image_group4 | img_url: 'master' }}"/>
+      
+      <div class="item-description">
+        <div class="item-title">
+          - 01
+          <br/>
+          People
+        </div>
+        <div class="item-text">
+          At Four Reasons, we’re a family – noisy, composed, vivacious, funny, creative, sometimes a little odd. We’re all different. You’ll fit in well.
+        </div>
+      </div>
+      
+      <div class="item-description">
+        <div class="item-title">
+          - 02
+          <br/>
+          Passion
+        </div>
+        <div class="item-text">
+          We do what we do with passion. It sparkles, grows and breaks the mold. It’s the courage to color outside the lines.
+        </div>
+      </div> 
+      
+      <div class="item-description">
+        <div class="item-title">
+          - 03
+          <br/>
+          Authenticity
+        </div>
+        <div class="item-text">
+          We have the courage to be our real selves and do things our own way. Our products are beautiful to look at and even more wonderful to use. They are carefully made from high-quality ingredients, and they work.
+        </div>
+      </div>    
+      
+      <div class="item-description">
+        <div class="item-title">
+          - 04
+          <br/>
+          You
+        </div>
+        <div class="item-text">
+          We know that life can be wonderful, sad, fun, boring, straightforward and complicated. We want to make your good hair days great and even the bad ones better. We want you to feel at your best just being who you are.
+        </div>
+      </div>        
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name":"About Us",
+  "tag":"section",
+  "settings":[
+    {
+      "type":"paragraph",
+      "content":"About Four Reason"
+    },
+    {
+      "id":"group1_title",
+      "label":"Title",
+      "type":"text"
+    },
+    {
+      "id":"group1_sub_title",
+      "label":"Sub Title",
+      "type":"text"
+    },
+    {
+      "id":"group1_description",
+      "label":"Description",
+      "type":"richtext"
+    },
+    {
+      "type":"image_picker",
+      "id":"image_group1_left",
+      "label":"Left Image"
+    },
+    {
+      "type":"image_picker",
+      "id":"image_group1_right",
+      "label":"Right Image"
+    },
+    {
+      "type":"paragraph",
+      "content":"Who we are?"
+    },
+    {
+      "id":"group2_title",
+      "label":"Title",
+      "type":"text"
+    },
+    {
+      "id":"group2_description",
+      "label":"Description",
+      "type":"richtext"
+    },
+    {
+      "type":"image_picker",
+      "id":"image_group2",
+      "label":"Image"
+    },
+    {
+      "type":"paragraph",
+      "content":"Brand Purpose"
+    },
+    {
+      "id":"group3_title",
+      "label":"Title",
+      "type":"text"
+    },
+    {
+      "id":"group3_text",
+      "label":"Text",
+      "type":"richtext"
+    },
+    {
+      "id":"group3_description",
+      "label":"Description",
+      "type":"richtext"
+    },
+    {
+      "type":"image_picker",
+      "id":"image_group3",
+      "label":"Image"
+    },
+    {
+      "type":"paragraph",
+      "content":"Our Four Reasons"
+    },
+    {
+      "id":"group4_title",
+      "label":"Title",
+      "type":"text"
+    },
+    {
+      "id":"group4_sub_title",
+      "label":"Sub Title",
+      "type":"text"
+    },
+    {
+      "type":"image_picker",
+      "id":"image_group4",
+      "label":"Image"
+    }
+  ]
+}
+{% endschema %}

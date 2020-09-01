@@ -1,0 +1,135 @@
+{%- case type -%}
+
+  {%- when 'slider' -%}
+
+      <div class="slider-container">
+        <div class="slider-content-inner banner-carousel" data-owl-xs="1" data-nav="true" data-dot="true">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'slider_banner' -%}
+
+               {%- assign _sl_img          = block.settings.image -%}
+               {%- assign _sl_alignment    = block.settings.text_alignment -%}
+               {%- assign _sl_btn_text     = block.settings.button_text -%}
+               {%- assign _sl_btn_style    = block.settings.button_style -%}
+               {%- assign _sl_btn_link     = block.settings.button_link | default: 'javascript:void(0);' -%}
+               {%- assign _sl_bg_color     = block.settings.background_color -%}
+               {%- assign _sl_bg_opacity   = block.settings.background_opacity | times: 0.01 -%}
+               {%- unless _sl_bg_color == 'rgba(0,0,0,0)' -%}
+                  {%- assign _sl_content_bg = _sl_bg_color | color_modify: 'alpha', _sl_bg_opacity -%}
+               {%- else -%}
+                  {%- assign _sl_content_bg = _sl_bg_color -%}
+               {%- endunless -%}
+
+              {%- if _sl_img != blank -%}
+                {%- capture _sl_bg -%}{{_sl_img | img_url: '1920x' }}{%- endcapture -%}
+
+                {%- capture slider_ID -%}.page-cata .slide-item.slide-{{block.id}}{%- endcapture -%}
+
+                <div class="slide-item slide-{{block.id}}{% if _lazyload %} lazyload" data-bgset="{{_sl_bg}} 1920w{% endif %}">
+                  <div class="slide-inner">
+                    <div class="slide-content {{_sl_alignment}}">
+                      {%- for i in (1..4) -%}
+                        {%- assign _temp_txt      = 'text'    | append: i-%}
+                        {%- assign _temp_size     = _temp_txt  | append: '_size' -%}
+                        {%- assign _temp_uc       = _temp_txt  | append: '_uc' -%}
+
+
+                        {%- assign _sl_txt        = block.settings[_temp_txt] -%}
+                        {%- assign _sl_txt_size   = block.settings[_temp_size] -%}
+
+                        {%- unless _sl_txt == blank -%}
+                           <div class="slide-text-{{i}}{% if _sl_txt_size contains 'h' %} {{_sl_txt_size}}{% endif %}{% if block.settings[_temp_uc] %} text-uppercase{% endif %}">
+                             <span>{{_sl_txt}}</span>
+                           </div>
+                        {%- endunless -%}
+
+                      {%- endfor -%}
+
+                      {%- unless _sl_btn_text == blank -%}
+                         <div class="slide-button">
+                           <a href="{{_sl_btn_link}}" class="btn btn-{{_sl_btn_style}}">{{_sl_btn_text}}</a>
+                         </div>
+                      {%- endunless -%}
+                    </div>
+                  </div>
+                  {%- capture slide_css -%}
+                     {%- unless _lazyload -%}.page-cata .slider-container .slide-item{background-image: url({{_sl_bg}});}{%- endunless -%}
+
+                     {%- include 'css-responsive', classID: slider_ID, css_value: block.settings.image_pos, css_property: 'background-position' -%}
+                     {%- include 'css-responsive', classID: slider_ID, nextClassID: ' .slide-content', css_value: block.settings.position, type: 'position' -%}
+                     {%- include 'css-responsive', classID: slider_ID, nextClassID: ' .slide-content', css_value: block.settings.max_width, css_property: 'max-width' -%}
+                        
+                     {%- if block.settings.content_style == 'custom' -%}
+                        {%- include 'css-responsive', classID: slider_ID, nextClassID: ' .slide-content', css_value: block.settings.textbox_padding -%}
+                        {{- slider_ID}} .slide-content{background-color: {{_sl_content_bg}};}
+                        {%- for i in (1..4) -%}
+                           {%- assign _text = 'text' | append: i -%}
+                           {%- unless block.settings[_text] == blank -%}
+                              {%- capture nextID %} .slide-text-{{i}}{%- endcapture -%}
+                              {%- assign stext_mg     = 'text' | append: i | append: '_margin' -%}
+                              {%- assign stext_fw     = 'text' | append: i | append: '_fw' -%}
+                              {%- assign stext_fs     = 'text' | append: i | append: '_size' -%}
+                              {%- assign stext_ls     = 'text' | append: i | append: '_lsp' -%}
+                              {%- assign stext_lh     = 'text' | append: i | append: '_lh' -%}
+                              {%- assign stext_color  = 'text' | append: i | append: '_color' -%}
+
+                              {{- slider_ID}} {{nextID}}{font-weight: {{block.settings[stext_fw]}};color: {{block.settings[stext_color]}};}
+                              {%- include 'css-responsive', classID: slider_ID, nextClassID: nextID, css_value: block.settings[stext_mg], css_property: 'margin' -%}
+                              {%- include 'css-responsive', classID: slider_ID, nextClassID: nextID, css_value: block.settings[stext_ls], css_property: 'letter-spacing' -%}
+                              {%- include 'css-responsive', classID: slider_ID, nextClassID: nextID, css_value: block.settings[stext_lh], css_property: 'line-height' -%}
+                              {%- unless stext_fs contains 'h' -%}
+                                 {%- include 'css-responsive', classID: slider_ID, nextClassID: nextID, css_value: block.settings[stext_fs], css_property: 'font-size' -%}                              
+                              {%- endunless -%}
+
+                           {%- endunless -%}
+                        {%- endfor -%}
+                     {%- endif -%}                     
+
+                 {%- endcapture -%}
+
+                 {%- assign section_css = section_css | append: slide_css -%}
+                </div>
+              {%- endif -%}
+            
+            {%- elsif block.type == 'general_slider_style' -%}
+                  {%- capture slider_ID -%}.page-cata .slide-item{%- endcapture -%}
+
+                  {%- capture slide_css -%}
+                     {%- assign _sl_bg_color     = block.settings.background_color -%}
+                     {%- assign _sl_bg_opacity   = block.settings.background_opacity | times: 0.01 -%}
+                     {%- unless _sl_bg_color == 'rgba(0,0,0,0)' -%}
+                        {%- assign _sl_content_bg = _sl_bg_color | color_modify: 'alpha', _sl_bg_opacity -%}
+                     {%- else -%}
+                        {%- assign _sl_content_bg = _sl_bg_color -%}
+                     {%- endunless -%}
+
+                     {{slider_ID}} .slide-content{background-color: {{_sl_content_bg}};}
+                     {%- include 'css-responsive', classID: slider_ID, nextClassID: ' .slide-content', css_value: block.settings.textbox_padding -%}                     
+
+                     {%- for i in (1..4) -%}
+                        {%- capture nextID %} .slide-text-{{i}}{%- endcapture -%}
+                        {%- assign stext_mg     = 'text' | append: i | append: '_margin' -%}
+                        {%- assign stext_fw     = 'text' | append: i | append: '_fw' -%}
+                        {%- assign stext_fs     = 'text' | append: i | append: '_size' -%}
+                        {%- assign stext_ls     = 'text' | append: i | append: '_lsp' -%}
+                        {%- assign stext_lh     = 'text' | append: i | append: '_lh' -%}
+                        {%- assign stext_color  = 'text' | append: i | append: '_color' -%}
+
+                        {{slider_ID}} {{nextID}}{font-weight: {{block.settings[stext_fw]}};color: {{block.settings[stext_color]}};}
+                        {%- include 'css-responsive', classID: slider_ID, nextClassID: nextID, css_value: block.settings[stext_mg], css_property: 'margin' -%}
+                        {%- include 'css-responsive', classID: slider_ID, nextClassID: nextID, css_value: block.settings[stext_ls], css_property: 'letter-spacing' -%}
+                        {%- include 'css-responsive', classID: slider_ID, nextClassID: nextID, css_value: block.settings[stext_lh], css_property: 'line-height' -%}
+                        {%- unless stext_fs contains 'h' -%}
+                           {%- include 'css-responsive', classID: slider_ID, nextClassID: nextID, css_value: block.settings[stext_fs], css_property: 'font-size' -%}                              
+                        {%- endunless -%}
+
+                     {%- endfor -%}
+
+                 {%- endcapture -%}
+
+                 {%- assign section_css = section_css | append: slide_css -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+{%- endcase -%}

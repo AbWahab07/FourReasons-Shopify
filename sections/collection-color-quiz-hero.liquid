@@ -1,0 +1,53 @@
+<div class="collection-hero-wrapper">
+  {%- if section.settings.background != blank -%}
+    <div class="collection-hero-bg">
+      <img class="lazyautosizes lazyloaded" src="{{ section.settings.background | img_url: 'master' }}">
+    </div>
+  {%- endif -%}
+  
+  <div class="collection-hero-content">
+    <div class="section-header">
+      {%- if section.settings.header_title != blank -%}
+      	<p>{{ section.settings.header_title }}</p>
+      {%- endif -%}
+      
+      {%- if section.settings.sub_header_title != blank -%}
+      	<h2>{{ section.settings.sub_header_title }}</h2>
+      {%- endif -%}
+    </div>
+    
+    {%- if section.settings.image !=blank -%}
+      <div class="collection-hero-banner">
+        <img class="lazyautosizes lazyloaded" src="{{ section.settings.image | img_url: 'master' }}">
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Color Quiz Hero",
+    "settings": [
+	  {
+        "type":"image_picker",
+        "id":"background",
+        "label":"Background"
+      },
+	  {
+        "type":"image_picker",
+        "id":"image",
+        "label":"Image"
+      },
+	  {
+		 "type":"text",
+		 "id":"header_title",
+		 "label":"Heading"
+	  },
+	  {
+		 "type":"text",
+		 "id":"sub_header_title",
+		 "label":"Sub Heading"
+	  }
+	]
+  }
+{% endschema %}

@@ -1,0 +1,311 @@
+{%- if type == 'border_settings' -%}
+  {%- assign _head_border_size    = section.settings.head_border_size -%}
+  {%- assign _block_head_color    = section.settings.block_head_color | default: 'rgba(0,0,0,0)' -%}
+  {%- assign _block_heading_lsp   = section.settings.block_heading_lsp-%}
+
+  {%- if _head_border_size > 0 -%}
+    {%- assign _head_border_color   = section.settings.head_border_color -%}
+    {%- assign _head_border_margin  = section.settings.head_border_margin -%}
+    {%- assign _head_border_width   = section.settings.head_border_width | default: '100%' -%}
+    {%- capture _head_border_id -%}.section-show-{{section.id}} .heading_border-bottom{%- endcapture -%}
+
+    {%- capture heading_border_layout -%}
+      <div class="heading_border-bottom"></div>
+    {%- endcapture -%}
+
+    {%- capture head_border_css -%}
+      {{_head_border_id}}{border-bottom: {{_head_border_size}}px solid {{_head_border_color}};}
+      {%- include 'css-responsive', classID: _head_border_id, css_value: _head_border_width, css_property: 'max-width' -%}
+      {%- include 'css-responsive', classID: _head_border_id, css_value: _head_border_margin, css_property: 'margin' -%}
+    {%- endcapture -%}
+    {%- assign section_css = section_css | append: head_border_css -%}
+  {%- endif -%}
+
+  {%- capture block_heading_css -%}
+    {%- unless _block_head_color == 'rgba(0,0,0,0)' -%}.section-show-{{section.id}} .footer-content p.footer-block-heading{color: {{_block_head_color}};}{%- endunless -%}
+    {%- include 'css-responsive' ,classID: _sectionID ,nextClassID: ' .footer-block-heading' ,css_value: _block_heading_lsp, css_property: 'letter-spacing' -%}
+  {%- endcapture -%}
+  {%- assign section_css = section_css | append: block_heading_css -%}
+
+{%- else -%}
+
+  {%- assign H_alignment        = block.settings.alignment -%}
+  {%- assign horizontal_align   = block.settings.alignment | downcase | replace: 'left','flex-start' | replace: 'right','flex-end' -%}
+  {%- assign vertical_align     = block.settings.ver_align | downcase | replace: 'top','flex-start' | replace: 'bottom','flex-end' -%}
+  {%- assign heading            = block.settings.heading -%}
+  {%- assign inline             = block.settings.inline -%}
+
+  {%- capture footer_blockID -%}.section-show-{{section.id}} .footer-{{block.type}}.block-{{block.id}}{%- endcapture -%}
+  <div class="footer-content footer-{{block.type}} block-{{block.id}}{% if inline %} d-md-flex horizontal-align{% endif %}">
+    {%- unless heading == blank -%}
+      <p class="footer-block-heading {{ heading_size }} fw-{{section.settings.head_border_fw}}{% if inline %} m-0{% endif %}">{{ heading }}</p>
+      {{heading_border_layout}}
+    {%- endunless -%}
+
+    {%- case block.type -%}
+      {%- when 'logo' -%}
+        {% include 'include-logo' with type: 'block' %}
+        {%- capture block_css -%}{%- include 'css-responsive', classID: footer_blockID, css_value: block.settings.block_padding -%}{%- endcapture -%}
+        {%- assign section_css = section_css | append: block_css -%}
+
+      {%- when 'social' -%}
+        {% include 'social-media-icons' %}
+        {%- assign _social_icon_color = block.settings.social_icon_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _social_icon_bg    = block.settings.social_icon_bg_color | default: 'rgba(0,0,0,0)' -%}
+        {%- capture block_css -%}
+          {%- include 'css-responsive', classID: footer_blockID ,nextClassID: ' .widget-social-icons li a i'  ,css_value: block.settings.social_padding -%}
+          {%- include 'css-responsive', classID: footer_blockID ,nextClassID: ' .widget-social-icons li a'    ,css_value: block.settings.social_fs, css_property: 'font-size' -%}
+          {%- unless _social_icon_color == 'rgba(0,0,0,0)' -%}{{footer_blockID}} .widget-social-icons li a{color: {{_social_icon_color}};}{%- endunless -%}
+          {%- unless _social_icon_bg == 'rgba(0,0,0,0)'    -%}{{footer_blockID}} .widget-social-icons li a i{background-color: {{_social_icon_bg}};}{%- endunless -%}
+        {%- endcapture -%}
+        {%- assign section_css = section_css | append: block_css -%}
+
+      {%- when 'menu' -%}
+        {%- assign nav_link   = block.settings.nav_link -%}
+        {%- assign nav_link_2 = block.settings.nav_link_2 -%}
+        {%- assign nav_ff     = block.settings.nav_ff -%}
+
+        <div class="menu-wrapper{% if block.settings.menu_uppercase %} text-uppercase{% endif %}">
+          {%- unless nav_link == blank and linklists[nav_link].links.size == 0 -%}
+            <div class="menu-content">
+              <ul class="menu-list{% if inline %} list-inline{% endif %} {{nav_ff}}">
+                {% for l in linklists[nav_link].links %}
+                  <li><a href="{{ l.url }}"><span>{{ l.title }}</span></a></li>
+                {% endfor %}
+              </ul>
+            </div>
+            {%- unless nav_link_2 == blank and linklists[nav_link_2].links.size == 0 -%}
+              <div class="menu-content">
+              <ul class="menu-list{% if inline %} list-inline{% endif %} {{nav_ff}}">
+                {% for l in linklists[nav_link_2].links %}
+                  <li><a href="{{ l.url }}"><span>{{ l.title }}</span></a></li>
+                {% endfor %}
+              </ul>
+            </div>
+            {%- endunless -%}
+          {%- endunless -%}
+        </div>
+
+        {%- capture block_css -%}
+        {%- include 'css-responsive', classID: footer_blockID ,nextClassID: ' .menu-list li a' ,css_value: block.settings.menu_lsp ,css_property: 'letter-spacing' -%}
+        {%- endcapture -%}
+        {%- assign section_css = section_css | append: block_css -%}
+
+      {%- when 'information' -%}
+        {%- assign inf_sub = block.settings.subheading -%}
+        {%- unless inf_sub == blank -%}
+        <div class="info-subheading">{{inf_sub}}</div>
+        {%- endunless -%}
+        <div class="infor-content-container{% if inline %} d-lg-flex horizontal-align{% endif %}">
+          {%- assign _icon_color  = block.settings.icon_color -%}
+          {%- assign _border      = block.settings.border -%}
+
+          {%- for i in (1..4) -%}
+            {%- assign _show_block = 'show_block_' | append: i -%}
+
+            {% if block.settings[_show_block] %}
+              {%- assign _icon   = 'block_icon_'           | append: i -%}
+              {%- assign _link   = 'information_link_'     | append: i -%}
+              {%- assign _text_1 = 'information_title_'    | append: i -%}
+              {%- assign _text_2 = 'information_caption_'  | append: i -%}
+
+              <div class="info-content d-flex{% if _border %} has-boder{% endif %}">
+                {%- unless block.settings[_icon] == blank -%}
+                <div class="icon">
+                {%- include 'icons',type: 'icon_free', name: block.settings[_icon] -%}
+                </div>
+                {%- endunless -%}
+                <div class="text">
+                {%- unless block.settings[_text_1] == blank -%}
+                  <span class="text-1">{{ block.settings[_text_1] }}</span>
+                {%- endunless -%}
+                {%- unless block.settings[_link] == blank -%}<a href="{{ block.settings[_link] }}">{%- endunless -%}
+                  {%- unless block.settings[_text_2] == blank -%}
+                    <span class="text-2">{{ block.settings[_text_2] }}</span>
+                  {%- endunless -%}
+                {%- unless block.settings[_link] == blank -%}</a>{%- endunless -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- unless _icon_color == 'rgba(0,0,0,0)' -%}
+            {%- capture info_css -%}{{footer_blockID}} .demo-icon{color:{{_icon_color}};}{%- endcapture -%}
+            {%- assign section_css = section_css | append: info_css -%}
+          {%- endunless -%}
+        </div>
+
+      {%- when 'subscribe' -%}
+
+        {%- assign frm_type               = block.settings.action_type -%}
+        {%- assign frm_action             = block.settings.action -%}
+        {%- assign frm_placeholder        = block.settings.placeholder -%}
+        {%- assign frm_content            = block.settings.subscribe_content -%}
+        {%- assign frm_content_2          = block.settings.subscribe_content_2 -%}
+        {%- assign frm_btn_corner         = block.settings.btn_corner -%}
+        {%- assign frm_btn_type           = block.settings.form_btn_display -%}
+        {%- assign frm_btn_icon           = block.settings.btn_icon -%}
+        {%- assign frm_btn_label          = block.settings.btn_text -%}
+        {%- assign frm_btn_style          = block.settings.btn_inherit -%}
+        {%- assign frm_corner             = block.settings.form_corner -%}
+
+        {%- assign _frm_border_style  = block.settings.frm_border_style -%}
+        {%- assign _frm_txt_color     = block.settings.frm_txt_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _frm_bg_color      = block.settings.frm_bg_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _frm_border_color  = block.settings.frm_border_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _frm_border_size   = block.settings.frm_border_size -%}
+
+
+        <div class="subscibe-content">
+          {%- unless frm_content == blank -%}<div class="text-01"><p>{{frm_content}}</p></div>{%- endunless -%}
+
+          {%- include 'include-form', type: frm_type  -%}
+
+          {%- unless frm_content_2 == blank -%}<div class="text-02"><p>{{frm_content_2}}</p></div>{%- endunless -%}
+        </div>
+
+        {%- capture block_css -%}
+          {%- if frm_btn_style == 0 -%}
+            {%- assign btn_frm_color        = block.settings.btn_frm_color | default: 'rgba(0,0,0,0)' -%}
+            {%- assign btn_frm_bg_color     = block.settings.btn_frm_bg_color | default: 'rgba(0,0,0,0)' -%}
+            {%- assign btn_frm_border_color = block.settings.btn_frm_border_color | default: 'rgba(0,0,0,0)' -%}
+            {%- assign btn_frm_border_size  = block.settings.btn_frm_border_size | default: 0 -%}
+
+            {{footer_blockID}}  button.btn-0{font-weight: {{block.settings.btn_frm_fw}};
+              {%- if btn_frm_color    != 'rgba(0,0,0,0)' -%}color: {{btn_frm_color}};{%- endif -%}
+              {%- if btn_frm_bg_color != 'rgba(0,0,0,0)' -%}background-color: {{btn_frm_bg_color}};{%- endif -%}
+              {%- if btn_frm_border_color != 'rgba(0,0,0,0)' and btn_frm_border_size > 0 -%}border: {{btn_frm_border_size}}px solid {{btn_frm_border_color}}{%- endif -%}
+            }
+            {%- include 'css-responsive', classID: footer_blockID, nextClassID: ' button.btn-0', css_value: block.settings.btn_frm_padding -%}
+            {%- include 'css-responsive', classID: footer_blockID, nextClassID: ' button.btn-0', css_value: block.settings.btn_frm_radius   ,css_property: 'border-radius' -%}
+            {%- include 'css-responsive', classID: footer_blockID, nextClassID: ' button.btn-0', css_value: block.settings.btn_frm_fs       ,css_property: 'font-size' -%}
+            {%- include 'css-responsive', classID: footer_blockID, nextClassID: ' button.btn-0', css_value: block.settings.btn_frm_lsp      ,css_property: 'letter-spacing' -%}
+            {%- include 'css-responsive', classID: footer_blockID, nextClassID: ' button.btn-0', css_value: block.settings.btn_frm_lh       ,css_property: 'line-height' -%}
+          {%- endif -%}
+
+          {{- footer_blockID }} input[type="email"]::-webkit-input-placeholder{color: {{_frm_txt_color}};}
+          {{- footer_blockID }} input[type="email"]{color: {{_frm_txt_color}};background-color: {{_frm_bg_color}};}
+          {{- footer_blockID }} input[type="email"],
+          {{- footer_blockID }} input[type="email"]:focus{
+            {%- if _frm_border_size > 0 -%}border{% if _frm_border_style == 'bottom' %}:none;border-bottom{% endif %}: {{_frm_border_size}}px solid {{_frm_border_color}};
+            {%- else -%}border: none;{%- endif -%}
+          }
+          {%- include 'css-responsive', classID: footer_blockID, nextClassID: ' input[type="email"]', css_value: block.settings.frm_txt_fs    ,css_property: 'font-size' -%}
+          {%- include 'css-responsive', classID: footer_blockID, nextClassID: ' input[type="email"]', css_value: block.settings.frm_border_rd ,css_property: 'border-radius' -%}
+
+        {%- endcapture -%}
+
+        {%- assign section_css = section_css | append: block_css -%}
+
+      {%- when 'payment' -%}
+        {%- case block.settings.footer_payment_icon -%}
+          {%- when 'icon' -%}
+            <ul class="payment-icons list-inline">
+              {% for i in (1..5) %}
+                {% assign _font_icon = 'payment_icon_' | append: i %}
+                {% unless block.settings[_font_icon] == blank %}
+                  {% assign _icon_title = 'payment_icon_title_' | append: i %}
+                  <li><i class="demo-icon {{ block.settings[_font_icon] }}" title="{{ block.settings[_icon_title] }}"></i></li>
+                {% endunless %}
+
+              {% endfor %}
+            </ul>
+          {%- when 'image' -%}
+            {%- assign _image          = block.settings.image -%}
+            {%- assign _image_size     = block.settings.image_max_width | append: 'x' -%}
+            {%- assign _image_size_2x  = block.settings.image_max_width | times: 2 | append: 'x' -%}
+            {%- assign _image_size_max = block.settings.image_max_width | append: 'px' -%}
+            <div class="payment-image">
+              <img {% if _lazyload %}class="lazyload" data-srcset="{{ _image | img_url: _image_size }} 1x,{{ _image | img_url: _image_size_2x }} 2x" {% else %} src="{{ _image | img_url: _image_size }}"{% endif %} style="max-width: {{ _image_size_max }};" />
+            </div>
+        {%- endcase -%}
+
+      {%- when 'blog' -%}
+        {%- assign blog = blogs[block.settings.blog] -%}
+        {%- assign total = block.settings.total -%}
+        {%- if blog != blank and blog.articles_count > 0 -%}
+          <div class="blog-container">
+            {%- for article in blog.articles limit: total -%}
+              <article class="blog-item">
+                <div class="blog-image d-lg-inline-block">{% include 'image-style' with image: article.image, image_size: '100x' %}</div>
+                <div class="blog-info d-lg-inline-block">
+                  <p class="blog-title"><a href="{{ article.url }}" >{{ article.title }}</a></p>
+                  <span class="blog-wrap">
+                    <span class="blog-date">{{- article.published_at | date: '%b %d, %Y' -}}</span>
+                    {%- include 'icons',type: 'icon_free', name: 'icon-uniE938' -%}
+                    {%- if settings.disqus_enabled -%}<a href="{{canonical_url}}{{ article.url }}#disqus_thread" data-disqus-identifier="{{ article.id }}" class="disqus-comment-count">0</a>
+                    {%- else -%}<span>{{ article.comments_count }}</span>{%- endif -%}
+                  </span>
+                </div>
+              </article>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+      {%- when 'tag' -%}
+        {%- assign tag = block.settings.tag | split: ',' -%}
+        {%- unless tag == blank -%}
+          <div class="tags-container">
+            {%- for t in tag -%}
+              {%- capture _t -%}{{- t -}}{%- endcapture -%}
+              {%- capture t_handle -%}{{ t | handle }}{%- endcapture -%}
+              {%- assign tag_link = '/collections/all/' | append: t_handle -%}
+              <span class="tag">
+              <a href="{{tag_link}}">{{_t}}</a>
+              </span>
+            {%- endfor -%}
+          </div>
+        {%- endunless -%}
+
+      {%- when 'instagram' -%}
+        {%- assign ins_token  = block.settings.instagram_token -%}
+        {%- assign ins_userid = block.settings.instagram_userid -%}
+        {%- assign ins_total  = block.settings.total -%}
+        {%- include 'include-item-per-row',type: 'block' -%}
+        <div class="home-instagram" data-section-type="insta" data-section-id="{{block.id}}">
+          <div class="home-ins-wrap">
+            <div id="home_instagram_list_{{block.id}}" class="home_instagram_list row{% unless block.settings.spacing_items %} no-gutters{% endunless %}" data-token-key="{{ins_token}}" data-uid="{{ins_userid}}" data-limit="{{ins_total}}" data-filter="{{_filter}}" data-lazyload="{{_lazyload}}" data-row="{{items_class}}">
+              {%- for i in (1..block.settings.total) -%}
+                <div class="ins-item {{items_class}}">{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+
+      {%- when 'image' -%}
+        {%- assign text            = block.settings.text -%}
+        {%- assign _image          = block.settings.image -%}
+        {%- assign _image_size     = block.settings.image_max_width | append: 'x' -%}
+        {%- assign _image_size_2x  = block.settings.image_max_width | times: 2 | append: 'x' -%}
+        {%- assign _image_size_max = block.settings.image_max_width | append: 'px' -%}
+        {%- unless text == blank -%}<div class="text">{{text}}</div>{%- endunless -%}
+        {%- unless _image == blank -%}
+          <div class="image">
+            <img {% if _lazyload %}class="lazyload" data-srcset="{{ _image | img_url: _image_size }} 1x,{{ _image | img_url: _image_size_2x }} 2x" {% else %} src="{{ _image | img_url: _image_size }}"{% endif %} style="max-width: {{ _image_size_max }};"/>
+          </div>
+        {%- endunless -%}
+    {%- endcase -%}
+  </div>
+  {%- capture blockID -%}.footer-block.footer-{{block.id}}{%- endcapture -%}
+  {%- capture blockStyle -%}
+
+    {%- if block.type == 'payment' -%}
+      {%- if block.settings.footer_payment_icon == 'icon' -%}
+        {%- include 'css-responsive', classID: footer_blockID, css_value: H_alignment, css_property: 'text-align' -%}
+      {%- else -%}
+        {%- include 'css-responsive', classID: footer_blockID, nextClassID: ' > div', css_value: horizontal_align, css_property: 'justify-content' -%}
+      {%- endif -%}
+    {%- else -%}
+      {%- if block.type == 'information' -%}
+        {%- include 'css-responsive' ,classID: footer_blockID ,css_value: horizontal_align  , css_property: 'justify-content' -%}
+        {%- include 'css-responsive' ,classID: footer_blockID ,nextClassID: ' .infor-content-container > div' ,css_value: horizontal_align  , css_property: 'justify-content' -%}
+      {%- else -%}
+        {%- include 'css-responsive' ,classID: footer_blockID ,css_value: horizontal_align  , css_property: 'justify-content' -%}
+      {%- endif -%}
+      {%- include 'css-responsive' ,classID: footer_blockID ,css_value: H_alignment       , css_property: 'text-align' -%}
+      {%- include 'css-responsive' ,classID: blockID        ,css_value: vertical_align    , css_property: 'align-self' -%}
+    {%- endif -%}
+    {%- include 'css-responsive', classID: footer_blockID, css_value: block.settings.block_margin, css_property: 'margin' -%}
+  {%- endcapture -%}
+  {%- assign section_css = section_css | append: blockStyle -%}
+{%- endif -%}
+

@@ -1,0 +1,828 @@
+{%- include 'breadcrumb' -%}
+{%- assign _lazyload              = settings.use_lazyload -%}
+{%- assign layout                 = 'boxed' -%}
+{%- assign _collection_ratio      = section.settings.collections_image_ratio -%}
+{%- assign _item_1_color          = section.settings.item_1_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign _item_2_color          = section.settings.item_2_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign _show_collection_info  = section.settings.show_collection_info -%}
+
+{%- if _collection_ratio != 'auto' -%}{%- assign set_padding = _collection_ratio -%}{%- endif -%}
+
+{%- include 'include-item-per-row' -%}
+<div id="col-main" class="category-content layout-{{layout}}" data-section-type="collection-list" data-section-id="{{section.id}}">
+
+  <div class="category-grid-view">
+    <div class="{% if layout == 'boxed' %}container{% endif %}">
+      {%- include 'head-title' -%}
+
+      <div class="list-collection-wrap{% unless section.settings.image_crop %} no-crop{% endunless %}">
+        {%- if section.settings.display_type == 'except' -%}
+          {%- assign collection_exist = '' -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'collection' -%}
+              {%- assign collection_exist = collection_exist | append: collections[block.settings.collection].title | append: ' ' -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        <div class="row">
+          {%- if section.settings.display_type == 'all' -%}
+            {%- for collection in collections -%}
+              {%- include 'collection-item' -%}
+            {%- endfor -%}
+          {%- endif -%}
+
+          {%- if section.settings.display_type == 'except' -%}
+            {%- for collection in collections -%}
+              {%- unless collection_exist contains collection.title -%}
+                {%- include 'collection-item' -%}
+              {%- endunless -%}
+            {%- endfor -%}
+          {%- endif -%}
+
+          {%- if section.settings.display_type == 'selected' -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'collection' and block.settings.collection != blank -%}
+                {%- assign collection = collections[block.settings.collection] -%}
+                {%- include 'collection-item' -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+      </div>
+      {%- include 'icon-box' -%}
+    </div>
+  </div>
+</div>
+
+<style>
+  {%- include 'css-responsive', classID: '#col-main', css_value: section.settings.section_padding -%}
+  {%- include 'css-responsive', classID: '#col-main .category-image img', css_value: section.settings.image_rd ,css_property: 'border-radius' -%}
+  {%- if _show_collection_info -%}
+    {%- unless _item_1_color == 'rgba(0,0,0,0)' -%}#col-main .category-info > a{color: {{_item_1_color}};}{%- endunless -%}
+    {%- unless _item_2_color == 'rgba(0,0,0,0)' -%}#col-main .category-info > p{color: {{_item_2_color}};}{%- endunless -%}
+  {%- endif -%}
+</style>
+
+{% schema %}
+{
+   "name":"Collections List",
+   "tag": "section",
+   "settings":[
+      {
+         "type":"header",
+         "content":"Breadcrumb"
+      },
+      {
+         "type": "checkbox",
+         "id": "show_breabcrumb",
+         "label": "Show Breadcrumb",
+         "default": true
+      },
+      {
+         "type":"checkbox",
+         "id":"breadcrumb_image_inherit",
+         "label":"Inherit Background image",
+         "info": "Please upload image in Theme settings > Breadcrumb","default":true
+      },
+      {
+         "type": "image_picker",
+         "id": "breadcrumb_image",
+         "label": "Breadcrumb Image"
+      },
+      {
+         "type":"paragraph",
+         "content":"To customize breadcrumb, please add block 'Breadcrumb'."
+      },
+      {
+         "type":"header",
+         "content":"Layout"
+      },
+      {
+         "type":"paragraph",
+         "content":"All of your collections are listed by default. To customize your list, choose 'Selected' and add collections. In case, some collections that you don't want to show, choose 'Expect' and add collections to hide"
+      },
+      {
+         "type"  :"text",
+         "id"    :"section_padding",
+         "label" :"Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"select",
+         "id":"display_type",
+         "label":"Select type to show collections",
+         "default":"all",
+         "options":[
+            {
+               "value":"all",
+               "label":"All"
+            },
+            {
+               "value":"selected",
+               "label":"Selected"
+            },
+            {
+               "value":"except",
+               "label":"Except"
+            }
+         ]
+      },
+      {
+         "type"  :"text",
+         "id"    :"items_resp",
+         "label":"Max number of items per row",
+         "placeholder": "xl,lg,md,sm,xs,xxs",
+         "info": "E.g: 4,3,2",
+         "default": "4,3,1"
+      },
+      {
+         "type":"header",
+         "content":"Heading Content"
+      },
+      {
+         "type":"text",
+         "id":"heading_text",
+         "label":"Heading"
+      },
+      {
+         "type":"text",
+         "id":"subheading_text",
+         "label":"Subheading"
+      },
+      {
+         "type":"textarea",
+         "id":"subheading2_text",
+         "label":"Subheading 2"
+      },
+      {
+         "type":"select",
+         "id":"heading_content_align",
+         "label":"Heading alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type":"color",
+         "id":"section_heading_color",
+         "label":"Heading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading_color",
+         "label":"Subheading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading2_color",
+         "label":"Subheading 2 color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"header",
+         "content":"Item style"
+      },
+      {
+        "type": "select",
+        "id": "collections_image_ratio",
+        "label": "Collection image ratio:",
+        "options": [
+          {
+            "value": "auto",
+            "label": "Auto detect ratio"
+          },
+          {
+            "value": "100%",
+            "label": "Square (1:1)"
+          },
+          {
+            "value": "150%",
+            "label": "Portrait (2:3)"
+          },
+          {
+            "value": "75%",
+            "label": "Landscape (4:3)"
+          },
+          {
+            "value": "56.25%",
+            "label": "Full HD (16:9)"
+          },
+          {
+            "value": "52.36%",
+            "label": "Facebook standard(1.91:1)"
+          },
+          {
+            "value": "83.4444444%",
+            "label": "(5:6)"
+          }
+        ],
+        "default": "150%",
+        "info": "For best results [all collections photos should be the same ratio](https:\/\/help.shopify.com\/manual\/productivity-tools\/image-editor#image-aspect-ratio)."
+      },
+      {
+         "type":"checkbox",
+         "id":"image_crop",
+         "label":"Image Auto Crop",
+         "default": true
+      },
+      {
+         "type":"text",
+         "id":"image_rd",
+         "label":"Collection image rounded corners",
+         "placeholder": "E.g: 30px"
+      },
+      {
+         "type":"checkbox",
+         "id":"show_collection_info",
+         "label":"Show collection info",
+         "default": true
+      },
+      {
+         "type":"color",
+         "id":"item_1_color",
+         "label":"Collection name color",
+         "info": "Blank to auto"
+      },
+      {
+         "type":"color",
+         "id":"item_2_color",
+         "label":"Collection content color",
+         "info": "Blank to auto"
+      },
+      {
+         "type":"header",
+         "content": "Icon box"
+      },
+      {
+         "type":"text",
+         "id"    :"ib_per_row",
+         "label":"Max number of items per row",
+         "placeholder": "xl,lg,md,sm,xs,xxs",
+         "info": "E.g: 4,3,2",
+         "default": "2,1"
+      },
+      {
+         "type":"color",
+         "id"    :"ib_heading_color",
+         "label":"Heading color",
+         "default": "#000000"
+      },
+      {
+         "type":"color",
+         "id"    :"ib_txt_color",
+         "label":"Text color",
+         "default": "#000000"
+      },
+      {
+         "type":"color",
+         "id"    :"ib_border_color",
+         "label":"Border color",
+         "default": "#e1e0e0"
+      },
+      {
+         "type":"color",
+         "id"    :"ib_bg_color",
+         "label":"Background color",
+         "default": "#ffffff"
+      }
+   ],
+   "blocks":[
+      {
+         "type": "breadcrumb",
+         "name": "Breadcrumb",
+         "limit": 1,
+         "settings": [
+            {
+               "type":"header",
+               "content":"Layout"
+            },
+            {
+               "type":"range",
+               "id":"breadcrumb_style",
+               "label":"Breadcrumb style",
+               "min":0,
+               "max":3,
+               "step":1,
+               "default": 0,
+               "info": "0 to inherit from Theme settings"
+            },
+            {
+              "type": "color",
+              "id": "breadcrumb_bg_color",
+              "label": "Background color"
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_bg_size",
+              "label": "Background Image Size:",
+              "default": "auto",
+              "options": [
+                {
+                  "value": "auto",
+                  "label": "Auto"
+                },
+                {
+                  "value": "contain",
+                  "label": "Contain"
+                },
+                {
+                  "value": "cover",
+                  "label": "Cover"
+                },
+                {
+                  "value": "150%",
+                  "label": "150%"
+                },
+                {
+                  "value": "200%",
+                  "label": "200%"
+                }
+              ]
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_bg_repeat",
+              "label": "Background Image Repeat:",
+              "default": "no-repeat",
+              "options": [
+                {
+                  "value": "no-repeat",
+                  "label": "No Repeat"
+                },
+                {
+                  "value": "repeat",
+                  "label": "Repeat"
+                },
+                {
+                  "value": "repeat-x",
+                  "label": "Repeat X"
+                },
+                {
+                  "value": "repeat-y",
+                  "label": "Repeat Y"
+                }
+              ]
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_bg_position",
+              "label": "Background Image Position:",
+              "default": "center center",
+              "options": [
+                {
+                  "value": "left top",
+                  "label": "Left Top"
+                },
+                {
+                  "value": "center top",
+                  "label": "Center Top"
+                },
+                {
+                  "value": "right top",
+                  "label": "Right Top"
+                },
+                {
+                  "value": "left center",
+                  "label": "Left Center"
+                },
+                {
+                  "value": "center center",
+                  "label": "Center Center"
+                },
+                {
+                  "value": "right center",
+                  "label": "Right Center"
+                },
+                {
+                  "value": "left bottom",
+                  "label": "Left Bottom"
+                },
+                {
+                  "value": "center bottom",
+                  "label": "Center Bottom"
+                },
+                {
+                  "value": "right bottom",
+                  "label": "Right Bottom"
+                }
+              ]
+            },
+            {
+              "type": "checkbox",
+              "id": "breadcrumb_bg_fixed",
+              "label": "Background Image Fixed"
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_padding",
+              "label": "Breadcrumb padding",
+              "placeholder": "E.g: 5px 20px 5px 20px",
+              "info": "Order: Top Right Bottom Left"
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_margin",
+              "label": "Breadcrumb margin",
+              "placeholder": "E.g: 5px 20px 5px 20px",
+              "info": "Order: Top Right Bottom Left"
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_shadow",
+              "label": "Breadcrumb Box shadow",
+              "placeholder": "Optional"
+            },
+            {
+               "type":"header",
+               "content":"Link settings"
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_text_fs",
+              "label": "Text font size",
+              "placeholder": "E.g: 14px"
+            },
+            {
+              "type": "color",
+              "id": "breadcrumb_text_color",
+              "label": "Text color"
+            },
+            {
+               "type":"select",
+               "id":"breadcrumb_text_fw",
+               "label":"Text font weight",
+               "default": "400",
+               "options": [
+                  {"value":"inherit","label":"Auto"},
+                  {
+                    "value": "100",
+                    "label": "100 Thin (Hairline)"
+                  },
+                  {
+                    "value": "200",
+                    "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                    "value": "300",
+                    "label": "300 Light"
+                  },
+                  {
+                    "value": "400",
+                    "label": "400 Normal"
+                  },
+                  {
+                    "value": "500",
+                    "label": "500 Medium"
+                  },
+                  {
+                    "value": "600",
+                    "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                    "value": "700",
+                    "label": "700 Bold"
+                  },
+                  {
+                    "value": "800",
+                    "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                    "value": "900",
+                    "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_text_ff",
+              "label": "Text font family",
+              "default": "inherit",
+              "options": [
+                {"value":"inherit","label":"Auto"},
+                {
+                  "value": "ff-head",
+                  "label": "Header font"
+                },
+                {
+                  "value": "ff-body",
+                  "label": "Body font"
+                },
+                {
+                  "value": "ff-1",
+                  "label": "Custom font 1"
+                },
+                {
+                  "value": "ff-2",
+                  "label": "Custom font 2"
+                },
+                {
+                  "value": "ff-3",
+                  "label": "Custom font 3"
+                },
+                {
+                  "value": "ff-4",
+                  "label": "Custom font 4"
+                },
+                {
+                  "value": "ff-5",
+                  "label": "Custom font 5"
+                }
+              ]
+            },
+            {
+               "type":"header",
+               "content":"Active Link settings"
+            },
+            {
+               "type":"checkbox",
+               "id":"show_breadcrumb_active",
+               "label":"Show Active Link/Title page",
+               "default": true
+            },
+            {
+              "type": "checkbox",
+              "id": "breadcrumb_active_up",
+              "label": "Show Active text UPPERCASE"
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_active_fs",
+              "label": "Active text font size",
+              "placeholder": "E.g: 18px or auto",
+              "info": "Blank to default"
+            },
+            {
+              "type": "color",
+              "id": "breadcrumb_active_color",
+              "label": "Active text color"
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_active_fw",
+              "label": "Active text font weight",
+              "default": "inherit",
+              "options": [
+                {"value":"inherit","label":"Auto"},
+                {
+                  "value": "100",
+                  "label": "100 Thin (Hairline)"
+                },
+                {
+                  "value": "200",
+                  "label": "200 Extra Light (Ultra Light)"
+                },
+                {
+                  "value": "300",
+                  "label": "300 Light"
+                },
+                {
+                  "value": "400",
+                  "label": "400 Normal"
+                },
+                {
+                  "value": "500",
+                  "label": "500 Medium"
+                },
+                {
+                  "value": "600",
+                  "label": "600 Semi Bold (Demi Bold)"
+                },
+                {
+                  "value": "700",
+                  "label": "700 Bold"
+                },
+                {
+                  "value": "800",
+                  "label": "800 Extra Bold (Ultra Bold)"
+                },
+                {
+                  "value": "900",
+                  "label": "900 Black (Heavy)"
+                }
+              ]
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_active_ff",
+              "label": "Active text font family",
+              "default": "ff-body",
+              "options": [
+                {
+                  "value": "ff-head",
+                  "label": "Header font"
+                },
+                {
+                  "value": "ff-body",
+                  "label": "Body font"
+                },
+                {
+                  "value": "ff-1",
+                  "label": "Custom font 1"
+                },
+                {
+                  "value": "ff-2",
+                  "label": "Custom font 2"
+                },
+                {
+                  "value": "ff-3",
+                  "label": "Custom font 3"
+                },
+                {
+                  "value": "ff-4",
+                  "label": "Custom font 4"
+                },
+                {
+                  "value": "ff-5",
+                  "label": "Custom font 5"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "breadcrumb_active_lsp",
+              "label": "Active text letter spacing",
+              "placeholder": "E.g: 2px"
+            },
+            {
+               "type":"header",
+               "content":"Breacrumb Previous"
+            },
+            {
+              "type": "checkbox",
+              "id": "show_previous_page",
+              "label": "Show Previous page",
+              "default": true
+            },
+            {
+              "type": "checkbox",
+              "id": "breadcrumbs_prev_uc",
+              "label": "Text UPPERCASE"
+            },
+            {
+               "type":"text",
+               "id":"breadcrumb_prev_fs",
+               "label":"Text font size",
+               "placeholder": "E.g: 14px",
+               "info": "Blank to use Link font size"
+            },
+            {
+               "type": "color",
+               "id": "breadcrumb_prev_color",
+               "label": "Text color",
+               "info": "Blank to use Link color"
+            },
+            {
+               "type":"select",
+               "id":"breadcrumb_prev_fw",
+               "label":"Text font weight",
+               "default": "inherit",
+               "options": [
+                  {"value":"inherit","label":"Auto"},
+                  {
+                    "value": "100",
+                    "label": "100 Thin (Hairline)"
+                  },
+                  {
+                    "value": "200",
+                    "label": "200 Extra Light (Ultra Light)"
+                  },
+                  {
+                    "value": "300",
+                    "label": "300 Light"
+                  },
+                  {
+                    "value": "400",
+                    "label": "400 Normal"
+                  },
+                  {
+                    "value": "500",
+                    "label": "500 Medium"
+                  },
+                  {
+                    "value": "600",
+                    "label": "600 Semi Bold (Demi Bold)"
+                  },
+                  {
+                    "value": "700",
+                    "label": "700 Bold"
+                  },
+                  {
+                    "value": "800",
+                    "label": "800 Extra Bold (Ultra Bold)"
+                  },
+                  {
+                    "value": "900",
+                    "label": "900 Black (Heavy)"
+                  }
+               ]
+            },
+            {
+              "type": "select",
+              "id": "breadcrumb_prev_ff",
+              "label": "Text font family",
+              "default": "inherit",
+              "options": [
+                {"value":"inherit","label":"Auto"},
+                {
+                  "value": "ff-head",
+                  "label": "Header font"
+                },
+                {
+                  "value": "ff-body",
+                  "label": "Body font"
+                },
+                {
+                  "value": "ff-1",
+                  "label": "Custom font 1"
+                },
+                {
+                  "value": "ff-2",
+                  "label": "Custom font 2"
+                },
+                {
+                  "value": "ff-3",
+                  "label": "Custom font 3"
+                },
+                {
+                  "value": "ff-4",
+                  "label": "Custom font 4"
+                },
+                {
+                  "value": "ff-5",
+                  "label": "Custom font 5"
+                }
+              ]
+            }
+         ]
+      },
+      {
+         "type":"collection",
+         "name":"Collection",
+         "settings":[
+            {
+               "label":"Collection",
+               "id":"collection",
+               "type":"collection"
+            },
+            {
+               "type":"image_picker",
+               "id":"collection_image",
+               "label":"Collection Image",
+               "info": "Optional"
+            },
+            {
+               "type":"paragraph",
+               "content":"Only for Custom width is Enable and Type to show is 'Selected'. Blank to Auto"
+            },
+            {
+               "type":"text",
+               "id":"width_resp",
+               "label":"Width (1->12)",
+               "placeholder":"E.g: 6, 12"
+            }
+         ]
+      },
+      {
+         "type":"icon_box",
+         "name":"Icon box",
+         "limit": 4,
+         "settings":[
+            {
+               "type":"text",
+               "id":"icon",
+               "label":"Font icon name",
+               "default": "icon-uniE940"
+            },
+            {
+               "type":"image_picker",
+               "id":"image",
+               "label":"Image"
+            },
+            {
+               "type"  :"header",
+               "content" :"Content"
+            },
+            {
+               "type":"text",
+               "id":"title",
+               "label":"Heading content",
+               "default":"Volutpat maecenas"
+            },
+            {
+               "type":"textarea",
+               "id":"content",
+               "label":"Content",
+               "default": "Lorem ipsum dolor sit amet, consectetu adipiscing elit, sed eiusmod lorem tempor incididunt."
+            }
+         ]
+      }
+   ]
+}
+{% endschema %}

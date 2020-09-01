@@ -1,0 +1,387 @@
+<div class="g-banners g-banners-{{section.id}}">
+  {%- assign banner_count   = 0 -%}
+  {%- assign video_layout   = '' -%}
+
+  {%- if _type == 'masonry' -%}
+    <div class="home-banner-masonry masonry_{{section.id}}">
+      <div class="bc-masonry">
+  {%- else -%}
+    <div class="{% if _type == 'row' %}row{% else %}home-banner-carousel home-banner-carousel-{{ section.id }}{% endif %}"{% include 'include-carousel-attr' %}>
+  {%- endif -%}
+  {%- if _carousel_nest and _type == 'carousel' -%}
+    {%- assign count_nested = 0 -%}
+    <div class="banner-item-nested">{%- endif -%}
+
+  {%- for block in section.blocks -%}
+    {%- if forloop.first and block.type != 'style' -%}
+      {%- assign _content_style = 'overlay'-%}
+      {%- assign _effect        = 1  -%}
+      {%- assign _tit_size      = 24 -%}
+      {%- assign _sub_size      = 20 -%}
+      {%- assign _but_size      = 14 -%}
+      {%- assign _tit_color     = "#000000" -%}
+      {%- assign _sub_color     = "#000000" -%}
+      {%- assign _but_color     = "#000000" -%}
+      {%- assign _txt1_color    = "#000000" -%}
+      {%- assign _txt2_color    = "#000000" -%}
+      {%- assign _txt1_size     = 14 -%}
+      {%- assign _txt2_size     = 14 -%}
+      {%- assign _top           = 50 | append: '%' -%}
+      {%- assign _left          = 50 | append: '%' -%}
+      {%- assign o_rounded      = _rounded -%}
+      {%- assign o_c_style      = _content_style -%}
+      {%- capture o_class -%}text-box-{{_content_style}} effect-{{_effect}}{%- endcapture -%}
+      {%- capture first_css -%}
+        .g-banners-{{section.id}} .tit{color: {{ _tit_color }};font-weight: 300;font-size: calc({{_tit_size | append: 'px' }} + 0vw);}
+        .g-banners-{{section.id}} .sub{color: {{ _sub_color }};font-weight: 300;font-size: calc({{_sub_size | append: 'px' }} + 0vw);}
+        .g-banners-{{section.id}} .txt1{color: {{ _txt1_color }};font-weight: 300;font-size: calc({{_txt1_size | append: 'px' }} + 0vw);}
+        .g-banners-{{section.id}} .txt2{color: {{ _txt2_color }};font-weight: 300;font-size: calc({{_txt2_size | append: 'px' }} + 0vw);}
+        .g-banners-{{section.id}} .bnt{color: {{ _but_color }};font-weight: 300;font-size: calc({{_but_size | append: 'px' }} + 0vw);}
+        .g-banners-{{section.id}} .text-box-overlay .text{left:{{_left}}; top:{{_top}};transform: translate(-{{_left}},-{{_top}});}
+        .g-banners-{{section.id}} .banner-item{text-align: center;}
+      {%- endcapture -%}
+      {%- assign section_css = section_css | append: first_css | strip_newlines -%}
+    {%- endif -%}
+    {%- case block.type -%}
+      {%- when 'style' -%}
+        {%- assign not_inherit          = false -%}
+        {%- assign bn_stt               = banner_count | plus: 1 -%}
+        {%- assign _content_style       = block.settings.text_content_style -%}
+        {%- assign _effect              = block.settings.effect -%}
+        {%- assign _text_align          = block.settings.text_align -%}
+        {%- assign _rounded             = block.settings.button_rounded   -%}
+        {%- assign _but_size            = block.settings.button_font_size -%}
+        {%- assign tit_weight           = block.settings.tit_weight -%}
+        {%- assign sub_weight           = block.settings.sub_weight -%}
+        {%- assign txt1_weight          = block.settings.text_1_weight -%}
+        {%- assign txt2_weight          = block.settings.text_2_weight -%}
+        {%- assign but_weight           = block.settings.but_weight -%}
+        {%- assign _tit_color           = block.settings.title_text_color -%}
+        {%- assign _sub_color           = block.settings.subtitle_text_color -%}
+        {%- assign _txt1_color          = block.settings.text_1_color -%}
+        {%- assign _txt2_color          = block.settings.text_2_color -%}
+        {%- assign _but_color           = block.settings.button_text_color -%}
+        {%- assign _but_bg              = block.settings.button_text_bg_color -%}
+        {%- assign _border_color        = block.settings.border_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _background_text     = block.settings.background_text -%}
+        {%- assign _opacity             = block.settings.opacity | times: 0.01 -%}
+        {%- assign position_inherit     = block.settings.position_inherit -%}
+        {%- assign _top                 = block.settings.position_top  | append: '%'  -%}
+        {%- assign _left                = block.settings.position_left | append: '%'  -%}
+        {%- assign _padding_textbox     = block.settings.padding_textbox -%}
+        {%- assign _width_textbox       = block.settings.width_textbox -%}
+        {%- assign _hide_c_mobile       = block.settings.hide_c_mobile -%}
+        {%- assign _bg_min_height       = block.settings.min_height -%}
+        {%- assign _btn_inherit         = block.settings.button_inherit -%}
+        {%- assign _btn_padding         = block.settings.button_padding -%}
+        {%- assign _as_button           = block.settings.as_button -%}
+        {%- assign _underline           = block.settings.underline -%}
+        {%- assign _image_as            = block.settings.image_as_bg -%}
+        {%- assign _img_h_as_bgImage    = block.settings.use_img_heading_as_bg_image -%}
+        {%- assign _bg_image_position   = block.settings.bg_image_position -%}
+        {%- assign _txt_bg_position     = block.settings.txt_bg_position -%}
+        {%- assign _btn_lsp             = block.settings.button_lsp -%}
+        {%- assign _btn_radius          = block.settings.button_radius -%}
+        {%- assign _textbox_clip_path   = block.settings.textbox_clip_path -%}
+        {%- assign _margin_textbox      = block.settings.margin_textbox -%}
+
+
+        {%- unless _background_text == 'rgba(0,0,0,0)' -%}
+          {%- assign _bg_color = _background_text | color_modify: 'alpha', _opacity   -%}
+        {%- else -%}
+          {%- assign _bg_color = _background_text -%}
+        {%- endunless -%}
+
+        {%- if forloop.first -%}
+          {%- capture o_class -%}text-box-{{_content_style}} effect-{{_effect}}{%- endcapture -%}
+          {%- assign o_rounded             = _rounded -%}
+          {%- assign o_c_style             = _content_style -%}
+          {%- assign o_effect              = _effect -%}
+          {%- assign o_hide_c_mobile       = _hide_c_mobile -%}
+          {%- assign o_img_h_as_bgImage    = _img_h_as_bgImage -%}
+          {%- assign o_btn_inherit         = _btn_inherit -%}
+          {%- assign o_as_button           = _as_button -%}
+          {%- assign o_underline           = _underline -%}
+          {%- assign o_image_as            = _image_as -%}
+
+        {%- else -%}
+          {%- if _content_style == 'inherit' -%}{%- assign _content_style = o_c_style -%}{%- endif -%}
+          {%- if _effect == 'inherit' -%}{%- assign _effect = o_effect -%}{%- endif -%}
+
+          {%- capture n_class -%}text-box-{{_content_style}} effect-{{_effect}}{%- endcapture -%}
+
+          {%- if  n_class                 != o_class or
+                  o_rounded               != _rounded or
+                  o_as_button             != _as_button or
+                  o_underline             != _underline or
+                  o_hide_c_mobile         != _hide_c_mobile or
+                  o_btn_inherit           != _btn_inherit or
+                  o_image_as              != _image_as or
+                  o_img_h_as_bgImage      != _img_h_as_bgImage -%}
+
+            {%- assign not_inherit = true -%}
+          {%- endif -%}
+        {%- endif -%}
+        {%- capture css_banner -%}
+          {%- assign _gClass = '.g-banners-' | append: section.id -%}
+          {% unless forloop.first %}{%- assign _gClass = _gClass | append: ' .block-' | append: bn_stt -%}{% endunless %}
+          {%- capture btnID  -%}{{_gClass}} .btn-banner{%- endcapture -%}
+          {%- capture titID  -%}{{_gClass}} .tit{%- endcapture -%}
+          {%- capture subID  -%}{{_gClass}} .sub{%- endcapture -%}
+          {%- capture txt1ID -%}{{_gClass}} .txt1{%- endcapture -%}
+          {%- capture txt2ID -%}{{_gClass}} .txt2{%- endcapture -%}
+          {%- capture banner_minH -%}{{_gClass}} .bg-img > a{%- endcapture -%}
+          {%- capture textContentID -%}{% if _gClass contains 'block' %}{{ _gClass }}{% else %}{{ _gClass }} {% endif %}.text-box-overlay .text{%- endcapture -%}
+
+            {%- if _tit_color != 'rgba(0,0,0,0)' or tit_weight != 'inherit' -%}
+              {{titID}}, {{titID}} *{
+              {%- if _tit_color != 'rgba(0,0,0,0)'  -%}color: {{ _tit_color }};{%- endif -%}
+              {%- if tit_weight != 'inherit' -%} font-weight:{{tit_weight}};{%- endif -%}
+            }{%- endif -%}
+
+            {%- if _sub_color != 'rgba(0,0,0,0)' or sub_weight != 'inherit' -%}
+              {{subID}}, {{subID}} *{
+              {%- if _sub_color != "rgba(0,0,0,0)" -%}color: {{ _sub_color }};{%- endif -%}
+              {%- if sub_weight != 'inherit' -%}font-weight:{{sub_weight}};{%- endif -%}
+            }{%- endif -%}
+
+            {%- if _txt1_color != 'rgba(0,0,0,0)' or txt1_weight != 'inherit' -%}
+              {{txt1ID}}, {{txt1ID}} *{
+              {%- if _txt1_color != 'rgba(0,0,0,0)' -%}color: {{ _txt1_color }};{%- endif -%}
+              {%- if txt1_weight != 'inherit' -%}font-weight:{{txt1_weight}};{%- endif -%}
+            }{%- endif -%}
+
+            {%- if _txt2_color != 'rgba(0,0,0,0)' or txt2_weight != 'inherit' -%}
+              {{txt2ID}}, {{txt2ID}} *{
+              {%- if _txt2_color != 'rgba(0,0,0,0)' -%}color: {{ _txt2_color }};{%- endif -%}
+              {%- if txt2_weight != 'inherit' -%}font-weight:{{txt2_weight}};{%- endif -%}
+            }{%- endif -%}
+
+            {%- if _but_color != 'rgba(0,0,0,0)' or but_weight != 'inherit' -%}
+              {{_gClass}} .btn-banner .bnt, {{_gClass}} .btn-banner .bnt *{
+              {%- if _but_color != 'rgba(0,0,0,0)' -%}color: {{ _but_color }};{%- endif -%}
+              {%- if but_weight != 'inherit' -%}font-weight:{{but_weight}};{%- endif -%}
+            }{%- endif -%}
+
+            {%- if _border_color != 'rgba(0,0,0,0)' or _opacity > 0 -%}
+              {{_gClass}} .text{
+                {%- unless _opacity == 0 -%} background-color: {{_bg_color}};{%- endunless -%}
+                {%- if _border_color != 'rgba(0,0,0,0)'-%}border: 1px solid {{_border_color}};{%- endif -%}
+              }
+            {%- endif -%}
+
+            {%- include 'css-responsive', classID: _gClass ,nextClassID: ' .banner-content'  ,css_value: block.settings.item_padding -%}
+            {%- if block.settings.border_item_width > 0 -%}
+            {{_gClass}} .banner-content{border: {{block.settings.border_item_width}}px solid {{block.settings.border_item_color | default: 'rgba(0,0,0,0)' }};}
+            {%- endif -%}
+
+            {%- include 'css-responsive', classID: _gClass, nextClassID: ' .text' ,css_value: _textbox_clip_path, css_property: '-webkit-clip-path' ,css_value_proper: 'polygon' ,css_split: ';' -%}
+            {%- include 'css-responsive', classID: _gClass, nextClassID: ' .text' ,css_value: _textbox_clip_path, css_property: 'clip-path' ,css_value_proper: 'polygon' ,css_split: ';' -%}
+            {%- include 'css-responsive', classID: _gClass ,nextClassID: ' .text' ,css_value: _margin_textbox ,css_property: 'margin' -%}
+
+            {%- include 'css-responsive', classID: _gClass ,nextClassID: ' .img-text' ,css_value: block.settings.image_heading_mb ,css_property: 'margin-bottom' -%}
+            {%- include 'css-responsive', classID: titID   ,css_value: block.settings.heading_mb     ,css_property: 'margin-bottom' -%}
+            {%- include 'css-responsive', classID: subID   ,css_value: block.settings.subheading_mb  ,css_property: 'margin-bottom' -%}
+            {%- include 'css-responsive', classID: txt1ID  ,css_value: block.settings.text_1_mb      ,css_property: 'margin-bottom' -%}
+            {%- include 'css-responsive', classID: txt2ID  ,css_value: block.settings.text_2_mb      ,css_property: 'margin-bottom' -%}
+
+            {%- include 'css-responsive', classID: titID   ,css_value: block.settings.heading_lsp     ,css_property: 'letter-spacing' -%}
+            {%- include 'css-responsive', classID: subID   ,css_value: block.settings.subheading_lsp  ,css_property: 'letter-spacing' -%}
+            {%- include 'css-responsive', classID: txt1ID  ,css_value: block.settings.text_1_lsp      ,css_property: 'letter-spacing' -%}
+            {%- include 'css-responsive', classID: txt2ID  ,css_value: block.settings.text_2_lsp      ,css_property: 'letter-spacing' -%}
+
+            {%- include 'css-responsive', classID: titID   ,css_value: block.settings.heading_lh      ,css_property: 'line-height' -%}
+            {%- include 'css-responsive', classID: subID   ,css_value: block.settings.subheading_lh   ,css_property: 'line-height' -%}
+            {%- include 'css-responsive', classID: txt1ID  ,css_value: block.settings.text_1_lh       ,css_property: 'line-height' -%}
+            {%- include 'css-responsive', classID: txt2ID  ,css_value: block.settings.text_2_lh       ,css_property: 'line-height' -%}
+
+            {%- include 'css-responsive', classID: titID  ,css_value: block.settings.title_font_size    ,css_property: 'font-size' -%}
+            {%- include 'css-responsive', classID: subID  ,css_value: block.settings.subtitle_font_size ,css_property: 'font-size' -%}
+            {%- include 'css-responsive', classID: txt1ID ,css_value: block.settings.text_1_font_size   ,css_property: 'font-size' -%}
+            {%- include 'css-responsive', classID: txt2ID ,css_value: block.settings.text_2_font_size   ,css_property: 'font-size' -%}
+
+            {%- include 'css-responsive', classID: btnID  ,css_value: _btn_padding -%}
+            {%- include 'css-responsive', classID: btnID  ,css_value: block.settings.button_margin ,css_property: 'margin' -%}
+            {%- include 'css-responsive', classID: btnID  ,css_value: _but_size   ,css_property: 'font-size' -%}
+            {%- include 'css-responsive', classID: btnID  ,css_value: _btn_radius ,css_property: 'border-radius' -%}
+            {%- include 'css-responsive', classID: btnID  ,nextClassID: ' .bnt'   ,css_property: 'letter-spacing' ,css_value: _btn_lsp -%}
+            {%- include 'css-responsive', classID: btnID  ,css_property: 'line-height' ,css_value: block.settings.button_lh -%}
+
+            {%- include 'css-responsive', classID: _gClass         ,nextClassID: ' .text-container' ,css_value: _padding_textbox -%}
+            {%- include 'css-responsive', classID: textContentID   ,css_property: 'width'           ,css_value: _width_textbox -%}
+            {%- include 'css-responsive', classID: textContentID   ,css_property: 'height'          ,css_value: block.settings.height_textbox -%}
+            {%- include 'css-responsive', classID: banner_minH     ,css_property: 'min-height'      ,css_value: _bg_min_height -%}
+
+            {%- include 'css-responsive', classID: _gClass         ,nextClassID: ' .image.bg-img' ,css_property: 'background-position'  ,css_value: _bg_image_position -%}
+            {%- include 'css-responsive', classID: _gClass         ,nextClassID: ' .image.bg-img' ,css_property: 'background-size'      ,css_value: block.settings.bg_image_size -%}
+            {%- include 'css-responsive', classID: _gClass         ,nextClassID: ' .text.bg-img'  ,css_property: 'background-position'  ,css_value: _txt_bg_position -%}
+
+            {%- include 'css-responsive', classID: _gClass ,nextClassID: ' .text-container' ,css_property: 'text-align', css_value: _text_align -%}
+
+            {%- if _but_bg != blank and _but_bg != 'rgba(0,0,0,0)' -%}
+            {{btnID}}{background: {{ _but_bg }};}{%- endif -%}
+            {%- unless position_inherit -%}
+            {{textContentID}}{left:{{_left}}; top:{{_top}};transform: translate(-{{_left}},-{{_top}});}{%- endunless -%}
+        {%- endcapture -%}
+        {%- if forloop.first -%}
+          {%- assign section_css = section_css | append: css_banner -%}
+        {%- endif -%}
+
+      {%- when 'image' -%}
+        {%- assign banner_count     = banner_count | plus: 1 -%}
+        {%- assign count_nested     = count_nested | plus: 1 -%}
+        {%- assign index            = banner_count -%}
+        {%- assign block_st         = '.g-banners-' | append: section.id | append: ' .block-' | append: index -%}
+        {%- assign _image           = block.settings.image -%}
+        {%- assign _img_link        = block.settings.img_link -%}
+        {%- assign _video_link      = block.settings.video_link -%}
+        {%- assign _video_embed     = block.settings.video_embed -%}
+        {%- assign _width_resp      = block.settings.width_resp -%}
+        {%- assign _image_text      = block.settings.image_text -%}
+        {%- assign _title_text      = block.settings.title_text -%}
+        {%- assign _subtitle_text   = block.settings.subtitle_text -%}
+        {%- assign _text_1          = block.settings.text_1 -%}
+        {%- assign _text_2          = block.settings.text_2 -%}
+        {%- assign _button_text     = block.settings.button_text -%}
+        {%- assign _link            = block.settings.button_link | default: 'javascript:void(0);' -%}
+        {%- assign _overlay_color   = block.settings.overlay_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _overlay_opacity = block.settings.overlay_opacity | times: 0.01 -%}
+
+        {%- if _overlay_color != 'rgba(0,0,0,0)' and _overlay_opacity > 0 -%}
+          {%- assign _overlay_image = _overlay_color | color_modify: 'alpha', _overlay_opacity -%}
+          {%- capture block_css -%}.g-banners-{{section.id}} .block-{{banner_count}} .image a:before{content: '';background-color: {{_overlay_image}};position: absolute;width: 100%;height: 100%;top: 0;left: 0;z-index: 1;}{%- endcapture -%}
+          {%- assign section_css = section_css | append: block_css -%}
+        {%- endif -%}
+
+        {%- capture banner_class -%}{% if _width_resp == blank %}{{items_class}}{% else %}{%- include 'set-width-bootstrap',in_type: 'width', number: _width_resp -%}{{_out}}{% endif %}{%- endcapture -%}
+        {%- capture content_length -%}{{_title_text}}{{_subtitle_text}}{{_expire}}{{_button_text}}{%- endcapture -%}
+
+        {%- if not_inherit -%}
+          {%- if n_class contains 'text-box-hidden' -%}{%- assign content_length = '' -%}{%- endif -%}
+          {%- assign _rb                  = _rounded -%}
+          {%- assign bn_class             = n_class -%}
+          {%- assign _h_content           = _hide_c_mobile -%}
+          {%- assign _textContent_bg      = _img_h_as_bgImage -%}
+          {%- assign _btn_banner_inherit  = _btn_inherit -%}
+          {%- assign _btn_as_button       = _as_button -%}
+          {%- assign _btn_underline       = _underline -%}
+          {%- assign _bg_img              = _image_as -%}
+
+        {%- else -%}
+          {%- if o_class contains 'text-box-hidden' -%}{%- assign content_length = '' -%}{%- endif -%}
+          {%- assign _rb                  = o_rounded -%}
+          {%- assign bn_class             = o_class -%}
+          {%- assign _h_content           = o_hide_c_mobile -%}
+          {%- assign _textContent_bg      = o_img_h_as_bgImage -%}
+          {%- assign _btn_banner_inherit  = o_btn_inherit -%}
+          {%- assign _btn_as_button       = o_as_button -%}
+          {%- assign _btn_underline       = o_underline -%}
+          {%- assign _bg_img              = o_image_as -%}
+        {%- endif -%}
+
+        <div class="block-{{banner_count}} banner-item {{bn_class}}{% unless _type == 'carousel' %} {{banner_class}}{% endunless %}"{{ block.shopify_attributes }}>
+          <div class="banner-content{% if _video_link != blank %} has-video{% endif %}">
+
+            {%- unless bn_class contains 'text-box-above_image' -%}
+              {%- unless _image == blank -%}
+
+                  <div class="image{% unless _bg_img == 'image' %} bg-img{% if _bg_img == 'bg_fixed' %} bg-fixed{% endif %}{% if _lazyload %} lazyload" data-bgset="{{_image | img_url: '1920x'}} 1920w{% endif %}{% endunless %}">
+                    <a href="{{_img_link}}">
+                      {%- if _bg_img == 'image' -%}
+                        {% include 'image-style' with image: _image %}
+                      {%- endif -%}
+                    </a>
+                  </div>
+                  {%- if _video_link != blank -%}
+                    <a href="javascript:void(0);" data-toggle="modal" data-target="#videoModal_{{section.id}}_{{block.id}}" class="btn-video"></a>
+                  {%- endif -%}
+                {%- else -%}
+                  <div class="image empty-image">{%- include 'svgset', type: 'image' -%}</div>
+              {%- endunless -%}
+            {%- endunless -%}
+
+            {%- unless content_length == blank -%}
+
+              <div class="text{% if _h_content %} d-none d-md-block{% endif %}{% if _textContent_bg %} bg-img{% if _lazyload %} lazyload" data-bgset="{{_image_text | img_url: '330x'}} 330w, {{_image_text | img_url: '720x'}} 720w{% else %}"style="background-image: url({{_image_text | img_url: '330x'}});{% endif %}{% endif %}">
+                <div class="text-container{% if block.settings.content_same_row %} align-items-end d-flex{% endif %}">
+                  {%- if _textContent_bg == false and _image_text != blank -%}
+                    <div class="img-text">{%- include 'image-style', image: _image_text, image_width: '[100,200,300,400]' -%}</div>
+                  {%- endif -%}
+
+                  {%- unless _title_text    == blank -%}
+                    <div class="title tit" style="position: relative; z-index: 5;">{{     _title_text         }}</div>
+                    <div class="panel-logo">
+                      {% include 'logo-rotate-text' %}
+                    </div>
+                  {%- endunless -%}
+                  {%- unless _subtitle_text == blank -%}<div class="subtitle sub">{{  _subtitle_text      }}</div>{%- endunless -%}
+                  {%- unless _text_1        == blank -%}<div class="text-1 txt1">{{   _text_1             }}</div>{%- endunless -%}
+                  {%- unless _text_2        == blank -%}<div class="text-2 txt2">{{   _text_2             }}</div>{%- endunless -%}
+                  {%- unless _button_text == blank -%}
+                    <div class="btn-group">
+                      <a href="{{ _link }}" class="{% if _btn_as_button %}btn{% if _btn_banner_inherit != 0 %} btn-{{_btn_banner_inherit}}{% else %} btn-banner{% endif %}{% if _rb %} btn-rd{% endif %}{% else %} btn-banner{% endif %}{% if _btn_underline %} text-underline{% endif %}" aria-label="buttonBanner">
+                        <span class="button-text bnt">{{ _button_text }}</span>
+                      </a>
+                    </div>
+                  {%- endunless -%}
+                </div>
+              </div>
+            {%- endunless -%}
+
+            {%- if bn_class contains 'text-box-above_image' -%}
+              {%- unless _image == blank -%}
+                <div class="image{% unless _bg_img == 'image' %} bg-img{% if _bg_img == 'bg_fixed' %} bg-fixed{% endif %}{% if _lazyload %} lazyload" data-bgset="{{_image | img_url: '1920x'}} 1920w{% endif %}{% endunless %}">
+                  <a href="{{ _img_link }}">
+                    {%- if _bg_img == 'image' -%}
+                      {% include 'image-style' with image: _image %}
+                    {%- endif -%}
+                  </a>
+                </div>
+                {%- else -%}
+                <div class="image empty-image">{%- include 'svgset', type: 'image' -%}</div>
+              {%- endunless -%}
+            {%- endif -%}
+            {%- if _bg_img and _lazyload == false -%}
+              <style>
+                .section-show-{{section.id}} .block-{{banner_count}} .bg{background-image: url({{_image | img_url: '1920x'}});}
+              </style>
+            {%- endif -%}
+          </div>
+          {%- if css_banner contains block_st -%}{%- assign section_css = section_css | append: css_banner -%}{%- endif -%}
+
+        {%- if _video_link != blank -%}
+          {%- capture _video_block -%}
+            <div class="modal fade modal-video" id="videoModal_{{section.id}}_{{block.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 1200px;">
+                <div class="modal-content">
+                  <div class="modal-body p-0">
+                    <div class="embed-responsive embed-responsive-16by9">
+                      {% unless _video_embed %}
+                      <video class="embed-responsive-item" controls autoplay muted loop playsinline preload="auto"><source src="{{_video_link}}" type="video/mp4"></video>
+                      {%- else -%}
+                      {{_video_link}}
+                      {% endunless %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%- endcapture -%}
+          {%- assign video_layout = video_layout | append: _video_block -%}
+        {%- endif -%}
+        </div>
+        {%- if count_nested == 2 and forloop.last == false and _type == 'carousel' and _carousel_nest -%}
+          </div>
+          <div class="banner-item-nested">
+          {%- assign count_nested = 0 -%}
+        {%- endif -%}
+        {%- if not_inherit -%}{%- assign not_inherit = false -%}{%- endif -%}
+      {%- else -%}
+    {%- endcase -%}
+  {%- endfor -%}
+
+  {%- if _carousel_nest and _type == 'carousel' -%}</div>{%- endif -%}
+
+  {%- if _type == 'masonry' -%}</div></div>{%- else -%}</div>{%- endif -%}
+  {%- unless video_layout == '' -%}{{video_layout}}{%- endunless -%}
+</div>

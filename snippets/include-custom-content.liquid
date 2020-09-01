@@ -1,0 +1,759 @@
+{%- assign align_text           = block.settings.align_text -%}
+{%- assign b_bg_color           = block.settings.background_color -%}
+{%- assign b_item_padding       = block.settings.item_padding -%}
+{%- assign b_item_margin        = block.settings.item_margin -%}
+{%- assign b_border_color       = block.settings.border_color -%}
+{%- assign b_border_size        = block.settings.border_size -%}
+{%- assign _blockItem_Style     = '' -%}
+{%- capture _itemBlockID -%}.section-show-{{section.id}} .custom-content .custom-item.custom-item-{{ block.id }}{%- endcapture -%}
+{%- if nested_lv2 -%}
+  {%- capture _itemBlock_innerID -%}.section-show-{{section.id}} .custom-content .custom-item.custom-item-{{ block.id }} > div > div:first-child{%- endcapture -%}
+{%- else -%}
+  {%- capture _itemBlock_innerID -%}.section-show-{{section.id}} .custom-content .custom-item.custom-item-{{ block.id }} > div{%- endcapture -%}
+{%- endif -%}
+
+{%- case block.type -%}
+    {%- when 'text' -%}
+        {%- capture paragraphID -%}{{_itemBlockID}}{%- endcapture -%}
+
+        {%- assign sc_head_text       = block.settings.head_text -%}
+        {%- assign sc_par1_text       = block.settings.par1_text -%}
+        {%- assign sc_par2_text       = block.settings.par2_text -%}
+        {%- assign sc_btns_text       = block.settings.button -%}
+        {%- assign sc_head_size       = block.settings.head_size -%}
+        {%- assign sc_par1_size       = block.settings.par1_size -%}
+        {%- assign sc_par2_size       = block.settings.par2_size -%}
+
+        <div class="custom-block-text text-{{ align_text }}">
+            {%- unless sc_head_text == blank -%}<div class="sc-head{% if sc_head_size contains 'h' %} {{sc_head_size}}{% endif %} custom-block-heading-text">{{   sc_head_text }}</div>{%- endunless -%}
+            {%- unless sc_par1_text == blank -%}<div class="sc-par1{% if sc_par1_size contains 'h' %} {{sc_par1_size}}{% endif %} custom-block-body-text">{{      sc_par1_text }}</div>{%- endunless -%}
+            {%- unless sc_par2_text == blank -%}<div class="sc-par2{% if sc_par2_size contains 'h' %} {{sc_par2_size}}{% endif %} custom-block-body-text-2">{{    sc_par2_text }}</div>{%- endunless -%}
+
+            {%- unless sc_btns_text == blank -%}
+                {%- assign sc_btn_class = '' -%}
+                {%- assign sc_btn_link                      = block.settings.button_link | default: 'javascript:void(0);' -%}
+                {%- assign sc_btn_style                     = block.settings.style_as_btn -%}
+                {%- assign sc_btn_inherit                   = block.settings.btn_inherit -%}
+                {%- assign sc_btn_corner                    = block.settings.button_corner -%}
+                {%- assign sc_btn_size                      = block.settings.btns_size -%}
+
+                {%- if sc_btn_style -%}
+                    {%- assign sc_btn_class = sc_btn_class | append: ' btn' -%}
+                    {%- if sc_btn_inherit > 0 -%}
+                        {%- assign sc_btn_class = sc_btn_class | append: ' btn-' | append: sc_btn_inherit -%}
+                    {%- endif -%}
+                {%- endif -%}
+                {%- if sc_btn_corner -%}
+                    {%- assign sc_btn_class = sc_btn_class | append: ' btn-rd' -%}
+                {%- endif -%}
+                {%- if sc_btn_size contains 'h' -%}
+                    {%- assign sc_btn_class = sc_btn_class | append: sc_btn_size -%}
+                {%- endif -%}
+
+
+                <div class="button-group text-{{align_text}}">
+                    <a href="{{sc_btn_link}}" class="sc-btn{{sc_btn_class}}">{{ sc_btns_text }}</a>
+                </div>
+            {%- endunless -%}
+        </div>
+
+        {%- comment -%}        ============            Heading CSS        ============    {%- endcomment-%}
+        {%- unless sc_head_text == blank -%}
+            {%- capture heading_style_values -%}
+                {%- assign sc_head_color    = block.settings.head_color | default: 'rgba(0,0,0,0)' -%}
+                {%- assign sc_head_bold     = block.settings.head_bold -%}
+
+                font-weight:{{sc_head_bold}};
+                {%- unless sc_head_color == 'rgba(0,0,0,0)' -%}color:{{sc_head_color}};{%- endunless -%}
+            {%- endcapture -%}
+
+            {%- capture heading_style_css -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-head' ,css_values: heading_style_values -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-head' ,css_value: block.settings.head_margin,css_property: 'margin' -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-head' ,css_value: block.settings.head_lsp,   css_property: 'letter-spacing' -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-head' ,css_value: block.settings.head_lh,   css_property: 'line-height' -%}
+                {%- unless sc_head_size contains 'h' -%}
+                  {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-head' ,css_value: sc_head_size,  css_property: 'font-size' -%}
+                {%- endunless -%}
+            {%- endcapture -%}
+            {%- assign _blockItem_Style = _blockItem_Style | append: heading_style_css -%}
+        {%- endunless -%}
+
+        {%- comment -%}        ============            Paragraph #1 CSS        ============    {%- endcomment-%}
+        {%- unless sc_par1_text == blank -%}
+            {%- capture para_1_style_values -%}
+                {%- assign sc_par1_color    = block.settings.par1_color | default: 'rgba(0,0,0,0)' -%}
+                {%- assign sc_par1_bold     = block.settings.par1_bold -%}
+
+                font-weight:{{sc_par1_bold}};
+                {%- unless sc_par1_color == 'rgba(0,0,0,0)' -%}color:{{sc_par1_color}};{%- endunless -%}
+            {%- endcapture -%}
+
+            {%- capture para_1_style_css -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-par1' ,css_values: para_1_style_values -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-par1' ,css_value: block.settings.par1_margin,css_property: 'margin' -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-par1' ,css_value: block.settings.par1_lsp,   css_property: 'letter-spacing' -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-par1' ,css_value: block.settings.par1_lh,   css_property: 'line-height' -%}
+                {%- unless sc_par1_size contains 'h' -%}
+                  {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-par1' ,css_value: sc_par1_size,  css_property: 'font-size' -%}
+                {%- endunless -%}
+            {%- endcapture -%}
+            {%- assign _blockItem_Style = _blockItem_Style | append: para_1_style_css -%}
+        {%- endunless -%}
+
+        {%- comment -%}        ============            Paragraph #2 CSS        ============    {%- endcomment-%}
+        {%- unless sc_par2_text == blank -%}
+            {%- capture para_2_style_values -%}
+                {%- assign sc_par2_color    = block.settings.par2_color | default: 'rgba(0,0,0,0)' -%}
+                {%- assign sc_par2_bold     = block.settings.par2_bold -%}
+
+                font-weight:{{sc_par2_bold}};
+                {%- unless sc_par2_color == 'rgba(0,0,0,0)' -%}color:{{sc_par2_color}};{%- endunless -%}
+            {%- endcapture -%}
+
+            {%- capture para_2_style_css -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-par2' ,css_values: para_2_style_values -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-par2' ,css_value: block.settings.par2_margin,    css_property: 'margin' -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-par2' ,css_value: block.settings.par2_lsp,   css_property: 'letter-spacing' -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-par2' ,css_value: block.settings.par2_lh,   css_property: 'line-height' -%}
+                {%- unless sc_par2_size contains 'h' -%}
+                  {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-par2' ,css_value: sc_par2_size,  css_property: 'font-size' -%}
+                {%- endunless -%}
+            {%- endcapture -%}
+            {%- assign _blockItem_Style = _blockItem_Style | append: para_2_style_css -%}
+        {%- endunless -%}
+
+        {%- comment -%}        ============            Button CSS        ============    {%- endcomment-%}
+        {%- if sc_btns_text != blank -%}
+            {%- assign sc_btn_bold                      = block.settings.btns_bold -%}
+            {%- assign sc_btn_border_size               = block.settings.btn_border_width -%}
+            {%- assign sc_btn_color                     = block.settings.button_color       | default: 'rgba(0,0,0,0)' -%}
+            {%- assign sc_btn_bg_color                  = block.settings.button_bg_color    | default: 'rgba(0,0,0,0)' -%}
+            {%- assign sc_btn_border                    = block.settings.button_border      | default: 'rgba(0,0,0,0)' -%}
+            {%- assign sc_btn_hover                     = block.settings.btn_hover -%}
+
+            {%- capture button_style_values -%}
+                {%- if sc_btn_inherit == 0 -%}
+                    font-weight:{{sc_btn_bold}};
+                    {%- unless sc_btn_color == 'rgba(0,0,0,0)' -%}color:{{sc_btn_color}};{%- endunless -%}
+                    {%- unless sc_btn_bg_color == 'rgba(0,0,0,0)' -%}background-color:{{sc_btn_bg_color}};{%- endunless -%}
+
+                    {%- if sc_btn_border_size > 0 and sc_btn_border != 'rgba(0,0,0,0)' -%}
+                    border{%- unless sc_btn_style -%}-bottom{%- endunless -%}: {{sc_btn_border_size}}px solid {{sc_btn_border}};
+                    {%- endif -%}
+                {%- endif -%}
+            {%- endcapture -%}
+
+            {%- if sc_btn_hover and sc_btn_inherit == 0 -%}
+                {%- assign sc_btn_color_hover               = block.settings.button_color_hover     | default: 'rgba(0,0,0,0)' -%}
+                {%- assign sc_btn_bg_color_hover            = block.settings.button_bg_color_hover  | default: 'rgba(0,0,0,0)' -%}
+                {%- assign sc_btn_border_hover              = block.settings.button_border_hover    | default: 'rgba(0,0,0,0)' -%}
+                {%- assign sc_btn_border_size_hover         = block.settings.btn_border_width_hover -%}
+
+                {%- capture button_style_hover -%}
+                    {%- unless sc_btn_color_hover == 'rgba(0,0,0,0)' -%}color:{{sc_btn_color_hover}};{%- endunless -%}
+                    {%- unless sc_btn_bg_color_hover == 'rgba(0,0,0,0)' -%}background-color:{{sc_btn_bg_color_hover}};{%- endunless -%}
+
+                    {%- if sc_btn_border_size_hover > 0 and sc_btn_border_hover != 'rgba(0,0,0,0)' -%}
+                    border{%- unless sc_btn_style -%}-bottom{%- endunless -%}: {{sc_btn_border_size_hover}}px solid {{sc_btn_border_hover}};
+                    {%- endif -%}
+                {%- endcapture -%}
+            {%- endif -%}
+
+            {%- capture button_style_css -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-btn' ,css_values: button_style_values -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-btn' ,css_value: block.settings.btn_radius,  css_property: 'border-radius' -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-btn' ,css_value: block.settings.btns_lsp,    css_property: 'letter-spacing' -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-btn' ,css_value: block.settings.btns_margin ,css_property: 'margin' -%}
+                {%- unless sc_btn_size contains 'h' -%}
+                {%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-btn' ,css_value: sc_btn_size,   css_property: 'font-size' -%}
+                {%- endunless -%}
+                {%- if sc_btn_style -%}{%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-btn' ,css_value: block.settings.btn_padding -%}
+                {%- else -%}{{paragraphID}} .sc-btn{background-color: transparent!important;}{%- endif -%}
+                {%- if sc_btn_hover -%}{%- include 'css-responsive' ,classID: paragraphID ,nextClassID: ' .sc-btn:hover' ,css_values: button_style_hover -%}{%- endif -%}
+            {%- endcapture -%}
+            {%- assign _blockItem_Style = _blockItem_Style | append: button_style_css -%}
+        {%- endif -%}
+
+    {%- when 'menu' -%}
+        {%- assign heading_text      = block.settings.heading_text -%}
+        {%- assign menu_item         = block.settings.menu -%}
+        {%- assign heading_color     = block.settings.heading_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign menu_color        = block.settings.paragraph_color | default: 'rgba(0,0,0,0)' -%}
+
+        <div class="custom-block-text text-{{ align_text }}">
+            {%- unless heading_text == blank -%}
+                <div class="custom-block-heading-text h{{ block.settings.heading_size }}">
+                    <span style="color: {{ heading_color }};">{{ heading_text }}</span>
+                </div>
+            {%- endunless -%}
+
+            <div class="custom-block-body-text">
+                <ul class="list-category" id="sb-category-{{block.id}}">
+                    {%- if linklists[menu_item].links.size > 0 -%}
+                        {%- for l in linklists[menu_item].links -%}
+                            <li class="list-item">
+                                <a href="{{l.url | default: 'javascript:void(0);' }}" style="color: {{ menu_color }};">{{l.title}}</a>
+                            </li>
+                        {%- endfor -%}
+
+                    {%- else -%}
+                        {%- for i in (1..5) -%}
+                            <li class="list-item">
+                                <a href="javascript:void(0);" style="color: {{ menu_color }};">Item {{forloop.index}}</a>
+                            </li>
+                        {%- endfor -%}
+                    {%- endif -%}
+                </ul>
+            </div>
+            {%- capture block_css -%}
+                {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .list-item a' ,css_value: block.settings.menu_fs ,css_property: 'font-size' -%}
+            {%- endcapture -%}
+            {%- assign _blockItem_Style = _blockItem_Style | append: block_css -%}
+        </div>
+
+    {%- when 'image' -%}
+        {%- assign max_width        = block.settings.img_max_width -%}
+        {%- assign _image           = block.settings.block_image -%}
+        {%- assign _image_link      = block.settings.block_image_link | default: 'javascript:void(0);' -%}
+        {%- assign _image_rd        = block.settings.image_border_rd -%}
+        {%- assign hover_effect     = block.settings.effect -%}
+        {%- assign _img_margin      = block.settings.img_margin -%}
+        {%- assign _img_height      = block.settings.img_height_method -%}
+        {%- assign _img_class       = '' -%}
+
+        {%- unless _img_height == 'auto' -%}{%- assign _img_class = 'h-100' -%}{%- endunless -%}
+
+        <div class="custom-block-image text-{{align_text}} effect-{{hover_effect}}{% if _image == blank %} no-image{% endif %}{% if max_width == 0 %} img-auto{% endif %}">
+          <a href="{{_image_link}}" class="w-100">
+            {%- include 'image-style' ,image: _image, image_class: _img_class -%}
+          </a>
+        </div>
+        {%- capture _image_Style -%}
+          {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .custom-block-image'       ,css_value: _img_margin   ,css_property: 'margin' -%}
+          {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .custom-block-image'       ,css_value: max_width     ,css_property: 'max-width' -%}
+          {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .custom-block-image img'   ,css_value: _image_rd     ,css_property: 'border-radius' -%}
+          {%- if _img_height == 'fill' -%}
+            {{_itemBlockID}} img{object-fit: cover;}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' img' ,css_value: block.settings.img_position ,css_property: 'object-position' -%}
+          {%- elsif _img_height == 'fit' -%}
+            {{_itemBlockID}} img{object-fit: contain;}
+          {%- endif -%}
+        {%- endcapture -%}
+        {%- assign _blockItem_Style = _blockItem_Style | append: _image_Style -%}
+
+    {%- when 'video' -%}
+        {%- assign video                = block.settings.video -%}
+        {%- assign video_popup          = block.settings.popup -%}
+        {%- assign _image               = block.settings.block_image -%}
+        {%- assign image_rd             = block.settings.image_rd -%}
+
+        {%- assign heading_text         = block.settings.heading_text -%}
+        {%- assign subheading_text      = block.settings.subheading_text -%}
+        {%- assign content_text         = block.settings.content_text -%}
+
+        {%- assign heading_size         = block.settings.heading_size -%}
+        {%- assign subheading_size      = block.settings.subheading_size -%}
+        {%- assign content_size         = block.settings.content_size -%}
+
+        {%- assign head_bold            = block.settings.head_bold -%}
+        {%- assign sub_bold             = block.settings.sub_bold -%}
+        {%- assign con_bold             = block.settings.con_bold -%}
+
+        {%- assign button_icon          = block.settings.button_icon -%}
+        {%- assign button               = block.settings.button -%}
+        {%- assign btn_circle           = block.settings.btn_circle -%}
+        {%- assign bt_inherit           = block.settings.btn_inherit-%}
+        {%- assign bt_color             = block.settings.button_color       | default: 'rgba(0,0,0,0)' -%}
+        {%- assign bt_bg_color          = block.settings.button_bg_color    | default: 'rgba(0,0,0,0)' -%}
+        {%- assign bt_border            = block.settings.button_border      | default: 'rgba(0,0,0,0)' -%}
+        {%- assign poster_height        = block.settings.image_height -%}
+
+        <div class="custom-block-image has-video{% unless video_popup %} no-popup{% endunless %}{% if _image == blank %} no-image{% endif %}{% if image_rd %} img-rd{% endif %}{% if button == blank and video_popup %}" data-toggle="modal" data-target="#videoModal_{{block.id}}{% endif %}">
+
+            {%- if _image != blank or video_popup -%}
+                <div class="layer-image">{%- include 'image-style' ,image: _image -%}</div>                
+            {%- endif -%}
+
+            {%- unless video_popup -%}            
+                <div class="layer-video w-100 video-type-{% if video contains 'iframe' %}iframe{% else %}link{% endif %}" style="{%- if _image != blank -%}display: none;{%- else -%}opacity: 1;{% endif %}">
+                  {%- unless video == blank -%}
+                    <div class="custom-content-video">
+                      {%- unless video contains 'iframe' -%}
+                        <video autoplay controls muted loop playsinline preload="auto" data-width="0" data-height="0">
+                          <source src="{{video}}" type="video/mp4">
+                        </video>
+                      {%- else -%}
+                        {{video}}
+                      {%- endunless -%}
+                    </div>
+                    {%- else -%}
+                    <p class="text-center my-2"><i class="demo-icon et-info"></i> <span>Please add a video link ...</span></p>
+                  {%- endunless -%}
+                </div>
+            {%- endunless -%}
+
+            <div class="button-video">
+                {%- unless heading_text     == blank -%}<div class="custom-block-heading-text fw-{{head_bold}}{% if heading_size contains 'h' %} {{heading_size}}{% endif %}">{{ heading_text }}</div>{%- endunless -%}
+                {%- unless subheading_text  == blank -%}<div class="custom-block-subheading-text fw-{{sub_bold}}{% if subheading_size contains 'h' %} {{subheading_size}}{% endif %}">{{ subheading_text }}</div>{%- endunless -%}
+                {%- unless content_text     == blank -%}<div class="custom-block-content-text fw-{{con_bold}}{% if content_size contains 'h' %} {{content_size}}{% endif %}">{{ content_text }}</div>{%- endunless -%}
+                {%- unless button == blank and button_icon == blank -%}
+                    <div class="btn-group">
+                        <a href="javascript:void(0);" class="btn btn-{{bt_inherit}}{% if btn_circle %} btn-circle{% endif %}" data-toggle="modal" data-target="#videoModal_{{block.id}}">
+                            {%- include 'icons', type: 'icon_free', name: button_icon -%}
+                            {%- unless button == blank -%}<span>{{button}}</span>{%- endunless -%}
+                        </a>
+                    </div>
+                {%- endunless -%}
+            </div>
+        </div>
+
+        {%- if video_popup -%}
+          {%- capture _videoPopup_element -%}
+            <div class="modal fade modal-video" id="videoModal_{{block.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 1200px;">
+                <div class="modal-content">
+                  <div class="modal-body p-0">
+                    {%- unless video == blank -%}
+                      <div class="embed-responsive embed-responsive-16by9">
+                        {%- unless video contains 'iframe' -%}
+                          <video class="embed-responsive-item" controls autoplay muted loop playsinline preload="auto" data-width="0" data-height="0">
+                            <source src="{{video}}" type="video/mp4">
+                          </video>
+                        {%- else -%}
+                          {{video}}
+                        {%- endunless -%}
+                      </div>
+                      {%- else -%}
+                      <p class="text-center my-2"><i class="demo-icon et-info"></i> <span>Please add a video link ...</span></p>
+                    {%- endunless -%}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%- endcapture -%}
+          {%- assign _videoPopup_container = _videoPopup_container | append: _videoPopup_element -%}
+        {%- endif -%}
+
+        {%- capture video_content_css -%}
+            {%- unless heading_text     == blank -%}
+                {%- assign heading_color        = block.settings.heading_color -%}
+                {%- unless heading_size contains 'h' -%}{%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .custom-block-image.has-video .custom-block-heading-text' ,css_property: 'font-size' ,css_value: heading_size -%}{%- endunless -%}
+                {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .custom-block-image.has-video .custom-block-heading-text' ,css_property: 'margin' ,css_value: block.settings.heading_margin -%}
+                {{_itemBlockID}} .custom-block-image.has-video .custom-block-heading-text{color: {{heading_color}};}
+            {%- endunless -%}
+
+            {%- unless subheading_text  == blank -%}
+                {%- assign subheading_color     = block.settings.subheading_color -%}
+                {%- unless subheading_size contains 'h' -%}{%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .custom-block-image.has-video .custom-block-subheading-text' ,css_property: 'font-size' ,css_value: subheading_size -%}{%- endunless -%}
+                {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .custom-block-image.has-video .custom-block-subheading-text' ,css_property: 'margin' ,css_value: block.settings.subheading_margin -%}
+                {{_itemBlockID}} .custom-block-image.has-video .custom-block-subheading-text{color: {{subheading_color}};}
+            {%- endunless -%}
+
+            {%- unless content_text     == blank -%}
+                {%- assign content_color        = block.settings.content_color -%}
+                {%- unless content_size contains 'h' -%}{%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .custom-block-image.has-video .custom-block-content-text' ,css_property: 'font-size' ,css_value: content_size -%}{%- endunless -%}
+                {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .custom-block-image.has-video .custom-block-content-text' ,css_property: 'margin' ,css_value: block.settings.content_margin -%}
+                {{_itemBlockID}} .custom-block-image.has-video .custom-block-content-text{color: {{content_color}};}
+            {%- endunless -%}
+
+            {%- if button != blank or button_icon != blank -%}
+                {%- if bt_inherit == 0 -%}
+                    {{_itemBlockID}} .custom-block-image.has-video .button-video a.btn-0{color: {{bt_color}};background-color: {{bt_bg_color}};border: 1px solid {{bt_border}};}
+                {%- endif -%}
+            {%- endif -%}
+
+            {%- unless poster_height == blank -%}
+                {%- if poster_height contains ',' -%}
+                    {%- assign _poster_height = poster_height | replace: ',', '!important,' -%}
+                {%- else -%}
+                    {%- assign _poster_height = poster_height -%}
+                {%- endif -%}
+                {%- assign _poster_height = _poster_height | append: '!important' -%}
+                {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .layer-image span.image--style' ,css_property: 'padding-top' ,css_value: _poster_height -%}
+                {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .layer-image span.image--style img' ,css_values: 'height: 100%; object-fit:cover;' -%}
+            {%- endunless -%}
+        {%- endcapture -%}
+        {%- assign _blockItem_Style = _blockItem_Style | append: video_content_css -%}
+
+    {%- when 'html' -%}
+        {%- assign code       = block.settings.code -%}
+        {%- unless code == blank -%}
+          <div class="wrapper-custom-block-html text-{{ align_text }}">
+            <div class="custom-block-html">{{ code }}</div>
+          </div>
+        {%- endunless -%}
+
+    {%- when 'iconbox' -%}
+
+        {%- assign _ib_icon_type    = block.settings.font_icon_type -%}
+        {%- assign _ib_c_inline     = block.settings.ib_content_inline -%}
+        {%- assign _ib_inline       = block.settings.ib_inline -%}
+        {%- assign _icon_color      = block.settings.icon_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _text_color      = block.settings.text_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _ib_img_max      = block.settings.ib_img_max_width -%}
+        {%- assign _ib_img_mb       = block.settings.ib_img_margin_bottom -%}
+
+        <div class="ib-content{% if _ib_inline %} d-md-flex{% endif %} text-{{align_text}}">
+          {%- for i in (1..4) -%}
+            {%- assign _font      = 'font_' | append: i -%}
+            {%- assign _name      = 'text_' | append: i -%}
+            {%- assign _fimg      = 'font_image_' | append: i -%}
+            {%- assign _icon      = block.settings[_font] -%}
+            {%- assign _text      = block.settings[_name] -%}
+            {%- assign _ib_image  = block.settings[_fimg] -%}
+
+            {%- if _icon != blank or _text != blank or _ib_image != blank-%}
+              <div class="ib-item">
+                <div class="ib-item-inner{% if _ib_c_inline %} d-flex{% endif %}">
+                  {%- if _ib_icon_type == 'image' -%}
+                    <div class="ib-image">
+                      {%- include 'image-style', image: _ib_image, image_width: '[50,100,200]'  -%}
+                    </div>
+                  {%- else -%}
+                    {%- unless _icon == blank -%}
+                      <div class="ib-icon">{%- include 'icons', type: 'icon_free', name: _icon -%}</div>
+                    {%- endunless -%}
+                  {%- endif -%}
+
+                  {%- unless _text == blank -%}
+                    <div class="ib-text">{{_text}}</div>
+                  {%- endunless -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- capture ib_id -%}.section-show-{{section.id}} .custom-content .custom-item-{{ block.id }}{%- endcapture -%}
+          {%- capture ib_style -%}
+            {%- unless _icon_color == 'rgba(0,0,0,0)' -%}{{ib_id}} .ib-icon{color: {{_icon_color}};}{%- endunless -%}
+            {%- unless _text_color == 'rgba(0,0,0,0)' -%}{{ib_id}} .ib-text{color: {{_text_color}};}{%- endunless -%}
+            {%- include 'css-responsive' ,classID: ib_id ,nextClassID: ' .ib-content .ib-image' css_value: _ib_img_max ,css_property: 'max-width' -%}
+            {%- include 'css-responsive' ,classID: ib_id ,nextClassID: ' .ib-content .ib-item' css_value: _ib_img_mb ,css_property: 'margin-bottom' -%}
+          {%- endcapture -%}
+          {%- assign _blockItem_Style = _blockItem_Style | append: ib_style -%}
+        </div>
+
+    {%- when 'product' -%}
+        {%- assign _p = all_products[block.settings.product] -%}
+        {%- assign _product_bg = block.settings.product_bg_color -%}
+
+        <div class="product-container"{%- unless _product_bg == 'rbga(0,0,0,0)' -%}style="background-color: {{_product_bg}};"{%- endunless -%}>
+          {%- unless _p == blank -%}
+            {%- include 'product-item',type: 'custom-product', product: _p, _text_align: align_text-%}
+          {%- else -%}
+            <div class="product-empty">
+              <div class="product-wrapper">
+                <div class="featured-img">
+                  {%- include 'svgset',type: 'product' -%}
+                </div>
+                <div class="product-content text-{{ section.settings.text_align }}">
+                  <div class="pc-inner">
+                    <h5 class="product-name">{{ 'homepage.onboarding.product_title' | t }}</h5>
+                    <div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%- endunless -%}
+          <style>{%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .product-container' css_value: block.settings.product_padding -%}</style>
+        </div>
+
+    {%- when 'progress' -%}
+        {%- assign _style                 = block.settings.style -%}
+        {%- assign heading_size           = block.settings.heading_size -%}
+        {%- assign heading_color          = block.settings.heading_color -%}
+        {%- assign paragraph_size         = block.settings.content_size -%}
+        {%- assign paragraph_color        = block.settings.content_color -%}
+
+        <div class="progressbar-content-inner style-{{_style}}">
+          {%- for i in (1..4) -%}
+            {%- assign w_bar        = 'progress_'           | append: i -%}
+            {%- assign t_bar        = 'progress_text_'      | append: i -%}
+            {%- assign t2bar        = 'progress_textarea_'  | append: i -%}
+            {%- assign width_bar    = block.settings[w_bar] -%}
+            {%- assign title_bar    = block.settings[t_bar] -%}
+            {%- assign content_bar  = block.settings[t2bar] -%}
+
+            {%- if width_bar > 0 -%}
+              <div class="progress-item">
+                {%- if _style == '2' -%}
+                <div class="canvas-wrap" data-id="{{forloop.index}}-{{block.id}}" data-per="{{width_bar}}">
+                  <canvas id="canvas-{{forloop.index}}-{{block.id}}" width="120" height="120"></canvas>
+                  <span id="procent-{{forloop.index}}-{{block.id}}"></span>
+                </div>
+                {%- endif -%}
+                <div class="pg-text{% if _style == '1' %} d-flex justify-content-between{% endif %}">
+                  {%- unless title_bar == blank and content_bar == blank -%}
+                  <div class="pb-info text-{{ align_text }}">
+                    {%- unless title_bar == blank -%}<div class="pg-title">{{title_bar}}</div>{%- endunless -%}
+                    {%- unless content_bar == blank -%}<div class="pg-content">{{content_bar}}</div>{%- endunless -%}
+                    {%- comment -%}
+                        ============
+                            h{{heading_size}}" style="color: {{heading_color}}
+                            h{{paragraph_size}}" style="color: {{paragraph_color}};
+                        ============
+                    {%- endcomment-%}
+                  </div>
+                  {%- endunless -%}
+                  {%- if _style == '1' -%}<div class="pg-percent">{{ width_bar }}%</div>{%- endif -%}
+                </div>
+                {%- if _style == '1' -%}
+                  <div class="progress-bar"><span class="progress-width" style="width:{{ width_bar }}%;"></span></div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+
+        {%- comment -%}        ============            Heading CSS        ============    {%- endcomment-%}
+        {%- capture heading_style_values -%}
+            {%- assign sc_head_color    = block.settings.head_color | default: 'rgba(0,0,0,0)' -%}
+            {%- assign sc_head_bold     = block.settings.head_bold -%}
+
+            font-weight:{{sc_head_bold}};
+            {%- unless sc_head_color == 'rgba(0,0,0,0)' -%}color:{{sc_head_color}};{%- endunless -%}
+        {%- endcapture -%}
+
+        {%- capture heading_style_css -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .pg-title' ,css_values: heading_style_values -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .pg-title' ,css_value: block.settings.head_margin     ,css_property: 'margin' -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .pg-title' ,css_value: block.settings.head_lsp        ,css_property: 'letter-spacing' -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .pg-title' ,css_value: block.settings.head_lh         ,css_property: 'line-height' -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .pg-title' ,css_value: block.settings.head_size       ,css_property: 'font-size' -%}
+        {%- endcapture -%}
+        {%- assign _blockItem_Style = _blockItem_Style | append: heading_style_css -%}
+
+        {%- comment -%}        ============            Content CSS        ============    {%- endcomment-%}
+        {%- capture content_style_values -%}
+            {%- assign sc_content_color    = block.settings.cont_color | default: 'rgba(0,0,0,0)' -%}
+            {%- assign sc_content_bold     = block.settings.cont_bold -%}
+
+            font-weight:{{sc_content_bold}};
+            {%- unless sc_content_color == 'rgba(0,0,0,0)' -%}color:{{sc_content_color}};{%- endunless -%}
+        {%- endcapture -%}
+
+        {%- capture content_style_css -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .pg-content' ,css_values: content_style_values -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .pg-content' ,css_value: block.settings.cont_margin  ,css_property: 'margin' -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .pg-content' ,css_value: block.settings.cont_lsp     ,css_property: 'letter-spacing' -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .pg-content' ,css_value: block.settings.cont_lh      ,css_property: 'line-height' -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .pg-content' ,css_value: block.settings.cont_fs      ,css_property: 'font-size' -%}
+        {%- endcapture -%}
+        {%- assign _blockItem_Style = _blockItem_Style | append: content_style_css -%}
+
+
+    {%- when 'social' -%}
+        <div class="social-content-container d-flex justify-content-between">
+          {%- for i in (1..5) -%}
+            {%- assign t_font         = 'font'        | append: i -%}
+            {%- assign t_font_url     = 'font_url'    | append: i -%}
+            {%- assign t_font_color   = 'font_color'  | append: i -%}
+            {%- assign t_bg_font      = 'bg_font'     | append: i -%}
+
+            {%- assign s_font         = block.settings[t_font] -%}
+            {%- assign s_font_url     = block.settings[t_font_url] -%}
+            {%- assign s_font_color   = block.settings[t_font_color] -%}
+            {%- assign s_bg_font      = block.settings[t_bg_font] -%}
+
+
+            {%- unless s_font == blank -%}
+              <div class="social-item">
+                <div class="social-icon" style="background-color: {{s_bg_font}};padding: 5px;">
+                  <a href="{{s_font_url}}" style="color: {{s_font_color}}">
+                    {%- include 'icons', type: 'icon_free', name: s_font -%}
+                  </a>
+                </div>
+              </div>
+            {%- endunless -%}
+          {%- endfor -%}
+        </div>
+
+    {%- when 'image_with_text' -%}
+        {%- assign max_width        = block.settings.img_max_width -%}
+        {%- assign _image           = block.settings.block_image -%}
+        {%- assign _image_link      = block.settings.block_image_link | default: 'javascript:void(0);' -%}
+        {%- assign image_rd         = block.settings.image_rd -%}
+        {%- assign hover_effect     = block.settings.effect -%}
+
+        {%- assign img_heading      = block.settings.heading_text -%}
+        {%- assign img_paragraph    = block.settings.paragraph_text -%}
+        {%- assign img_heading_size           = block.settings.heading_size -%}
+        {%- assign img_heading_color          = block.settings.heading_color -%}
+        {%- assign img_paragraph_size         = block.settings.paragraph_size -%}
+        {%- assign img_paragraph_color        = block.settings.paragraph_color -%}
+
+        <div class="custom-block-image effect-{{hover_effect}}{% if image_rd %} img-rd{% endif %}{% if _image == blank %} no-image{% endif %}{% if max_width == 0 %} img-auto{% else %} m-auto" style="max-width: {{max_width}}%{% endif %}">
+          <div class="custom-block-img-with-text w-100">
+            <div class="image-inner">
+              <a href="{{_image_link}}">
+                {%- include 'image-style' ,image: _image -%}
+              </a>
+            </div>
+
+            {%- unless img_heading == blank and img_paragraph == blank -%}
+              <div class="custom-block-text text-{{ align_text }}">
+                {%- unless img_heading == blank -%}<div class="heading-text h{{ img_heading_size }}" style="color: {{img_heading_color}};">{{ img_heading }}</div>
+                {%- endunless -%}
+                {%- unless img_paragraph == blank -%}<div class="paragraph-text h{{ img_paragraph_size }}" style="color: {{img_paragraph_color}};">{{ img_paragraph }}</div>
+                {%- endunless -%}
+              </div>
+            {%- endunless -%}
+          </div>
+        </div>
+
+    {%- when 'blog' -%}
+        {%- assign blog_content = blogs[block.settings.blog] -%}
+        {%- assign blog_limit   = block.settings.limit -%}
+        {%- assign blog_heading         = block.settings.heading -%}
+        {%- unless blog_heading == blank -%}
+            {%- assign blog_head_fw         = block.settings.head_fw -%}
+            {%- assign blog_head_fs         = block.settings.head_fs -%}
+            {%- assign blog_head_color      = block.settings.head_color | default: 'rgba(0,0,0,0)' -%}
+            <div class="blog-heading fw-{{blog_head_fw}}{% if blog_head_fs contains 'h' %} {{blog_head_fs}}{% endif %}">{{blog_heading}}</div>
+
+            {%- capture block_css -%}
+                {%- unless blog_head_color == 'rgba(0,0,0,0)' -%}{{_itemBlockID}} .blog-heading{color: {{blog_head_color}};}{%- endunless -%}
+                {%- unless blog_head_fs contains 'h' -%}
+                    {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .blog-heading' ,css_value: blog_head_fs ,css_property: 'font-size' -%}
+                {%- endunless -%}
+                {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .blog-heading' ,css_value: block.settings.head_margin   ,css_property: 'margin' -%}
+                {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .blog-heading' ,css_value: block.settings.head_lsp      ,css_property: 'letter-spacing' -%}
+            {%- endcapture -%}
+            {%- assign _blockItem_Style = _blockItem_Style | append: block_css -%}
+
+        {%- endunless -%}
+
+
+        {%- unless blog_content.articles_count == 0 -%}
+          <div class="post-list">
+            {%- for article in blog_content.articles limit: blog_limit -%}
+              {%- include 'article-item', type: 'list' -%}
+            {%- endfor -%}
+          </div>
+        {%- endunless -%}
+
+        {%- assign blog_item_tit_fw         = block.settings.blog_item_title_fw -%}
+        {%- assign blog_item_tit_fs         = block.settings.blog_item_title_fs -%}
+        {%- assign blog_item_tit_color      = block.settings.blog_item_title_color | default: 'rgba(0,0,0,0)' -%}
+
+        {%- capture block_css -%}
+            {{_itemBlockID}} .post-item .post-title a{font-weight: {{blog_item_tit_fw}};
+                {%- unless blog_item_tit_color == 'rgba(0,0,0,0)' -%}color: {{blog_item_tit_color}};{%- endunless -%}
+            }
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' .post-item .post-title a' ,css_value: blog_item_tit_fs ,css_property: 'font-size' -%}
+        {%- endcapture -%}
+        {%- assign _blockItem_Style = _blockItem_Style | append: block_css -%}
+
+    {%- when 'form' -%}
+
+        {%- assign frm_type               = block.settings.action_type -%}
+        {%- assign frm_action             = block.settings.action -%}
+        {%- assign frm_placeholder        = block.settings.placeholder -%}
+        {%- assign frm_btn_corner         = block.settings.btn_corner -%}
+        {%- assign frm_btn_type           = block.settings.form_btn_display -%}
+        {%- assign frm_btn_icon           = block.settings.btn_icon -%}
+        {%- assign frm_btn_label          = block.settings.btn_text -%}
+        {%- assign frm_btn_style          = block.settings.btn_inherit -%}
+        {%- assign frm_corner             = block.settings.form_corner -%}
+
+
+        <div class="subscibe-content">
+          {%- include 'include-form', type: frm_type  -%}
+        </div>
+
+        {%- if frm_btn_style == 0 -%}
+          {%- assign btn_frm_color    = block.settings.btn_frm_color | default: 'rgba(0,0,0,0)' -%}
+          {%- assign btn_frm_bg_color = block.settings.btn_frm_bg_color | default: 'rgba(0,0,0,0)' -%}
+
+          {%- capture block_css -%}
+            {{_itemBlockID}}  button.btn-0{font-weight: {{block.settings.btn_frm_fw}};
+              {%- if btn_frm_color    != 'rgba(0,0,0,0)' -%}color: {{btn_frm_color}};{%- endif -%}
+              {%- if btn_frm_bg_color != 'rgba(0,0,0,0)' -%}background-color: {{btn_frm_bg_color}};{%- endif -%} }
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' button.btn-0' ,css_value: block.settings.btn_frm_padding -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' button.btn-0' ,css_value: block.settings.btn_frm_radius   ,css_property: 'border-radius' -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' button.btn-0' ,css_value: block.settings.btn_frm_fs       ,css_property: 'font-size' -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' button.btn-0' ,css_value: block.settings.btn_frm_lsp      ,css_property: 'letter-spacing' -%}
+          {%- endcapture -%}
+          {%- assign _blockItem_Style = _blockItem_Style | append: block_css -%}
+        {%- endif -%}
+
+    {%- when 'social_icon' -%}
+        {%- assign _social_icon     = block.settings.social_icon -%}
+        {%- assign _social_link     = block.settings.link | default: 'javascript:void(0);' -%}
+        {%- assign _social_color    = block.settings.icon_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _social_bg_color = block.settings.icon_bg_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _social_image    = block.settings.social_image -%}
+        {%- assign _social_size     = block.settings.social_size -%}
+
+        <a href="{{_social_link}}" class="social-icon-item text-center">
+            {%- unless _social_image == blank -%}
+                {%- include 'image-style', image: _social_image, image_width: '[100,200]' -%}
+            {%- else -%}
+                {%- include 'icons', type: 'icon_free', name: _social_icon -%}
+            {%- endunless -%}
+        </a>
+
+        {%- capture block_css -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' a' css_value: block.settings.social_padding -%}
+            {%- unless _social_image == blank -%}
+                {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' a' css_value: _social_size ,css_property: 'max-width' -%}
+            {%- else -%}
+                {{_itemBlockID}} a{color: {{_social_color}};background-color: {{_social_bg_color}};}
+                {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' a' css_value: _social_size ,css_property: 'font-size' -%}
+            {%- endunless -%}
+        {%- endcapture -%}
+        {%- assign _blockItem_Style = _blockItem_Style | append: block_css -%}
+
+    {%- when 'social_group' -%}
+        {%- capture icon_group_align -%}justify-content-{{align_text | replace: 'left','start' | replace: 'right','end' }}{%- endcapture -%}
+        <div class="social-group d-flex {{icon_group_align}}">
+            {%- for i in (1..4) -%}
+                {%- assign temp_soc_icon = 'soc_icon_' | append: i -%}
+                {%- assign temp_soc_link = 'soc_link_' | append: i -%}
+                {%- assign _soc_icon = block.settings[temp_soc_icon] -%}
+
+                {%- unless _soc_icon == blank -%}
+                    {%- assign _soc_link = block.settings[temp_soc_link] | default: 'javascript:void(0);' -%}
+
+                    <div class="social-icon-item">
+                        <a href="{{_soc_link}}" class="social-icon">
+                            {%- include 'icons', type: 'icon_free', name: _soc_icon -%}
+                        </a>
+                    </div>
+                {%- endunless -%}
+            {%- endfor -%}
+        </div>
+
+        {%- assign _soc_color      = block.settings.soc_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _soc_bg_color   = block.settings.soc_bg_color | default: 'rgba(0,0,0,0)' -%}
+
+        {%- capture block_css -%}
+            {{- _itemBlockID}} a.social-icon{color: {{_soc_color}};}
+            {%- unless _soc_bg_color == 'rgba(0,0,0,0)' -%}{{- _itemBlockID}} div.social-icon-item{background-color: {{_soc_bg_color}};}{%- endunless -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' div.social-icon-item' ,css_value: block.settings.soc_padding -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' a.social-icon'        ,css_value: block.settings.soc_fs      ,css_property: 'font-size' -%}
+            {%- include 'css-responsive' ,classID: _itemBlockID ,nextClassID: ' div.social-icon-item' ,css_value: block.settings.soc_margin  ,css_property: 'margin' -%}
+        {%- endcapture -%}
+        {%- assign _blockItem_Style = _blockItem_Style | append: block_css -%}
+
+{%- endcase -%}
+{%- if b_bg_color != blank or b_item_padding != blank or b_border_size > 0 or b_item_margin != blank or _blockItem_Style != blank -%}
+{%- capture block_item_css -%}
+    {{- _blockItem_Style -}}
+    {%- include 'css-responsive' ,classID: _itemBlockID ,css_value: b_item_margin ,css_property: 'margin' -%}
+    {%- include 'css-responsive' ,classID: _itemBlock_innerID ,css_value: b_item_padding -%}
+    {%- if b_bg_color != blank or b_border_size > 0 -%}
+        {{- _itemBlockID}} > .custom-item-inner{
+        {%- unless b_bg_color == blank -%}background-color: {{b_bg_color}};{%- endunless -%}
+        {%- if b_border_size > 0 -%}border: {{b_border_size}}px solid {{b_border_color}};{%- endif -%}
+    }{%- endif -%}
+    {%- if n_width_resp contains '%' -%}
+        {%- assign new_width_block = n_width_resp | prepend: '0 0 ' | replace: ',', ',0 0 ' -%}
+        {%- include 'css-responsive' ,classID: _itemBlockID ,css_value: new_width_block ,css_property: 'flex' -%}
+        {%- include 'css-responsive' ,classID: _itemBlockID ,css_value: n_width_resp ,css_property: 'max-width' -%}
+    {%- endif -%}
+{%- endcapture -%}
+
+<style>{{block_item_css | strip_newlines }}</style>
+{%- endif -%}

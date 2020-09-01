@@ -1,0 +1,27 @@
+{%- include 'breadcrumb' -%}
+<div class="container">
+  <div id="col-main">
+    <div class="page-content" style="padding-top: 120px; padding-bottom: 50px; width: 80%; margin-left: 10%;">
+      {{ page.content }}
+    </div>
+  </div>
+</div>
+
+<script>
+  
+  $.ajax({
+    url:  "https://cors-anywhere.herokuapp.com/https://kc-professional.myshopify.com/admin/api/2020-04/orders.json?limit=250&created_at_min=2020-05-20&created_at_max=2020-07-30",
+    method: "GET",
+    headers: {
+      "Authorization": "Basic " + btoa("c0abfd4e83b9114ac7de47b483648e10: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")
+    },
+    success: function(data, status, xhr) {
+      console.log('ajax', data);
+    },
+    error: function(error) {
+      alert('Error Occured');
+    }
+  });
+  
+  alert(123);
+</script>

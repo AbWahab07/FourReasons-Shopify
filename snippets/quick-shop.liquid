@@ -1,0 +1,392 @@
+<div class="modal quick-view" id="quick-shop-popup" data-qs-style="popup">
+  <style>
+    .slick-element-ui:not(.slick-initialized).slick-main-ui > div:not(:first-child){display: none;}
+    #quick-shop-popup .modal-dialog .modal-content{
+      -webkit-transform: unset;
+      transform: unset;
+      opacity: 0;
+      transition: .1s all ease-in-out;
+    }
+    #quick-shop-popup .modal-dialog .modal-content.fadeCustom2{animation-name: fadeInLeftSmall;opacity: 1;}
+    #quick-shop-popup .qs-image-item{position: relative;cursor: pointer;}
+    #quick-shop-popup .qs-image-item img{position: absolute;top: 0;left: 0;width: 100%;height: 100%;object-fit: contain;}
+    @keyframes fadeInLeftSmall{0% {opacity: 0;transform: translate3d(-10%, 0, 0);} 40%,100% {opacity: 1;transform: translate3d(0, 0, 0);}}
+
+    #qs-full-description{padding-top: 15px;transition: .5s all ease-in-out;background: {{settings.popup_bg_color}};}
+    #quick-shop-popup .des-toggle #qs-full-description{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      padding-top: 0;
+    }
+    #quick-shop-popup .des-toggle #qs-full-description > a i:before{transform: rotate(180deg);}
+    #quick-shop-popup .des-toggle{overflow: hidden;}
+    #quick-shop-popup .product-info:not(.des-toggle) .qs-full-des,
+    #quick-shop-popup .product-info:not(.des-toggle) .qs-full-des-link{display: none;}
+    #qs-full-description .qs-full-des{overflow: hidden;overflow-y: auto;max-height: 90%;padding-top: 10px;}
+  </style>
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"><span class="close" title="{{'products.product.close' | t }}" data-dismiss="modal" aria-hidden="true"></span></div>
+
+      <div class="modal-body">
+        <div class="product-image">
+
+          <div id="qs-product-image" class="product-image-inner">
+            <div id="gallery-qs-image" class="slick-element-ui slick-main-ui"></div>
+          </div>
+
+          <div id="qs-gallery-nav" class="qs-gallery-nav">
+            <span class="btn-prev">{%- include 'icons', type: 'icon_free', name: 'icon-uniE902' -%}</span>
+            <span class="btn-next">{%- include 'icons', type: 'icon_free', name: 'icon-uniE904-1' -%}</span>
+          </div>
+        </div>
+
+        <div class="product-info">
+          <h2 id="qs-product-title">Product Title</h2>
+          <div id="qs-info-inner" style="position: relative;">
+            <div id="qs-rating"></div>
+
+            <div id="qs-product-price" class="detail-price">Product Price</div>
+
+            <div id="qs-description">Product Description</div>
+
+            <div id="qs-action-wrapper">
+              <form action="/cart/add" method="post" class="variants" id="qs-product-action" enctype="multipart/form-data">
+
+                <div id="qs-product-variants" class="variants-wrapper"></div>
+
+                <div class="qs-cart-action">
+                  <div class="quantity-product qs-quantity-product">
+                    <label>{{ 'products.product.quantity' | t }}</label>
+                    <div class="quantity qs-quantity">
+                      <div class="qty-wrapper">
+                        <span class="qty-inner qs-qty-inner">
+                          <span class="qty-down" title="Decrease" data-src="#qs-quantity">
+                            {%- include 'icons', type: 'icon_free', name:'icon-K' -%}
+                          </span>
+                        </span>
+                        <input type="text" id="qs-quantity" class="item-quantity" name="quantity" value="1" />
+                        <span class="qty-inner qs-qty-inner">
+                          <span class="qty-up" title="Increase" data-src="#qs-quantity">
+                            {%- include 'icons', type: 'icon_free', name:'icon-L' -%}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="qs-product-button">
+                    <button id="qs-add-cart" class="btn btn-1 add-to-cart" type="submit" name="add">
+                      <span class="btn-label">{{'products.product.add_to_cart' | t }}</span>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div id="qs-full-description">
+              <a href="javascript:void(0);" onclick="$('#quick-shop-popup .product-info').toggleClass('des-toggle');"><u>{{- 'products.product.details' | t -}}</u>{%- render 'icons' ,type: 'icon_free' ,name: 'icon-uniE905' -%}</a>
+              <div class="qs-full-des"></div>
+              <p class="qs-full-des-link text-center"><a href="javascript:void(0);" class="qs-product-url"><u>{{- 'products.product.show_full_details' | t -}}</u></a></p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    var qs_settings = {
+      "show_short_description" : "{{ settings.qs_short_description    | default: false }}"
+      ,"show_review"           : "{%- unless settings.product_review_type == 'none' -%}true{%- else -%}false{%- endunless -%}"
+      ,"price_height"          : 0
+    }
+
+    jQuery(document).ready(function($) {
+      $('#quick-shop-popup').on( 'hidden.bs.modal', ()=>{
+        AT_Main.fixReturnScroll();
+        $("#qs-quantity").val(1);
+        $('#quick-shop-popup .modal-content').attr('class', 'modal-content').removeAttr('style');
+        $('#qs-product-image').html(`<div id="gallery-qs-image" class=""></div>`);
+        $('#qs-product-price').removeAttr('style');
+        $('#qs-full-description > div ,#qs-description').empty();
+        $('#qs-full-description').addClass('hide');
+        $('#quick-shop-popup .product-info.des-toggle').removeClass('des-toggle');
+      })
+
+      var qs_variant_price = (variant)=>{
+        let productPrice  = $('#qs-product-price')
+        ,productAddCart = $('#qs-add-cart');
+
+        productPrice.innerHeight() > qs_settings.price_height && (qs_settings.price_height = productPrice.innerHeight()) && productPrice.css('min-height', qs_settings.price_height+'px');
+
+        if (variant && variant.available) {
+          productAddCart.removeAttr('disabled').html('{{ "products.product.add_to_cart" | t }}').fadeTo(200,1);
+
+          if ( variant.compare_at_price > 0 && variant.compare_at_price > variant.price ) {
+            productPrice.html(`<del class="price-compare">${Shopify.formatMoney(variant.compare_at_price, _bc_config.money_format)}</del>
+              <span class="price-sale">${Shopify.formatMoney(variant.price, _bc_config.money_format)}</span>`);
+          }
+          else{
+            productPrice.html(`<span class="price-single">${Shopify.formatMoney(variant.price, _bc_config.money_format)}</span>`);
+          };
+        }
+
+        else {
+          let msg = variant ? "{{'products.product.out_stock' | t }}" : "{{'products.product.unavailable' | t }}";
+          productAddCart.attr('disabled', 'disabled').html(msg).fadeTo(200,0.4);
+          productPrice.html('<span class="price-single unavailable">' + msg + '</span>');
+        }
+        AT_Main.currenciesFormat('#quick-shop-popup span.money');
+      }
+      /**
+       * SELECT QS OPTION CALLBACK
+       */
+      var qs_selectOptionsCallback = function(variant, selector) {
+        qs_variant_price(variant);
+
+        if (variant && variant.available && variant.featured_media != null) {
+          let _id = variant.featured_media.id
+          ,_element = $(`.qs-image-item[data-image-id="${_id}"]`);
+          _element.length && _element.trigger('click');
+        }
+      }
+
+      var __quickShop = selector=>{
+        AT_Main.fixNoScroll();
+        var $this = selector;
+
+        let _featured_img = $this.closest('.product-card').find('.featured-image');
+        let img_placeholder_src = _featured_img.attr('src') || _featured_img.attr('srcset')
+          ,img_ratio = $this.data('image-ratio');
+
+        $('#gallery-qs-image').html(`<span class="d-block qs-image-item" style="padding-top:${img_ratio}"><img class="" src="${img_placeholder_src}"/></span>`);
+
+        AT_Main._requestAjax({},'GET', `/products/${$this.data('handle')}.js`,'json')
+        .done(resp=>{
+          if (!$('#quick-shop-popup').length) {return false;}
+          $('#quick-shop-popup').modal('show');
+          $('#quick-shop-popup .modal-content').delay(1200).addClass('animated fadeCustom2').css('min-height', $('#quick-shop-popup .modal-content').innerHeight() + 'px');
+
+          let productSelect = resp
+          ,firstImageSwitch = false
+          ,$prod      = $this.closest(".product-card")
+          ,qs_images = [...productSelect.media].filter(m=>{ return m.media_type == 'image'});
+
+          /**
+           * PRODUCT IMAGES
+           */
+          if(qs_images.length){
+            $('#qs-thumbnail-images').length && $('#qs-thumbnail-images').remove();
+
+            if (qs_images.length > 1) {
+
+              $('#qs-product-image').html(`<div id="gallery-qs-image" class="slick-element-ui slick-main-ui"></div>`);
+
+              let qs_gallery_images = '';
+
+              for(let i of qs_images){
+                let images = `<span class="d-block qs-image-item" style="padding-top:${img_ratio}" data-image-id="${i.id}"><img class="" src="${i.src}"/></span>`;
+                qs_gallery_images += `<div class="qs-gallery-image">${images}</div>`;
+              }
+
+              $('#qs-gallery-nav').show();
+              $('#gallery-qs-image').removeClass('no-thumbnail').append(qs_gallery_images);
+
+              let _slickQS = $('#gallery-qs-image').slick({
+                slidesToShow: 1
+                ,slidesToScroll: 1
+                ,infinite : false
+                ,rtl: JSON.parse(_bc_config.enable_rtl)
+                ,arrows: true
+                ,fade: false
+                ,prevArrow: $('.qs-gallery-nav .btn-prev')
+                ,nextArrow: $('.qs-gallery-nav .btn-next')
+              });
+
+              $('#gallery-qs-image .qs-image-item').off('click').on('click', e=>{
+                e.preventDefault();
+                if (productSelect.variants.length > 1 && firstImageSwitch) {
+                  let _index = +$(e.currentTarget).closest('.slick-slide').data('slick-index');
+                  _slickQS.slick('slickGoTo', _index, 0);
+                }
+              })
+              $('#quick-shop-popup').on('click','.swatch-element, .single-option-selector', e=>{firstImageSwitch = true;})
+            }
+            else{
+              $('#qs-gallery-nav').hide();
+            }
+          }
+
+          /**
+           * PRODUCT TITLE & URL
+           */
+          $('#qs-product-title').html(`<a href="${productSelect.url}">${productSelect.title}</a>`)
+          $('.qs-product-url').attr('href',productSelect.url);
+
+
+          /**
+           * PRODUCT FULL DESCRIPTION
+           */
+          if (productSelect.description.length) {
+            $('#qs-full-description').removeClass('hide').children('div').html(productSelect.description);
+            $('#qs-info-inner').css('height', `calc(100% - ${$('#qs-product-title').innerHeight()}px)`);
+          }else{
+            $('#qs-full-description').addClass('hide');
+          }
+          /**
+           * PRODUCT SHORT DESCRIPTION
+           */
+           JSON.parse(qs_settings.show_short_description) && $prod.find('div[data-name="productDescription"]').length && $('#qs-description').html(JSON.parse($prod.find('div[data-name="productDescription"]').html()));
+
+          /**
+           * REVIEW
+           */
+          let productRating = $('#qs-rating');
+          if(JSON.parse(qs_settings.show_review)){
+            productRating.show();
+            productRating.html($prod.find(".card-review").html());
+            productRating.children().length ? productRating.show() : productRating.hide();
+            AT_Main.handleReviews();
+          }else{
+            productRating.hide();
+          }
+
+
+          /**
+           * VARIANTS HANDLE
+           */
+          let productVariantWrapper   = $('#qs-product-variants')
+          ,productPrice               = $('#qs-product-price')
+          ,productAddCart             = $('#qs-add-cart')
+          ,productVariants            = productSelect.variants
+          ,productVariantsCount       = productVariants.length;
+
+          productPrice.empty();
+          productVariantWrapper.empty();
+
+          productSelect.available ? $('#qs-action-wrapper').show() : $('#qs-action-wrapper').hide();
+
+          if (productSelect.available) {
+
+            let productVariantElement = $('<select>',{ 'id': ('#quick-shop-variants-' + productSelect.id) , 'name': 'id'})
+            ,productVariantOptions = ''
+            ,_swt_container = ''
+            ,first_available = true
+            ,productOptions = productSelect.options;
+
+            for (let i=0; i < productVariantsCount; i++) {
+              if(productVariants[i].available && first_available){
+                productVariantOptions += `<option value="${productVariants[i].id}" selected="selected">${productVariants[i].title}</option>`;
+                first_available = false;
+              }
+              else{
+                productVariantOptions += `<option value="${productVariants[i].id}">${productVariants[i].title}</option>`;
+              }
+            };
+
+            productVariantElement.append(productVariantOptions);
+            productVariantWrapper.append(productVariantElement);
+
+            productVariantsCount > 1 ? productVariantWrapper.show() : productVariantWrapper.hide();
+
+
+            /**
+             * CREATE SWATCH VARIANTS
+             */
+
+            if (productVariantsCount > 1) {
+              for (let i = 0; i < productOptions.length; i++) {
+                let _option = productOptions[i]
+                ,_optionName = _option.name
+                ,_optionValue = _option.values
+                ,_optionVariants_container = ''
+                ,_swt_circle = `{{settings.qs_swatch_type_circle | downcase }}`
+                ,_swt_rectangle = `{{settings.qs_swatch_type_rectangle | downcase }}`
+                ,_swtShape = _swt_circle.indexOf(_optionName.toLowerCase()) > -1 ? ' circle' : _swt_rectangle.indexOf(_optionName.toLowerCase()) > -1 ? ' rectangle' : '';
+
+                if (_swtShape == '') {
+                  let _style = `<style>.selector-wrapper.${_optionName.toLowerCase()}{display: block!important;}</style>`
+                  productVariantWrapper.append(_style);
+                }
+                else{
+
+                  for (let j = 0; j < _optionValue.length; j++) {
+
+                    let _variantName = _optionValue[j]
+                    ,_variantLabel = '';
+
+                    if (_optionName.toLowerCase() == 'color' || _optionName.toLowerCase() == 'colour') {
+
+                      _variantLabel = `<div class="tooltip">${_variantName}</div>
+                                      <label for="qs-swt-${_option.position}-${j}" class="qs-swt-color cf-${_variantName.toLowerCase()}"></label>`;
+
+                    }else{
+                      _variantLabel = `<label for="qs-swt-${_option.position}-${j}">${_variantName}</label>`;
+                    }
+
+                    let _variantLayout = `<div class="swatch-element${_swtShape}">
+                                            <input id="qs-swt-${_option.position}-${j}" type="radio" name="option${i}" value="${AT_Main.swatchValue_decode(_variantName)}"/>${_variantLabel}
+                                          </div>`;
+
+                    _optionVariants_container += _variantLayout;
+                  }
+
+                  let _optionLayout = `<div class="swatch ${_optionName.toLowerCase()} clearfix" data-option-index="${i}" data-value="${_optionName}">
+                                          <div class="header">${_optionName}</div><div class="qs-variants-container">${_optionVariants_container}</div>
+                                        </div>`;
+
+                  _swt_container += _optionLayout;
+                }
+              }
+
+              productVariantWrapper.append(_swt_container);
+
+              new Shopify.OptionSelectors(('#quick-shop-variants-' + productSelect.id), { product: productSelect, onVariantSelected: qs_selectOptionsCallback });
+
+              /*Add label if only one product option*/
+              productSelect.options.length == 1 && $('#qs-product-action .selector-wrapper:eq(0)').prepend('<label>'+ productSelect.options[0].name +'</label>');
+
+              /*Select first variant on page*/
+              let found_one_in_stock = false;
+              for (let i=0; i < productSelect.variants.length; i++) {
+
+                let variant = productSelect.variants[i];
+                if(variant.available && found_one_in_stock == false) {
+
+                  found_one_in_stock = true;
+                  for (let j=0; j < variant.options.length; j++){
+                    $('#quick-shop-popup .single-option-selector:eq('+ j +')').val(variant.options[j]).trigger('change');
+
+                    let _variantName = variant.options[j]
+                    ,radioGroup = $(`#qs-product-variants input[name="option${j}"]:not(:disabled)`);
+
+                    _variantName = AT_Main.swatchValue_decode(variant.options[j]);
+
+                    let _radio = productVariantWrapper.find(`:radio[value="${_variantName}"]`);
+
+                    _radio.length && (_radio.get(0).checked = true) 
+                    radioGroup.length && (radioGroup.first().get(0).checked = true);
+                  }
+                  break;
+                }
+              }
+            }
+          }
+          if (!productSelect.available || productVariantsCount < 2) {
+            qs_variant_price(productVariants[0]);
+          }
+        })
+      }
+
+      $('body').on('click', '.quick_shop[data-target="#quick-shop-popup"]', function(event){__quickShop($(this));});
+    })
+  </script>
+</div>

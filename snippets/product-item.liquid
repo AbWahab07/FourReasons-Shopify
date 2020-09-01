@@ -1,0 +1,442 @@
+{%- case type -%}
+
+  {%- when 'empty-product' -%}
+    <div class="product-wrapper">
+      <div class="featured-img">
+        {%- include 'svgset',type: 'product' -%}
+      </div>
+      <div class="product-content text-{{ section.settings.text_align | defalt: settings.text_align_product_item }}">
+        <div class="pc-inner">
+          <h5 class="product-name">{{ 'homepage.onboarding.product_title' | t }}</h5>
+          <div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+        </div>
+      </div>
+    </div>
+
+  {%- comment -%}  ============    PRODUCT LISTING ITEM  ============{%- endcomment-%}
+  {%- when 'listing-item' -%}
+    <div class="listing-item">
+      <div class="row no-gutters">
+        <div class="product-image col-4">
+
+          <a href="{{ product.url | within: collection }}">
+            {%- if product.media.first.type != 'image' -%}
+              {% include 'image-style' with image: product.featured_media.preview_image, image_size: '180x', _type: 'product', product_type: 'list' %}
+            {%- else -%}
+              {% include 'image-style' with image: product.featured_image, image_size: '180x', _type: 'product', product_type: 'list' %}
+            {%- endif -%}
+          </a>
+        </div>
+
+        <div class="product-content col-8">
+          <div class="product-content-inner">
+            <div class="product-name {{settings.card_name_font_family}}{% if settings.card_name_uppercase %} text-uppercase{% endif %}"><a href="{{ product.url | within: collection }}">{{ product.title }}</a></div>
+            {%- if settings.product_review_type != 'none' and settings.show_product_review -%}
+            <div class="product-review">{%- include 'include-reviews' with type: 'preview_badge' -%}</div>
+            {%- endif -%}
+            {%- include 'product-price' -%}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {%- comment -%}  ============    SB PRODUCT ITEM  ============{%- endcomment-%}
+  {%- when 'sb-product-item' -%}
+    <div class="listing-item">
+      <div class="row">
+
+        <div class="sb-product-head col-4">
+          <a href="{{ product.url }}" title="{{ product.title }}">
+            {% include 'image-style' with image: product.featured_image, image_size: '240x', _type: 'product', product_type: 'list' %}
+          </a>
+        </div>
+
+        <div class="sb-product-content col-8">
+          <div class="bp-content-inner">
+
+            <a href="{{ product.url }}" class="{{settings.card_name_font_family}}{% if settings.card_name_uppercase %} text-uppercase{% endif %}" title="{{ product.title }}">{{ product.title }}</a>
+            {% if settings.product_review_type != 'none' %}
+            <div class="product-review">{% include 'include-reviews' with type: 'preview_badge' %}</div>
+            {% endif %}
+            {%- include 'product-price' -%}
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  {%- comment -%}  ============    CUSTOM PRODUCT  ============{%- endcomment-%}
+  {%- when 'custom-product' -%}
+    <div class="product-item text-{{ _text_align }}">
+
+      <div class="product-header">
+        <a href="{{ product.url | within: sb_collection }}">
+          {% include 'image-style' with image: product.featured_image,  _type: 'product' %}
+        </a>
+      </div>
+
+      <div class="product-body">
+        <div class="product-body-inner">
+
+          {% if settings.product_review_type != 'none' %}
+          <div class="product-review">{% include 'include-reviews' with type: 'preview_badge' %}</div>
+          {% endif %}
+          <p class="product-name {{settings.card_name_font_family}}{% if settings.card_name_uppercase %} text-uppercase{% endif %}">{{ product.title }}</p>
+          {%- include 'product-price' -%}
+          <a href="{{ product.url | within: collection }}">BUY NOW</a>
+
+        </div>
+      </div>
+
+    </div>
+
+  {%- comment -%}  ============    PRODUCT SLIDER  ============{%- endcomment-%}
+  {%- when 'product-slider' -%}
+
+    <div class="product-item">
+      <div class="product-item-inner d-md-flex no-gutters">
+        <div class="header-item col-md-6{% if b_image_pos == 'right' %} order-md-2{% endif %}">
+          <div class="image image-{{b_image_width}}">
+            <a href="{{ product.url | within: collection }}">
+              {%- unless b_image_replace == blank -%}
+                          {%- assign b_image = b_image_replace -%}
+              {%- else -%}{%- assign b_image = product.featured_image -%}
+              {%- endunless -%}
+              {%- include 'image-style' with image: b_image, image_class: 'pslider-image' -%}
+            </a>
+          </div>
+        </div>
+        <div class="body-item col-md-6{% if b_image_pos == 'right' %} order-md-1{% endif %}">
+          <div class="body-item-inner text-{{p_content_align}}">
+            {%- unless b_heading == blank -%}   <div class="heading">{{- b_heading -}}</div>{%- endunless -%}
+            {%- unless b_subheading == blank -%}<div class="subheading">{{- b_subheading-}}</div>{%- endunless -%}
+            {%- unless b_content == blank -%}   <div class="info-content">{{- b_content -}}</div>{%- endunless -%}
+
+            <div class="price {% if price_type == 'hide' %} hide{% endif %}">
+              {%- if price_type == 'price' -%}
+                {%- include 'product-price' -%}
+
+              {%- elsif price_type == 'saving' -%}
+                {%- if product.variants.size > 1 and product.price_varies -%}
+                  {%- assign max_sav = 0 -%}
+                  {% for variant in product.variants %}
+                    {%- if variant.price < variant.compare_at_price -%}
+                      {%- assign saving = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round -%}
+                      {%- if saving > max_sav -%}{% assign max_sav = saving %}{%- endif -%}
+                    {%- endif -%}
+                  {% endfor %}
+                {%- else -%}
+                  {%- assign max_sav = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+                {%- endif -%}
+
+                <div>{{- 'products.label.save' | t: percent: max_sav -}}</div>
+              {%- endif -%}
+            </div>
+
+            {%- if product.available and b_btn_label != blank -%}
+              {%- assign btn_class = 'btn-p-slider' -%}
+              {%- assign btn_class = btn_class | append: ' btn-' | append: p_btn_inherit -%}
+              {%- if pb_btn_corner -%}{%- assign btn_class = btn_class | append: ' btn-rd' -%}{%- endif -%}
+
+              <div class="product-add-cart{% unless product.available %} sold-out{% endunless %}">
+                {%- unless settings.disable_ajax_cart -%}
+                  {%- if product.variants.size > 1 -%}
+                    <a href="{{ product.url | within: collection }}" class="btn-add-cart btn {{btn_class}} select-options" title="{{ 'products.product.select_options' | t }}">
+                      <span>{{- b_btn_label -}}</span>
+                    </a>
+                  {%- else -%}
+                    <form action="/cart/add" method="post" enctype="multipart/form-data">
+                      <a href="javascript:void(0);" class="btn-add-cart btn {{btn_class}} add-to-cart" title="{{ 'products.product.add_to_cart' | t }}">
+                        <span>{{- b_btn_label -}}</span>
+                      </a>
+                      <select class="d-none" name="id">
+                        {%- for variant in product.variants -%}<option value="{{ variant.id }}">{{ variant.title | escape }}</option>{%- endfor -%}
+                      </select>
+                    </form>
+                  {%- endif -%}
+
+                {%- else -%}
+                <a href="{{ product.url | within: collection }}" class="btn-add-cart btn {{btn_class}} select-options" title="{{ 'products.product.select_options' | t }}">
+                  <span>{{- b_btn_label -}}</span>
+                </a>
+                {%- endunless -%}
+
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {%- comment -%}  ============    PRODUCT MENU  ============{%- endcomment-%}
+  {%- when 'product-menu' -%}
+
+    <div class="product-menu-item">
+      <div class="product-item-inner">
+         {%- if _show_pimage -%}
+            <div class="product-image">
+               <div class="product-image-inner">
+                  {%- include 'image-style', image: product.featured_image -%}
+               </div>
+            </div>
+         {%- endif -%}
+
+         <div class="product-info">
+            <div class="product-info-inner">
+               <h5 class="product-name {{settings.card_name_font_family}}{% if settings.card_name_uppercase %} text-uppercase{% endif %}">
+                  <a href="{{ product.url | within: collection }}" title="{{ product.title }}">{{ product.title }}</a>
+               </h5>
+               {%- assign meta_shortdes = product.metafields.c_f -%}
+               {%- unless meta_shortdes.description_excerpt == blank -%}
+                  <div class="product-description">
+                     <div class="product-description-inner">{{ meta_shortdes.description_excerpt }}</div>
+                  </div>
+               {%- endunless -%}
+            </div>
+         </div>
+         <div class="product-price">
+            {%- if product.available -%}
+               {%- include 'product-price' -%}
+            {%- else -%}
+               <div class="product-soldout">{{- 'products.label.sold_out' | t -}}</div>
+            {%- endif -%}
+         </div>
+      </div>
+    </div>
+
+  {%- comment -%}  ============    MEGA MENU PRODUCT  ============{%- endcomment-%}
+  {%- when 'mega-menu-product' -%}
+    {%- if product_style  == blank -%}{%- assign product_style  = settings.product_item_style -%}{%- endif -%}
+    {%- if _text_align    == blank -%}{%- assign _text_align    = settings.text_align_product_item -%}{%- endif -%}
+
+    {%- assign _lazyload              = settings.use_lazyload -%}
+    {%- assign card_padding           = settings.card_padding -%}
+    {%- assign card_shadow            = settings.card_shadow -%}
+    {%- assign productURL             = product.url | within: collection -%}
+
+    <div class="card product-card{% unless product.available %} card-soldout{% endunless %} card-style-1 {% if card_padding %} card-padding{% endif %}{% if card_shadow %} card-shadow{% endif %}">
+      <div class="card-content">
+        <div class="card-header">
+          <div class="card-image">
+            <a href="{{ productURL }}">
+              {%- include 'image-style' ,image: product.featured_image, image_size: '390x', image_class: 'featured-image front', _type: 'product' ,image_width: '[180, 360, 575, 720]' -%}
+            </a>
+          </div>
+        </div>
+
+        <div class="card-body text-{{ _text_align }}">
+          <div class="card-body-grid">
+            <div class="card-title">
+              <h5 class="product-name{% if cardName_maxString != 'none' %} max-{{cardName_maxString}}-str{% endif %}{% if cardName_uppercase %} text-uppercase{% endif %} {{settings.card_name_font_family}}">
+                <a href="{{productURL}}" title="{{ product.title }}">{{ product.title }}</a>
+              </h5>
+            </div>
+            {%- if settings.product_review_type != 'none' and settings.show_product_review -%}
+              <div class="card-review">{%- include 'include-reviews' with type: 'preview_badge' -%}</div>
+            {%- endif -%}
+            <div class="card-price">{%- include 'product-price' -%}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- comment -%}  ============    PRODUCT ITEM  ============{%- endcomment-%}
+  {%- else -%}
+
+    {%- if product_style  == blank -%}{%- assign product_style  = settings.product_item_style -%}{%- endif -%}
+    {%- if _text_align    == blank -%}{%- assign _text_align    = settings.text_align_product_item -%}{%- endif -%}
+
+    {%- assign _lazyload              = settings.use_lazyload -%}
+    {%- assign hover_effect           = settings.product_item_hover_effect -%}
+    {%- assign card_padding           = settings.card_padding -%}
+    {%- assign card_shadow            = settings.card_shadow -%}
+    {%- assign card_nav_img           = settings.card_next_prev_images -%}
+    {%- assign productURL             = product.url | within: collection -%}
+    {%- assign image_count            = product.images.size -%}
+    {%- assign card_cart_btn_display  = cart_btn_display | default: settings.card_btn_cart_display -%}
+    {%- assign card_style             = product_style | plus: 0 -%}
+
+    {% if product.available and settings.show_swatch_type_circle != blank or product.available and settings.show_swatch_type_rectangle != blank %}
+              {% assign show_swt = true %}
+    {% else %}{% assign show_swt = false %}{% endif %}
+
+    {%- include 'product-item-snippet' -%}
+
+    {%- if template contains 'collection' -%}
+      {%- case short_description -%}
+        {%- when 'grid' -%}{%- assign showShort_Description = true  -%}
+        {%- when 'all'  -%}{%- assign showShort_Description = true  -%}
+        {%- when 'list' -%}{%- assign showShort_Description = false -%}
+        {%- when 'hide' -%}{%- assign showShort_Description = false -%}
+        {%- else        -%}{%- assign showShort_Description = short_description -%}
+      {%- endcase -%}
+    {%- endif -%}
+
+    <div class="card product-card{% unless product.available %} card-soldout{% endunless %} card-style-{{card_style}} effect-{{ hover_effect }}{% if card_padding %} card-padding{% endif %}{% if product_type == 'list' %} card-list{% endif %}{% if card_shadow %} card-shadow{% endif %}">
+      {%- if progress_position == 'top' and product_type != 'list' -%}
+        {{- c_progress -}}
+      {%- endif -%}
+      <div class="card-content">
+        <div class="card-header">
+          {%- if card_style == 7 -%}
+            <div class="card-title text-{{ _text_align }}">{{c_name}}</div>
+          {%- endif -%}
+          <div class="card-image">
+            <a href="{{ productURL }}">
+              {{c_image}}
+              {%- unless product.available -%}
+                <span class="label-soldout">{{- 'products.label.sold_out' | t -}}</span>
+              {%- else -%}
+                {%- include 'product-label' -%}
+              {%- endunless -%}
+            </a>
+            {%- if image_count > 1 and card_nav_img -%}
+              <span class="prev-image">{% include 'icons', type:'icon_free', name:'icon-uniE902' %}</span>
+              <span class="next-image">{% include 'icons', type:'icon_free', name:'icon-uniE904-1' %}</span>
+            {%- endif -%}
+          </div>
+          <div class="card-button-hover">
+            {%- case card_style -%}
+              {%- when 1 -%}
+                {{- c_quick_view -}}
+                {{- c_wishlist   -}}
+              {%- when 2 -%}
+                {{- c_quick_view -}}
+                {{- c_cart       -}}
+                {{- c_wishlist   -}}
+              {%- when 3 -%}
+                {{- c_wishlist   -}}
+                {{- c_cart       -}}
+                {{- c_compare    -}}
+                {{- c_quick_view -}}
+              {%- when 4 -%}
+                {{- c_quick_view -}}
+                {{- c_cart       -}}
+                {{- c_compare    -}}
+                {{- c_wishlist   -}}
+              {% when 6 %}
+                <div class="card-info-wrap">
+                  <div class="card-title">{{c_name}}</div>
+                  <div class="card-review">{{c_review}}</div>
+                  <div class="card-price">{%- include 'product-price' -%}</div>
+                </div>
+                <div class="card-button-wrap">
+                  {{- c_quick_view -}}
+                  {{- c_cart       -}}
+                  {{- c_wishlist   -}}
+                </div>
+            {%- endcase -%}
+          </div>
+        </div>
+        {%- if card_style == 6 -%}{{- c_progress -}}{%- endif -%}
+        <div class="card-body text-{{ _text_align }}{% if product_type != 'list' and card_style == 6 %} hide{% endif %}">
+
+          {%- comment -%}
+            ============
+              Card Grid View
+            ============
+          {%- endcomment-%}
+          {%- unless product_type == 'list' -%}
+            <div class="card-body-grid">
+              {%- if card_style < 5 -%}
+                {{- c_swatch -}}
+                <div class="card-tags">{{c_tags}}</div>
+                <div class="card-title">{{c_name}}</div>
+                <div class="card-review">{{c_review}}</div>
+                <div class="card-price">{%- include 'product-price' -%}</div>
+                {%- if showShort_Description -%}{{- c_sh_description -}}{%- endif -%}
+                {{c_countdown}}
+              {%- endif -%}
+
+              {%- case card_style -%}
+                {%- when 1 -%}{%- if progress_position == 'bottom-2' -%}{{- c_progress -}}{%- endif -%}<div class="card-button">{{c_cart}}</div>
+                {%- when 5 -%}
+                  <div class="card-info-wrap">
+                    <div class="card-button-hover">
+                      {% comment %} <!-- by Alexey  -->
+                      {{- c_quick_view -}}
+                      {% endcomment %}
+                      
+                      {{- c_wishlist   -}}
+                    </div>
+                    {{- c_swatch -}}
+                    <div class="card-tags">{{c_tags}}</div>
+                  </div>
+                  <div class="card-title">{{c_name}}</div>
+                  <div class="card-review">{{c_review}}</div>
+                  <div class="card-button-wrap">
+                    <div class="card-price">{%- include 'product-price' -%}</div>
+                    <div class="card-button">{{c_cart}}</div>
+                  </div>
+                {%- when 7 -%}<div class="card-price">{%- include 'product-price' -%}</div>
+              {%- endcase -%}
+              {%- if showShort_Description and card_style >= 5 -%}{{- c_sh_description -}}{%- endif -%}
+              {%- if card_style >= 5 -%}{{c_countdown}}{%- endif -%}
+              {%- if progress_position == 'bottom' and product_type != 'list' -%}{{- c_progress -}}{%- endif -%}
+            </div>
+          {%- endunless -%}
+
+          {%- comment -%}
+            ============
+              Card List View
+            ============
+          {%- endcomment-%}
+
+          {%- if template contains 'collection' -%}
+            {%- case short_description -%}
+              {%- when 'list' -%}{%- assign showShort_Description = true  -%}
+              {%- when 'all'  -%}{%- assign showShort_Description = true  -%}
+              {%- when 'grid' -%}{%- assign showShort_Description = false -%}
+              {%- when 'hide' -%}{%- assign showShort_Description = false -%}
+              {%- else        -%}{%- assign showShort_Description = short_description -%}
+            {%- endcase -%}
+          {%- endif -%}
+
+          <div class="card-body-list{% unless product_type == 'list' %} hide{% endunless %}">
+            {%- if progress_position == 'top' and card_style != 4 -%}{{- c_progress -}}{%- endif -%}
+            {%- if card_style != 5 -%}
+                {{- c_swatch -}}
+                <div class="card-tags">{{c_tags}}</div>
+                <div class="card-title">{{c_name}}</div>
+                <div class="card-review">{{c_review}}</div>
+                <div class="card-price">{%- include 'product-price' -%}</div>
+                {%- if showShort_Description -%}{{- c_sh_description -}}{%- endif -%}
+                {{c_countdown}}
+            {%- endif -%}
+
+            {%- case card_style -%}
+              {%- when 4 -%}
+              {%- if progress_position == 'top' -%}
+                {{- c_progress -}}
+              {%- endif -%}
+                <div class="card-button">{{c_cart}}</div>
+              {%- when 5 -%}
+                {{- c_swatch -}}
+                <div class="card-info-wrap">
+                  <div class="card-button-hover">
+                    {{- c_quick_view -}}
+                    {{- c_wishlist   -}}
+                  </div>
+                  <div class="card-tags">{{c_tags}}</div>
+                </div>
+                <div class="card-title">{{c_name}}</div>
+                <div class="card-review">{{c_review}}</div>
+                <div class="card-button-wrap">
+                  <div class="card-price">{%- include 'product-price' -%}</div>
+                  <div class="card-button">{{c_cart}}</div>
+                </div>
+                {{c_countdown}}
+              {%- when 6 -%}
+                <div class="card-button">{{c_cart}}</div>
+            {%- endcase -%}
+            {%- if progress_position == 'bottom' -%}{{- c_progress -}}{%- endif -%}
+          </div>
+        </div>
+      </div>
+      {{- c_description_json -}}
+    </div>
+
+{%- endcase -%}
+
+{%- comment -%}  ============    Reset variables  ============{%- endcomment-%}
+{%- assign cart_btn_display = nil -%}

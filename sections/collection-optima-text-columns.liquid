@@ -1,0 +1,61 @@
+<div class="text-columns-wrapper">
+  <div class="container">
+  	{%- if section.settings.header_title != blank -%}
+      <div class="section-header">
+    	<h2>{{ section.settings.header_title }}</h2>
+      </div>
+    {%- endif -%}
+    
+    <div class="text-columns-container">
+      {%- if section.blocks.size > 0 -%}
+      	{%- assign index = 0 -%}
+      
+      	{%- for block in section.blocks -%}
+      	  {%- assign index = index | plus: 1 -%}
+      	  <div class="grid-column">
+      	    {%- if block.settings.title != blank -%}
+              <span><div class="column-indicator"></div>0{{ index }}</span>
+      		  <h3>{{ block.settings.title }}</h3>
+      	    {%- endif -%}
+          </div>
+      	{%- endfor -%}
+      {%- endif -%}
+      
+      {%- if section.settings.header_text != blank -%}
+      	<div class="text-wrap">
+          {{ section.settings.header_text }}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Optima Text Columns",
+    "settings": [
+	  {
+		 "type":"text",
+		 "id":"header_title",
+		 "label":"Heading"
+	  },
+	  {
+		 "type":"richtext",
+		 "id":"header_text",
+		 "label":"Text"
+	  }
+    ],
+	"blocks":[
+      {
+        "type":"text",
+        "name":"column",
+        "settings":[
+		  {
+		 	"type":"text",
+		 	"id":"title",
+		 	"label":"Title"
+	  	  }
+		]
+      }
+    ]
+  }
+{% endschema %}

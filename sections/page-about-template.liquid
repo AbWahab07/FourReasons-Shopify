@@ -1,0 +1,301 @@
+{%- include 'breadcrumb' -%}
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+
+{%- assign _lazyload        = settings.use_lazyload -%}
+{%- assign _banner_image    = section.settings.banner_image -%}
+{%- assign _content_padding = section.settings.content_padding -%}
+
+
+<div id="col-main" class="page-about-us" style="background-color:{{section.settings.background_color | default: 'rgba(0,0,0,0)' }};">
+  <div class="page-content">
+    {%- unless _banner_image == blank -%}
+      {%- assign _banner_content_padding = section.settings.content_padding -%}
+      {%- capture _banner_bg -%}{{_banner_image | img_url: '1920x'}}{%- endcapture -%}
+
+      <div class="page-heading-banner{% if _lazyload %} lazyload" data-bgset="{{_banner_bg}} 1920w{%- endif -%}">
+        <div class="container">
+          <div class="banner-content-container">
+            {%- assign _banner_heading      = section.settings.heading -%}
+            {%- assign _heading_size        = section.settings.heading_font_size -%}
+            {%- assign _banner_content      = section.settings.content -%}
+            {%- assign _banner_hor_align    = section.settings.hor_align -%}
+            {%- assign _banner_content_max  = section.settings.content_max_width -%}
+
+            <div class="banner-content-inner text-{{_banner_hor_align}}">
+              <div class="banner-heading h{{_heading_size}}">{{_banner_heading}}</div>
+              <div class="banner-content">{{_banner_content}}</div>
+
+              <div class="social-content">
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'social' -%}
+                    <div class="social-icon"{{block.shopify_attributes}}>
+                      {%- assign _social_icon = block.settings.social_icon -%}
+                      {%- assign _social_link = block.settings.social_link | default: 'javascript:void(0);' -%}
+                      {%- unless _social_icon == blank -%}
+                        <a href="{{_social_link}}">
+                          {%- include 'icons', type: 'icon_free', name: _social_icon -%}
+                        </a>
+                      {%- endunless -%}
+                    </div>
+                  {%- endif -%}
+
+                {%- endfor -%}
+              </div>
+            </div>
+          </div>
+        </div>
+        <style>
+          {%- include 'css-responsive', classID: '.page-heading-banner', css_value: _content_padding -%}
+          {%- include 'css-responsive', classID: '.page-heading-banner .banner-content-container', css_value: _banner_content_max, css_property: 'max-width' -%}
+          {%- unless _lazyload -%}.page-heading-banner{background-image: url({{_banner_bg}});}{%- endunless -%}
+        </style>
+      </div>
+    {%- endunless -%}
+    {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+        {%- if section.blocks.size > 0 -%}
+          <div class="row">
+            {%- for block in section.blocks -%}
+              {%- assign block_type = block.type -%}
+              {%- unless block_type == 'social' -%}
+              {%- assign _b_hor_align    = block.settings.hor_align -%}
+              {%- assign _b_ver_align    = block.settings.ver_align -%}
+
+                {%- capture b_class -%}{%- include 'set-width-bootstrap',in_type: 'width', number: block.settings.width_resp -%}{{_out}}{%- endcapture -%}
+                {%- capture _blockID -%}.block-{{block_type}}.block-id-{{block.id}}{%- endcapture -%}
+                {%- capture _blockAlign -%}
+                  {%- unless _b_hor_align == blank -%}{{_b_hor_align | prepend: ' text-' }}{%- endunless -%}
+                  {%- unless _b_ver_align == blank -%}{{_b_ver_align | prepend: ' align-' }}{%- endunless -%}
+                {%- endcapture -%}
+
+                <div class="{{b_class}}{{_blockAlign}}"{{block.shopify_attributes}}>
+                  <div class="item-content block-{{block_type}} block-id-{{block.id}}">
+
+                  {%- case block_type -%}
+                    {%- when 'image' -%}{%- include 'image-style', image: block.settings.image -%}
+
+                    {%- when 'text' -%}
+                      {%- assign _b_heading       = block.settings.heading -%}
+                      {%- assign _b_content       = block.settings.content -%}
+                      {%- assign _b_item_padding  = block.settings.item_padding -%}
+                      {%- assign _b_heading_size  = block.settings.heading_font_size -%}
+
+                      {%- unless _b_heading == blank -%}
+                        <div class="heading h{{_b_heading_size}}">{{_b_heading}}</div>
+                      {%- endunless -%}
+
+                      {%- unless _b_content == blank -%}
+                        <div class="content">{{_b_content}}</div>
+                      {%- endunless -%}
+
+                      {%- unless _b_item_padding == blank -%}
+                        <style>{%- include 'css-responsive', classID: _blockID, css_value: _b_item_padding -%}</style>
+                      {%- endunless -%}
+                    {%- else -%}
+                  {%- endcase -%}
+
+                  </div>
+                </div>
+              {%- endunless -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+    {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+   "name":"About Page",
+   "tag": "section",
+   "max_blocks":50,
+   "settings":[
+      {
+         "type":"header",
+         "content":"Layout"
+      },
+      {
+        "type":"checkbox",
+        "id":"boxed_layout",
+        "label":"Boxed layout",
+        "default": true
+      },
+      {
+         "type":"color",
+         "id":"background_color",
+         "label":"Background color",
+         "default": "rgba(0,0,0,0)"
+      },
+      {
+         "type":"header",
+         "content": "Heading Banner"
+      },
+      {
+         "type":"image_picker",
+         "id"   :"banner_image",
+         "label":"Banner Image"
+      },
+      {
+         "type":"text",
+         "id"   :"heading",
+         "label":"Heading content"
+      },
+      {
+         "type":"range",
+         "id"   :"heading_font_size",
+         "label":"Heading font size (h1-h6)",
+         "min"   :1,
+         "max"   :6,
+         "default":3
+      },
+      {
+         "type":"textarea",
+         "id"   :"content",
+         "label":"Content"
+      },
+      {
+        "type":"select",
+        "id":"hor_align",
+        "label":"Horizontal alignment",
+        "default":"center",
+        "options":[
+          {"value":"left","label":"Left"},
+          {"value":"center","label":"Center"},
+          {"value":"right","label":"Right"}
+        ]
+      },
+      {
+        "type":"text",
+        "id":"content_max_width",
+        "label":"Content Max width",
+        "placeholder":"E.g: 5px 20px 5px 20px",
+        "info":"Support breakpoint"
+      },
+      {
+        "type":"text",
+        "id":"content_padding",
+        "label":"Content Padding",
+        "placeholder":"E.g: 5px 20px 5px 20px",
+        "info":"Order: Top Right Bottom Left"
+      }
+   ],
+   "blocks":[
+   {
+      "type":"image",
+      "name":"Image",
+      "settings": [
+        {
+           "type":"image_picker",
+           "id"   :"image",
+           "label":"Image"
+        },
+        {
+           "type":"text",
+           "id"   :"width_resp",
+           "label":"Width (1->12)",
+           "placeholder": "xl,lg,md,sm,xs,xxs",
+           "info": "0 to hide. E.g: 4,6,12",
+           "default": "6,12"
+        }
+      ]
+   },
+   {
+      "type":"text",
+      "name":"Text",
+      "settings": [
+        {
+          "type":"text",
+          "id"   :"heading",
+          "label":"Heading content"
+        },
+        {
+           "type":"range",
+           "id"   :"heading_font_size",
+           "label":"Heading font size (h1-h6)",
+           "min"   :1,
+           "max"   :6,
+           "default":4
+        },
+        {
+          "type":"textarea",
+          "id"   :"content",
+          "label":"Content"
+        },
+        {
+          "type":"select",
+          "id":"hor_align",
+          "label":"Horizontal alignment",
+          "default":"center",
+          "options":[
+            {
+              "value":"left",
+              "label":"Left"
+            },
+            {
+              "value":"center",
+              "label":"Center"
+            },
+            {
+              "value":"right",
+              "label":"Right"
+            }
+          ]
+        },
+        {
+          "type":"select",
+          "id":"ver_align",
+          "label":"Vertical alignment",
+          "default":"top",
+          "options":[
+            {
+              "value":"top",
+              "label":"Top"
+            },
+            {
+              "value":"center",
+              "label":"Middle"
+            },
+            {
+              "value":"bottom",
+              "label":"Bottom"
+            }
+          ]
+        },
+        {
+           "type":"text",
+           "id"   :"width_resp",
+           "label":"Width (1->12)",
+           "placeholder": "xl,lg,md,sm,xs,xxs",
+           "info": "0 to hide. E.g: 4,6,12",
+           "default": "6,12"
+        },
+        {
+          "type":"text",
+          "id":"item_padding",
+          "label":"Item Padding",
+          "placeholder":"E.g: 5px 20px 5px 20px",
+          "info":"Order: Top Right Bottom Left"
+        }
+      ]
+   },
+   {
+      "type":"social",
+      "name":"Social icon",
+         "limit": 10,
+      "settings": [
+        {
+           "type":"text",
+           "id"   :"social_icon",
+           "label":"Social font icon name",
+           "default": "icon-uni0E14"
+        },
+        {
+           "type":"url",
+           "id"   :"social_link",
+           "label":"Social icon link"
+        }
+      ]
+    }
+   ]
+}
+{% endschema %}

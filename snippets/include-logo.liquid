@@ -1,0 +1,48 @@
+{%- if type == 'mobile' -%}
+	{%- assign _logo_tempo	 	= section.settings.logo_mobi | default: section.settings.logo -%}
+	{%- assign _logo_size 	 	= section.settings.mobile_logo_max_width | remove: 'px' | append: 'x' -%}
+	{%- assign _logo_size_2x  	= section.settings.mobile_logo_max_width | remove: 'px' | times: 2 | append: 'x' -%}
+	{%- assign _logo_size_max 	= section.settings.mobile_logo_max_width | remove: 'px' | append: 'px'-%}
+
+	{%- case settings.mobi_header_overlay -%}
+		{%- when 'homepage' 	-%}{%- if template == 'index' -%}{%- assign _logo = settings.logo_overlay_mobi | default: _logo_tempo -%}{%- endif -%}
+		{%- when 'all_pages' 	-%}{%- assign _logo = settings.logo_overlay_mobi | default: _logo_tempo -%}
+		{%- else 				-%}{%- assign _logo = _logo_tempo -%}
+	{%- endcase -%}
+
+{%- elsif type == 'block' -%}
+	{%- assign _logo 		 	= block.settings.logo -%}
+	{%- assign _logo_size 	 	= block.settings.logo_max_width | remove: 'px' | append: 'x' -%}
+	{%- assign _logo_size_2x  	= block.settings.logo_max_width | remove: 'px' | times: 2 | append: 'x' -%}
+	{%- assign _logo_size_max 	= block.settings.logo_max_width | remove: 'px' | append: 'px' -%}
+{%- else -%}
+	{%- assign _logo 		 	= section.settings.logo -%}
+	{%- assign _logo_size 	 	= section.settings.logo_max_width | remove: 'px' | append: 'x' -%}
+	{%- assign _logo_size_2x  	= section.settings.logo_max_width | remove: 'px' | times: 2 | append: 'x' -%}
+	{%- assign _logo_size_max 	= section.settings.logo_max_width | remove: 'px' | append: 'px' -%}
+
+	{%- if type == 'sticky' -%}
+		{%- assign _logo = settings.logo_fixed | default: section.settings.logo -%}
+	{%- endif -%}
+
+	{%- case settings.desk_h_overlay -%}
+		{%- when 'homepage' -%}
+			{%- if template == 'index' -%}
+				{%- assign _logo = settings.logo_overlay | default: section.settings.logo -%}
+			{%- endif -%}
+		{%- when 'all_pages' -%}
+			{%- assign _logo = settings.logo_overlay | default: section.settings.logo -%}
+	{%- endcase -%}
+
+{%- endif -%}
+
+<div class="header-logo">
+	{%- unless _logo == blank -%}
+		<a href="/" title="{{ shop.name | escape }}" class="logo-site">
+			<noscript><img src="{{ _logo | img_url: _logo_size }}" style="max-width: {{ _logo_size_max }};" /></noscript>
+			<img {% if _lazyload %}class="lazyload" data-srcset="{{ _logo | img_url: _logo_size }} 1x,{{ _logo | img_url: _logo_size_2x }} 2x"{% else %} src="{{ _logo | img_url: _logo_size }}"{% endif %} alt="{{ shop.name | escape }}" style="max-width: {{ _logo_size_max }};" />
+		</a>
+	{%- else -%}
+		<h1><a href="/">{{ shop.name | split: ' ' | first | strip | capitalize }}</a></h1>
+	{%- endunless -%}
+</div>

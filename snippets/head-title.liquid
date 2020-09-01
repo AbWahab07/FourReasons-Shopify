@@ -1,0 +1,119 @@
+{%- assign _title 		= _title 		| default: section.settings.heading_text 		-%}
+{%- assign _subtitle 	= _subtitle 	| default: section.settings.subheading_text 	-%}
+{%- assign _subtitle2 	= _subtitle2 	| default: section.settings.subheading2_text 	-%}
+
+{%- if type == 'css_heading' -%}
+	{%- assign s_sectionIMG_pos 		= settings.heading_section_img_pos -%}
+	{%- assign head_mb 					= settings.heading_margin -%}
+	{%- assign sub1_mb 					= settings.subheading_margin -%}
+	{%- assign sub2_mb 					= settings.subheading2_margin -%}
+	{%- assign head_container_mb		= settings.heading_container_margin -%}
+	{%- assign head_secimg_max_width 	= settings.heading_section_img_max_width -%}
+	{%- assign head_secimg_margin 		= settings.heading_section_img_margin -%}
+
+	{%- assign head_size = settings.heading_section_size -%}
+	{%- assign sub1_size = settings.subheading_section_size -%}
+	{%- assign sub2_size = settings.subheading2_section_size -%}
+
+	{%- capture section_title_id -%}.section-heading.title-wrapper{%- endcapture -%}
+
+	{%- include 'css-responsive', classID: section_title_id, css_value: head_container_mb, css_property: 'margin' -%}
+	{%- include 'css-responsive', classID: section_title_id, nextClassID: ' .title'		, css_value: head_mb, css_property: 'margin' -%}
+	{%- include 'css-responsive', classID: section_title_id, nextClassID: ' .subtitle'	, css_value: sub1_mb, css_property: 'margin' -%}
+	{%- include 'css-responsive', classID: section_title_id, nextClassID: ' .subtitle-2', css_value: sub2_mb, css_property: 'margin' -%}
+
+	{%- unless head_size contains 'h' -%}{%- include 'css-responsive', classID: section_title_id, nextClassID: ' .title' 	 , css_value: head_size, css_property: 'font-size' -%}{%- endunless -%}
+	{%- unless sub1_size contains 'h' -%}{%- include 'css-responsive', classID: section_title_id, nextClassID: ' .subtitle'	 , css_value: sub1_size, css_property: 'font-size' -%}{%- endunless -%}
+	{%- unless sub2_size contains 'h' -%}{%- include 'css-responsive', classID: section_title_id, nextClassID: ' .subtitle-2', css_value: sub2_size, css_property: 'font-size' -%}{%- endunless -%}
+
+	{%- if settings.heading_section_image != blank -%}
+		{%- include 'css-responsive', classID: section_title_id, nextClassID: ' .section-heading-img', css_value: head_secimg_margin, css_property: 'margin' -%}
+		{%- if s_sectionIMG_pos == '5' or s_sectionIMG_pos == '6' -%}
+			{%- include 'css-responsive', classID: section_title_id, nextClassID: ' .section-heading-img', css_value: head_secimg_max_width, css_property: 'width' -%}
+		{%- else -%}
+			{%- include 'css-responsive', classID: section_title_id, nextClassID: ' .section-heading-img > div', css_value: head_secimg_max_width, css_property: 'max-width' -%}
+		{%- endif -%}
+	{%- endif -%}
+
+{%- else -%}
+	{%- capture _section_heading_size -%}{{- _title -}}{{- _subtitle -}}{{- _subtitle2 -}}{%- endcapture -%}
+
+	{%- unless _section_heading_size.size == 0 -%}
+		{%- assign _title_alignment 		= _title_alignment | default: section.settings.heading_content_align -%}
+		{%- assign s_heading_style 			= s_heading_style | default: settings.section_heading_style -%}
+		{%- assign s_heading_sectionIMG 	= settings.heading_section_image -%}
+		{%- assign s_sectionIMG_pos 		= settings.heading_section_img_pos -%}
+		{%- assign s_head_size 				= settings.heading_section_size -%}
+		{%- assign s_sub1_size 				= settings.subheading_section_size -%}
+		{%- assign s_sub2_size 				= settings.subheading2_section_size -%}
+		{%- assign s_head_fw 				= s_head_fw | default: settings.section_heading_f_weight -%}
+		{%- assign s_sub1_fw 				= s_sub1_fw | default: settings.section_subheading_f_weight -%}
+		{%- assign s_sub2_fw 				= settings.section_subheading2_f_weight -%}
+		{%- assign s_head_ff 				= s_head_ff | default: settings.heading_section_ff -%}
+		{%- assign s_sub1_ff 				= s_sub1_ff | default: settings.subheading_section_ff -%}
+		{%- assign s_sub2_ff 				= settings.subheading2_section_ff -%}
+		{%- assign s_head_color    			= section.settings.section_heading_color 		| default: 'rgba(0,0,0,0)' -%}
+		{%- assign s_sub1_color 			= section.settings.section_subheading_color 	| default: 'rgba(0,0,0,0)' -%}
+		{%- assign s_sub2_color 			= section.settings.section_subheading2_color 	| default: 'rgba(0,0,0,0)' -%}
+
+		{%- capture s_head_class -%}fw-{{s_head_fw}} {{s_head_ff}}{% if s_head_size contains 'h' %} {{ s_head_size }}{% endif %}{%- endcapture -%}
+		{%- capture s_sub1_class -%}fw-{{s_sub1_fw}} {{s_sub1_ff}}{% if s_sub1_size contains 'h' %} {{ s_sub1_size }}{% endif %}{%- endcapture -%}
+		{%- capture s_sub2_class -%}fw-{{s_sub2_fw}} {{s_sub2_ff}}{% if s_sub2_size contains 'h' %} {{ s_sub2_size }}{% endif %}{%- endcapture -%}
+
+		{%- capture sHeading_IMG -%}
+			{%- if s_heading_sectionIMG != blank and section.settings.block_heading_style != 'default' -%}
+				<div class="section-heading-img{% if s_sectionIMG_pos == '5' or s_sectionIMG_pos == '6' %} d-inline-block align-{{settings.heading_section_img_align}}{% endif %}">
+					<div class="section-img-inner">{%- include 'image-style', image: s_heading_sectionIMG -%}</div>
+				</div>
+			{%- endif -%}
+		{%- endcapture -%}
+
+		{%- capture section_heading_class -%}text-{{_title_alignment}}{{extended_class}}{%- endcapture -%}
+
+		{%- if s_heading_style != '0' -%}
+			{%- assign section_heading_class = section_heading_class | append: ' style-' | append: s_heading_style -%}
+		{%- endif -%}
+
+		{%- if s_heading_sectionIMG != blank -%}
+			{%- assign section_heading_class = section_heading_class | append: ' simg-style-' | append: s_sectionIMG_pos -%}
+		{%- endif -%}
+
+		<div class="section-heading title-wrapper {{section_heading_class}}" style="margin-bottom: 0px;font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 45px; line-height: 110%; color: #262728;">
+			{%- if s_sectionIMG_pos == '1' -%}{{sHeading_IMG}}{%- endif -%}
+
+			{%- unless _title == blank -%}
+				<div class="title instafeed-title {{s_head_class}}"{% if s_head_color != 'rgba(0,0,0,0)'%} style="color:{{s_head_color}};"{% endif %}>
+					<span>{{- _title -}}</span>
+					{%- if s_sectionIMG_pos == '6' -%}{{sHeading_IMG}}{%- endif -%}
+				</div>
+			{%- endunless -%}
+			{%- if s_sectionIMG_pos == '2' -%}{{sHeading_IMG}}{%- endif -%}
+
+			{%- if s_heading_style == '8' -%}<div class="subtitle-container">{%- endif -%}
+
+			{%- unless _subtitle == blank -%}
+				<div class="subtitle instafeed-subtitle {{s_sub1_class}}"{% if s_sub1_color != 'rgba(0,0,0,0)' %} style="color:{{s_sub1_color}};"{% endif %}>
+					{%- if s_sectionIMG_pos == '5' -%}{{sHeading_IMG}}{%- endif -%}
+					<span>{{- _subtitle -}}</span>
+				</div>
+			{%- endunless -%}
+
+			{%- if s_sectionIMG_pos == '3' -%}{{sHeading_IMG}}{%- endif -%}
+
+			{%- unless _subtitle2 == blank -%}
+				<div class="subtitle-2 {{s_sub2_class}}"{% if s_sub2_color != 'rgba(0,0,0,0)' %} style="color:{{s_sub2_color}};"{% endif %}>{{ _subtitle2 }}</div>
+			{%- endunless -%}
+			{%- if s_sectionIMG_pos == '4' -%}{{sHeading_IMG}}{%- endif -%}
+
+			{%- if s_heading_style == '8' -%}</div>{%- endif -%}
+
+			{%- if button_section == 'under_heading' -%}
+				{%- include 'include-button', btn_type: 'section' -%}
+			{%- endif -%}
+		</div>
+	{%- endunless -%}
+{%- endif -%}
+
+{%- assign _title 		= nil -%}
+{%- assign _subtitle 	= nil -%}
+{%- assign _subtitle2 	= nil -%}

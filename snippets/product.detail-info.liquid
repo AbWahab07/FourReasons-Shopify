@@ -1,0 +1,76 @@
+<div class="product-info-inner">
+  {%- if section.settings.enable_pre_order_button -%}
+    <div class="pre-order-success hide alert alert-success" role="alert">{{ 'products.product.pre_order_alert' | t }}</div>
+  {%- endif -%}
+  
+  <p class='product-info-type' style="color: {{ _type_font_color }};">
+  {%- if _type_class == 'type-color-mask' -%}
+    Four Reasons Color Mask
+  {%- elsif _type_class == 'type-nature' -%}
+    Four Reasons Nature
+  {%- elsif _type_class == 'type-optima' -%}
+    Four Reasons Optima
+  {%- else -%}  
+    Four Reasons Professional
+  {%- endif -%}
+  </p>
+
+  <p class='product-info-name'>
+    {{ product.title }}
+  </p>
+
+  <p class='product-info-short-description'>
+    {{ product.metafields.product.sub_title }}
+  </p>
+</div>
+
+{% comment %}
+<div class="product-info-inner">
+  <div>
+    {%- if section.settings.enable_pre_order_button -%}
+      <div class="pre-order-success hide alert alert-success" role="alert">{{ 'products.product.pre_order_alert' | t }}</div>
+    {%- endif -%}
+
+    {%- if section.settings.breadcrumb_in_info_column -%}{%- include 'breadcrumb' -%}{%- endif -%}
+    {%- include 'product.detail-snippet', ptype: 'title' -%}
+
+    {%- unless _product_layout == 'booking' -%}
+      {%- include 'product.detail-snippet', ptype: 'price' -%}
+    {%- endunless -%}
+
+    {%- include 'product.detail-snippet', ptype: 'review' -%}
+
+    {%- include 'product.detail-snippet', ptype: 'short-description' -%}
+
+    {%- include 'product.detail-snippet', ptype: 'countdown' -%}
+
+    {%- include 'product.detail-snippet', ptype: 'size-guide' -%}
+
+    {%- if _product_layout != 'fixed-center' and _product_layout != 'image-center' -%}
+        
+      {%- if _product_layout != 'booking' -%}
+        {%- include 'product.detail-info-form' -%}
+
+        {%- include 'product.detail-snippet', ptype: 'wishlist' -%}
+
+        {%- include 'product.detail-snippet', ptype: 'compare' -%}
+
+        {%- include 'product.detail-snippet', ptype: 'brand' -%}
+
+        {%- include 'product.detail-snippet', ptype: 'sku' -%}
+
+        {%- include 'product.detail-snippet', ptype: 'categories' -%}
+
+        {%- include 'product.detail-snippet', ptype: 'tags' -%}
+
+        {%- include 'product.detail-snippet', ptype: 'social_share' -%}
+      {%- endif -%}
+
+      {%- include 'fomo-notify' -%}
+
+      {%- if _tabStyle == 4 and _product_layout != 'booking' -%}{%- include 'product.detail-snippet', ptype: 'tabs' -%}{%- endif -%}
+    {%- endif -%}
+
+  </div>
+</div>
+{% endcomment %}

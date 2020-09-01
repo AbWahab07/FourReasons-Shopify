@@ -1,0 +1,37 @@
+{%- for block in section.blocks -%}
+  {%- if block.type == 'coupon' -%}
+
+    {%- assign _coupon_code = block.settings.coupon_code -%}
+    {%- assign _text_1      = block.settings.text_1 -%}
+    {%- assign _text_2      = block.settings.text_2 -%}
+    {%- assign _button_text = block.settings.button_text -%}
+
+    <div class="subscribe-result{% if _bg_image != blank %} bg-img{% if _lazyload %} lazyload" data-bgset="{{bg_lazyload}} 1024w{% endif %}{% endif %}" style="display: none;">
+      <div class="result-inner">
+        {%- unless _text_1 == blank -%}
+          <div class="text-1 fw-{{block.settings.text_fw_1}}" style="color: {{block.settings.text_1_color}};">{{ _text_1 }}</div>
+        {%- endunless -%}
+
+        <div class="coupon-code">
+          {%- unless _text_2 == blank -%}
+            <div class="text-2 fw-{{block.settings.text_fw_2}}" style="color: {{block.settings.text_2_color}};">{{ _text_2 }}</div>
+          {%- endunless -%}
+          {%- unless _coupon_code == blank -%}
+            <div id="mycode" class="code fw-{{block.settings.text_fw_3}}" style="color: {{block.settings.text_3_color}};">{{ _coupon_code }}</div>
+          {%- endunless -%}
+        </div>
+
+        {%- if _coupon_code != blank and _button_text != blank -%}
+          <button type="button" class="btn btn-{{block.settings.btn_inherit}} btn-copy">{{ _button_text }}</button>
+        {%- endif -%}
+      </div>
+    </div>
+    {%- capture block_css -%}
+      {%- include 'css-responsive', classID: '#newsletter_popup .subscribe-result .text-1',css_value: block.settings.text_fs_1 ,css_property: 'font-size' -%}
+      {%- include 'css-responsive', classID: '#newsletter_popup .subscribe-result .text-2',css_value: block.settings.text_fs_2 ,css_property: 'font-size' -%}
+      {%- include 'css-responsive', classID: '#newsletter_popup .subscribe-result .code'  ,css_value: block.settings.text_fs_3 ,css_property: 'font-size' -%}
+    {%- endcapture -%}
+    {%- assign section_css = section_css | append: block_css -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}

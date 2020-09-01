@@ -1,0 +1,97 @@
+{%- capture _product_image_class -%}{% if _product_img_pos == 'right' %} float-lg-right{% endif %}{% if product.images.size > 1 and _thumb_pos != blank %} thumbnail-position-{{_thumb_pos}}{% endif %}{%- endcapture -%}
+
+<div id="product-detail_content" class="product-content-wrapper row">
+
+  {%- case _product_layout -%}
+    {%- when 'booking' -%}
+      {%- if _product_img_pos == 'right' -%}
+        {%- assign _block_content_order1 = ' order-md-3' -%}
+        {%- assign _block_content_order2 = ' order-md-1' -%}
+        {%- assign _block_content_order3 = ' order-md-2' -%}
+      {%- else -%}
+        {%- assign _block_content_order1 = ' order-md-1' -%}
+        {%- assign _block_content_order2 = ' order-md-3' -%}
+        {%- assign _block_content_order3 = ' order-md-2' -%}
+      {%- endif -%}
+
+      <div id="product-image" class="product-image col-lg-4 col-12{{_block_content_order1}}{% if product.images.size > 1 and _thumb_pos != blank %} thumbnail-position-{{_thumb_pos}}{% endif %}">
+        {%- include 'product.detail-image' -%}
+      </div>
+
+      <div id="product-info" class="product-info col-lg-3 col-md-6 col-12{{_block_content_order2}}">
+        <div class="product-info-inner">{%- include 'product.detail-info-form' -%}</div>
+      </div>
+
+      <div class="col-lg-5 col-md-6 col-12{{_block_content_order3}}">{%- include 'product.detail-info' -%}</div>
+
+    {%- when 'fixed-center' -%}
+      <div id="product-image" class="product-image col-lg-4 col-12 order-lg-2">
+        {%- include 'product.detail-image' -%}
+      </div>
+      <div id="product-info" class="product-info-null col-lg-4 col-12 order-lg-1" style="text-align: left;">
+        {%- include 'product.detail-info' -%}
+      </div>
+
+      <div id="product-form-null" class="col-lg-4 col-12 order-lg-3" style="text-align: left;">
+        <div class="product-form-inner-null">
+          {%- include 'product.detail-info-form' -%}
+        </div>
+      </div>
+      
+    {%- when 'image-center' -%}
+      {%- assign p_image_class = p_image_class | append: _product_image_class -%}
+
+      <div id="product-image" class="product-image col-lg-6 col-12 order-lg-2 {{ p_image_class }}">
+        {%- include 'product.detail-image' -%}
+      </div>
+
+      <div id="product-info" class="product-info col-lg-3 col-12 order-lg-1">
+        {%- include 'product.detail-info' -%}
+      </div>
+
+      <div id="product-form" class="col-lg-3 col-12 order-lg-3">
+        <div class="product-form-inner">
+          {%- include 'product.detail-info-form' -%}
+        </div>
+      </div>
+
+    {%- when 'small-image' -%}
+      {%- assign p_image_class = p_image_class | append: _product_image_class -%}
+
+      {%- if section.settings.small_type != '3' -%}
+
+        <div id="product-image" class="product-image {{p_image_class}}">{%- include 'product.detail-image' -%}</div>
+        <div id="product-info" class="product-info {{p_info_class}}">{%- include 'product.detail-info' -%}</div>
+      {%- else -%}
+
+        <div class="col-lg-9 col-12">
+          <div class="row">
+            <div id="product-image" class="product-image {{p_image_class}}">{%- include 'product.detail-image' -%}</div>
+            <div id="product-info" class="product-info {{p_info_class}}">{%- include 'product.detail-info' -%}</div>
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- include 'product.detail-sidebar' -%}
+
+    {%- else -%}
+
+      {%- assign p_image_class = p_image_class | append: _product_image_class -%}
+
+      <div id="product-image" class="product-image {{p_image_class}}">{%- include 'product.detail-image' -%}</div>
+      <div id="product-info" class="product-info {{p_info_class}}">{%- include 'product.detail-info' -%}</div>
+  {%- endcase -%}
+
+
+</div>
+
+<div id="product-detail_tabs">
+  {%- if _product_bundled_style == 1 -%}{%- include 'product.detail-snippet', ptype: 'bundled' -%}{%- endif -%}
+  {%- if _tabStyle < 4 -%}{%- include 'product.detail-snippet', ptype: 'tabs' -%}{%- endif -%}
+  {%- if _review_pos == 'block' -%}{%- include 'product.detail-snippet', ptype: 'review_tab' -%}{%- endif -%}
+</div>
+
+<div class="product-detail_steps">
+  {%- include 'product-detail-steps' -%}
+</div>
+<div class="clearfix"></div>

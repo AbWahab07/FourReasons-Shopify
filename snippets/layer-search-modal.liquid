@@ -1,0 +1,63 @@
+{%- assign search_unavailable_result = settings.unavailable_result -%}
+
+{%- if settings.search_option == 'products' -%}
+  {%- assign search_type = 'product' -%}
+{%- else -%}
+  {%- assign search_type = 'product,page,article' -%}
+{%- endif -%}
+
+{%- if settings.show_search -%}
+
+  {%- if type == 'search_template' -%}
+    {%- if search_category and collections.size > 0 -%}
+      <select name="search_category" id="search__category">
+        {% for collection in collections %}
+        <option value="{{collection.handle}}">{{collection.title}}</option>
+        {% endfor %}
+      </select>
+    {%- endif -%}
+    <form class="navbar-form search" action="/search" method="get">
+      <input type="hidden" name="type" value="{{search_type}}"/>
+      <input type="hidden" name="options[unavailable_products]" value="{{search_unavailable_result}}"/>
+      <input type="hidden" name="options[prefix]" value="last"/>
+      <input type="text" name="q" class="form-control"  placeholder="{{ 'search.general.search_placeholder' | t }}" autocomplete="off" />
+      <button type="submit" class="search-icon">{% include 'icons', type: 'icon_type', f: 'search' %}</button>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i></i></button>
+    </form>
+    <div class="result-ajax-search"><ul class="search-results"></ul></div>
+
+  {%- elsif type == 'search_mobile_template' -%}    
+    <form class="navbar-form search" action="/search" method="get">
+      <input type="text" class="form-control"  placeholder="{{ 'search.general.search_placeholder' | t }}" autocomplete="off" id="input-search--mobile"/>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i></i></button>
+    </form>
+
+  {%- else -%}
+    <div class="modal fade animated modal-ui-element" id="searchModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="searchbox modal-content">
+
+          <div class="content-wrapper">
+            <form id="search" class="navbar-form search" action="/search" method="get">
+              <input type="hidden" name="type" value="{{search_type}}"/>
+              <input type="hidden" name="options[unavailable_products]" value="{{search_unavailable_result}}" />
+              <input type="hidden" name="options[prefix]" value="last" />
+
+              {% comment %}<button type="button" class="close d-md-none" data-dismiss="modal" aria-label="Close">{% include 'icons', type: 'icon_free', name: 'icon-left-big-1' %}</button>{% endcomment %}
+
+              <input id="bc-product-search" name="q" type="text" class="form-control"  placeholder="{{ 'search.general.search_placeholder' | t }}" autocomplete="off" />
+              {% comment %}<button type="submit" class="search-icon">{% include 'icons', type: 'icon_type', f: 'search' %}</button>{% endcomment %}
+
+              <button type="button" class="close" aria-label="Close"></button>
+            </form>
+            <div class="result-ajax-search">
+              <ul class="search-results"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {%- capture block_css -%}.search-results:empty{padding: 0 !important;}{%- endcapture -%}
+    {%- assign section_css = section_css | append: block_css -%}
+  {%- endif -%}
+{%- endif -%}

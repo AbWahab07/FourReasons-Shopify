@@ -1,0 +1,424 @@
+{%- capture sb_title -%}sb-title h{{section.settings.heading_sb_size}} {{section.settings.heading_sb_ff}}{%- endcapture -%}
+{%- capture sb_content -%}{% if _filters_style == 'accordion' %} sb-content-accordion hide{% endif %}{%- endcapture -%}
+{%- capture sb_block_id -%}.sb-block-{{block.id}}{%- endcapture -%}
+
+{%- if _filters_style == 'toggle' and _catalog_sb_placement == 'none' -%}
+  {%- assign _w = ' col-lg-' | append: block.settings.toggle_width -%}
+{%- endif -%}
+
+{%- case block.type -%}
+
+  {%- when 'filter_group' -%}
+    {%- if _filter_pos == 'sidebar_filter' and section.settings.sb_filters == 'groups' -%}
+      <div class="sb-widget d-none d-lg-block sb-filters" data-filter="{{_filters_style}}" data-prefix="{{block.settings.filter_prefix | handle | strip}}"{{ block.shopify_attributes }}>
+        {%- include 'filter-group' -%}
+      </div>
+      {%- assign no_sidebar_blocks = false -%}
+    {%- endif -%}
+
+  {%- when 'categories' -%}
+    <div class="sb-widget{% if block.settings.show_border %} has-border{% endif %}{{_w}} sb-block-{{block.id}}"{{ block.shopify_attributes }}>
+      <div class="sb-menu">
+
+        {%- unless block.settings.sb_categories_title == blank -%}
+          <p class="{{sb_title}}">{{ block.settings.sb_categories_title }}</p>
+        {%- endunless -%}
+
+        <ul class="categories-menu">
+          {%- assign categories_items_count = block.settings.sb_categories_items_count | default: false -%}
+
+          {%- if block.settings.sb_categories_type == 'categories' -%}
+            {%- assign collection_cur = collection.handle -%}
+            {%- for _collection in collections limit: block.settings.sb_categories_limit -%}
+              {%- unless _collection.handle == 'frontpage'  -%}
+                <li class="{% if _collection.handle == collection_cur %}match{% endif %}">
+                  <a href="{{ _collection.url }}">{{ _collection.title }}
+                  {%- if categories_items_count and _collection.products_count > 0 -%}<span>({{ _collection.products_count }})</span>{%- endif -%}
+                  </a>
+                </li>
+              {%- endunless -%}
+            {%- endfor -%}
+
+          {%- elsif block.settings.sb_categories_menu != blank -%}
+
+            {%- for l in linklists[block.settings.sb_categories_menu].links limit: block.settings.sb_categories_limit -%}
+              {%- assign submenu    = l.title | handleize -%}
+
+              {%- if linklists[submenu].links.size > 0 -%}
+                {%- include 'sb-dropdown-menu',no_icon: true -%}
+              {%- else -%}
+                <li {% if l.active %} class="match"{% endif %}>
+                  <a href="{{ l.url }}">
+                    {{- l.title -}}
+                    {%- if categories_items_count and l.type == 'collection_link' and l.object.all_products_count > 0 -%}
+                      <span>({{ l.object.all_products_count }})</span>
+                    {%- endif -%}
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+
+          {%- else -%}
+            {%- for i in (1..5) -%}
+              <li class="list-item"><a href="javascript:void(0);">Id cursus metus aliquam</a></li>
+            {%- endfor -%}
+          {%- endif -%}
+        </ul>
+
+      </div>
+    </div>
+
+    {%- capture block_css -%}
+      {%- include 'css-responsive' ,classID: sb_block_id, nextClassID: ' .categories-menu' css_value: block.settings.block_max_height ,css_property: 'max-height' -%}
+    {%- endcapture -%}
+    {%- assign section_css = section_css | append: block_css -%}
+    {%- assign no_sidebar_blocks = false -%}
+
+  {%- when 'products-listing' -%}
+    {%- assign _listing_col               = block.settings.sb_latest_product_col -%}
+    {%- assign _listing_collection        = collections[_listing_col] -%}
+    {%- assign _listing_title             = block.settings.sb_latest_product_title -%}
+    {%- assign _style                     = block.settings.list_type -%}
+    {%- assign _limit                     = block.settings.sb_latest_product_limit -%}
+
+    <div class="sb-widget{{_w}} sb-block-{{block.id}}"{{ block.shopify_attributes }}>
+      <div class="sb-product">
+
+        {% unless _listing_title == blank %}<p class="{{sb_title}}">{{ _listing_title }}</p>{% endunless %}
+
+        <div class="sb-product-list{% if _style == 'carousel' %} sb-product-carousel" data-dot="true{% endif %}">
+          {%- unless _listing_col == blank -%}
+            {%- unless _style == 'carousel' -%}
+              {%- for product in _listing_collection.products limit: _limit -%}
+                {%- include 'product-item', type: 'sb-product-item' -%}
+              {%- endfor -%}
+
+            {%- else -%}
+              {%- assign _itemsColumn     = block.settings.sb_items_in_column | divided_by: 1.0 -%}
+              {%- assign _limit_loop      = _limit | divided_by: _itemsColumn | ceil -%}
+              {%- assign _limited         = _limit | minus: 1 -%}
+
+              {%- if _limit_loop > 1 -%}
+                {%- assign _i = 0 -%}
+                {%- assign n_itemsColumn = _itemsColumn | round -%}
+                {%- for i in (1.._limit_loop) -%}
+                  <div class="sb-p-item">
+                    {%- for j in (1..n_itemsColumn) -%}
+                      {%- if _i > _limited -%}{% break %}{%- endif -%}
+                      {%- include 'product-item' ,product:  _listing_collection.products[_i] ,type: 'sb-product-item' -%}
+                      {%- assign _i = _i | plus: 1 -%}
+                    {%- endfor -%}
+                  </div>
+                {%- endfor -%}
+
+              {%- else -%}
+                <div class="sb-p-item">
+                  {%- assign n_itemsColumn = _itemsColumn | minus: 1 -%}
+                  {%- for i in (0..n_itemsColumn) -%}
+                    {%- if i > _limited -%}{% break %}{%- endif -%}
+                    {%- include 'product-item' ,product:  _listing_collection.products[i] ,type: 'sb-product-item' -%}
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            {%- endunless -%}
+          {%- else -%}
+
+            {%- for i in (1.._limit) -%}
+              <div class="product-item py-1">
+                <div class="d-flex">
+                  <div class="col-4 px-0">
+                    {%- include 'svgset', type: 'product' -%}
+                  </div>
+                  <div class="col-8">
+                    <div class="pc-inner">
+                     <h5 class="product-name">{{ 'homepage.onboarding.product_title' | t }}</h5>
+                     <div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+                   </div>
+                 </div>
+               </div>
+              </div>
+            {%- endfor -%}
+          {%- endunless -%}
+        </div>
+
+      </div>
+    </div>
+
+    {%- capture block_css -%}
+      {%- include 'css-responsive' ,classID: sb_block_id, nextClassID: ' .sb-product .sb-product-list:not(.owl-carousel)' css_value: block.settings.block_max_height ,css_property: 'max-height' -%}
+    {%- endcapture -%}
+    {%- assign section_css = section_css | append: block_css -%}
+
+    {%- assign no_sidebar_blocks = false -%}
+
+  {%- when 'banner' -%}
+    {%- assign _image               = block.settings.image_banner -%}
+    {%- assign _link                = block.settings.link | default: 'javascript:void(0);' -%}
+    {%- assign _button_styl         = block.settings.button_style -%}
+    {%- assign _button_text         = block.settings.button_text -%}
+    {%- assign _position            = block.settings.position -%}
+    {%- assign _alignment           = block.settings.horizontal_align | default: 'center' -%}
+
+    <div class="sb-widget{{_w}} sb-block-{{block.id}}"{{ block.shopify_attributes }}>
+      <div class="sb-banner block-{{block.id}}">
+        {%- unless _position == 'above' -%}
+          <a href="{{ _link }}">{% include 'image-style' with image: _image, image_size: '390x' %}</a>
+        {%- endunless -%}
+
+        <div class="block-text position-{{_position}} text-{{_alignment}}">
+          {%- for i in (1..3) -%}
+            {%- assign _text = 'image_text' | append: i -%}
+
+            {%- unless block.settings[_text] == blank -%}
+
+              {%- assign _text_fw   = 'text_fw_' | append: i -%}
+              {%- assign _text_cl   = 'text_cl_' | append: i -%}
+              {%- assign _text_fs   = 'text_fs_' | append: i -%}
+              {%- assign _text_mr   = 'text_margin_' | append: i -%}
+              {%- assign _text_lh   = 'text_lh_' | append: i -%}
+              {%- assign _text_uc   = 'text_uc_' | append: i -%}
+              {%- assign _text_lsp  = 'text_lsp_' | append: i -%}
+
+              {%- assign _text_color = block.settings[_text_cl] | default: 'rgba(0,0,0,0)' -%}
+
+              <div class="text-{{i}} fw-{{block.settings[_text_fw]}}{% if block.settings[_text_uc] %} text-uppercase{% endif %}">
+                <span>{{block.settings[_text]}}</span>
+              </div>
+              {%- capture blockID -%}.sb-banner.block-{{block.id}} .text-{{i}} span{%- endcapture -%}
+              {%- capture block_css -%}
+                  {{- blockID}}{color: {{_text_color}};}
+                  {%- include 'css-responsive', classID: blockID ,css_value: block.settings[_text_fs]  ,css_property: 'font-size' -%}
+                  {%- include 'css-responsive', classID: blockID ,css_value: block.settings[_text_mr]  ,css_property: 'margin' -%}
+                  {%- include 'css-responsive', classID: blockID ,css_value: block.settings[_text_lh]  ,css_property: 'line-height' -%}
+                  {%- include 'css-responsive', classID: blockID ,css_value: block.settings[_text_lsp] ,css_property: 'letter-spacing' -%}
+              {%- endcapture -%}
+              {%- assign section_css = section_css | append: block_css -%}
+            {%- endunless -%}
+          {%- endfor -%}
+
+          {%- unless _button_text == blank -%}
+
+            {%- assign _btn_fw            = block.settings.btn_fw -%}
+            {%- assign _btn_margin        = block.settings.btn_margin -%}
+            {%- assign _btn_cl            = block.settings.btn_cl | default: 'rgba(0,0,0,0)' -%}
+            {%- assign _btn_bg_cl         = block.settings.btn_bg_cl | default: 'rgba(0,0,0,0)' -%}
+            {%- assign _btn_border        = block.settings.btn_border | default: 'rgba(0,0,0,0)' -%}
+            {%- assign _btn_border_size   = block.settings.btn_border_size -%}
+            {%- assign _btn_padding       = block.settings.btn_padding -%}
+            {%- assign _btn_rd            = block.settings.btn_rd -%}
+            {%- assign _btn_fs            = block.settings.btn_fs -%}
+            {%- assign _btn_lh            = block.settings.btn_lh -%}
+            {%- assign _btn_lsp           = block.settings.btn_lsp -%}
+
+            <a class="btn btn-{{_button_styl}} fw-{{_btn_fw}}" href="{{ _link }}">{{ _button_text }}</a>
+
+            {%- capture blockID -%}.sb-banner.block-{{block.id}} .btn-{{_button_styl}}{%- endcapture -%}
+            {%- capture block_css -%}
+              {%- include 'css-responsive', classID: blockID ,css_value: _btn_margin  ,css_property: 'margin' -%}
+
+              {%- if _button_styl == 0 -%}
+                {{- blockID }}{color: {{_btn_cl}};background-color: {{_btn_bg_cl}};
+                  {%- if _btn_border_size > 0 -%}border: {{_btn_border_size}}px solid {{_btn_border}};{%- endif -%}
+                }
+                {%- include 'css-responsive', classID: blockID ,css_value: _btn_padding -%}
+                {%- include 'css-responsive', classID: blockID ,css_value: _btn_fs  ,css_property: 'font-size' -%}
+                {%- include 'css-responsive', classID: blockID ,css_value: _btn_lh  ,css_property: 'line-height' -%}
+                {%- include 'css-responsive', classID: blockID ,css_value: _btn_rd ,css_property: 'border-radius' -%}
+                {%- include 'css-responsive', classID: blockID ,css_value: _btn_lsp ,css_property: 'letter-spacing' -%}
+
+              {%- endif -%}
+            {%- endcapture -%}
+            {%- assign section_css = section_css | append: block_css -%}
+          {%- endunless -%}
+        </div>
+
+        {%- if _position == 'above' -%}
+          <a href="{{ _link }}">{% include 'image-style' with image: _image, image_size: '390x' %}</a>
+        {%- endif -%}
+      </div>
+
+    </div>
+    {%- assign no_sidebar_blocks = false -%}
+
+  {%- when 'tag' -%}
+    <div class="sb-widget{{_w}} sb-block-{{block.id}}"{{ block.shopify_attributes }}>
+      <div class="sb-tag">
+        {%- unless block.settings.sidebar_tags_title == blank -%}
+          <p class="{{sb_title}}">{{ block.settings.sidebar_tags_title }}</p>
+        {%- endunless -%}
+
+        {%- assign manual_tags = block.settings.manual_tags -%}
+        <ul class="list-inline">
+          {%- unless manual_tags == blank -%}
+            {%- assign ar_tags = manual_tags | split: ',' -%}
+              {%- if template contains 'collection' -%}
+                {%- assign arr_tags = collection.all_tags -%}
+
+              {%- elsif template contains 'blog' -%}
+                {%- assign arr_tags = blog.all_tags -%}
+
+              {%- elsif template contains 'article' -%}
+                {%- assign arr_tags = article.tags -%}
+              {%- endif -%}
+
+
+            {%- for tag in ar_tags -%}
+              {%- capture tag_handle -%}{{tag | strip | handle }}{%- endcapture -%}
+
+              {%- for t in arr_tags -%}
+                {%- capture t_handle -%}{{t | strip | handle }}{%- endcapture -%}
+                {%- if tag_handle == t_handle -%}
+                  <li>{{ tag | link_to_tag: t }}</li>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endfor -%}
+
+          {%- else -%}
+            {%- assign tags_limit = block.settings.limit | minus: 1 -%}
+            {%- assign _tempTags = '' -%}
+
+            {%- for i in (0..tags_limit) -%}
+              {%- assign min = i -%}
+
+              {%- if template contains 'collection' -%}
+                {%- assign max = collection.all_tags.size -%}
+                {%- assign arr_tags = collection.all_tags -%}
+
+              {%- elsif template contains 'blog' -%}
+                {%- assign max = blog.all_tags.size -%}
+                {%- assign arr_tags = blog.all_tags -%}
+
+                {%- elsif template contains 'article' -%}
+                {%- assign max = article.tags.size -%}
+                {%- assign arr_tags = article.tags -%}
+              {%- endif -%}
+
+              {%- assign diff = max | minus: min -%}
+              {%- if diff == 0 -%}{%- assign diff = 1 -%}{%- endif -%}
+              {%- assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min -%}
+              {%- assign t = arr_tags[randomNumber] -%}
+              {%- assign _tt = '_' | append: t -%}
+
+              {%- unless _tempTags contains _tt -%}
+                {%- unless _tt == '_' -%}
+                  {%- assign _tempTags = _tempTags | append: _tt -%}
+                  {% comment %}<li>{{ t | capitalize | link_to_tag: t }}</li>{% endcomment %}
+                  <li><a href="javascript:void(0);">{{t}}</a></li>
+                {%- endunless -%}
+              {%- endunless -%}
+            {%- endfor -%}
+            {% comment %}{%- for tag in collection.all_tags limit: tags_limit -%}
+              <li>{{ tag | capitalize | link_to_tag: tag }}</li>
+            {%- endfor -%}{% endcomment %}
+          {%- endunless -%}
+        </ul>
+      </div>
+    </div>
+    {%- assign no_sidebar_blocks = false -%}
+
+  {%- when 'recently-viewed' -%}
+    <div class="sb-widget{{_w}} sb-block-{{block.id}}"{{ block.shopify_attributes }}>
+      {% include 'include-recently-viewed', show: true %}
+    </div>
+    {%- assign no_sidebar_blocks = false -%}
+
+  {%- when 'post' -%}
+    <div class="sb-widget">
+      <div class="sb-blog-posts">
+
+        {%- assign limit_post           = block.settings.sidebar_post_limit | plus: 0 -%}
+        {%- assign n_blog               = blogs[block.settings.sidebar_post] -%}
+        {%- assign sb_post_title        = block.settings.sidebar_post_title -%}
+
+        {%- if block.settings.post_style == '2' -%}
+          {%- assign post_style = 'list-3' -%}
+        {%- else -%}
+          {%- assign post_style = 'list' -%}
+        {%- endif -%}
+
+        {%- unless sb_post_title == blank -%}
+          <p class="{{sb_title}}">{{ sb_post_title }}</p>
+        {%- endunless -%}
+
+        {%- if n_blog.articles.size == 0 or block.settings.sidebar_post == blank -%}
+            <script>
+              $(()=>{
+                console.log('check');
+                $.getJSON("/search/suggest.json", {
+                  "q": 'c',
+                  "resources": {
+                    "types": 'article',
+                    "limit" : 10
+                  }
+
+                }).done(function(response) {
+                  console.log(response);
+                })
+              })
+
+
+            </script>
+          {%- for blog in blogs -%}
+            <input type="text" value="{{blog.title}}">
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- unless n_blog.articles.size == 0 -%}
+          <div class="post-list">
+
+            {%- for article in n_blog.articles limit: block.settings.sidebar_post_limit -%}
+              {%- include 'article-item', article: article, type: post_style -%}
+            {%- endfor -%}
+
+            {%- if n_blog.articles.size > limit_post and block.settings.show_all -%}
+              <div class="post-item see-more-post">
+                <a href="{{ n_blog.url }}"> See more posts </a>
+              </div>
+            {%- endif -%}
+
+          </div>
+        {%- endunless -%}
+
+      </div>
+    </div>
+    {%- assign no_sidebar_blocks = false -%}
+
+  {%- when 'instagram' -%}
+
+    <div class="sb-widget">
+      <div class="sb-insta">
+        {%- assign ins_heading           = block.settings.heading -%}
+        {%- assign ins_token             = block.settings.instagram_token -%}
+        {%- assign ins_userid            = block.settings.instagram_userid -%}
+        {%- assign ins_total             = block.settings.total -%}
+        {%- assign ins_following_text    = block.settings.insta_following_text -%}
+        {%- assign ins_following_link    = block.settings.insta_following_link | default: 'javascript:void(0);' -%}
+
+        {%- unless ins_heading == blank -%}
+          <p class="{{sb_title}}">{{ ins_heading }}</p>
+        {%- endunless -%}
+
+        {%- include 'include-item-per-row', type: 'block', item_resp: block.settings.items_resp -%}
+
+        <div class="home-instagram" data-section-type="insta" data-section-id="{{block.id}}">
+          <div class="home-ins-wrap">
+            <div id="home_instagram_list_{{block.id}}" class="home_instagram_list row" data-token-key="{{ins_token}}" data-uid="{{ins_userid}}" data-limit="{{ins_total}}" data-filter="{{_filter}}" data-lazyload="{{_lazyload}}" data-row="{{items_class}}">
+
+              {%- for i in (1..block.settings.total) -%}
+                <div class="ins-item {{items_resp}}">
+                  {%- include 'svgset' -%}
+                </div>
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+        {%- unless ins_following_text == blank -%}
+          <div class="ins-follow">
+            <a href="{{ins_following_link}}">{{ins_following_text}}</a>
+          </div>
+        {%- endunless -%}
+
+      </div>
+    </div>
+    {%- assign no_sidebar_blocks = false -%}
+{%- endcase -%}

@@ -1,0 +1,55 @@
+{%- case type -%}
+  	{%- when 'empty-product' -%}
+		<div class="product-wrapper">
+			<div class="featured-img">
+				{%- include 'svgset',type: 'product' -%}
+			</div>
+			<div class="product-content text-left">
+				<div class="pc-inner">
+					<h5 class="product-name">{{ 'homepage.onboarding.product_title' | t }}</h5>
+					<div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+				</div>
+			</div>
+		</div>
+
+  	{%- when 'empty-image' -%}
+		{%- assign emp_image = 'default-image.jpg' | asset_url -%}
+		
+		<span class="image--style" style="position:relative;padding-top:{% unless image == blank %}{{ 1 | divided_by: image.aspect_ratio | times: 100}}%{% else %}100%{% endunless %}">
+			<img src="{{ emp_image }}" class="lazyload img-lazy blur-up" />
+		</span>
+	 
+	{%- when 'empty-blog' -%}	
+	    <div class="post-item {{ items_class }}">
+	      <div class="post-item-inner">
+
+	        <div class="post-image">
+	          {%- include 'svgset',type: 'collection' -%}
+	        </div>
+
+	        <div class="post-content text-center">
+	          <div class="meta-data">
+	            <span class="date">{{ 'homepage.onboarding.blog_title' | t }}</span>
+	          </div>
+	        </div>
+
+	      </div>
+	    </div>
+	    
+	{%- else -%}
+
+		{%- unless svg_group == blank -%}{%- assign svg_group = '01' -%}{%- endunless -%}
+		{%- case type -%}
+		  	{%- when 'product' -%}
+				{%- capture current -%}-{%- cycle svg_group: 1, 2, 3, 4, 5, 6 -%}{%- endcapture -%}
+			{%- when 'collection' -%}
+				{%- capture current -%}-{%- cycle svg_group: 1, 2, 3, 4, 5, 6 -%}{%- endcapture -%}
+		  	{%- when 'lifestyle' -%}
+		  		{%- capture current -%}-{%- cycle svg_group: 1, 2 -%}{%- endcapture -%}
+		  	{%- else -%}
+			  	{%- capture current -%}{%- endcapture -%}
+			  	{%- assign type = 'image' -%}
+		{%- endcase -%}
+		<div class="empty-image" data-svg="{{ type | append: current}}">{{ type | append: current | placeholder_svg_tag: 'placeholder-svg' }}</div>
+
+{%- endcase -%}

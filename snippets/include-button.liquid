@@ -1,0 +1,91 @@
+{%- case type -%}
+  {%- when 'init' -%}
+	{%- assign button_css_settings = '' -%}
+
+	{%- for i in (1..number_button) -%}
+		{%- assign tempo_btn_label      = 'button_'         | append: i -%}
+		{%- assign tempo_btn_link       = 'button_link_'    | append: i -%}
+		{%- assign tempo_btn_corner     = 'button_corner_'  | append: i -%}
+		{%- assign tempo_btn_inherit    = 'btn_inherit_'    | append: i -%}
+		{%- assign tempo_btn_radius     = 'button_rd_'      | append: i -%}
+
+	  	{%- assign b_btn_label     = block.settings[tempo_btn_label] -%}
+
+	  	{%- unless b_btn_label == blank -%}
+
+		    {%- assign b_btn_link      = block.settings[tempo_btn_link] | default: 'javascript:void(0);' -%}
+		    {%- assign b_btn_corner    = block.settings[tempo_btn_corner] -%}
+		    {%- assign b_btn_inherit   = block.settings[tempo_btn_inherit] -%}
+
+		    <a href="{{b_btn_link}}" class="{{button_class}} btn-tt-{{i}} btn btn-{{b_btn_inherit}}{% if b_btn_corner %} btn-rd{% endif %}">{{b_btn_label}}</a>
+
+
+			{%- capture button_ID -%}{{blockID}} {% if button_class != blank %}.{{button_class}}{% endif %}.btn-tt-{{i}}{%- endcapture -%}
+			{%- capture button_css_settings -%}
+
+				{%- if b_btn_inherit == 0 -%}
+					{%- assign tempo_btn_color      = 'button_color_' | append: i -%}
+					{%- assign tempo_btn_bg_color   = 'button_bg_color_' | append: i -%}
+					{%- assign tempo_btn_border     = 'button_border_' | append: i -%}
+
+					{%- assign b_btn_color     = block.settings[tempo_btn_color]    | default: 'rgba(0,0,0,0)' -%}
+					{%- assign b_btn_bg_color  = block.settings[tempo_btn_bg_color] | default: 'rgba(0,0,0,0)' -%}
+					{%- assign b_btn_border    = block.settings[tempo_btn_border]   | default: 'rgba(0,0,0,0)' -%}
+
+					{{- button_ID}}.btn-0{color: {{b_btn_color}};background-color: {{b_btn_bg_color}};border: 1px solid {{b_btn_border}};}
+				{%- endif -%}
+
+				{%- include 'css-responsive' ,classID: button_ID ,css_value: block.settings[tempo_btn_radius] ,css_property: 'border-radius' -%}
+
+			{%- endcapture -%}
+
+			{%- assign section_css = section_css | append: button_css_settings -%}
+
+	  	{%- endunless -%}
+	{%- endfor -%}
+
+  {%- else -%}
+	{%- if type == 'block' -%}{%- assign _b = block -%}{%- else -%}{%- assign _b = section -%}{%- endif -%}
+	{%- assign bt_text          = _b.settings.button -%}
+	{%- assign bt_link 			= _b.settings.button_link | default: 'javascript:void(0);'-%}
+
+	{%- if bt_text != blank and bt_link != blank -%}
+		{%- assign bt_align         = _b.settings.button_align 			| default: bt_align -%}
+		{%- assign bt_corner        = _b.settings.button_corner 		| default: bt_corner -%}
+		{%- assign bt_inherit       = _b.settings.button_inherit_style 	| default: bt_inherit -%}
+		{%- assign bt_icon 			= _b.settings.button_icon -%}
+		{%- assign bt_icon_pos 		= _b.settings.button_icon_position -%}
+		{%- assign bt_icon_size		= _b.settings.button_icon_size -%}
+
+		{%- if bt_inherit == 0 -%}
+			{%- assign bt_color     = _b.settings.button_color -%}
+			{%- assign bt_bg_color  = _b.settings.button_bg_color -%}
+			{%- assign bt_border    = _b.settings.button_border -%}
+		{%- endif -%}
+
+		{%- case btn_type -%}
+		  {%- when 'section' -%}{%- assign bt_class = ' button-section' -%}
+		  {%- else -%}
+		{%- endcase -%}
+
+	    {%- capture bt_icon_layout -%}
+	    	{%- unless bt_icon == blank -%}
+				{%- assign bt_icon_color 	= _b.settings.button_icon_color -%}
+				{%- assign bt_icon_bg 		= _b.settings.button_icon_bg	 -%}
+
+				<span class="btn--icon" style="background-color: {{bt_icon_bg}}; color: {{bt_icon_color}};font-size:{{bt_icon_size}}px;">
+					{%- include 'icons', type: 'icon_free', name: bt_icon -%}
+				</span>
+	    	{%- endunless -%}
+	    {%- endcapture -%}
+
+		<div class="btn-wrap{% unless bt_align == blank %} text-{{bt_align}}{% endunless %}{{bt_class}}">
+			<a href="{{bt_link}}" class="btn{% if bt_corner %} btn-rd{% endif %}{% if bt_inherit > 0 %} btn-{{bt_inherit}}{%- else -%}
+				"style="color: {{bt_color}};background:{{bt_bg_color}};border:1px solid {{bt_border}};{% endif %}">
+			    {%- if bt_icon_pos == 'left' -%}{{bt_icon_layout}}{%- endif -%}
+			    <span class="btn--label">{{- bt_text -}}</span>
+			    {%- if bt_icon_pos == 'right' -%}{{bt_icon_layout}}{%- endif -%}
+			</a>
+		</div>
+	{%- endif -%}
+{%- endcase -%}

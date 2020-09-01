@@ -1,0 +1,44 @@
+{% if product.metafields.learn_more.title %}
+  <div class="row">
+    <div class="col-lg-4 col-md-5">
+      {% if _type_class == 'type-color-mask' %}
+        <img class="img-parallax" src="//cdn.shopify.com/s/files/1/0047/8209/6456/files/learn_more.png?v=1593794418"/>
+      {% endif %}
+      
+      {% if _type_class == 'type-nature' %}
+        <img class="img-parallax" src="//cdn.shopify.com/s/files/1/0047/8209/6456/files/nature.png?v=1594111095"/>
+      {% endif %}
+
+      {% if _type_class == 'type-optima' %}
+        <img class="img-parallax" src="//cdn.shopify.com/s/files/1/0047/8209/6456/files/optima.png?v=1594111097"/>
+      {% endif %}
+
+      {% if _type_class == 'type-professional' %}
+        <img class="img-parallax" src="//cdn.shopify.com/s/files/1/0047/8209/6456/files/professional.png?v=1594111096"/>
+      {% endif %}      
+    </div>
+    <div class="col-lg-4 d-none d-lg-block">
+    </div>
+    <div class="col-lg-4 col-md-7">
+      <div class="learn-more-text">
+        {{ product.metafields.learn_more.title }}
+      </div>
+
+      <div class="learn-more-title" style="color: {{ _type_font_color }};">
+        - 01<br/>
+        Tip from Professional
+      </div>
+      <div class="learn-more-subtitle">
+        {{ product.metafields.learn_more.step1 }}
+      </div>
+
+      <div class="learn-more-title" style="color: {{ _type_font_color }};">
+        - 02<br/>
+        Active Ingredients
+      </div>
+      <div class="learn-more-subtitle">
+        {{ product.metafields.learn_more.step2 }}
+      </div>
+    </div>  
+  </div>
+{% endif %}

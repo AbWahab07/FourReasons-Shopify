@@ -1,0 +1,249 @@
+{%- comment -%} 
+=================
+  Mega Menu Tab
+=================
+{%- endcomment -%}
+
+{%- assign _mega_bg_image = block.settings.mega_bg_image -%}
+{%- capture mega_bg_image -%}{%- if _mega_bg_image != blank -%}{{_mega_bg_image | img_url: '1920x'}}{%- endif -%}{%- endcapture -%}
+{%- capture mega_tab_ID -%}#header-style #mega-{{block.id}}{%- endcapture -%}
+
+{%- assign _min_height          = block.settings.mega_menu_min_height | default: '300px' -%}
+{%- assign _mega_bg_color       = block.settings.mega_menu_bg_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign _mega_bg_image       = block.settings.mega_bg_image -%}
+{%- assign _mega_bg_size        = block.settings.mega_bg_size -%}
+{%- assign _mega_bg_repeat      = block.settings.mega_bg_repeat -%}
+{%- assign _mega_bg_position    = block.settings.mega_bg_position -%}
+{%- capture mega_bg_image -%}{% if _mega_bg_image != blank %}{{_mega_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+
+{%- if style == _header_style or style == 'sticky' and _header_style == '4' -%}
+  {%- assign mega_css_condition = true -%}
+{%- else -%}
+  {%- assign mega_css_condition = false -%}
+{%- endif -%}
+
+{%- if mega_css_condition -%}  
+  {%- capture mega_menu_css -%}
+    {{- mega_tab_ID}}{background-color:{{_mega_bg_color}};
+      {%- if _mega_bg_image != blank -%}background-size: {{_mega_bg_size}};background-repeat: {{_mega_bg_repeat}};background-position: {{_mega_bg_position}};{%- endif -%}
+      {%- unless _lazyload -%}background-image: url({{mega_bg_image}});{%- endunless -%}
+    }
+    {{- mega_tab_ID}} .mm-tab-col-content{min-height: {{_min_height}};}
+  {%- endcapture -%}
+  {%- assign mega_section_css = mega_section_css | append: mega_menu_css -%}
+{%- endif -%}
+
+
+<div id="mega-{{block.id}}" class="dropdown-menu dropdown-menu-tabs column-4{% if mega_bg_image != blank and _lazyload %} lazyload" data-bgset="{{mega_bg_image}} 1920w{% endif %}" data-mega-title="{{l.title}}">
+  <div class="row no-gutters mega-navigation-with-tab">
+
+    <div class="mm-tab-col-title col-lg-3">
+      <ul class="tab-title">
+        {%- assign j = 0 -%}
+
+        {%- for block in section.blocks offset: number -%}
+          {%- capture _block_type -%}++{{block.type}}++{%- endcapture -%}
+
+          {%- if _except_block_type contains _block_type -%}{%- break -%}
+          {%- elsif block.type == 'tab-menu' -%}
+            {%- assign j = j | plus: 1 -%}
+            <li class="title-item{% if j == 1 %} active{% endif %} title-item-{{ j }} mega-tab--li-item" data-index="{{j}}" data-mega-id="{{block.id}}"{{ block.shopify_attributes }}>
+              <span>{{- block.settings.tab_title -}}</span>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    <div class="mm-tab-col-content col-lg-9">
+      {%- assign j = 0 -%}
+      {%- assign _mega_tab_index = number -%}
+
+      {%- for block in section.blocks offset: number -%}
+        {%- capture _block_type -%}++{{block.type}}++{%- endcapture -%}
+        {%- assign _mega_tab_index = _mega_tab_index | plus: 1 -%}
+
+        {%- if _except_block_type contains _block_type -%}{%- break -%}
+        {%- elsif block.type == 'tab-menu' -%}
+          {%- assign j = j | plus: 1 -%}
+          {%- assign _mega_bg_color                 = block.settings.mega_menu_bg_color | default: 'rgba(0,0,0,0)' -%}
+          {%- assign _mega_tab_bg_image             = block.settings.mega_bg_image -%}
+          {%- assign _mega_bg_size                  = block.settings.mega_bg_size -%}
+          {%- assign _mega_bg_repeat                = block.settings.mega_bg_repeat -%}
+          {%- assign _mega_bg_position              = block.settings.mega_bg_position -%}
+          {%- assign _mega_menu_block_border_for    = block.settings.mega_menu_block_border_for -%}
+          {%- assign _mega_menu_block_border_color  = nil -%}
+
+          {%- capture mega_tab_bg_image -%}{%- if _mega_tab_bg_image != blank -%}{{_mega_tab_bg_image | img_url: '1920x'}}{%- endif -%}{%- endcapture -%}
+          {%- capture mega_tab_ID -%}#header-style .mm-tabs-{{j}}[data-mega-id="{{block.id}}"]{%- endcapture -%}
+          {%- capture mega_tab_bg_lazy -%}{% if _mega_tab_bg_image != blank and _lazyload %} lazyload" data-bgset="{{mega_tab_bg_image}} 1920w{% endif %}{%- endcapture -%}
+
+          {%- comment -%}
+            ============
+              Css config
+            ============
+          {%- endcomment-%}
+          {%- if mega_css_condition -%}
+            {%- capture mega_block_css -%}
+              {%- include 'css-responsive' ,classID: mega_tab_ID ,css_value: block.settings.mega_menu_tab_padding -%}
+              {%- include 'css-responsive' ,classID: mega_tab_ID ,nextClassID: ' .mega-block-items' ,css_value: block.settings.mega_menu_padding -%}
+              
+              {%- unless _mega_menu_block_border_for == 'none' -%}
+                {%- assign _mega_menu_block_border_color = block.settings.mega_menu_block_border_color | default: 'rgba(0,0,0,0)' -%}
+                {%- unless _mega_menu_block_border_color == 'rgba(0,0,0,0)' -%}
+                    {{- mega_tab_ID }} .mega-block-items{% if _mega_menu_block_border_for == 'content' %} > div{% endif %}{border: 1px solid {{_mega_menu_block_border_color}};}
+                {%- endunless -%}
+              {%- endunless -%}
+
+              {{- mega_tab_ID}}{background-color:{{_mega_bg_color}};
+                {%- if _mega_tab_bg_image != blank -%}background-size: {{_mega_bg_size}};background-repeat: {{_mega_bg_repeat}};background-position: {{_mega_bg_position}};{%- endif -%}
+                {%- unless _lazyload -%}background-image: url({{mega_tab_bg_image}});{%- endunless -%}
+              }
+            {%- endcapture -%}
+            {%- assign mega_section_css = mega_section_css | append: mega_block_css -%}
+          {%- endif -%}
+
+
+          <div class="tab-content-inner mm-tabs-{{j}} mega-tab--content{% if j == 1 %} active{% endif %}{{mega_tab_bg_lazy}}" data-index="{{j}}" data-mega-id="{{block.id}}" data-mega-title="{{ block.settings.tab_title }}"{{ block.shopify_attributes }}>
+            <div class="row no-gutters">
+              {%- assign _mega_menu_tab_col_content = block.settings.mega_menu_tab_col_content -%}
+              {%- comment -%}
+                ============
+                  Default first column in tab menu
+                ============
+              {%- endcomment-%}
+              {%- unless _mega_menu_tab_col_content == 'none' -%}
+                {%- assign _mega_menu_tab_width_col = block.settings.mega_menu_tab_width_col -%}
+                {%- assign _mega_menu_tab_title_col = block.settings.mega_menu_tab_title_col -%}
+                {%- assign _mega_menu_tab_link_col  = block.settings.mega_menu_tab_link_col | default: 'javascript:void(0);' -%}
+                {%- assign _mega_border_top         = block.settings.border_top -%}
+                {%- assign _mega_border_right       = block.settings.border_right -%}
+                {%- assign _mega_border_bottom      = block.settings.border_bottom -%}
+                {%- assign _mega_border_left        = block.settings.border_left -%}
+                
+                {%- capture _mega_boder -%}
+                  {% unless _mega_border_top     %} border-top-0{% endunless -%}
+                  {% unless _mega_border_right   %} border-right-0{% endunless -%}
+                  {% unless _mega_border_bottom  %} border-bottom-0{% endunless -%}
+                  {% unless _mega_border_left    %} border-left-0{% endunless -%}
+                {%- endcapture -%}
+                {%- capture mega_col_ID -%}{{mega_tab_ID}} .mega-block-{{block.id}}{%- endcapture -%}
+                {%- capture _mega_menu_width -%}col-lg{%- if _mega_menu_tab_width_col > 0 -%}-{{_mega_menu_tab_width_col}}{%- endif -%}{{_mega_boder | strip_newlines }}{%- endcapture -%}
+
+                <div class="dropdown mega-block-items mega-type--{{_mega_menu_tab_col_content}} mega-block-{{block.id}} {{_mega_menu_width}}">
+                  <div class="mega-block-items-inner">
+                    {%- unless _mega_menu_tab_title_col == blank -%}
+                      <a href="{{ _mega_menu_tab_link_col }}" class="mega-column--heading{{__mega_col_heading_ff}}">
+                        <span>{{ _mega_menu_tab_title_col }}</span>
+                      </a>
+                      <span class="expand"></span>
+                    {%- endunless -%}
+                    <div class="mega-block-content-inner">
+                      {%- case _mega_menu_tab_col_content -%}
+
+                        {%- when 'menu' -%}
+                          {%- assign _mega_menu_tab_ll_col = linklists[block.settings.mega_menu_tab_ll_col] -%}
+
+                          <ul class="dropdown-menu">
+                            {%- if _mega_menu_tab_ll_col.links.size > 0 -%}
+                              {%- for ml in _mega_menu_tab_ll_col.links -%}
+                                {%- assign submenu = ml.title | handle -%}
+
+                                {%- if linklists[submenu].links.size > 0 -%}
+                                  <li class="mega-sub-link mega-mutiple-link">
+                                    <a href="{{ ml.url | default: 'javascript:void(0);' }}" class="mega-column--heading{{__mega_col_heading_ff}} dropdown-link">
+                                      <span>{{ ml.title }}</span>
+                                      {%- capture n_title -%}{{ _mega_menu_tab_ll_col.title}}-{{ml.title}}{%- endcapture -%}
+                                      {%- include 'include-label-handle' ,l_title: n_title -%}
+                                    </a>
+
+                                    <div class="mega-sub-dropdown">
+                                      <ul class="dropdown-menu-sub">
+                                        {%- for l in linklists[submenu].links -%}
+                                          <li class="mega-sub-mutiple-link">
+                                            <a href="{{ l.url | default: 'javascript:void(0);' }}">
+                                              <span>{{ l.title }}</span>
+                                              {%- capture n_title -%}{{ _mega_menu_tab_ll_col.title}}-{{l.title}}{%- endcapture -%}
+                                              {%- include 'include-label-handle' ,l_title: n_title -%}
+                                            </a>
+                                          </li>
+                                        {%- endfor -%}
+                                      </ul>
+                                    </div>
+                                  </li>
+
+                                {%- else -%}
+                                  <li class="mega-sub-link">
+                                    <a href="{{ ml.url | default: 'javascript:void(0);' }}">
+                                      <span>{{ ml.title }}</span>
+                                      {%- capture n_title -%}{{ _mega_menu_tab_ll_col.title}}-{{ml.title}}{%- endcapture -%}
+                                      {%- include 'include-label-handle' ,l_title: n_title -%}
+                                    </a>
+                                  </li>
+                                {%- endif -%}
+
+                              {%- endfor -%}
+                            {%- else -%}
+                              {%- for i in (1..4) -%}
+                                <li>Sample menu item</li>
+                              {%- endfor -%}
+                            {%- endif -%}
+                          </ul>
+
+                        {%- when 'image' -%}
+                          {%- assign _mega_menu_tab_image_col         = block.settings.mega_menu_tab_image_col -%}
+                          {%- assign _mega_menu_tab_image_link_col    = block.settings.mega_menu_tab_image_link_col -%}
+
+                          <a href="{{ _mega_menu_tab_image_link_col | default: 'javascript:void(0);' }}">
+                            {%- unless _mega_menu_tab_image_col == blank  -%}
+                              {%- include 'image-style', image: _mega_menu_tab_image_col -%}
+                            {%- else -%}
+                              <img src="{{ 'default-image.jpg' | asset_url }}"/>
+                            {%- endunless -%}
+                          </a>
+                        
+                        {%- when 'product' -%}
+                          {%- assign _mega_menu_tab_product_col_1     = all_products[block.settings.mega_menu_tab_product_col_1] -%}
+                          {%- assign _mega_menu_tab_product_col_2     = all_products[block.settings.mega_menu_tab_product_col_2] -%}
+                          
+                          {%- if _mega_menu_tab_product_col_1.available -%}
+                            {%- include 'product-item' ,product: _mega_menu_tab_product_col_1 ,type: 'listing-item' ,mega_menu: true -%}
+                          {%- endif -%}
+                          {%- if _mega_menu_tab_product_col_2.available -%}
+                            {%- include 'product-item' ,product: _mega_menu_tab_product_col_2 ,type: 'listing-item' ,mega_menu: true -%}
+                          {%- endif -%}
+                      {%- endcase -%}
+                    </div>
+                  </div>
+                </div>
+                {%- comment -%}
+                  ============
+                    Css config
+                  ============
+                {%- endcomment-%}
+                {%- capture mega_block_css -%}
+                  {%- include 'css-responsive' ,classID: mega_col_ID ,css_value: block.settings.mega_menu_block_padding -%}
+                {%- endcapture -%}
+                {%- assign mega_section_css = mega_section_css | append: mega_block_css -%}
+              {%- endunless -%}
+
+                {%- comment -%}
+                  ============
+                    Add more column into tab
+                  ============
+                {%- endcomment-%}
+              {%- for block in section.blocks offset: _mega_tab_index -%}
+                {%- capture _next_mega_block -%}++{{block.type}}++{%- endcapture -%}
+
+                {%- if _except_block_type contains _next_mega_block or block.type == 'tab-menu' -%}{%- break -%}{%- endif -%}
+                {%- assign mega_col_ID = nil -%}
+                {%- capture mega_col_ID -%}{{mega_tab_ID}}{%- endcapture -%}
+                {%- include 'mega-menu-columns' ,mega_column_type: 'mg_col_content'-%}
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>

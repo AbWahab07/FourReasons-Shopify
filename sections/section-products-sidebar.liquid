@@ -1,0 +1,1720 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _s_type            = 'section-sidebar' -%}
+{%- assign _lazyload          = settings.use_lazyload -%}
+{%- assign _padding           = section.settings.section_padding -%}
+{%- assign _bg_color          = section.settings.section_bg_color -%}
+{%- assign sb_heading_style   = section.settings.sb_heading_style -%}
+{%- assign _bg_image          = section.settings.section_bg_image -%}
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="{{_s_type}} layout-{{_layout }} section-show-{{section.id}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="{{_s_type}}" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    <div class="home-sidebar">
+      <div class="row">
+        {%- comment -%}
+          ============            Sidebar Section          ============
+        {%- endcomment-%}
+        <aside class="col-lg-3 col-md-4 col-12">
+          <div class="sidebar-content">
+            <div class="sidebar-content-inner heading-style-{{sb_heading_style}}">
+
+              {%- for block in section.blocks -%}
+
+                {%- unless block.type contains 'main-' -%}
+
+                  {%- if isFirstTest and block.type == 'testimonial' -%}{% continue %}{%- endif -%}
+                  {%- if isFirstIconBox and block.type == 'iconbox' -%}{% continue %}{%- endif -%}
+                  {%- assign __border = block.settings.show_border -%}
+
+                  {%- capture extended_class -%}
+                    {%- if block.type == 'testimonial' or block.type == 'products-listing' -%}
+                      {% if __border  %} has-border{% endif %}{%- endif -%}
+                  {%- endcapture -%}
+
+                  <div class="sb-content sb-{{block.type}} sb-id-{{block.id}}{{extended_class}}"{{block.shopify_attributes}}>
+
+                    {%- assign __border     = false -%} {%- comment -%} reset __border after used {%- endcomment-%}
+                    {%- assign sb_heading   = block.settings.title -%}
+                    {%- if block.type == 'testimonial' -%}{%- assign sb_heading = block.settings.heading -%}{%- endif -%}
+
+                    {%- unless sb_heading == blank -%}<div class="sb-header"><div class="sb-heading">{{sb_heading}}</div></div>{%- endunless -%}
+
+                    <div class="sb-body">
+
+                      {%- case block.type -%}
+
+                        {%- when 'categories' -%}
+                          {%- assign categories   = block.settings.categories -%}
+                          {%- assign categories_items_count  = block.settings.show_number -%}
+
+                          <ul class="list-category" id="sb-category-{{block.id}}">
+                            {%- if categories != blank and linklists[categories].links.size > 0 -%}
+                              {%- for l in linklists[categories].links -%}
+                                {%- assign submenu      = l.title | handleize -%}
+                                {%- assign submenu_size = linklists[submenu].links.size -%}
+
+                                <li class="list-item{% if l.active or l.child_active %} active{% endif %}{% if submenu_size > 0 %} collapse-ui{% endif %}">
+                                  <a datatest="{{ l.type }}" href="{{l.url}}">
+                                    {{- l.title -}}
+                                    {%- if categories_items_count and l.type == 'collection_link' and l.object.all_products_count > 0 -%}
+                                      <span class="count">({{l.object.all_products_count}})</span>
+                                    {%- endif -%}
+                                  </a>
+
+                                  {%- if submenu_size > 0 -%}
+                                    {%- include 'sb-dropdown-menu' -%}
+                                  {%- endif -%}
+                                </li>
+                              {%- endfor -%}
+
+                            {%- else -%}
+                              {%- for i in (1..5) -%}
+                                <li class="list-item">
+                                  <a href="javascript:void(0);">Id cursus metus aliquam</a>
+                                </li>
+                              {%- endfor -%}
+                            {%- endif -%}
+                          </ul>
+
+                        {%- when 'products-listing' -%}
+                          {%- assign enable_slider     = block.settings.enable_slider -%}
+                          {%- assign p_collection      = collections[block.settings.collection] -%}
+                          {%- assign p_limited         = block.settings.limited_item -%}
+
+                          <div class="sb-product-list {% if enable_slider %} sb-product-carousel" data-owl-xs="1" data-dot="true{% endif %}">
+                            {%- if p_collection != blank -%}
+                              {%- unless enable_slider -%}
+                                {%- for product in p_collection.products limit: p_limited -%}
+                                  {%- include 'product-item', type: 'listing-item' -%}
+                                {%- endfor -%}
+
+                              {%- else -%}
+                                {%- assign _limit_loop  = p_limited | divided_by: 3.0 | ceil -%}
+                                {%- assign _limited     = p_limited | minus: 1 -%}
+                                {%- if _limit_loop > 1 -%}
+                                  {%- assign _i = 0 -%}
+                                  {%- for i in (1.._limit_loop) -%}
+                                    <div class="sb-p-item">
+                                      {%- for j in (1..3) -%}
+                                        {%- if _i > _limited -%}{% break %}{%- endif -%}
+                                          {%- include 'product-item' ,product:  p_collection.products[_i] ,type: 'listing-item' -%}
+                                        {%- assign _i = _i | plus: 1 -%}
+                                      {%- endfor -%}
+                                    </div>
+                                  {%- endfor -%}
+                                {%- else -%}
+                                  <div class="sb-p-item">
+                                  {%- for i in (0..2) -%}
+                                    {%- if i > _limited -%}{% break %}{%- endif -%}
+                                    {%- include 'product-item' ,product:  p_collection.products[i] ,type: 'listing-item' -%}
+                                  {%- endfor -%}
+                                  </div>
+                                {%- endif -%}
+                              {%- endunless -%}
+                            {%- else -%}
+                              {%- for i in (1..p_limited) -%}
+                                <div class="product-item py-1">
+                                  <div class="d-flex">
+                                    <div class="col-4 px-0">
+                                      {%- include 'svgset', type: 'product' -%}
+                                    </div>
+                                    <div class="col-8">
+                                      <div class="pc-inner">
+                                       <h5 class="product-name">{{ 'homepage.onboarding.product_title' | t }}</h5>
+                                       <div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+                                     </div>
+                                   </div>
+                                 </div>
+                                </div>
+                              {%- endfor -%}
+                            {%- endif -%}
+                          </div>
+
+                        {%- when 'banner' -%}
+                          {%- capture blockID -%}.section-show-{{section.id}} .sb-id-{{block.id}}{%- endcapture -%}
+                          {%- assign b_image         = block.settings.image -%}
+                          {%- assign b_link          = block.settings.image_link | default: 'javascript:void(0);' -%}
+                          {%- assign b_max_width     = block.settings.max_w -%}
+                          {%- assign b_position      = block.settings.position -%}
+                          {%- assign b_text_align    = block.settings.text_align -%}
+                          {%- assign b_btn_label     = block.settings.button -%}
+                          {%- assign b_btn_link      = block.settings.button_link | default: 'javascript:void(0);' -%}
+                          {%- assign b_btn_inherit   = block.settings.btn_inherit -%}
+
+                          <div class="banner-image">
+                            <div class="image"><a href="{{b_link}}">{%- include 'image-style',image: b_image -%}</a></div>
+
+                            <div class="text-content">
+                              <div class="text-content-inner text-{{b_text_align}}">
+                                {%- for i in (1..3) -%}
+                                  {%- assign textID     = ' .text-' | append: forloop.index -%}
+                                  {%- assign _temp_text = 'text_' | append: i -%}
+                                  {%- assign _b_text    = block.settings[_temp_text] -%}
+
+                                  {%- unless _b_text == blank -%}
+                                    {%- assign _temp_fw = 'text_fw_'      | append: i -%}
+                                    {%- assign _temp_cl = 'text_color_'   | append: i -%}
+                                    {%- assign _temp_fs = 'text_fs_'      | append: i -%}
+                                    {%- assign _temp_mr = 'text_margin_'  | append: i -%}
+                                    {%- assign _temp_ls = 'text_lsp_'     | append: i -%}
+
+                                    {%- assign _b_text_fw = block.settings[_temp_fw]  -%}
+                                    {%- assign _b_text_fs = block.settings[_temp_fs]  -%}
+                                    {%- assign _b_text_cl = block.settings[_temp_cl] | default: 'rgba(0,0,0,0)' -%}
+
+                                    <div class="text-{{forloop.index}} fw-{{_b_text_fw}}{% if _b_text_fs contains 'h' %} {{_b_text_fs}}{% endif %}{% unless _b_text_cl == 'rgba(0,0,0,0)' %}" style="color: {{_b_text_cl}};{% endunless %}">{{_b_text}}</div>
+                                    {%- capture block_css -%}
+                                      {%- unless _b_text_fs contains 'h' -%}
+                                      {%- include 'css-responsive' ,classID: blockID ,nextClassID: textID ,css_property: 'font-size'      ,css_value: _b_text_fs -%}{%- endunless -%}
+                                      {%- include 'css-responsive' ,classID: blockID ,nextClassID: textID ,css_property: 'margin'         ,css_value: block.settings[_temp_mr] -%}
+                                      {%- include 'css-responsive' ,classID: blockID ,nextClassID: textID ,css_property: 'letter-spacing' ,css_value: block.settings[_temp_ls] -%}
+                                    {%- endcapture -%}
+                                    {%- assign section_css = section_css | append: block_css -%}
+                                  {%- endunless -%}
+                                {%- endfor -%}
+
+                                {%- unless b_btn_label == blank -%}
+                                  <div class="btn-group">
+                                    <a href="{{b_btn_link}}" class="btn-banner btn btn-{{b_btn_inherit}}">{{b_btn_label}}</a>
+                                  </div>
+
+                                  {%- capture block_css -%}
+                                    {%- if b_btn_inherit == 0 -%}
+                                      {%- assign b_btn_color     = block.settings.button_color    | default: 'rgba(0,0,0,0)' -%}
+                                      {%- assign b_btn_bg_color  = block.settings.button_bg_color | default: 'rgba(0,0,0,0)' -%}
+                                      {%- assign b_btn_border    = block.settings.button_border   | default: 'rgba(0,0,0,0)' -%}
+                                      {{blockID}} .btn-banner.btn-0{color: {{b_btn_color}};background-color: {{b_btn_bg_color}};border: 1px solid {{b_btn_border}};}
+                                    {%- endif -%}
+
+                                    {%- include 'css-responsive' ,classID: blockID ,nextClassID: ' .btn-banner' ,css_value: block.settings.button_rd ,css_property: 'border-radius' -%}
+                                  {%- endcapture -%}
+                                  {%- assign section_css = section_css | append: block_css -%}
+
+                                {%- endunless -%}
+                              </div>
+                            </div>
+                            {%- capture block_css -%}
+                              {%- include 'css-responsive' ,classID: blockID ,nextClassID: ' .text-content' ,type: 'position' ,css_value: b_position -%}
+                              {%- include 'css-responsive' ,classID: blockID ,nextClassID: ' .text-content' ,css_property: 'width' ,css_value: b_max_width -%}
+                            {%- endcapture -%}
+                            {%- assign section_css = section_css | append: block_css -%}
+                          </div>
+
+                        {%- when 'testimonial' -%}
+                          {%- assign isFirstTest = true -%}
+
+                          <div class="customer-carousel owl-carousel" data-desk="1" data-mob="1" data-dot="true">
+                            <div class="customer-item">
+                              {%- include 'customer-item', round_image: block.settings.circle, c_type: true -%}
+                            </div>
+
+                            {%- unless forloop.last -%}
+                              {%- for block in section.blocks offset: forloop.index -%}
+                                {%- if block.type == 'testimonial' -%}
+                                  <div class="customer-item"{{ block.shopify_attributes }}>
+                                    {%- include 'customer-item', round_image: block.settings.circle, c_type: true -%}
+                                  </div>
+                                {%- endif -%}
+                              {%- endfor -%}
+                            {%- endunless -%}
+                          </div>
+
+                        {%- when 'iconbox' -%}
+                          {%- assign isFirstIconBox   = true -%}
+                          {%- assign __font_icon      = block.settings.font_icon -%}
+                          {%- assign __use_image      = block.settings.use_image -%}
+                          {%- assign __image          = block.settings.image -%}
+                          {%- assign __content        = block.settings.content -%}
+
+                          <div class="iconbox-item">
+                            <div class="iconbox-column">
+                              {%- unless __use_image -%}
+                                {%- include 'icons', type: 'icon_free', name: __font_icon -%}
+                              {%- else -%}
+                                {%- include 'image-style', image: __image, image_width: '[100, 200]' -%}
+                              {%- endunless -%}
+                            </div>
+                            <div class="iconbox-column">{{__content}}</div>
+                          </div>
+
+                          {%- unless forloop.last -%}
+                            {%- for block in section.blocks offset: forloop.index -%}
+
+                              {%- if block.type == 'iconbox' -%}
+                                {%- assign __font_icon      = block.settings.font_icon -%}
+                                {%- assign __use_image      = block.settings.use_image -%}
+                                {%- assign __image          = block.settings.image -%}
+                                {%- assign __content        = block.settings.content -%}
+
+                                <div class="iconbox-item">
+                                  <div class="iconbox-column">
+                                    {%- unless __use_image -%}
+                                      {%- include 'icons', type: 'icon_free', name: __font_icon -%}
+                                    {%- else -%}
+                                      {%- include 'image-style', image: __image, image_width: '[100, 200]' -%}
+                                    {%- endunless -%}
+                                  </div>
+                                  <div class="iconbox-column">{{__content}}</div>
+                                </div>
+                              {%- endif -%}
+                            {%- endfor -%}
+                          {%- endunless -%}
+
+                      {%- endcase -%}
+                    </div>
+                  </div>
+                {%- endunless -%}
+              {%- endfor -%}
+            </div>
+          </div>
+        </aside>
+
+
+        {%- comment -%}
+          ============            Main Section          ============
+        {%- endcomment-%}
+        <div class="col-lg-9 col-md-8 col-12">
+          <div class="main-content-wrap row">
+            {%- for block in section.blocks -%}
+              {%- if _isFirst_Tab and block.type == 'main-tabs' -%}{% continue %}{%- endif -%}
+
+              {%- if block.type contains 'main-' -%}
+                {%- assign _mw = 'col-12' -%}
+                {%- if block.type == 'main-banner' -%}
+                  {%- capture _mw -%}{%- include 'set-width-bootstrap',in_type: 'width', number: block.settings.width_resp -%}{{_out}}{%- endcapture -%}
+                {%- endif -%}
+
+                {%- capture blockID -%}.section-show-{{section.id}} .main-id-{{block.id}}{%- endcapture -%}
+
+                <div class="main-content main-{{block.type}} main-id-{{block.id}} {{_mw}}"{{block.shopify_attributes}}>
+                  {%- assign _b_tit = block.settings.title -%}
+                  {%- assign _b_sub = block.settings.subtitle -%}
+
+                  <div class="content-header">
+                    {%- include 'head-title',_title: _b_tit, _subtitle: _b_sub -%}
+                  </div>
+
+                  <div class="content-body">
+                    {%- case block.type -%}
+
+                      {%- when 'main-product_grid' -%}
+
+                        {%- include 'include-item-per-row', type: 'block',item_resp: block.settings.items_resp -%}
+                        {%- assign main_product_class = items_resp -%}
+                        {%- assign mcollection        = collections[block.settings.collection] -%}
+                        {%- assign mspacing           = block.settings.padding_item -%}
+                        {%- assign mtotal             = block.settings.total_items -%}
+                        {%- assign _text_align        = block.settings.text_align -%}
+                        {%- assign _enable_slider     = block.settings.enable_slider -%}
+                        {%- assign progress_position  = block.settings.progress_pos -%}
+                        {%- assign show_progress      = false -%}
+                        {%- assign _sold_count        = 5 -%}
+
+                        {%- unless progress_position == 'none' -%}
+                          {%- assign show_progress  = true -%}
+                        {%- endunless -%}
+                        {%- if _enable_slider -%}
+                          {%- assign btype = 'carousel' -%}
+                          {%- capture bdata -%}{%- include 'include-carousel-attr', _type: btype, block_type: 'block' -%}{%- endcapture -%}
+                        {%- else -%}
+                          {%- assign btype = 'row' -%}
+                          {%- capture bdata -%}{%- endcapture -%}
+                        {%- endif -%}
+                        {%- if block.settings.product_list -%}{%- assign mlist = 'list' -%}{%- endif -%}
+
+                        <div class="main-product-grid{% unless mspacing %} no-padding{% endunless %}">
+                          <div class="{% if btype == 'row' %}row{% else %}grid-sb-carousel owl-carousel{% endif %}"{{bdata}}>
+                            {%- unless mcollection == blank or mcollection.products_count == 0 -%}
+
+                              {%- for product in mcollection.products limit: mtotal -%}
+                                <div class="products-grid-item{% unless _enable_slider %} {{ main_product_class }}{% endunless %}">
+                                  {%- include 'product-item' ,product_type: mlist, showShort_Description: block.settings.show_short_description -%}
+                                </div>
+                              {%- endfor -%}
+                            {%- else -%}
+                              {%- for i in (1..mtotal) -%}
+                                <div class="{% unless _enable_slider %}{{ main_product_class }}{% endunless %}">
+                                  <div class="product-wrapper">
+                                    <div class="featured-img">
+                                      {%- include 'svgset',type: 'product' -%}
+                                    </div>
+                                    <div class="product-content text-{{ section.settings.text_align }}">
+                                      <div class="pc-inner">
+                                        <h5 class="product-name">{{ 'homepage.onboarding.product_title' | t }}</h5>
+                                        <div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              {%- endfor -%}
+                            {%- endunless -%}
+                          </div>
+                        </div>
+
+                      {%- when 'main-banner' -%}
+                          {%- assign b_image           = block.settings.image -%}
+                          {%- assign b_link            = block.settings.image_link  | default: 'javascript:void(0);' -%}
+                          {%- assign b_btn_link        = block.settings.button_link | default: 'javascript:void(0);' -%}
+                          {%- assign b_btn_label       = block.settings.button -%}
+                          {%- assign b_btn_inherit     = block.settings.btn_inherit -%}
+
+                          <div class="banner-image">
+                            <div class="image"><a href="{{b_link}}">{%- include 'image-style',image: b_image -%}</a></div>
+                            <div class="text-content">
+                              <div class="text-content-inner">
+                                {%- for i in (1..3) -%}
+                                  {%- assign t_text        = 'text_'       | append: i -%}
+
+                                  {%- unless block.settings[t_text] == blank -%}
+                                    {%- assign t_color    = 'text_color_'  | append: i -%}
+                                    {%- assign t_fweight  = 'text_fw_'     | append: i -%}
+                                    {%- assign t_fsize    = 'text_fs_'     | append: i -%}
+                                    {%- assign txt_color  = block.settings[t_color] | default: 'rgba(0,0,0,0)' -%}
+                                    {%- assign txt_fs     = block.settings[t_fsize] -%}
+                                    {%- assign txt_fw     = block.settings[t_fweight] -%}
+                                    {%- assign txt_mg     = 'text_margin_' | append: i -%}
+                                    {%- assign txt_lsp    = 'text_lsp_'    | append: i -%}
+
+                                    <div class="text-{{i}} fw-{{txt_fw}}{% if txt_fs contains 'h' %} {{txt_fs}}{% endif %}" style="color: {{txt_color}};">{{block.settings[t_text]}}</div>
+                                    {%- capture textID -%}{{blockID}} .text-{{i}}{%- endcapture -%}
+
+                                    {%- capture block_css -%}
+                                      {%- include 'css-responsive', classID: textID ,css_value: block.settings[txt_lsp] ,css_property: 'letter-spacing' -%}
+                                      {%- include 'css-responsive', classID: textID ,css_value: block.settings[txt_mg]  ,css_property: 'margin' -%}
+                                      {%- unless txt_fs contains 'h' -%}{%- include 'css-responsive', classID: textID ,css_value: txt_fs  ,css_property: 'font-size' -%}{%- endunless -%}
+                                    {%- endcapture -%}
+                                    {%- assign section_css = section_css | append: block_css -%}
+                                  {%- endunless -%}
+                                {%- endfor -%}
+
+                                {%- unless b_btn_label == blank -%}
+                                  <div class="btn-group">
+                                    {%- if b_btn_inherit == 0 -%}
+                                      {%- assign b_btn_color    = block.settings.button_color -%}
+                                      {%- assign b_btn_border   = block.settings.button_border -%}
+                                      {%- assign b_btn_bg_color = block.settings.button_bg_color -%}
+                                    {%- endif -%}
+                                    <a href="{{b_btn_link}}" class="btn btn-banner{% if b_btn_inherit > 0 %} btn-{{b_btn_inherit}}{% endif %}">{{b_btn_label}}</a>
+                                  </div>
+                                {%- endunless -%}
+                              </div>
+                            </div>
+                          </div>
+
+                          {%- capture block_css -%}
+                            {%- if b_btn_label != blank and b_btn_inherit == 0 -%}{{blockID}} .btn-banner{color: {{b_btn_color}};border: 1px solid {{b_btn_border}};background-color: {{b_btn_bg_color}};}{%- endif -%}
+                            {%- include 'css-responsive', classID: blockID ,nextClassID: ' .text-content'       ,css_value: block.settings.position     ,type: 'position' -%}
+                            {%- include 'css-responsive', classID: blockID ,nextClassID: ' .text-content-inner' ,css_value: block.settings.text_align   ,css_property: 'text-align' -%}
+                            {%- include 'css-responsive' ,classID: blockID ,nextClassID: ' .btn-banner' ,css_value: block.settings.button_rd ,css_property: 'border-radius' -%}
+                          {%- endcapture -%}
+                          {%- assign section_css = section_css | append: block_css -%}
+
+                      {%- when 'main-tabs' -%}
+                        {%- include 'include-item-per-row', type: 'block',item_resp: block.settings.items_resp -%}
+                        {%- assign main_tab_product_class = items_resp -%}
+                        {%- assign _isFirst_Tab        = true -%}
+                        {%- assign _index              = forloop.index0 -%}
+                        {%- assign _tab_title_align    = block.settings.tab_title_align -%}
+                        {%- assign _number_active      = block.settings.active_tab -%}
+                        {%- assign _text_align         = block.settings.text_align -%}
+                        {%- assign _total_items        = block.settings.total_items -%}
+                        {%- assign _spacing_items      = block.settings.spacing_items -%}
+
+                        <!-- Begin nav tabs -->
+                        <div class="nav-tab-wrapper">
+                          <ul class="nav nav-tabs tab-heading text-{{ _tab_title_align }}" role="tablist">
+                            {%- for block in section.blocks offset: _index -%}
+                              {%- if block.type == 'main-tabs' -%}
+                                {%- assign n_index      = forloop.index0 | plus: _index -%}
+                                {%- assign tab_index    = tab_index | append: ',' | append: n_index -%}
+                                {%- assign tab_title    = block.settings.tab_title -%}
+                                {%- assign collection   = collections[block.settings.collection] -%}
+
+
+                                <li class="tab-title nav-item"{{block.shopify_attributes}}>
+                                  <a class="nav-link{% if _number_active == forloop.index %} active {% endif %}" href="#hp-tabs-{{ section.id }}-{{ n_index }}"
+                                      aria-controls="hp-tabs-{{ section.id }}-{{ forloop.index0 }}" role="tab" data-toggle="tab">
+
+                                    {%- unless tab_title == blank -%}{{- tab_title -}}
+                                    {%- else -%}{%- unless block.settings.collection == blank -%}{{- collection.title -}}
+                                    {%- else -%}{{- 'homepage.onboarding.tab_title' | t -}}{%- endunless -%}
+                                    {%- endunless -%}
+                                  </a>
+                                </li>
+                              {%- endif -%}
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+
+                        <!-- Begin tab content -->
+                        <div class="tab-content">
+                          {%- assign ntab_index = tab_index | remove_first: ',' | split: ',' -%}
+                          {%- for i in ntab_index -%}
+                              {%- assign _index       = i | strip | plus: 0 -%}
+                              {%- assign __block      = section.blocks[_index] -%}
+                              {%- assign collection   = collections[__block.settings.collection] -%}
+
+                              <div id="hp-tabs-{{ section.id }}-{{ _index }}" class="tab-pane{% if _number_active == forloop.index %} show active{% endif %}" role="tabpanel">
+
+                                {%- unless collection == blank or collection.products_count == 0 -%}
+                                  <div class="hp-tabs-list row{% unless _spacing_items %} no-padding{% endunless %}">
+
+                                    {%- for product in collection.products limit: _total_items -%}
+                                      <div class="{{main_tab_product_class}}">
+                                        {%- include 'product-item' -%}
+                                      </div>
+                                    {%- endfor -%}
+                                  </div>
+
+                                {%- else -%}
+                                  <div class="hp-tabs-list tabs-list-row row">
+                                    {%- for i in (1..3) -%}
+                                      <div class="col-md-4 col-6">
+                                        <div class="product-image">
+                                          {%- include 'svgset', type: 'product' -%}
+                                        </div>
+                                      </div>
+                                    {%- endfor -%}
+                                  </div>
+                                {%- endunless  -%}
+                              </div>
+                          {%- endfor -%}
+                        </div>
+
+                      {%- when 'main-separator' -%}
+                        {%- capture separatorID -%}.section-show-{{section.id}} .main-content.main-{{block.type}}.main-id-{{block.id}}{%- endcapture -%}
+                        <style>{%- include 'css-responsive', classID: separatorID,css_value: block.settings.height, css_property: 'height' -%}</style>
+
+                    {%- endcase -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+  <style>{{section_css}}{%- include 'section-general-css' -%}</style>
+</div>
+{% schema %}
+{
+  "name": "Product Sidebar",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Created by 'Products Sidebar' section"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Label [:id]","default": "Product sidebar"
+    },
+    {
+      "type": "header",
+      "content": "LAYOUT"
+    },
+    {
+      "type": "checkbox",
+      "id": "boxed_layout",
+      "label": "Boxed layout",
+      "default": true
+    },
+      {
+         "type"  :"text",
+         "id"    :"section_padding",
+         "label" :"Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "select",
+      "id": "section_bg_size",
+      "label": "Background Size",
+      "default": "cover",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_repeat",
+      "label": "Background Image Repeat:",
+      "default": "no-repeat",
+      "options": [
+        {
+          "value": "no-repeat",
+          "label": "No Repeat"
+        },
+        {
+          "value": "repeat",
+          "label": "Repeat"
+        },
+        {
+          "value": "repeat-x",
+          "label": "Repeat X"
+        },
+        {
+          "value": "repeat-y",
+          "label": "Repeat Y"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_position",
+      "label": "Background Image Position:",
+      "default": "center center",
+      "options": [
+        {
+          "value": "left top",
+          "label": "Left Top"
+        },
+        {
+          "value": "center top",
+          "label": "Center Top"
+        },
+        {
+          "value": "right top",
+          "label": "Right Top"
+        },
+        {
+          "value": "left center",
+          "label": "Left Center"
+        },
+        {
+          "value": "center center",
+          "label": "Center Center"
+        },
+        {
+          "value": "right center",
+          "label": "Right Center"
+        },
+        {
+          "value": "left bottom",
+          "label": "Left Bottom"
+        },
+        {
+          "value": "center bottom",
+          "label": "Center Bottom"
+        },
+        {
+          "value": "right bottom",
+          "label": "Right Bottom"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_content_align",
+      "label": "Heading alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "sb_heading_style",
+      "label": "Sidebar Heading style",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "#1"
+        },
+        {
+          "value": "2",
+          "label": "#2"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "categories",
+      "name": "Sidebar Categories",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Categories"
+        },
+        {
+          "type": "link_list",
+          "id": "categories",
+          "label": "Menu item"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_number",
+          "label": "Show Product count"
+        }
+      ]
+    },
+    {
+      "type": "products-listing",
+      "name": "Sidebar Products",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Featured Products"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_border",
+          "label": "Show Block border"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_slider",
+          "label": "Enable Slider"
+        },
+        {
+          "type": "range",
+          "id": "limited_item",
+          "label": "Total items",
+          "min": 1,
+          "max": 18,
+          "step": 1,
+          "default": 4
+        }
+      ]
+    },
+    {
+      "type": "banner",
+      "name": "Sidebar Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "image_link",
+          "label": "Image link",
+          "default": "/collections"
+        },
+        {
+          "type": "header",
+          "content": "Text content"
+        },
+        {
+          "type": "text",
+          "id": "text_1",
+          "label": "Text #1"
+        },
+        {
+          "type": "textarea",
+          "id": "text_2",
+          "label": "Text #2"
+        },
+        {
+          "type": "textarea",
+          "id": "text_3",
+          "label": "Text #3"
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "text_align",
+          "label": "Text align for Text content",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "text",
+          "id": "max_w",
+          "label": "Content max width",
+          "default": "100%"
+        },
+        {
+          "type": "text",
+          "id": "position",
+          "label": "Position",
+          "default": "50%, 50%"
+        },
+        {
+          "type": "header",
+          "content": "Text 1 style"
+        },
+        {
+          "type": "text",
+          "id": "text_fs_1",
+          "label": "Text 1 font size",
+          "default": "h3"
+        },
+        {
+          "type": "color",
+          "id": "text_color_1",
+          "label": "Text 1 color",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "text_fw_1",
+          "label": "Text 1 font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text_margin_1",
+          "label": "Text 1 margin",
+          "info": "Order: Top Right Bottom Left.",
+          "placeholder": "E.g: 5px 20px 5px 20px"
+        },
+        {
+          "type": "text",
+          "id": "text_lsp_1",
+          "label": "Text 1 letter spacing",
+          "placeholder": "E.g: 2px"
+        },
+        {
+          "type": "header",
+          "content": "Text 2 style"
+        },
+        {
+          "type": "text",
+          "id": "text_fs_2",
+          "label": "Text 2 font size",
+          "default": "h4"
+        },
+        {
+          "type": "color",
+          "id": "text_color_2",
+          "label": "Text 2 color",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "text_fw_2",
+          "label": "Text 2 font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text_margin_2",
+          "label": "Text 2 margin",
+          "info": "Order: Top Right Bottom Left.",
+          "placeholder": "E.g: 5px 20px 5px 20px"
+        },
+        {
+          "type": "text",
+          "id": "text_lsp_2",
+          "label": "Text 2 letter spacing",
+          "placeholder": "E.g: 2px"
+        },
+        {
+          "type": "header",
+          "content": "Text 3 style"
+        },
+        {
+          "type": "text",
+          "id": "text_fs_3",
+          "label": "Text 3 font size",
+          "default": "14px"
+        },
+        {
+          "type": "color",
+          "id": "text_color_3",
+          "label": "Text 3 color",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "text_fw_3",
+          "label": "Text 3 font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text_margin_3",
+          "label": "Text 3 margin",
+          "info": "Order: Top Right Bottom Left.",
+          "placeholder": "E.g: 5px 20px 5px 20px"
+        },
+        {
+          "type": "text",
+          "id": "text_lsp_3",
+          "label": "Text 3 letter spacing",
+          "placeholder": "E.g: 2px"
+        },
+        {
+          "type": "header",
+          "content": "Button settings"
+        },
+        {
+          "type": "range",
+          "id": "btn_inherit",
+          "label": "Inherit Button style:",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "info": "0 to customize"
+        },
+        {
+          "type": "text",
+          "id": "button_rd",
+          "label": "Button Rounded Corners",
+          "placeholder": "E.g: 5px 5px 5px 5px"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Button Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "button_border",
+          "label": "Button Border color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color",
+          "label": "Button Background color",
+          "default": "#FFFFFF"
+        }
+      ]
+    },
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading block",
+          "default": "Testimonial",
+          "info": "Use for the first block Testimonial"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_border",
+          "label": "Show Block border"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "checkbox",
+          "id": "circle",
+          "label": "Circle Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Testimonial"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Subheading"
+        },
+        {
+          "type": "textarea",
+          "id": "message",
+          "label": "Message",
+          "default": "The idea that beautiful and functional everydayobjects should not only be affordable to the wealthy"
+        }
+      ]
+    },
+    {
+      "type": "iconbox",
+      "name": "Sidebar Icon Box",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "font_icon",
+          "label": "Font icon name",
+          "default": "icon-uniE93A"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_image",
+          "label": "Use Image instead of font icon name"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Content",
+          "default": "Dolor purus"
+        }
+      ]
+    },
+    {
+      "type": "main-product_grid",
+      "name": "Product Grid",
+      "settings": [
+        {
+          "id": "collection",
+          "type": "collection",
+          "label": "Collection item"
+        },
+        {
+          "type": "header",
+          "content": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Special Offers"
+        },
+        {
+          "type": "textarea",
+          "id": "subtitle",
+          "label": "Subheading"
+        },
+        {
+          "type": "header",
+          "content": "Layout"
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_item",
+          "label": "Spacing items",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "product_list",
+          "label": "Show Product List"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_short_description",
+          "label": "Show Short Description"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_slider",
+          "label": "Enable Slider"
+        },
+        {
+          "type": "select",
+          "id": "progress_pos",
+          "label": "Progress position",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "text_align",
+          "label": "Text align for Item content",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "text",
+          "id": "items_resp",
+          "label": "Max number of items per row",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "info": "E.g: 4,3,2",
+          "default": "4,3,2"
+        },
+        {
+          "type": "range",
+          "id": "total_items",
+          "label": "Total items",
+          "default": 8,
+          "min": 1,
+          "max": 30,
+          "step": 1
+        }
+      ]
+    },
+    {
+      "type": "main-tabs",
+      "name": "Product Tabs",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Layout"
+        },
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab title"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection item"
+        },
+        {
+          "type": "header",
+          "content": "Heading Block",
+          "info": "Only for the first block Product Tabs"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading"
+        },
+        {
+          "type": "textarea",
+          "id": "subtitle",
+          "label": "Subheading"
+        },
+        {
+          "type": "header",
+          "content": "Tab settings",
+          "info": "Only for the first block Product Tabs"
+        },
+        {
+          "type": "select",
+          "id": "tab_title_align",
+          "label": "Text align for Tab title",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "checkbox",
+          "id": "spacing_items",
+          "label": "Spacing items",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "active_tab",
+          "label": "Set active tab default",
+          "min": 1,
+          "max": 5,
+          "default": 1
+        },
+        {
+          "type": "select",
+          "id": "text_align",
+          "label": "Text align for Item content",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "text",
+          "id": "items_resp",
+          "label": "Max number of items per row",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "info": "E.g: 4,3,2",
+          "default": "4,3,2"
+        },
+        {
+          "type": "range",
+          "id": "total_items",
+          "label": "Total items",
+          "default": 3,
+          "min": 1,
+          "max": 30,
+          "step": 1
+        }
+      ]
+    },
+    {
+      "type": "main-banner",
+      "name": "Image with text overlay",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "image_link",
+          "label": "Image link",
+          "default": "/collections"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "header",
+          "content": "Text content"
+        },
+        {
+          "type": "text",
+          "id": "text_1",
+          "label": "Text #1"
+        },
+        {
+          "type": "textarea",
+          "id": "text_2",
+          "label": "Text #2"
+        },
+        {
+          "type": "textarea",
+          "id": "text_3",
+          "label": "Text #3"
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+          "type": "text",
+          "id": "text_align",
+          "label": "Text content alignment",
+          "default": "left"
+        },
+        {
+          "type": "text",
+          "id": "position",
+          "label": "Position textbox",
+          "info": "Horizontal(%), Vertical(%)",
+          "default": "50%, 50%"
+        },
+        {
+          "type": "header",
+          "content": "Text 1"
+        },
+        {
+          "type": "text",
+          "id": "text_fs_1",
+          "label": "Text 1 font size",
+          "default": "18px"
+        },
+        {
+          "type": "color",
+          "id": "text_color_1",
+          "label": "Text 1 color",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "text_fw_1",
+          "label": "Text 1 font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text_margin_1",
+          "label": "Text 1 margin",
+          "info": "Order: Top Right Bottom Left",
+          "placeholder": "E.g: 10px 0px 10px 0"
+        },
+        {
+          "type": "text",
+          "id": "text_lsp_1",
+          "label": "Text 1 letter spacing",
+          "placeholder": "E.g: 2px"
+        },
+        {
+          "type": "header",
+          "content": "Text 2"
+        },
+        {
+          "type": "text",
+          "id": "text_fs_2",
+          "label": "Text 2 font size",
+          "default": "14px"
+        },
+        {
+          "type": "color",
+          "id": "text_color_2",
+          "label": "Text 2 color",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "text_fw_2",
+          "label": "Text 2 font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text_margin_2",
+          "label": "Text 2 margin",
+          "info": "Order: Top Right Bottom Left",
+          "placeholder": "E.g: 10px 0px 10px 0"
+        },
+        {
+          "type": "text",
+          "id": "text_lsp_2",
+          "label": "Text 2 letter spacing",
+          "placeholder": "E.g: 2px"
+        },
+        {
+          "type": "header",
+          "content": "Text 3"
+        },
+        {
+          "type": "text",
+          "id": "text_fs_3",
+          "label": "Text 3 font size",
+          "default": "14px"
+        },
+        {
+          "type": "color",
+          "id": "text_color_3",
+          "label": "Text 3 color",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "text_fw_3",
+          "label": "Text 3 font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text_margin_3",
+          "label": "Text 3 margin",
+          "info": "Order: Top Right Bottom Left",
+          "placeholder": "E.g: 10px 0px 10px 0"
+        },
+        {
+          "type": "text",
+          "id": "text_lsp_3",
+          "label": "Text 3 letter spacing",
+          "placeholder": "E.g: 2px"
+        },
+        {
+          "type": "header",
+          "content": "Button style"
+        },
+        {
+          "type": "range",
+          "id": "btn_inherit",
+          "label": "Inherit Button style",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "info": "0 to customize"
+        },
+        {
+          "type": "text",
+          "id": "button_rd",
+          "label": "Button Rounded Corners",
+          "placeholder": "E.g: 5px 5px 5px 5px"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Button Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "button_border",
+          "label": "Button Border color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color",
+          "label": "Button Background color",
+          "default": "#FFFFFF"
+        }
+      ]
+    },
+    {
+      "type": "main-separator",
+      "name": "Separator",
+      "settings": [
+        {
+          "type": "text",
+          "id": "height",
+          "label": "Height (in px)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "30px ,15px ,10px"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Sidebar",
+      "category": "Collection",
+      "blocks": [
+        {
+          "type": "categories"
+        },
+        {
+          "type": "products-listing"
+        },
+        {
+          "type": "main-product_grid"
+        },
+        {
+          "type": "main-product_grid",
+          "settings": {
+            "total_items": 4
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

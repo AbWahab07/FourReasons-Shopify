@@ -1,0 +1,53 @@
+<div style="background: #ebedf0; padding-top: 70px; padding-bottom: 70px;">
+  <div class="container">
+    <div class="rows">
+      <div class="col-10 offset-1">
+        <div class="homepage-video">
+          <div class="video-area" style="display: flex; cursor: pointer;">
+            <div id="video-play-button" style="background-image: url({{ section.settings.image_play_icon | img_url: 'master' }});">           
+              <div id="video-play-icon" style="background-image: url({{ section.settings.image_play_button | img_url: 'master' }});"></div>
+            </div>            
+            <video id="js-video" src="{{ section.settings.video_url }}" style="width: 100%; height: auto;" poster="{{ section.settings.image_background | img_url: 'master' }}"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name":"Video Area",
+  "tag":"section",
+  "settings":[
+    {
+      "type":"paragraph",
+      "content":"Video Area"
+    },
+    {
+      "type":"image_picker",
+      "id":"image_background",
+      "label":"Background Image"
+    },
+    {
+      "type":"image_picker",
+      "id":"image_play_button",
+      "label":"Play Button Image"
+    },
+    {
+      "type":"image_picker",
+      "id":"image_play_icon",
+      "label":"Play Button Icon"
+    },
+    {
+      "id":"video_url",
+      "label":"Video Url",
+      "type":"text"
+    }
+  ],
+  "presets": [{
+    "name": "Video Area",
+    "category": "Collection"
+  }]
+}
+{% endschema %}

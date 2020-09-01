@@ -1,0 +1,455 @@
+  {%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+  {%- assign _lazyload      = settings.use_lazyload -%}
+  {%- assign _limit         = section.settings.limited -%}
+  {%- assign _bg_color      = section.settings.section_bg_color -%}
+  {%- assign _bg_image      = section.settings.section_bg_image -%}
+  {%- assign _padding       = section.settings.section_padding -%}
+  {%- assign split_items    = section.settings.split_items -%}
+
+  {%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+  {%- capture emptyProduct -%}
+    {%- for i in (1..3)  -%}
+      <div class="listing-item">
+        <div class="row no-gutters">
+          <div class="product-image col-4">
+            {%- include 'svgset', type: 'product' -%}
+          </div>
+          <div class="product-content col-8">
+            <div class="product-content-inner">
+              <a>{{ 'homepage.onboarding.product_title' | t }}</a>
+              <div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    {%- endfor -%}
+  {%- endcapture -%}
+{%- include 'include-item-per-row' -%}
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+  <div class="product-listing-section layout-{{_layout }} section-show-{{section.id}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="product-listing" data-section-id="{{section.id}}">
+    {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+      <div class="product-listing-items">
+        <div class="row">
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              {%- case block.type -%}
+                {%- when 'collection' -%}
+
+                  {%- assign collection = collections[block.settings.collection] -%}
+                  {%- assign _title     = block.settings.title -%}
+
+                  <div class="{{ items_class }}"{{ block.shopify_attributes }}>
+                    {%- unless collection == blank or collection.products_count == 0 -%}
+                      {%- unless _title == blank -%}
+                        <div class="listing-title list-row">
+                          <p class="prod-listing h4">{{ _title }}</p>
+                        </div>
+                      {%- endunless -%}
+
+                      <div class="listing-items-col">
+                        {%- unless split_items -%}
+                          {%- for product in collection.products limit: _limit -%}
+                            {%- include 'product-item', type: 'listing-item' -%}
+                          {%- endfor -%}
+
+                        {%- else -%}
+                          {%- assign h_limit = _limit | divided_by: 2 -%}
+                          {%- assign n_limit = _limit | minus: h_limit -%}
+                          <div class="row">
+                            <div class="col-md-6 col-12">
+                              {%- for product in collection.products limit: h_limit -%}
+                                {%- include 'product-item', type: 'listing-item' -%}
+                              {%- endfor -%}
+                            </div>
+                            <div class="col-md-6 col-12">
+                              {%- for product in collection.products offset: h_limit limit: n_limit -%}
+                                {%- include 'product-item', type: 'listing-item' -%}
+                              {%- endfor -%}
+                            </div>
+                          </div>
+                        {%- endunless -%}
+                      </div>
+
+                    {%- else -%}
+                      <div class="listing-title list-row">
+                        <p class="prod-listing h4">{{ 'homepage.onboarding.products_listing_title' | t }}</p>
+                      </div>
+                      <div class="listing-items-col">
+                        {{ emptyProduct }}
+                      </div>
+                    {%- endunless -%}
+                  </div>
+
+                {%- when 'subscribe' -%}
+                  {%- assign text_title     = block.settings.text_title -%}
+                  {%- assign text_01        = block.settings.text_01 -%}
+                  {%- assign text_02        = block.settings.text_02 -%}
+                  {%- assign b_title_color  = block.settings.title_color | default: 'rgba(0,0,0,0)'  -%}
+                  {%- assign b_text_color   = block.settings.text_color  | default: 'rgba(0,0,0,0)'  -%}
+                  {%- assign b_bg_color     = block.settings.bg_color    | default: 'rgba(0,0,0,0)' -%}
+                  {%- assign b_bg_image     = block.settings.bg_image -%}
+
+                  {%- capture b_bg_image -%}{% if b_bg_image != blank %}{{b_bg_image | img_url: '320x'}}{% endif %}{%- endcapture -%}
+                  {%- capture blockID -%}.section-show-{{section.id}} .subscribe-content{%- endcapture -%}
+
+                  <div class="{{items_class}} subscribe-content text-center"{{block.shopify_attributes}}>
+                    <div class="subscribe-body{% if b_bg_image != blank and _lazyload %} lazyload" data-bgset="{{b_bg_image}} 320w{%- endif -%}">
+                      {%- assign frm_type               = block.settings.action_type -%}
+                      {%- assign frm_action             = block.settings.action -%}
+                      {%- assign frm_placeholder        = block.settings.placeholder -%}
+                      {%- assign frm_btn_icon           = block.settings.btn_icon -%}
+                      {%- assign frm_corner             = block.settings.form_corner -%}
+                      {%- assign frm_btn_style          = 0 -%}
+                      {%- assign _frm_text_color        = block.settings.frm_text_color   | default: 'rgba(0,0,0,0)' -%}
+                      {%- assign _frm_border_color      = block.settings.frm_border_color | default: 'rgba(0,0,0,0)' -%}
+                      {%- assign _frm_bg_color          = block.settings.frm_bg_color     | default: 'rgba(0,0,0,0)' -%}
+
+                      {%- unless text_title == blank -%}
+                        <div class="subscribe-title"><p>{{text_title}}</p></div>
+                      {%- endunless -%}
+
+                      {%- unless text_01 == blank -%}
+                        <div class="text-01"><p>{{text_01}}</p></div>
+                      {%- endunless -%}
+
+                      {%- include 'include-form', type: frm_type, frm_btn_type: 'icon'  -%}
+
+                      {%- unless text_02 == blank -%}
+                        <div class="text-02"><p>{{text_02}}</p></div>
+                      {%- endunless -%}
+
+                      {%- capture block_css -%}
+                        {{blockID}} .subscribe-body{background-color: {{b_bg_color}};
+                          {%- if b_bg_image != blank and _lazyload == false -%}background-image: url({{b_bg_image}});{%- endif -%}
+                        }
+                        {{blockID}} .form-subscribe{
+                          {%- unless _frm_text_color == 'rgba(0,0,0,0)' -%}color: {{_frm_text_color}};{%- endunless -%}
+                          {%- unless _frm_border_color == 'rgba(0,0,0,0)' -%}border: 1px solid {{_frm_border_color}};{%- endunless -%}
+                          {%- unless _frm_bg_color == 'rgba(0,0,0,0)' -%}background-color: {{_frm_bg_color}};{%- endunless -%}
+                        }
+                        {%- if b_title_color != 'rgba(0,0,0,0)' -%}{{blockID}} .subscribe-title{color: {{b_title_color}};}{%- endif -%}
+                        {%- if b_text_color  != 'rgba(0,0,0,0)' -%}{{blockID}} .text-01,{{blockID}} .text-02{color: {{b_text_color}};}{%- endif -%}
+
+                        {%- if frm_btn_style == 0 -%}
+                          {%- assign btn_frm_color    = block.settings.btn_frm_color | default: 'rgba(0,0,0,0)' -%}
+                          {%- assign btn_frm_bg_color = block.settings.btn_frm_bg_color | default: 'rgba(0,0,0,0)' -%}
+
+                          {{blockID}} .form-subscribe button.btn-0{
+                            {%- if btn_frm_color    != 'rgba(0,0,0,0)' -%}color: {{btn_frm_color}};{%- endif -%}
+                            {%- if btn_frm_bg_color != 'rgba(0,0,0,0)' -%}background-color: {{btn_frm_bg_color}};{%- endif -%}
+                          }
+                          {%- include 'css-responsive', classID: blockID, nextClassID: ' .form-subscribe button.btn-0', css_value: block.settings.btn_frm_fs       ,css_property: 'font-size' -%}
+                        {%- endif -%}
+                      {%- endcapture -%}
+                      {%- assign section_css = section_css | append: block_css -%}
+                    </div>
+                  </div>
+                {%- else -%}
+              {%- endcase -%}
+            {% endfor %}
+          {%- else -%}
+            {%- for i in (1..3) -%}
+              <div class="{{ items_class }}">
+                <div class="listing-title list-row">
+                  <p class="prod-listing h4">{{ 'homepage.onboarding.products_listing_title' | t }}</p>
+                </div>
+                <div class="listing-items-col">
+                  {{ emptyProduct }}
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+      </div>
+    {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+    <style>{%- include 'section-general-css' -%}{{section_css}}</style>
+  </div>
+{% schema %}
+{
+   "name":"Product Listing",
+   "tag": "section",
+   "max_blocks":6,
+   "settings":[
+      {
+         "type":"paragraph",
+         "content":"Created by 'Products Listing' section"
+      },
+      {
+         "type":"text",
+         "id":"title",
+         "label":"Section Label [:id]","default": "Product listing"
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT"
+      },
+      {
+         "type":"checkbox",
+         "id":"boxed_layout",
+         "label":"Boxed layout",
+         "default":true
+      },
+      {
+         "type"  :"text",
+         "id"    :"section_padding",
+         "label" :"Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"color",
+         "id":"section_bg_color",
+         "label":"Background color",
+         "default": "#FFFFFF"
+      },
+      {
+        "type":"image_picker",
+        "id":"section_bg_image",
+        "label":"Background image"
+      },
+      {
+        "type":"select",
+        "id"   :"section_bg_size",
+        "label":"Background Size",
+        "default": "cover",
+        "options":[
+        {"value":"auto","label":"Auto"},
+        {"value":"cover","label":"Cover"},
+        {"value":"contain","label":"Contain"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_repeat",
+        "label": "Background Image Repeat:",
+        "default": "no-repeat",
+        "options": [
+        {"value":"no-repeat","label":"No Repeat"},
+        {"value":"repeat","label":"Repeat"},
+        {"value":"repeat-x","label":"Repeat X"},
+        {"value":"repeat-y","label":"Repeat Y"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_position",
+        "label": "Background Image Position:",
+        "default": "center center",
+        "options": [
+        {"value":"left top","label":"Left Top"},
+        {"value":"center top","label":"Center Top"},
+        {"value":"right top","label":"Right Top"},
+        {"value":"left center","label":"Left Center"},
+        {"value":"center center","label":"Center Center"},
+        {"value":"right center","label":"Right Center"},
+        {"value":"left bottom","label":"Left Bottom"},
+        {"value":"center bottom","label":"Center Bottom"},
+        {"value":"right bottom","label":"Right Bottom"}
+        ]
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT CONTENT"
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"split_items",
+         "label" :"Split Items"
+      },
+      {
+         "type"  :"text",
+         "id"    :"items_resp",
+         "label":"Max number of items per row",
+         "placeholder": "xl,lg,md,sm,xs,xxs",
+         "info": "E.g: 4,3,2",
+         "default": "3,1"
+      },
+      {
+         "type":"range",
+         "id":"limited",
+         "label":"Max Items per column",
+         "min":2,
+         "max":6,
+         "default":3,
+         "step":1
+      }
+   ],
+   "blocks":[
+      {
+         "type":"collection",
+         "name":"Collection",
+         "settings":[
+            {
+               "type":"text",
+               "id":"title",
+               "label":"Title",
+               "default":"Featured products"
+            },
+            {
+               "id":"collection",
+               "type":"collection",
+               "label":"Collection item"
+            }
+         ]
+      },
+      {
+        "type":"subscribe",
+        "name":"Subscribe",
+        "limit":1,
+        "settings":[
+          {
+            "type":"text",
+            "id":"text_title",
+            "label":"Title",
+            "default":"JOIN XSTORE NEWSLETTER"
+          },
+          {
+            "type":"textarea",
+            "id":"text_01",
+            "label":"Text #1",
+            "default":"You can be always up to date with our company news!"
+          },
+          {
+            "type":"textarea",
+            "id":"text_02",
+            "label":"Text #2",
+            "default":"*Don’t worry, we won’t spam our customers mailboxes"
+          },
+          {
+            "type":"color",
+            "id":"title_color",
+            "label":"Title color",
+            "default":"#000000"
+          },
+          {
+            "type":"color",
+            "id":"text_color",
+            "label":"Text color",
+            "default":"#000000"
+          },
+          {
+            "type":"color",
+            "id":"bg_color",
+            "label":"Background color",
+            "default":"#FFFFFF"
+          },
+          {
+            "type":"image_picker",
+            "id":"bg_image",
+            "label":"Background image"
+          },
+          {
+             "type":"header",
+             "content":"Form settings"
+          },
+          {
+            "type":"select",
+            "id":"action_type",
+            "label":"Form Type:",
+            "options":[
+              {
+                "value":"mailchimp",
+                "label":"Mailchimp"
+              },
+              {
+                "value":"klaviyo",
+                "label":"Klaviyo"
+              }
+            ],
+            "default":"mailchimp"
+          },
+          {
+            "type":"textarea",
+            "id":"action",
+            "label":"Form Action"
+          },
+          {
+            "type":"paragraph",
+            "content":"Mailchimp: [Where do I get my MailChimp Form Action](https:\/\/www.arenacommerce.com\/blogs\/faq\/shopify-theme-how-to-get-a-mailchimp-form-action-url)"
+          },
+          {
+            "type":"paragraph",
+            "content":"KLAVIYO: Please copy the hidden input[name='g'] value from the KLAVIYO form and paste here."
+          },
+          {
+            "type":"text",
+            "id":"placeholder",
+            "label":"Form placeholder",
+            "default":"Yourmail@email.com"
+          },
+          {
+            "type":"checkbox",
+            "id":"form_corner",
+            "label":"Form Rounded Corners"
+          },
+          {
+             "type":"color",
+             "id":"frm_border_color",
+             "label":"Form border color",
+             "default": "#ffffff"
+          },
+          {
+             "type":"color",
+             "id":"frm_bg_color",
+             "label":"Form background color",
+             "default": "#ffffff"
+          },
+          {
+             "type":"color",
+             "id":"frm_text_color",
+             "label":"Form text color",
+             "default": "#222222"
+          },
+          {
+             "type":"header",
+             "content":"Button submit settings"
+          },
+          {
+            "type":"text",
+            "id":"btn_icon",
+            "label":"Button Font Icon Name",
+            "default": "icon-uniE910-1"
+          },
+          {
+            "type":"text",
+            "id":"btn_frm_fs",
+            "label":"Button font size",
+            "placeholder":"E.g: 14px"
+          },
+          {
+            "type":"color",
+            "id":"btn_frm_color",
+            "label":"Button text color",
+            "default":"#ffffff"
+          },
+          {
+            "type":"color",
+            "id":"btn_frm_bg_color",
+            "label":"Button background color",
+            "default":"#000000"
+          }
+        ]
+      }
+   ],
+   "presets":[
+      {
+         "name":"Product Listing",
+         "category":"Collection",
+         "blocks":[
+            {
+               "type":"collection"
+            },
+            {
+               "type":"collection"
+            },
+            {
+               "type":"collection"
+            }
+         ]
+      }
+   ]
+}
+{% endschema %}

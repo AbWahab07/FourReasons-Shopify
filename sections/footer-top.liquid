@@ -1,0 +1,1526 @@
+{% assign visibility = section.settings.visibility %}
+
+{%- if visibility != 'hide' -%}
+   {%- if section.settings.boxed_layout -%}
+               {%- assign _layout = 'boxed' -%}
+   {%- else -%}{%- assign _layout = 'full'  -%}
+   {%- endif -%}
+
+   {%- assign _lazyload          = settings.use_lazyload -%}
+   {%- assign heading_size       = 'h' | append: section.settings.block_heading_size -%}
+   {%- assign _bg_image            = section.settings.section_bg_image -%}
+   {%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+   {%- capture _sectionID -%}.section-show-{{section.id}}{%- endcapture -%}
+   
+   {%- include 'footer-widgets', type: 'border_settings' -%}
+
+   {%- capture _visibility -%}
+      {%- case section.settings.show_bottom_footer -%}
+         {%- when 'hide_mobile' -%} d-none d-lg-block
+         {%- when 'hide_desktop' -%}d-lg-none
+         {%- else -%}
+      {%- endcase -%}
+   {%- endcapture -%}
+
+  {%- capture footer_border_style -%}
+    {%- assign _border_mode  = section.settings.border_mode -%}
+    {%- unless _border_mode == 'hide' -%}
+      {%- assign _border_width  = section.settings.border_width | default: '1px' -%}
+      {%- assign _border_style  = section.settings.border_style -%}
+      {%- assign _border_margin = section.settings.border_margin -%}
+      {%- assign _border_color  = section.settings.border_color -%}
+
+      {%- capture head_borderID -%}.section-show-{{section.id}} .border-element{%- endcapture -%}
+
+      <div class="footer-border{% if _border_mode == 'boxed' %} container{% endif %}">
+        <div class="border-element">
+          <style>{{head_borderID}}{ border-bottom-style: {{_border_style}};border-bottom-color: {{_border_color}};border-bottom-width: {{_border_width}};}
+            {%- include 'css-responsive', classID: head_borderID, css_property: 'margin', css_value: _border_margin -%}
+          </style>
+        </div>
+      </div>
+    {%- endunless -%}
+  {%- endcapture -%}
+  <!-- FOOTER WIDGETS -->
+  <div class="footer-container footer-widgets section-show-{{section.id}} layout-{{ _layout }} {{_visibility}}{% if section.settings.break_container %} f-break{% endif %}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}">
+    {{footer_border_style}}
+    {% if _layout == 'boxed' %}<div class="container">{% endif %}
+      <div class="row">
+         {%- if section.blocks.size > 0 -%}
+
+           {%- for block in section.blocks -%}
+             {%- assign nest        = block.settings.nested -%}
+             {%- if nest -%}{% continue %}{%- endif -%}
+             {%- assign index       = forloop.index -%}
+             {%- capture f_block_width -%}{%- include 'set-width-bootstrap',in_type: 'width', number: block.settings.width_resp -%}{{_out}}{%- endcapture -%}
+
+             <div class="footer-block footer-{{block.id}} {{f_block_width}}"{{ block.shopify_attributes }}>
+               {% include 'footer-widgets' %}
+
+               {%- for block in section.blocks offset: index -%}
+                 {%- unless block.settings.nested -%}{% break %}{%- endunless -%}
+                 {% include 'footer-widgets' %}
+               {%- endfor -%}
+             </div>
+           {%- endfor -%}
+
+         {%- endif -%}
+      </div>
+    {% if _layout == 'boxed' %}</div>{% endif %}
+  </div>
+   <style>
+      {%- include 'section-general-css' -%}
+      {{section_css}}
+      {%- include 'css-responsive', classID: _secionID, css_value: section.settings.section_margin, css_property: 'margin' -%}
+   </style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name":"Footer Widgets",
+  "tag":"section",
+  "settings":[
+    {
+      "type":"checkbox",
+      "id":"boxed_layout",
+      "label":"Boxed layout",
+      "default":true
+    },
+    {
+      "type":"select",
+      "id":"visibility",
+      "label":"Visibility",
+      "default":"all",
+      "options":[
+        {
+          "value":"hide",
+          "label":"Hide"
+        },
+        {
+          "value":"hide_mobile",
+          "label":"Hide on Mobile"
+        },
+        {
+          "value":"hide_desktop",
+          "label":"Hide on Desktop"
+        },
+        {
+          "value":"all",
+          "label":"Show All"
+        }
+      ]
+    },
+      {
+        "type":"image_picker",
+        "id":"section_bg_image",
+        "label":"Background image"
+      },
+      {
+        "type":"select",
+        "id"   :"section_bg_size",
+        "label":"Background Size",
+        "default": "cover",
+        "options":[
+        {"value":"auto","label":"Auto"},
+        {"value":"cover","label":"Cover"},
+        {"value":"contain","label":"Contain"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_repeat",
+        "label": "Background Image Repeat:",
+        "default": "no-repeat",
+        "options": [
+        {"value":"no-repeat","label":"No Repeat"},
+        {"value":"repeat","label":"Repeat"},
+        {"value":"repeat-x","label":"Repeat X"},
+        {"value":"repeat-y","label":"Repeat Y"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_position",
+        "label": "Background Image Position:",
+        "default": "center center",
+        "options": [
+        {"value":"left top","label":"Left Top"},
+        {"value":"center top","label":"Center Top"},
+        {"value":"right top","label":"Right Top"},
+        {"value":"left center","label":"Left Center"},
+        {"value":"center center","label":"Center Center"},
+        {"value":"right center","label":"Right Center"},
+        {"value":"left bottom","label":"Left Bottom"},
+        {"value":"center bottom","label":"Center Bottom"},
+        {"value":"right bottom","label":"Right Bottom"}
+        ]
+      },
+    {
+      "type":"text",
+      "id":"section_padding",
+      "label":"Section Padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"text",
+      "id":"section_margin",
+      "label":"Section Margin",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"header",
+      "content":"Block heading"
+    },
+    {
+      "type":"range",
+      "id":"block_heading_size",
+      "label":"Block heading size",
+      "min":1,
+      "max":6,
+      "default":4
+    },
+    {
+      "type":"select",
+      "id":"head_border_fw",
+      "label":"Block heading font weight",
+      "default":"300",
+      "options":[
+        {"value":"100","label":"100 Thin (Hairline)"},
+        {"value":"200","label":"200 Extra Light (Ultra Light)"},
+        {"value":"300","label":"300 Light"},
+        {"value":"400","label":"400 Normal"},
+        {"value":"500","label":"500 Medium"},
+        {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+        {"value":"700","label":"700 Bold"},
+        {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+        {"value":"900","label":"900 Black (Heavy)"}
+      ]
+    },
+    {
+       "type":"color",
+       "id":"block_head_color",
+       "label":"Text color",
+       "default": "rgba(0,0,0,0)"
+    },
+    {
+       "type":"text",
+       "id":"block_heading_lsp",
+       "label":"Letter spacing",
+       "placeholder": "E.g: 2px"
+    },
+    {
+      "type":"range",
+      "id":"head_border_size",
+      "label":"Border size",
+      "min":0,
+      "max":10,
+      "step":1,
+      "unit":"px",
+      "default":1
+    },
+    {
+      "type":"color",
+      "id":"head_border_color",
+      "label":"Border color",
+      "default":"#888888"
+    },
+    {
+      "type":"text",
+      "id":"head_border_width",
+      "label":"Border max width (in %)",
+      "default":"100%"
+    },
+    {
+      "type":"text",
+      "id":"head_border_margin",
+      "label":"Border margin",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"header",
+      "content":"Footer border"
+    },
+    {
+      "type":"select",
+      "id":"border_mode",
+      "label":"Border mode",
+      "default":"hide",
+      "options":[
+        {
+          "value":"hide",
+          "label":"Hide"
+        },
+        {
+          "value":"boxed",
+          "label":"Boxed"
+        },
+        {
+          "value":"full",
+          "label":"Full"
+        }
+      ]
+    },
+    {
+      "type":"color",
+      "id":"border_color",
+      "label":"Border Color",
+      "default":"#ffffff"
+    },
+    {
+      "type":"text",
+      "id":"border_width",
+      "label":"Border size (in px)",
+      "default":"1px",
+      "placeholder":"E.g: 1px"
+    },
+    {
+      "type":"select",
+      "id":"border_style",
+      "label":"Border style",
+      "default":"solid",
+      "options":[
+        {
+          "value":"dotted",
+          "label":"Dotted"
+        },
+        {
+          "value":"dashed",
+          "label":"Dashed"
+        },
+        {
+          "value":"solid",
+          "label":"Solid"
+        },
+        {
+          "value":"double",
+          "label":"Double"
+        },
+        {
+          "value":"groove",
+          "label":"Groove"
+        },
+        {
+          "value":"ridge",
+          "label":"Ridge"
+        },
+        {
+          "value":"inset",
+          "label":"Inset"
+        },
+        {
+          "value":"outset",
+          "label":"Outset"
+        }
+      ]
+    },
+    {
+      "type":"text",
+      "id":"border_margin",
+      "label":"Border margin (in px)",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    }
+  ],
+  "blocks":[
+    {
+      "type":"logo",
+      "name":"Logo",
+      "limit":1,
+      "settings":[
+        {
+          "type":"image_picker",
+          "id":"logo",
+          "label":"Footer logo image"
+        },
+        {
+          "type":"text",
+          "id":"logo_max_width",
+          "label":"Logo maximum width",
+          "default":"120",
+          "placeholder":"Only digits. E.g: 110"
+        },
+        {
+          "type":"header",
+          "content":"Block settings"
+        },
+        {
+          "type":"text",
+          "id":"width_resp",
+          "label":"Width (1->12)",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "default":"4,4,12",
+          "info":"0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type":"text",
+          "id":"alignment",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"text",
+           "id":"ver_align",
+           "label":"Vertical alignment",
+           "placeholder": "E.g: top or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"checkbox",
+           "id":"nested",
+           "label":"Nested with above block"
+        },
+        {
+           "type":"text",
+           "id":"block_padding",
+           "label":"Block padding",
+           "placeholder":"E.g: 5px 20px 5px 20px",
+           "info":"Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type":"information",
+      "name":"Information",
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"Heading",
+          "default":"Information"
+        },
+        {
+          "type":"textarea",
+          "id":"subheading",
+          "label":"Subheading"
+        },
+        {
+          "type":"color",
+          "id":"icon_color",
+          "label":"Icon color",
+          "default":"rgba(0,0,0,0)"
+        },
+        {
+          "type":"checkbox",
+          "id":"border",
+          "label":"Show Border"
+        },
+        {
+          "type":"header",
+          "content":"Block 01"
+        },
+        {
+          "type":"checkbox",
+          "id":"show_block_1",
+          "label":"Show Block 01",
+          "default":true
+        },
+        {
+          "type":"text",
+          "id":"information_title_1",
+          "label":"Text 01",
+          "default":"Online Consultation"
+        },
+        {
+          "type":"textarea",
+          "id":"information_caption_1",
+          "label":"Text 02",
+          "default":"Call: + 0123 456 789"
+        },
+        {
+          "type":"url",
+          "id":"information_link_1",
+          "label":"Link for Text 02"
+        },
+        {
+          "type":"text",
+          "id":"block_icon_1",
+          "label":"Optional - Font Icon Name"
+        },
+        {
+          "type":"header",
+          "content":"Block 02"
+        },
+        {
+          "type":"checkbox",
+          "id":"show_block_2",
+          "label":"Show Block 02",
+          "default":true
+        },
+        {
+          "type":"text",
+          "id":"information_title_2",
+          "label":"Text 01",
+          "default":"Customer Support"
+        },
+        {
+          "type":"textarea",
+          "id":"information_caption_2",
+          "label":"Text 02",
+          "default":"Check our documentation"
+        },
+        {
+          "type":"url",
+          "id":"information_link_2",
+          "label":"Link for Text 02"
+        },
+        {
+          "type":"text",
+          "id":"block_icon_2",
+          "label":"Optional - Font Icon Name"
+        },
+        {
+          "type":"header",
+          "content":"Block 03"
+        },
+        {
+          "type":"checkbox",
+          "id":"show_block_3",
+          "label":"Show Block 03"
+        },
+        {
+          "type":"text",
+          "id":"information_title_3",
+          "label":"Text 01"
+        },
+        {
+          "type":"textarea",
+          "id":"information_caption_3",
+          "label":"Text 02"
+        },
+        {
+          "type":"url",
+          "id":"information_link_3",
+          "label":"Link for Text 02"
+        },
+        {
+          "type":"text",
+          "id":"block_icon_3",
+          "label":"Optional - Font Icon Name"
+        },
+        {
+          "type":"header",
+          "content":"Block 04"
+        },
+        {
+          "type":"checkbox",
+          "id":"show_block_4",
+          "label":"Show Block 04"
+        },
+        {
+          "type":"text",
+          "id":"information_title_4",
+          "label":"Text 01"
+        },
+        {
+          "type":"textarea",
+          "id":"information_caption_4",
+          "label":"Text 02"
+        },
+        {
+          "type":"url",
+          "id":"information_link_4",
+          "label":"Link for Text 02"
+        },
+        {
+          "type":"text",
+          "id":"block_icon_4",
+          "label":"Optional - Font Icon Name"
+        },
+        {
+          "type":"header",
+          "content":"Block settings"
+        },
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Block Label",
+          "default":"Information"
+        },
+        {
+          "type":"text",
+          "id":"width_resp",
+          "label":"Width (1->12)",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "default":"4,4,12",
+          "info":"0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type":"text",
+          "id":"alignment",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"text",
+           "id":"ver_align",
+           "label":"Vertical alignment",
+           "placeholder": "E.g: top or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+          "type":"checkbox",
+          "id":"inline",
+          "label":"Horizontal alignment"
+        },
+        {
+           "type":"checkbox",
+           "id":"nested",
+           "label":"Nested with above block"
+        },
+        {
+           "type":"text",
+           "id":"block_margin",
+           "label":"Block margin",
+           "placeholder":"E.g: 5px 20px 5px 20px",
+           "info":"Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type":"menu",
+      "name":"Menu item",
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"Heading",
+          "default":"Menu"
+        },
+        {
+          "type":"checkbox",
+          "id":"menu_uppercase",
+          "label":"Show Menu title UPPERCASE"
+        },
+        {
+           "type":"text",
+           "id":"menu_lsp",
+           "label":"Menu letter spacing",
+           "placeholder": "E.g: 2px"
+        },
+        {
+          "type":"link_list",
+          "id":"nav_link",
+          "label":"Menu item"
+        },
+        {
+          "type":"link_list",
+          "id":"nav_link_2",
+          "label":"Menu item (Optional)"
+        },
+        {
+           "type":"paragraph",
+           "content":"Before use Custom font, make sure custom font had added in \"Custom css\" section"
+        },
+        {
+          "type":"select",
+          "id":"nav_ff",
+          "label":"Menu font family",
+          "default": "ff-body",
+          "options":[
+            {"value":"ff-head","label":"Header font"},
+            {"value":"ff-body","label":"Body font"},
+            {"value":"ff-1","label":"Custom font 1"},
+            {"value":"ff-2","label":"Custom font 2"},
+            {"value":"ff-3","label":"Custom font 3"},
+            {"value":"ff-4","label":"Custom font 4"},
+            {"value":"ff-5","label":"Custom font 5"}
+          ]
+        },
+        {
+          "type":"header",
+          "content":"Block settings"
+        },
+        {
+          "type":"text",
+          "id":"width_resp",
+          "label":"Width (1->12)",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "default":"4,4,12",
+          "info":"0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type":"text",
+          "id":"alignment",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"text",
+           "id":"ver_align",
+           "label":"Vertical alignment",
+           "placeholder": "E.g: top or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Block Label",
+          "default":"Menu"
+        },
+        {
+          "type":"checkbox",
+          "id":"inline",
+          "label":"Horizontal alignment"
+        },
+        {
+           "type":"checkbox",
+           "id":"nested",
+           "label":"Nested with above block"
+        },
+        {
+           "type":"text",
+           "id":"block_margin",
+           "label":"Block margin",
+           "placeholder":"E.g: 5px 20px 5px 20px",
+           "info":"Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type":"subscribe",
+      "name":"Subscribe",
+      "limit":1,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"Heading",
+          "default":"Subscribe"
+        },
+        {
+          "type":"select",
+          "id":"action_type",
+          "label":"Form Type:",
+          "options":[
+            {
+              "value":"mailchimp",
+              "label":"Mailchimp"
+            },
+            {
+              "value":"klaviyo",
+              "label":"Klaviyo"
+            }
+          ],
+          "default":"mailchimp"
+        },
+        {
+          "type":"textarea",
+          "id":"action",
+          "label":"Form Action"
+        },
+        {
+          "type":"paragraph",
+          "content":"Mailchimp: [Where do I get my MailChimp Form Action](https:\/\/www.arenacommerce.com\/blogs\/faq\/shopify-theme-how-to-get-a-mailchimp-form-action-url)"
+        },
+        {
+          "type":"paragraph",
+          "content":"KLAVIYO: Please copy the hidden input[name='g'] value from the KLAVIYO form and paste here."
+        },
+        {
+          "type":"text",
+          "id":"placeholder",
+          "label":"Form placeholder",
+          "default":"Yourmail@email.com"
+        },
+        {
+          "type":"text",
+          "id":"subscribe_content",
+          "label":"Content"
+        },
+        {
+          "type":"text",
+          "id":"subscribe_content_2",
+          "label":"Content 2"
+        },
+        {
+          "type":"select",
+          "id":"form_btn_display",
+          "label":"Button type:",
+          "default":"all",
+          "options":[
+            {
+              "value":"all",
+              "label":"Use Text & Icon"
+            },
+            {
+              "value":"icon",
+              "label":"Use Icon"
+            },
+            {
+              "value":"text",
+              "label":"Use Text"
+            }
+          ]
+        },
+        {
+          "type":"text",
+          "id":"btn_icon",
+          "label":"Button Font Icon Name"
+        },
+        {
+          "type":"text",
+          "id":"btn_text",
+          "label":"Button Label",
+          "default":"Subcrible"
+        },
+        {
+           "type":"header",
+           "content":"Form style"
+        },
+        {
+           "type":"text",
+           "id":"frm_txt_fs",
+           "label":"Form text font size",
+           "default": "16px"
+        },
+        {
+           "type":"select",
+           "id":"frm_border_style",
+           "label":"Form border style",
+           "default":"full",
+           "options":[
+            {
+              "value":"full",
+              "label":"Full"
+            },
+            {
+              "value":"bottom",
+              "label":"Only border bottom"
+            }
+           ]
+        },
+        {
+           "type":"color",
+           "id":"frm_txt_color",
+           "label":"Form text color",
+           "default": "#222222"
+        },
+        {
+           "type":"color",
+           "id":"frm_bg_color",
+           "label":"Form background color",
+           "default": "#ffffff"
+        },
+        {
+           "type":"color",
+           "id":"frm_border_color",
+           "label":"Form border color",
+           "default": "#222222"
+        },
+        {
+           "type":"range",
+           "id":"frm_border_size",
+           "label":"Form border size",
+           "min":0,
+           "max":10,
+           "unit":"px",
+           "default":0
+        },
+        {
+           "type":"text",
+           "id":"frm_border_rd",
+           "label":"Form border radius corners",
+           "placeholder":"E.g: 4px 4px 4px 4px"
+        },
+        {
+          "type":"header",
+          "content":"Button form style"
+        },
+        {
+          "type":"range",
+          "id":"btn_inherit",
+          "label":"Button style",
+          "min":0,
+          "max":3,
+          "step":1,
+          "default":1,
+          "info": "0 to customize"
+        },
+        {
+            "type":"text",
+            "id":"btn_frm_padding",
+            "label":"Button padding",
+            "placeholder":"top right left bottom",
+            "info":"E.g: 10px 5px 10px 5px"
+        },
+        {
+           "type":"text",
+           "id":"btn_frm_radius",
+           "label":"Button radius corners",
+           "placeholder":"E.g: 4px 4px 4px 4px"
+        },
+        {
+            "type":"text",
+            "id":"btn_frm_fs",
+            "label":"Button font size",
+            "placeholder":"E.g: 14px"
+        },
+        {
+            "type":"select",
+            "id":"btn_frm_fw",
+            "label":"Button font weight",
+            "default":"300",
+            "options":[
+                {"value":"100","label":"100 Thin (Hairline)"},
+                {"value":"200","label":"200 Extra Light (Ultra Light)"},
+                {"value":"300","label":"300 Light"},
+                {"value":"400","label":"400 Normal"},
+                {"value":"500","label":"500 Medium"},
+                {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+                {"value":"700","label":"700 Bold"},
+                {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+                {"value":"900","label":"900 Black (Heavy)"}
+            ]
+        },
+        {
+            "type":"color",
+            "id":"btn_frm_color",
+            "label":"Button text color",
+            "default":"#ffffff"
+        },
+        {
+            "type":"color",
+            "id":"btn_frm_bg_color",
+            "label":"Button background color",
+            "default":"#000000"
+        },
+        {
+           "type":"color",
+           "id":"btn_frm_border_color",
+           "label":"Border color"
+        },
+        {
+           "type":"range",
+           "id":"btn_frm_border_size",
+           "label":"Border size",
+           "min":0,
+           "max":10,
+           "unit":"px",
+           "default":1
+        },
+        {
+           "type":"text",
+           "id":"btn_frm_lsp",
+           "label":"Letter spacing",
+           "placeholder":"E.g: 2px"
+        },
+        {
+           "type":"text",
+           "id":"btn_frm_lh",
+           "label":"Line height",
+           "placeholder":"E.g: 20px"
+        },
+        {
+          "type":"header",
+          "content":"Block settings"
+        },
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Block Label",
+          "default":"Subscribe"
+        },
+        {
+          "type":"text",
+          "id":"width_resp",
+          "label":"Width (1->12)",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "default":"4,4,12",
+          "info":"0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type":"text",
+          "id":"alignment",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"text",
+           "id":"ver_align",
+           "label":"Vertical alignment",
+           "placeholder": "E.g: top or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+          "type":"checkbox",
+          "id":"inline",
+          "label":"Horizontal alignment"
+        },
+        {
+           "type":"checkbox",
+           "id":"nested",
+           "label":"Nested with above block"
+        },
+        {
+           "type":"text",
+           "id":"block_margin",
+           "label":"Block margin",
+           "placeholder":"E.g: 5px 20px 5px 20px",
+           "info":"Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type":"image",
+      "name":"Image & Text",
+      "limit":3,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"Heading",
+          "default":"Image"
+        },
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Image"
+        },
+        {
+          "type":"text",
+          "id":"image_max_width",
+          "label":"Image maximum width",
+          "default":"200",
+          "placeholder":"Only digits. E.g: 110"
+        },
+        {
+          "type":"textarea",
+          "id":"text",
+          "label":"Text"
+        },
+        {
+          "type":"header",
+          "content":"Block settings"
+        },
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Block Label",
+          "default":"Image"
+        },
+        {
+          "type":"text",
+          "id":"width_resp",
+          "label":"Width (1->12)",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "default":"4,4,12",
+          "info":"0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type":"text",
+          "id":"alignment",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"text",
+           "id":"ver_align",
+           "label":"Vertical alignment",
+           "placeholder": "E.g: top or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"checkbox",
+           "id":"nested",
+           "label":"Nested with above block"
+        },
+        {
+           "type":"text",
+           "id":"block_margin",
+           "label":"Block margin",
+           "placeholder":"E.g: 5px 20px 5px 20px",
+           "info":"Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type":"social",
+      "name":"Social icons",
+      "limit":1,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"Heading",
+          "default":"Social icons"
+        },
+        {
+           "type":"text",
+           "id":"social_fs",
+           "label":"Social font size",
+           "default": "16px",
+           "placeholder": "xl,lg,md,sm,xs,xxs"
+        },
+        {
+           "type":"color",
+           "id":"social_icon_color",
+           "label":"Icon color",
+           "default": "#000000"
+        },
+        {
+           "type":"color",
+           "id":"social_icon_bg_color",
+           "label":"Icon color",
+           "default": "rgba(0,0,0,0)"
+        },
+        {
+           "type":"text",
+           "id":"social_padding",
+           "label":"Socical padding",
+           "placeholder":"E.g: 5px 20px 5px 20px",
+           "info":"Order: Top Right Bottom Left"
+        },
+        {
+          "type":"header",
+          "content":"Block settings"
+        },
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Block Label",
+          "default":"Social icons"
+        },
+        {
+          "type":"text",
+          "id":"width_resp",
+          "label":"Width (1->12)",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "default":"4,4,12",
+          "info":"0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type":"text",
+          "id":"alignment",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"text",
+           "id":"ver_align",
+           "label":"Vertical alignment",
+           "placeholder": "E.g: top or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+          "type":"checkbox",
+          "id":"inline",
+          "label":"Horizontal alignment"
+        },
+        {
+           "type":"checkbox",
+           "id":"nested",
+           "label":"Nested with above block"
+        },
+        {
+           "type":"text",
+           "id":"block_margin",
+           "label":"Block margin",
+           "placeholder":"E.g: 5px 20px 5px 20px",
+           "info":"Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type":"payment",
+      "name":"Payment",
+      "limit":1,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"Heading",
+          "default":"Payment"
+        },
+        {
+          "type":"select",
+          "id":"footer_payment_icon",
+          "label":"Payment icons type",
+          "default":"icon",
+          "options":[
+            {
+              "value":"icon",
+              "label":"Use font icon"
+            },
+            {
+              "value":"image",
+              "label":"Use image"
+            }
+          ]
+        },
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Payment image"
+        },
+        {
+          "type":"range",
+          "id":"image_max_width",
+          "min":20,
+          "max":1000,
+          "step":20,
+          "unit":"px",
+          "label":"Image maximum width",
+          "default":100
+        },
+        {
+          "type":"header",
+          "content":"Icon 01"
+        },
+        {
+          "type":"text",
+          "id":"payment_icon_1",
+          "label":"Font icon name 01",
+          "default":"icon-cc-visa",
+          "info":"Default is icon-cc-visa"
+        },
+        {
+          "type":"text",
+          "id":"payment_icon_title_1",
+          "label":"Font icon title 01",
+          "default":"Visa"
+        },
+        {
+          "type":"header",
+          "content":"Icon 02"
+        },
+        {
+          "type":"text",
+          "id":"payment_icon_2",
+          "label":"Font icon name 02",
+          "default":"icon-cc-paypal",
+          "info":"Default is icon-cc-paypal"
+        },
+        {
+          "type":"text",
+          "id":"payment_icon_title_2",
+          "label":"Font icon title 02",
+          "default":"PayPal"
+        },
+        {
+          "type":"header",
+          "content":"Icon 03"
+        },
+        {
+          "type":"text",
+          "id":"payment_icon_3",
+          "label":"Font icon name 03",
+          "default":"icon-cc-discover",
+          "info":"Default is icon-cc-discover"
+        },
+        {
+          "type":"text",
+          "id":"payment_icon_title_3",
+          "label":"Font icon title 03",
+          "default":"Discover"
+        },
+        {
+          "type":"header",
+          "content":"Icon 04"
+        },
+        {
+          "type":"text",
+          "id":"payment_icon_4",
+          "label":"Font icon name 04",
+          "default":"icon-cc-amex",
+          "info":"Default is icon-cc-amex"
+        },
+        {
+          "type":"text",
+          "id":"payment_icon_title_4",
+          "label":"Font icon title 04",
+          "default":"American express"
+        },
+        {
+          "type":"header",
+          "content":"Icon 05"
+        },
+        {
+          "type":"text",
+          "id":"payment_icon_5",
+          "label":"Font icon name 05",
+          "default":"icon-cc-mastercard",
+          "info":"Default is icon-cc-mastercard"
+        },
+        {
+          "type":"text",
+          "id":"payment_icon_title_5",
+          "label":"Font icon title 05",
+          "default":"Mastercard"
+        },
+        {
+          "type":"header",
+          "content":"Block settings"
+        },
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Block Label",
+          "default":"Payment"
+        },
+        {
+          "type":"text",
+          "id":"width_resp",
+          "label":"Width (1->12)",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "default":"4,4,12",
+          "info":"0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type":"text",
+          "id":"alignment",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"text",
+           "id":"ver_align",
+           "label":"Vertical alignment",
+           "placeholder": "E.g: top or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+          "type":"checkbox",
+          "id":"inline",
+          "label":"Horizontal alignment"
+        },
+        {
+           "type":"checkbox",
+           "id":"nested",
+           "label":"Nested with above block"
+        },
+        {
+           "type":"text",
+           "id":"block_margin",
+           "label":"Block margin",
+           "placeholder":"E.g: 5px 20px 5px 20px",
+           "info":"Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type":"instagram",
+      "name":"Instagram",
+      "limit":1,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"Heading",
+          "default":"Instagram"
+        },
+        {
+          "id":"instagram_token",
+          "label":"Instagram Access Token [( ? )](http:\/\/jelled.com\/instagram\/access-token)",
+          "type":"text",
+          "default":"8232616123.bd54f22.c30c8173a6ad48e09fc915ece80d052a"
+        },
+        {
+          "id":"instagram_userid",
+          "label":"Instagram User ID [( ? )](http:\/\/jelled.com\/instagram\/lookup-user-id)",
+          "type":"text",
+          "default":"8232616123"
+        },
+        {
+          "type":"text",
+          "id":"items_resp",
+          "label":"Max number of items per row",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "info":"E.g: 4,3,2",
+          "default":"3"
+        },
+        {
+          "type":"range",
+          "id":"total",
+          "label":"Total items",
+          "min":1,
+          "max":12,
+          "default":6
+        },
+        {
+           "type":"checkbox",
+           "id":"spacing_items",
+           "label":"Spacing item",
+           "default": true
+        },
+        {
+          "type":"header",
+          "content":"Block settings"
+        },
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Block Label",
+          "default":"Instagram"
+        },
+        {
+          "type":"text",
+          "id":"width_resp",
+          "label":"Width (1->12)",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "default":"4,4,12",
+          "info":"0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type":"text",
+          "id":"alignment",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"text",
+           "id":"ver_align",
+           "label":"Vertical alignment",
+           "placeholder": "E.g: top or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"checkbox",
+           "id":"nested",
+           "label":"Nested with above block"
+        },
+        {
+           "type":"text",
+           "id":"block_margin",
+           "label":"Block margin",
+           "placeholder":"E.g: 5px 20px 5px 20px",
+           "info":"Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type":"blog",
+      "name":"Blogs",
+      "limit":1,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"Heading",
+          "default":"Blogs"
+        },
+        {
+          "type":"blog",
+          "id":"blog",
+          "label":"Blog"
+        },
+        {
+          "type":"range",
+          "id":"total",
+          "label":"Total items",
+          "min":1,
+          "max":5,
+          "default":3
+        },
+        {
+          "type":"header",
+          "content":"Block settings"
+        },
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Block Label",
+          "default":"Blogs"
+        },
+        {
+          "type":"text",
+          "id":"width_resp",
+          "label":"Width (1->12)",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "default":"4,4,12",
+          "info":"0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type":"text",
+          "id":"alignment",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"text",
+           "id":"ver_align",
+           "label":"Vertical alignment",
+           "placeholder": "E.g: top or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"checkbox",
+           "id":"nested",
+           "label":"Nested with above block"
+        },
+        {
+           "type":"text",
+           "id":"block_margin",
+           "label":"Block margin",
+           "placeholder":"E.g: 5px 20px 5px 20px",
+           "info":"Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type":"tag",
+      "name":"Tags",
+      "limit":1,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"Heading",
+          "default":"Tags"
+        },
+        {
+          "type":"textarea",
+          "id":"tag",
+          "label":"Tags",
+          "placeholder":"News, Fashion, Black, etc."
+        },
+        {
+          "type":"header",
+          "content":"Block settings"
+        },
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Block Label",
+          "default":"Tags"
+        },
+        {
+          "type":"text",
+          "id":"width_resp",
+          "label":"Width (1->12)",
+          "placeholder":"xl,lg,md,sm,xs,xxs",
+          "default":"4,4,12",
+          "info":"0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type":"text",
+          "id":"alignment",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "placeholder": "E.g: left or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"text",
+           "id":"ver_align",
+           "label":"Vertical alignment",
+           "placeholder": "E.g: top or center","info":"[Breakpoint(?)](https:\/\/help.arenacommerce.com\/customization\/grid.html)"
+        },
+        {
+           "type":"checkbox",
+           "id":"nested",
+           "label":"Nested with above block"
+        },
+        {
+           "type":"text",
+           "id":"block_margin",
+           "label":"Block margin",
+           "placeholder":"E.g: 5px 20px 5px 20px",
+           "info":"Order: Top Right Bottom Left"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

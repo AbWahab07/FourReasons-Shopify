@@ -1,0 +1,1820 @@
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+{%- assign slideshow_ver = 'slideshow-v2' -%}
+{%- include 'snippet-section-slideshow', slideshow_version: '2' -%}
+{% schema %}
+{
+  "name":"Slideshow & Banners",
+  "tag":"section",
+  "settings":[
+    {
+      "type":"paragraph",
+      "content":"Created by 'Slideshow v2' section. Please try to keep your slideshow images, videos the same size"
+    },
+    {
+      "id":"title",
+      "type":"text",
+      "label":"Section Label [:id]","default": "Slideshow v2"
+    },
+    {
+      "type":"header",
+      "content":"LAYOUT"
+    },
+    {
+      "type":"checkbox",
+      "id":"boxed_layout",
+      "label":"Boxed layout"
+    },
+    {
+       "type": "text",
+       "id": "section_padding",
+       "label": "Section Padding",
+       "placeholder": "E.g: 5px 20px 5px 20px",
+       "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type":"select",
+      "id":"slide_height",
+      "label":"Slider Height type",
+      "default":"auto",
+      "options":[
+        {"value":"auto","label":"Auto"},
+        {"value":"adapt-first-slide","label":"Adapt to First Slide"},
+        {"value":"full-screen","label":"Full Screen"}
+      ]
+    },
+    {
+       "type":"text",
+       "id"   :"slide_height_mob",
+       "label":"Slider height"
+    },
+    {
+      "type":"checkbox",
+      "id":"parallax",
+      "label":"Use Parallax"
+    },
+    {
+       "type":"range",
+       "id"   :"slide_active",
+       "label":"Set active slide by default",
+       "min"   :1,
+       "max"   :10,
+       "default":1
+    },
+    {
+      "type":"header",
+      "content":"AUTO SLIDES "
+    },
+    {
+      "type":"text",
+      "id":"autoplay_speed",
+      "label":"Change slides every (in second)",
+      "default":"5",
+      "placeholder": "E.g: 5"
+    },
+    {
+      "type":"select",
+      "id":"animation",
+      "label":"Slideshow Animation",
+      "default":"slide",
+      "options":[
+        {"value":"coverflow","label":"Coverflow"},
+        {"value":"cube","label":"Cube"},
+        {"value":"fade","label":"Fade"},
+        {"value":"flip","label":"Flip"},
+        {"value":"slide","label":"Slide"}
+      ]
+    },
+    {
+      "type":"header",
+      "content":"NAVIGATOR"
+    },
+    {
+      "type":"checkbox",
+      "id":"navigator",
+      "label":"Show Navigator Next Prev",
+      "default":true
+    },
+    {
+      "type":"checkbox",
+      "id":"pagination",
+      "label":"Show Pagination",
+      "default":true
+    },
+    {
+      "type":"range",
+      "id":"nav_pag_style",
+      "label":"Navigation & Pagination Style",
+      "min":1,
+      "max":8,
+      "step":1,
+      "default":1
+    },
+    {
+      "type":"color",
+      "id":"thumb_text_color",
+      "label":"Thumbnail text color",
+      "default":"#000000"
+    },
+    {
+      "type":"color",
+      "id":"dots_color",
+      "label":"Pagination color",
+      "default":"rgba(0,0,0,0)"
+    },
+    {
+      "type":"color",
+      "id":"nav_bg_color",
+      "label":"Navigation background color",
+      "default":"rgba(0,0,0,0)"
+    },
+    {
+      "type": "range",
+      "id": "nav_bg_opacity",
+      "label": "Background transparent",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "default": 90
+    },
+    {
+      "type":"color",
+      "id":"nav_color",
+      "label":"Navigation color",
+      "default":"rgba(0,0,0,0)"
+    },
+    {
+       "type":"text",
+       "id"   :"nav_size",
+       "label":"Navigation arrows size",
+       "placeholder": "E.g: 24px"
+    },
+    {
+       "type":"text",
+       "id"   :"pagination_margin",
+       "label":"Pagination dots margin",
+       "default": "5px",
+       "placeholder": "E.g: 5px",
+       "info": "Order: Top Right Bottom Left"
+    },
+    {
+       "type":"text",
+       "id"   :"pagination_width",
+       "label":"Pagination dots width",
+       "default": "10px",
+       "placeholder": "E.g: 10px"
+    },
+    {
+       "type":"text",
+       "id"   :"pagination_height",
+       "label":"Pagination dots height",
+       "default": "10px",
+       "placeholder": "E.g: 10px"
+    },
+    {
+       "type":"select",
+       "id"  :"pagination_position",
+       "label":"Pagination position",
+       "default": "bottom-center",
+       "options":[
+        {"value":"middle-left","label":"Middle left"},
+        {"value":"middle-right","label":"Middle right"},
+        {"value":"bottom-left","label":"Bottom left"},
+        {"value":"bottom-center","label":"Bottom center"},
+        {"value":"bottom-right","label":"Bottom right"}
+       ]
+    },
+    {
+      "type":"header",
+      "content":"Grid layout settings"
+    },
+    {
+      "type":"text",
+      "id":"main_grid_layout",
+      "label":"Slideshow + Sidebar banner",
+      "default":"100%",
+      "placeholder":"E.g: 70% 30%"
+    },
+    {
+      "type":"select",
+      "id":"slideshow_height",
+      "label":"Slideshow height",
+      "default":"auto",
+      "options":[
+        {"value":"auto","label":"Auto"},
+        {"value":"fill","label":"Fill"}
+      ]
+    },
+    {
+      "type":"select",
+      "id":"sidebar_banner_position",
+      "label":"Sidebar Banner position",
+      "default":"right",
+      "options":[
+        {"value":"left","label":"Left"},
+        {"value":"right","label":"Right"}
+      ]
+    },
+    {
+      "type":"text",
+      "id":"banner_bottom_grid_layout",
+      "label":"Max number of bottom Banner",
+      "placeholder":"E.g: 4, 1",
+      "default":"2,1"
+    },
+    {
+       "type":"text",
+       "id"   :"slideshow_banner_spc",
+       "label":"Spacing settings",
+       "placeholder": "E.g: 15px"
+    }
+  ],
+  "blocks":[
+    {
+      "type":"general_slide_style",
+      "name":"General Slides styles",
+      "limit":1,
+      "settings":[
+        {
+          "type":"range",
+          "id":"position_left",
+          "label":"Horizontal Position",
+          "min":0,
+          "max":100,
+          "step":1,
+          "unit":"%",
+          "default":50
+        },
+        {
+          "type":"range",
+          "id":"position_top",
+          "label":"Vertical Position",
+          "min":0,
+          "max":100,
+          "step":1,
+          "unit":"%",
+          "default":50
+        },
+        {
+          "type":"text",
+          "id":"content_width",
+          "label":"Content max width (in %)",
+          "info":"E.g: 80%, 100%"
+        },
+        {
+           "type"  :"text",
+           "id"    :"content_padding",
+           "label" :"Padding content",
+           "placeholder": "E.g: 5px 20px 5px 20px",
+           "info": "Order: Top Right Bottom Left"
+        },
+        {
+           "type":"color",
+           "id"   :"content_bg",
+           "label":"Content background color",
+           "default": "rgba(0,0,0,0)"
+        },
+        {
+           "type":"range",
+           "id"   :"content_bg_opacity",
+           "label":"Background transparent",
+           "min"   :0,
+           "max"   :100,
+           "step"  :10,
+           "unit"  :"%",
+           "default":50
+        },
+        {
+           "type":"header",
+           "content":"Heading"
+        },
+        {
+          "type":"text",
+          "id":"title_font_size",
+          "label":"Heading font size:",
+          "default":"44px"
+        },
+        {
+          "type":"color",
+          "id":"title_color",
+          "label":"Heading",
+          "default":"#000000"
+        },
+        {
+          "type":"select",
+          "id":"tit_bold",
+          "label":"Heading font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"text",
+          "id":"title_mb",
+          "label":"Heading margin bottom:"
+        },
+        {
+          "type":"text",
+          "id":"tit_lh",
+          "label":"Heading line height"
+        },
+        {
+          "type":"text",
+          "id":"title_lsp",
+          "label":"Heading letters spacing:"
+        },
+        {
+           "type":"header",
+           "content":"Subheading"
+        },
+        {
+          "type":"text",
+          "id":"subtitle_font_size",
+          "label":"Subheading font size:",
+          "default":"34px"
+        },
+        {
+          "type":"color",
+          "id":"subtitle_color",
+          "label":"Subheading",
+          "default":"#000000"
+        },
+        {
+          "type":"select",
+          "id":"sub_bold",
+          "label":"Subheading font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"text",
+          "id":"subtitle_mb",
+          "label":"Subheading margin bottom:"
+        },
+        {
+          "type":"text",
+          "id":"sub_lh",
+          "label":"Subheading line height"
+        },
+        {
+          "type":"text",
+          "id":"subtitle_lsp",
+          "label":"Subheading letters spacing:"
+        },
+        {
+           "type":"header",
+           "content":"Subheading 2"
+        },
+        {
+          "type":"text",
+          "id":"caption_font_size",
+          "label":"Subheading 2 font size:",
+          "default":"24px"
+        },
+        {
+          "type":"color",
+          "id":"caption_color",
+          "label":"Subheading 2",
+          "default":"#000000"
+        },
+        {
+          "type":"select",
+          "id":"cap_bold",
+          "label":"Subheading 2 font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"text",
+          "id":"caption_mb",
+          "label":"Subheading 2 margin bottom:"
+        },
+        {
+          "type":"text",
+          "id":"cap_lh",
+          "label":"Subheading 2 line height"
+        },
+        {
+          "type":"text",
+          "id":"caption_lsp",
+          "label":"Subheading 2 letters spacing:"
+        }, 
+        {
+           "type":"header",
+           "content":"Button"
+        },
+        {
+          "type":"text",
+          "id":"padding_button",
+          "label":"Button padding",
+          "default":"6px 20px"
+        },
+        {
+          "type":"text",
+          "id":"button_radius",
+          "label":"Button corners radius",
+          "placeholder": "E.g: 4px 4px 4px 4px"
+        },
+        {
+          "type":"text",
+          "id":"button_font_size",
+          "label":"Button font size:",
+          "default":"14px"
+        },
+        {
+          "type":"color",
+          "id":"button_color",
+          "label":"Button text",
+          "default":"#000000"
+        },
+        {
+          "type":"color",
+          "id":"button_bg_color",
+          "label":"Button background color",
+          "default":"#ffffff"
+        },
+        {
+          "type":"select",
+          "id":"btn_bold",
+          "label":"Button font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"text",
+          "id":"btn_lh",
+          "label":"Button line height"
+        },
+        {
+          "type":"text",
+          "id":"button_lsp",
+          "label":"Button letters spacing:"
+        },
+        {
+          "type":"header",
+          "content":"Button icon"
+        },
+        {
+           "type":"text",
+           "id":"btn_ic_fs",
+           "label":"Icon font size",
+           "default": "14px"
+        },
+        {
+           "type":"color",
+           "id":"btn_ic_color",
+           "label":"Icon color",
+           "default": "#000000"
+        },
+        {
+           "type":"color",
+           "id":"btn_ic_bg_color",
+           "label":"Icon background color",
+           "default": "rgba(0,0,0,0)"
+        },
+        {
+           "type":"text",
+           "id":"btn_ic_padding",
+           "label":"Icon padding",
+           "info": "Order: top right bottom left"
+        },
+        {
+           "type":"text",
+           "id":"btn_ic_margin",
+           "label":"Icon margin",
+           "info": "Order: top right bottom left"
+        },
+        {
+           "type":"text",
+           "id":"btn_ic_rd",
+           "label":"Icon border radius",
+           "placeholder": "E.g: 5px 5px 5px 5px"
+        },
+        {
+          "type":"header",
+          "content":"Animation"
+        },
+        {
+          "type":"select",
+          "id":"title_animation",
+          "label":"Heading animation",
+          "default":"fadeIn",
+          "options":[
+            {"value":"fadeIn","label":"Fade In"},
+            {"value":"moveFromLeft","label":"Move From Left"},
+            {"value":"moveFromRight","label":"Move From Right"},
+            {"value":"moveFromTop","label":"Move From Top"},
+            {"value":"moveFromBottom","label":"Move From Bottom"}
+          ]
+        },
+        {
+          "type":"select",
+          "id":"subtitle_animation",
+          "label":"Subheading animation",
+          "default":"fadeIn",
+          "options":[
+            {"value":"fadeIn","label":"Fade In"},
+            {"value":"moveFromLeft","label":"Move From Left"},
+            {"value":"moveFromRight","label":"Move From Right"},
+            {"value":"moveFromTop","label":"Move From Top"},
+            {"value":"moveFromBottom","label":"Move From Bottom"}
+          ]
+        },
+        {
+          "type":"select",
+          "id":"caption_animation",
+          "label":"Subheading 2 animation",
+          "default":"fadeIn",
+          "options":[
+            {"value":"fadeIn","label":"Fade In"},
+            {"value":"moveFromLeft","label":"Move From Left"},
+            {"value":"moveFromRight","label":"Move From Right"},
+            {"value":"moveFromTop","label":"Move From Top"},
+            {"value":"moveFromBottom","label":"Move From Bottom"}
+          ]
+        },
+        {
+          "type":"select",
+          "id":"button_animation",
+          "label":"Button animation",
+          "default":"fadeIn",
+          "options":[
+            {"value":"fadeIn","label":"Fade In"},
+            {"value":"moveFromLeft","label":"Move From Left"},
+            {"value":"moveFromRight","label":"Move From Right"},
+            {"value":"moveFromTop","label":"Move From Top"},
+            {"value":"moveFromBottom","label":"Move From Bottom"}
+          ]
+        },
+        {
+          "type":"range",
+          "id":"title_animation_delay",
+          "label":"Heading animation delay",
+          "min":0,
+          "max":5,
+          "step":0.1,
+          "default":0,
+          "unit":"s"
+        },
+        {
+          "type":"range",
+          "id":"subtitle_animation_delay",
+          "label":"Subheading animation delay",
+          "min":0,
+          "max":5,
+          "step":0.1,
+          "default":0,
+          "unit":"s"
+        },
+        {
+          "type":"range",
+          "id":"caption_animation_delay",
+          "label":"Subheading 2 animation delay",
+          "min":0,
+          "max":5,
+          "step":0.1,
+          "default":0,
+          "unit":"s"
+        },
+        {
+          "type":"range",
+          "id":"button_animation_delay",
+          "label":"Button animation delay",
+          "min":0,
+          "max":5,
+          "step":0.1,
+          "default":0,
+          "unit":"s"
+        }
+      ]      
+    },
+    {
+      "type":"general_banner_style",
+      "name":"General Banners styles",
+      "limit":1,
+      "settings":[
+        {
+           "type":"header",
+           "content":"Content Position"
+        },
+        {
+          "type":"text",
+          "id":"content_position",
+          "label":"Content position",
+          "default":"50%, 50%",
+          "placeholder":"Horizontal, Vertical"
+        },
+        {
+           "type":"header",
+           "content":"Title settings"
+        },
+        {
+          "type":"color",
+          "id":"banner_title_color",
+          "label":"Title color",
+          "default":"#000000"
+        },
+        {
+          "type":"text",
+          "id":"banner_title_size",
+          "label":"Title font size",
+          "default":"18px"
+        },
+        {
+          "type":"select",
+          "id":"banner_title_bold",
+          "label":"Title font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"text",
+          "id":"margin_tit",
+          "label":"Title margin"
+        },
+        {
+           "type":"text",
+           "id"   :"banner_title_lsp",
+           "label":"Title letter spacing",
+           "placeholder": "E.g: 2px"
+        },
+        {
+           "type":"text",
+           "id"   :"banner_title_lh",
+           "label":"Title line height",
+           "placeholder": "E.g: 22px"
+        },
+        {
+           "type":"header",
+           "content":"Subtitle settings"
+        },
+        {
+          "type":"color",
+          "id":"banner_subtitle_color",
+          "label":"Subtitle color",
+          "default":"#000000"
+        },
+        {
+          "type":"text",
+          "id":"banner_subtitle_size",
+          "label":"Subtitle font size",
+          "default":"14px"
+        },
+        {
+          "type":"select",
+          "id":"banner_subtit_bold",
+          "label":"Subtitle font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"text",
+          "id":"margin_sub",
+          "label":"Subtitle margin"
+        },
+        {
+           "type":"text",
+           "id"   :"banner_subtitle_lsp",
+           "label":"Subtitle letter spacing",
+           "placeholder": "E.g: 2px"
+        },
+        {
+           "type":"text",
+           "id"   :"banner_subtitle_lh",
+           "label":"Subtitle line height",
+           "placeholder": "E.g: 22px"
+        },
+        {
+           "type":"header",
+           "content":"Banner button"
+        },
+        {
+            "type":"text",
+            "id":"button_padding",
+            "label":"Button padding",
+            "placeholder":"top right left bottom",
+            "info":"E.g: 10px 5px 10px 5px"
+        },
+        {
+           "type":"text",
+           "id":"button_radius",
+           "label":"Button radius corners",
+           "placeholder":"E.g: 4px 4px 4px 4px"
+        },
+        {
+            "type":"color",
+            "id":"button_text_color",
+            "label":"Button text color",
+            "default":"#ffffff"
+        },
+        {
+            "type":"color",
+            "id":"button_text_bg_color",
+            "label":"Button background color",
+            "default":"#000000"
+        },
+        {
+            "type":"text",
+            "id":"button_font_size",
+            "label":"Button font size",
+           "placeholder":"E.g: 14px",
+           "default": "12px"
+        },
+        {
+           "type":"text",
+           "id":"button_lsp",
+           "label":"Letter spacing",
+           "placeholder":"E.g: 2px"
+        },
+        {
+            "type":"select",
+            "id":"button_weight",
+            "label":"Button font weight",
+            "default":"300",
+            "options":[
+                {"value":"100","label":"100 Thin (Hairline)"},
+                {"value":"200","label":"200 Extra Light (Ultra Light)"},
+                {"value":"300","label":"300 Light"},
+                {"value":"400","label":"400 Normal"},
+                {"value":"500","label":"500 Medium"},
+                {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+                {"value":"700","label":"700 Bold"},
+                {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+                {"value":"900","label":"900 Black (Heavy)"}
+            ]
+        }
+      ]
+    },
+    {
+      "type":"slide",
+      "name":"Slide item",
+      "limit":10,
+      "settings":[
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Image"
+        },
+        {
+          "type":"text",
+          "id":"image_position",
+          "label":"Image position",
+          "default":"center center",
+          "info":"E.g: left center, 80% center"
+        },
+        {
+          "type":"textarea",
+          "id":"video",
+          "label":"Video link",
+          "placeholder":"Go to Settings > Files > click 'Upload files' to upload your video, then copy the url and paste to here."
+        },
+        {
+          "type":"image_picker",
+          "id":"image_thumb",
+          "label":"Thumbnail"
+        },
+        {
+          "type":"text",
+          "id":"thumb_text",
+          "label":"Thumbnail text"
+        },
+        {
+          "type":"color",
+          "id":"overlay_color",
+          "label":"Overlay color",
+          "default":"#000000"
+        },
+        {
+          "type":"range",
+          "id":"image_overlay",
+          "label":"Overlay opacity",
+          "min":0,
+          "max":100,
+          "step":10,
+          "default":0,
+          "unit":"%"
+        },
+        {
+          "type":"url",
+          "id":"link",
+          "label":"Slide link",
+          "info": "Blank to use link from button"
+        },
+        {
+          "type":"header",
+          "content":"Text box layout"
+        },
+        {
+           "type":"select",
+           "id"   :"textbox_style",
+           "label":"Textbox content style",
+           "default": "inherit",
+           "options":[
+             {"value":"inherit","label":"Inherit General style"},
+             {"value":"custom","label":"Customize style"},
+             {"value":"hide","label":"Hide content"}
+           ]
+        },
+        {
+          "type":"range",
+          "id":"position_left",
+          "label":"Horizontal Position",
+          "min":0,
+          "max":100,
+          "step":1,
+          "unit":"%",
+          "default":50
+        },
+        {
+          "type":"range",
+          "id":"position_top",
+          "label":"Vertical Position",
+          "min":0,
+          "max":100,
+          "step":1,
+          "unit":"%",
+          "default":50
+        },
+        {
+          "type":"select",
+          "id":"alignment",
+          "label":"Text box alignment",
+          "default":"text-center",
+          "options":[
+            {"value":"text-left","label":"Left"},
+            {"value":"text-center","label":"Center"},
+            {"value":"text-right","label":"Right"}
+          ]
+        },
+        {
+          "type":"text",
+          "id":"content_width",
+          "label":"Content max width (in %)",
+          "info":"E.g: 80%, 100%"
+        },
+        {
+           "type"  :"text",
+           "id"    :"content_padding",
+           "label" :"Padding content",
+           "placeholder": "E.g: 5px 20px 5px 20px",
+           "info": "Order: Top Right Bottom Left"
+        },
+        {
+           "type":"color",
+           "id"   :"content_bg",
+           "label":"Content background color",
+           "default": "#ffffff"
+        },
+        {
+           "type":"range",
+           "id"   :"content_bg_opacity",
+           "label":"Background transparent",
+           "min"   :0,
+           "max"   :100,
+           "step"  :10,
+           "unit"  :"%",
+           "default":50
+        },
+        {
+          "type":"header",
+          "content":"Text box content"
+        },
+        {
+          "type":"text",
+          "id":"title_text",
+          "label":"Heading"
+        },
+        {
+          "type":"checkbox",
+          "id":"title_up",
+          "label":"Heading uppercase"
+        },
+        {
+          "type":"text",
+          "id":"subtitle_text",
+          "label":"Subheading"
+        },
+        {
+          "type":"checkbox",
+          "id":"subtitle_up",
+          "label":"Subheading uppercase"
+        },
+        {
+          "type":"textarea",
+          "id":"caption_text",
+          "label":"Subheading 2"
+        },
+        {
+          "type":"checkbox",
+          "id":"caption_up",
+          "label":"Subheading 2 uppercase"
+        },
+        {
+          "type":"text",
+          "id":"button_text",
+          "label":"Button Label"
+        },
+        {
+          "type":"url",
+          "id":"button_link",
+          "label":"Button Link"
+        },
+        {
+          "type":"checkbox",
+          "id":"button_underline",
+          "label":"Underline for button label/link label"
+        },
+        {
+          "type":"checkbox",
+          "id":"use_as_link",
+          "label":"Use button as normal link"
+        },
+        {
+          "type":"range",
+          "id":"button_inherit",
+          "label":"Inherit Button style:",
+          "min":0,
+          "max":3,
+          "default":1,
+          "info":"Set 0 to customize button"
+        },
+        {
+          "type":"text",
+          "id":"padding_button",
+          "label":"Padding button",
+          "default":"10px 15px"
+        },
+        {
+          "type":"text",
+          "id":"button_radius",
+          "label":"Button corners radius",
+          "placeholder": "E.g: 4px 4px 4px 4px"
+        },
+        {
+          "type":"header",
+          "content":"Margin bottom (in px)"
+        },
+        {
+          "type":"paragraph",
+          "content":"Breakpoint: xl,lg,md,sm,xs,xxs"
+        },
+        {
+          "type":"text",
+          "id":"title_mb",
+          "label":"Heading margin bottom:"
+        },
+        {
+          "type":"text",
+          "id":"subtitle_mb",
+          "label":"Subheading margin bottom:"
+        },
+        {
+          "type":"text",
+          "id":"caption_mb",
+          "label":"Subheading 2 margin bottom:"
+        },
+        {
+          "type":"header",
+          "content":"Letters spacing (in px)"
+        },
+        {
+          "type":"paragraph",
+          "content":"Breakpoint: xl,lg,md,sm,xs,xxs"
+        },
+        {
+          "type":"text",
+          "id":"title_lsp",
+          "label":"Heading letters spacing:"
+        },
+        {
+          "type":"text",
+          "id":"subtitle_lsp",
+          "label":"Subheading letters spacing:"
+        },
+        {
+          "type":"text",
+          "id":"caption_lsp",
+          "label":"Subheading 2 letters spacing:"
+        },
+        {
+          "type":"text",
+          "id":"button_lsp",
+          "label":"Button letters spacing:"
+        },
+        {
+          "type":"header",
+          "content":"Text box font weight"
+        },
+        {
+          "type":"select",
+          "id":"tit_bold",
+          "label":"Heading font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"select",
+          "id":"sub_bold",
+          "label":"Subheading font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"select",
+          "id":"cap_bold",
+          "label":"Subheading 2 font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"select",
+          "id":"btn_bold",
+          "label":"Button font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"header",
+          "content":"Font size (in px)"
+        },
+        {
+          "type":"paragraph",
+          "content":"Breakpoint: xl,lg,md,sm,xs,xxs"
+        },
+        {
+          "type":"text",
+          "id":"title_font_size",
+          "label":"Heading font size:",
+          "default":"44px"
+        },
+        {
+          "type":"text",
+          "id":"subtitle_font_size",
+          "label":"Subheading font size:",
+          "default":"34px"
+        },
+        {
+          "type":"text",
+          "id":"caption_font_size",
+          "label":"Subheading 2 font size:",
+          "default":"24px"
+        },
+        {
+          "type":"text",
+          "id":"button_font_size",
+          "label":"Button font size:",
+          "default":"14px"
+        },
+        {
+          "type":"header",
+          "content":"Text color"
+        },
+        {
+          "type":"color",
+          "id":"title_color",
+          "label":"Heading",
+          "default":"#000000"
+        },
+        {
+          "type":"color",
+          "id":"subtitle_color",
+          "label":"Subheading",
+          "default":"#000000"
+        },
+        {
+          "type":"color",
+          "id":"caption_color",
+          "label":"Subheading 2",
+          "default":"#000000"
+        },
+        {
+          "type":"color",
+          "id":"button_color",
+          "label":"Button text",
+          "default":"#000000"
+        },
+        {
+          "type":"color",
+          "id":"button_bg_color",
+          "label":"Button background color",
+          "default":"rgba(0,0,0,0)"
+        },
+        {
+          "type":"header",
+          "content":"Animation content"
+        },
+        {
+          "type":"select",
+          "id":"title_animation",
+          "label":"Heading animation",
+          "default":"fadeIn",
+          "options":[
+            {"value":"fadeIn","label":"Fade In"},
+            {"value":"moveFromLeft","label":"Move From Left"},
+            {"value":"moveFromRight","label":"Move From Right"},
+            {"value":"moveFromTop","label":"Move From Top"},
+            {"value":"moveFromBottom","label":"Move From Bottom"}
+          ]
+        },
+        {
+          "type":"select",
+          "id":"subtitle_animation",
+          "label":"Subheading animation",
+          "default":"fadeIn",
+          "options":[
+            {"value":"fadeIn","label":"Fade In"},
+            {"value":"moveFromLeft","label":"Move From Left"},
+            {"value":"moveFromRight","label":"Move From Right"},
+            {"value":"moveFromTop","label":"Move From Top"},
+            {"value":"moveFromBottom","label":"Move From Bottom"}
+          ]
+        },
+        {
+          "type":"select",
+          "id":"caption_animation",
+          "label":"Subheading 2 animation",
+          "default":"fadeIn",
+          "options":[
+            {"value":"fadeIn","label":"Fade In"},
+            {"value":"moveFromLeft","label":"Move From Left"},
+            {"value":"moveFromRight","label":"Move From Right"},
+            {"value":"moveFromTop","label":"Move From Top"},
+            {"value":"moveFromBottom","label":"Move From Bottom"}
+          ]
+        },
+        {
+          "type":"select",
+          "id":"button_animation",
+          "label":"Button animation",
+          "default":"fadeIn",
+          "options":[
+            {"value":"fadeIn","label":"Fade In"},
+            {"value":"moveFromLeft","label":"Move From Left"},
+            {"value":"moveFromRight","label":"Move From Right"},
+            {"value":"moveFromTop","label":"Move From Top"},
+            {"value":"moveFromBottom","label":"Move From Bottom"}
+          ]
+        },
+        {
+          "type":"range",
+          "id":"title_animation_delay",
+          "label":"Heading animation delay",
+          "min":0,
+          "max":5,
+          "step":0.1,
+          "default":0,
+          "unit":"s"
+        },
+        {
+          "type":"range",
+          "id":"subtitle_animation_delay",
+          "label":"Subheading animation delay",
+          "min":0,
+          "max":5,
+          "step":0.1,
+          "default":0,
+          "unit":"s"
+        },
+        {
+          "type":"range",
+          "id":"caption_animation_delay",
+          "label":"Subheading 2 animation delay",
+          "min":0,
+          "max":5,
+          "step":0.1,
+          "default":0,
+          "unit":"s"
+        },
+        {
+          "type":"range",
+          "id":"button_animation_delay",
+          "label":"Button animation delay",
+          "min":0,
+          "max":5,
+          "step":0.1,
+          "default":0,
+          "unit":"s"
+        }
+      ]
+    },
+    {
+      "type":"sidebar_banner",
+      "name":"Sidebar Banners",
+      "limit":10,
+      "settings":[
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Image"
+        },
+        {
+           "type":"url",
+           "id"   :"image_link",
+           "label":"Image link"
+        },
+        {
+          "type":"header",
+          "content":"Banner content"
+        },
+        {
+          "type":"text",
+          "id":"banner_title",
+          "label":"Banner title"
+        },
+        {
+          "type":"textarea",
+          "id":"banner_subtitle",
+          "label":"Banner subtitle"
+        },
+        {
+            "type":"text",
+            "id":"button_text",
+            "label":"Button label"
+        }, 
+        {
+            "type":"url",
+            "id":"button_link",
+            "label":"Button link"
+        },
+        {
+          "type":"select",
+          "id":"align",
+          "label":"Banner content alignment",
+          "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+          ],
+          "default":"left"
+        },
+        {
+           "type":"header",
+           "content":"Content style"
+        },
+        {
+           "type":"select",
+           "id"   :"content_style",
+           "label":"Content style",
+           "default": "inherit",
+           "options":[
+             {
+               "value": "custom",
+               "label": "Customize"
+             },
+             {
+               "value": "inherit",
+               "label": "Inherit from General style"
+             }
+           ]
+        },
+        {
+          "type":"text",
+          "id":"content_position",
+          "label":"Content position",
+          "default":"50%, 50%",
+          "placeholder":"Horizontal, Vertical"
+        },
+        {
+           "type":"text",
+           "id":"content_padding",
+           "label":"Content padding",
+           "placeholder": "E.g: 10px 15px",
+           "info": "Order: Top Right Bottom Left"
+        },
+        {
+           "type":"header",
+           "content":"Title settings"
+        },
+        {
+          "type":"color",
+          "id":"banner_title_color",
+          "label":"Title color",
+          "default":"#000000"
+        },
+        {
+          "type":"text",
+          "id":"banner_title_size",
+          "label":"Title font size",
+          "default":"18px"
+        },
+        {
+          "type":"select",
+          "id":"banner_title_bold",
+          "label":"Title font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"text",
+          "id":"margin_tit",
+          "label":"Title margin"
+        },
+        {
+           "type":"text",
+           "id"   :"banner_title_lsp",
+           "label":"Title letter spacing",
+           "placeholder": "E.g: 2px"
+        },
+        {
+           "type":"text",
+           "id":"banner_title_lh",
+           "label":"Title line height",
+           "placeholder": "E.g: 22px"
+        },
+        {
+           "type":"header",
+           "content":"Subtitle settings"
+        },
+        {
+          "type":"color",
+          "id":"banner_subtitle_color",
+          "label":"Subtitle color",
+          "default":"#000000"
+        },
+        {
+          "type":"text",
+          "id":"banner_subtitle_size",
+          "label":"Subtitle font size",
+          "default":"14px"
+        },
+        {
+          "type":"select",
+          "id":"banner_subtit_bold",
+          "label":"Subtitle font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"text",
+          "id":"margin_sub",
+          "label":"Subtitle margin"
+        },
+        {
+           "type":"text",
+           "id"   :"banner_subtitle_lsp",
+           "label":"Subtitle letter spacing",
+           "placeholder": "E.g: 2px"
+        },
+        {
+           "type":"text",
+           "id"   :"banner_subtitle_lh",
+           "label":"Subtitle line height",
+           "placeholder": "E.g: 22px"
+        },
+        {
+           "type":"header",
+           "content":"Banner button"
+        },
+        {
+            "type":"range",
+            "id":"button_inherit",
+            "label":"Inherit Button style:",
+            "min":-1,
+            "max":3,
+            "default":1,
+            "info":"Set 0 to custom, -1 to inherit from General banner style"
+        },
+        {
+            "type":"text",
+            "id":"button_padding",
+            "label":"Button padding",
+            "placeholder":"top right left bottom",
+            "info":"E.g: 10px 5px 10px 5px"
+        },
+        {
+           "type":"text",
+           "id":"button_radius",
+           "label":"Button radius corners",
+           "placeholder":"E.g: 4px 4px 4px 4px"
+        },
+        {
+            "type":"color",
+            "id":"button_text_color",
+            "label":"Button text color",
+            "default":"#ffffff"
+        },
+        {
+            "type":"color",
+            "id":"button_text_bg_color",
+            "label":"Button background color",
+            "default":"#000000"
+        },
+        {
+            "type":"text",
+            "id":"button_font_size",
+            "label":"Button font size",
+           "placeholder":"E.g: 14px",
+           "default": "12px"
+        },
+        {
+           "type":"text",
+           "id":"button_lsp",
+           "label":"Letter spacing",
+           "placeholder":"E.g: 2px"
+        },
+        {
+            "type":"select",
+            "id":"button_weight",
+            "label":"Button font weight",
+            "default":"300",
+            "options":[
+                {"value":"100","label":"100 Thin (Hairline)"},
+                {"value":"200","label":"200 Extra Light (Ultra Light)"},
+                {"value":"300","label":"300 Light"},
+                {"value":"400","label":"400 Normal"},
+                {"value":"500","label":"500 Medium"},
+                {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+                {"value":"700","label":"700 Bold"},
+                {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+                {"value":"900","label":"900 Black (Heavy)"}
+            ]
+        }
+      ]
+    },
+    {
+      "type":"bottom_banner",
+      "name":"Bottom Banners",
+      "limit":10,
+      "settings":[
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Image"
+        },
+        {
+           "type":"url",
+           "id"   :"image_link",
+           "label":"Image link"
+        },
+        {
+          "type":"text",
+          "id":"col_wide",
+          "label":"Column size",
+          "info":"Follow by total number of bottom Banner. E.g: 2"
+        },
+        {
+          "type":"header",
+          "content":"Banner content"
+        },
+        {
+          "type":"text",
+          "id":"banner_title",
+          "label":"Banner title"
+        },
+        {
+          "type":"textarea",
+          "id":"banner_subtitle",
+          "label":"Banner subtitle"
+        },
+        {
+            "type":"text",
+            "id":"button_text",
+            "label":"Button label"
+        },
+        {
+            "type":"url",
+            "id":"button_link",
+            "label":"Button link"
+        },
+        {
+          "type":"select",
+          "id":"align",
+          "label":"Banner content alignment",
+          "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+          ],
+          "default":"left"
+        },
+        {
+           "type":"header",
+           "content":"Content style"
+        },
+        {
+           "type":"select",
+           "id"   :"content_style",
+           "label":"Content style",
+           "default": "inherit",
+           "options":[
+             {
+               "value": "custom",
+               "label": "Customize"
+             },
+             {
+               "value": "inherit",
+               "label": "Inherit from General style"
+             }
+           ]
+        },
+        {
+          "type":"text",
+          "id":"content_position",
+          "label":"Content position",
+          "default":"50%, 50%",
+          "placeholder":"Horizontal, Vertical"
+        },
+        {
+           "type":"header",
+           "content":"Content Color"
+        },
+        {
+          "type":"color",
+          "id":"banner_title_color",
+          "label":"Banner title color",
+          "default":"#000000"
+        },
+        {
+          "type":"color",
+          "id":"banner_subtitle_color",
+          "label":"Banner subtitle color",
+          "default":"#000000"
+        },
+        {
+           "type":"header",
+           "content":"Content font size"
+        },
+        {
+          "type":"text",
+          "id":"banner_title_size",
+          "label":"Banner title font size",
+          "default":"18px"
+        },
+        {
+          "type":"text",
+          "id":"banner_subtitle_size",
+          "label":"Banner subtitle font size",
+          "default":"14px"
+        },
+        {
+           "type":"header",
+           "content":"Content font weight"
+        },
+        {
+          "type":"select",
+          "id":"banner_title_bold",
+          "label":"Title font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type":"select",
+          "id":"banner_subtit_bold",
+          "label":"Subtitle font weight",
+          "default":"300",
+          "options":[
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+           "type":"header",
+           "content":"Content letter spacing"
+        },
+        {
+           "type":"text",
+           "id"   :"banner_title_lsp",
+           "label":"Banner title letter spacing",
+           "placeholder": "E.g: 2px"
+        },
+        {
+           "type":"text",
+           "id"   :"banner_subtitle_lsp",
+           "label":"Banner subtitle letter spacing",
+           "placeholder": "E.g: 2px"
+        },
+        {
+           "type":"header",
+           "content":"Content margin"
+        },
+        {
+          "type":"text",
+          "id":"margin_tit",
+          "label":"Banner title margin"
+        },
+        {
+          "type":"text",
+          "id":"margin_sub",
+          "label":"Banner subtitle margin"
+        },
+        {
+           "type":"header",
+           "content":"Banner button"
+        },
+        {
+            "type":"range",
+            "id":"button_inherit",
+            "label":"Inherit Button style:",
+            "min":-1,
+            "max":3,
+            "default":1,
+            "info":"Set 0 to custom, -1 to inherit from General banner style"
+        },
+        {
+            "type":"text",
+            "id":"button_padding",
+            "label":"Button padding",
+            "placeholder":"top right left bottom",
+            "info":"E.g: 10px 5px 10px 5px"
+        },
+        {
+           "type":"text",
+           "id":"button_radius",
+           "label":"Button radius corners",
+           "placeholder":"E.g: 4px 4px 4px 4px"
+        },
+        {
+            "type":"color",
+            "id":"button_text_color",
+            "label":"Button text color",
+            "default":"#ffffff"
+        },
+        {
+            "type":"color",
+            "id":"button_text_bg_color",
+            "label":"Button background color",
+            "default":"#000000"
+        },
+        {
+            "type":"text",
+            "id":"button_font_size",
+            "label":"Button font size",
+           "placeholder":"E.g: 14px",
+           "default": "12px"
+        },
+        {
+           "type":"text",
+           "id":"button_lsp",
+           "label":"Letter spacing",
+           "placeholder":"E.g: 2px"
+        },
+        {
+            "type":"select",
+            "id":"button_weight",
+            "label":"Button font weight",
+            "default":"300",
+            "options":[
+                {"value":"100","label":"100 Thin (Hairline)"},
+                {"value":"200","label":"200 Extra Light (Ultra Light)"},
+                {"value":"300","label":"300 Light"},
+                {"value":"400","label":"400 Normal"},
+                {"value":"500","label":"500 Medium"},
+                {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+                {"value":"700","label":"700 Bold"},
+                {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+                {"value":"900","label":"900 Black (Heavy)"}
+            ]
+        }
+      ]
+    }
+  ],
+  "presets":[
+    {
+      "name":"Slideshow & Banners",
+      "category":"Slideshow",
+      "blocks":[
+        {"type":"general_slide_style"},
+        {"type":"general_banner_style"},
+        {"type":"slide"},
+        {"type":"slide"}
+      ]
+    }
+  ]
+}
+{% endschema %}

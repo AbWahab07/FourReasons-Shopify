@@ -1,0 +1,338 @@
+{%- liquid
+	assign _lazyload            = settings.use_lazyload
+	assign _section_bg_color  	= section.settings.section_bg_color 	| default: 'rgba(0,0,0,0)'
+	assign _section_height 		= section.settings.section_height 		| default: '30px'
+	assign _section_padding		= section.settings.section_padding 		| default: '0'
+	assign _block_title_fs 		= section.settings.block_title_fs 		| default: '13px'
+	assign _block_title_cl 		= section.settings.block_title_cl 		| default: 'rgba(0,0,0,0)'
+	assign _block_icon_cl  		= section.settings.block_ic_cl 	 		| default: 'rgba(0,0,0,0)'
+
+-%}
+<div id="mobile-bar" class="d-lg-none section-show-{{section.id}}" data-section-id="{{ section.id }}" data-section-type="mobile-bar">
+	<div class="mobile-bar-content">
+		{%- for block in section.blocks -%}
+
+			{%- liquid
+				assign _block_link 	= block.settings.link | default: 'javascript:void(0);'
+				assign _block_text 	= block.settings.block_text
+				assign _icon_size  	= block.settings.block_ic_fs | default: '22px'
+				assign _block_ic_cl = block.settings.block_ic_cl | default: 'rgba(0,0,0,0)'
+			-%}
+
+			{%- capture blockID -%}#mobile-bar .mobile-block_{{block.id}}{%- endcapture -%}
+
+			{%- capture _block_icon -%}
+				{%- case block.settings.icon_type -%}
+
+					{%- when 'icon' -%}
+						{%- include 'icons' ,type: 'icon_free' ,name: block.settings.block_icon -%}
+						{%- capture block_css -%}
+							{{- blockID }} .mobile-bar_icon{font-size: {{_icon_size}};
+								{%- unless _block_ic_cl == 'rgba(0,0,0,0)' -%}color: {{_block_ic_cl}};{%- endunless -%}
+							}
+						{%- endcapture -%}
+
+					{%- when 'svg' -%}
+						{{- block.settings.block_icon -}}
+						{%- capture block_css -%}
+							{{- blockID}} .mobile-bar_icon svg{width: {{_icon_size}};height: {{_icon_size}};{%- unless _block_ic_cl == 'rgba(0,0,0,0)' -%}fill: {{_block_ic_cl}};{%- endunless -%}}
+                  {%- endcapture -%}
+
+					{%- else -%}
+						{%- include 'image-style' ,image: block.settings.block_image , image_width: '[50, 150, 200]' ,_type: 'no-padding' -%}
+						{%- capture block_css -%}
+							{{- blockID}} .image--style{margin: 0 auto;width: {{_icon_size}};height: {{_icon_size}};}
+						{%- endcapture -%}
+				{%- endcase -%}
+
+				{%- assign section_css = section_css | append: block_css -%}
+			{%- endcapture -%}
+
+			{%- if _block_icon == blank and _block_text == blank-%}{%- continue -%}{%- endif -%}
+
+
+			<div class="mobile-bar--block mobile-block_{{block.id}} mobile-block_{{block.type}}"{{block.shopify_attributes}}>
+
+				<a href="{{ _block_link }}" class="mobile-bar--block_target text-center">
+					<span class="d-block mobile-bar_icon">{{_block_icon}}</span>
+					{%- if block.type == 'menu' -%}
+   					<span class="mobile-bar_icon mobile-bar_icon-close">
+                     <svg xmlns="http://www.w3.org/2000/svg" width=".8em" height=".8em" viewBox="0 0 24 24">
+                        <path d="M13.056 12l10.728-10.704c0.144-0.144 0.216-0.336 0.216-0.552 0-0.192-0.072-0.384-0.216-0.528-0.144-0.12-0.336-0.216-0.528-0.216 0 0 0 0 0 0-0.192 0-0.408 0.072-0.528 0.216l-10.728 10.728-10.704-10.728c-0.288-0.288-0.768-0.288-1.056 0-0.168 0.144-0.24 0.336-0.24 0.528 0 0.216 0.072 0.408 0.216 0.552l10.728 10.704-10.728 10.704c-0.144 0.144-0.216 0.336-0.216 0.552s0.072 0.384 0.216 0.528c0.288 0.288 0.768 0.288 1.056 0l10.728-10.728 10.704 10.704c0.144 0.144 0.336 0.216 0.528 0.216s0.384-0.072 0.528-0.216c0.144-0.144 0.216-0.336 0.216-0.528s-0.072-0.384-0.216-0.528l-10.704-10.704z"/>
+                     </svg>
+                  </span>
+					{%- endif -%}
+					<span class="d-block mobile-bar_text">{{_block_text}}</span>
+				</a>
+				{%- if block.type == 'menu' -%}
+
+               {%- capture block_css -%}
+                  {%- assign _icon_size = '16px' -%}
+                  {{- blockID}} .mobile-bar_icon-close svg{width: {{_icon_size}};height: {{_icon_size}};
+                     {%- unless _block_ic_cl == 'rgba(0,0,0,0)' -%}fill: {{_block_ic_cl}};{%- endunless -%}
+                  }
+               {%- endcapture -%}
+
+					{%- liquid
+						assign _nav_link   = block.settings.nav_link
+                  assign section_css = section_css | append: block_css
+					-%}
+
+					<div class="mobile-bar--block-menu-content">
+						<div class="mobile-bar--menu-content-iner">
+							<p class="mobile-bar--block_target text-center">
+								<span class="d-block mobile-bar_icon">{{_block_icon}}</span>
+								<span class="d-block mobile-bar_text">{{_block_text}}</span>
+							</p>
+
+                     <div class="mobile-menu-content">
+   							<ul class="mobile-menu-list text-center">
+   								{%- for l in linklists[_nav_link].links -%}
+   									{%- include 'nav-link' -%}
+   								{%- endfor -%}
+   							</ul>
+                     </div>
+						</div>
+					</div>
+				{%- endif -%}
+			</div>
+		{%- endfor -%}
+	</div>
+</div>
+
+{%- liquid
+   assign __show = true
+
+   if template contains 'collection'
+      assign __show = false
+   endif
+   if template contains 'list-collection'
+      assign __show = true
+   endif
+-%}
+<style>
+	{%- capture section_css -%}
+		@media (max-width: 991px) {
+			{{- section_css -}}
+			#mobile-bar{
+				position: fixed;
+				left: 0;
+				z-index: 99992;
+				width: 100%;
+				transition: all .3s ease-in-out;
+				box-shadow: 2px 0px 12px 0px rgba(0,0,0,.15);
+				bottom: {%- if __show -%}0{%- else -%}-100%{%- endif -%};
+				background: {{_section_bg_color}};
+				padding: {{_section_padding}};
+			}
+			#mobile-bar.mobile-bar--hidden,
+			.cart-opened #mobile-bar,
+			.popup-is-showing #mobile-bar{bottom: -100%;}
+         #mobile-bar.mobile-bar--active{bottom: 0!important;}
+
+			#mobile-bar .mobile-bar--block_target{
+				height: 100%;
+				display: flex;
+				flex-flow: column;
+				justify-content: space-between;
+			}
+			#mobile-bar .mobile-bar-content{display: grid;align-items: stretch;
+            {%- if section.blocks.size > 0 -%}grid-template-columns: repeat({{section.blocks.size}},1fr);min-height: {{_section_height}};{%- endif -%}
+         }
+			#mobile-bar .mobile-bar_text{padding: 5px 0 0;font-size:{{_block_title_fs}};color:{{_block_title_cl}};}
+			#mobile-bar .mobile-bar_icon{color:{{_block_icon_cl}};fill:{{_block_icon_cl}};}
+
+			#mobile-bar .mobile-bar--block-menu-content{
+				position: fixed;
+				width: 100%;
+				left: 0;
+				top: 0;
+				z-index: -1;
+				opacity: 0;
+				visibility: hidden;
+			}
+
+		}
+	{%- endcapture -%}
+	{{- section_css | strip_newlines | remove: '	' -}}
+</style>
+
+
+{% schema %}
+{
+   "name": "Mobile bar",
+   "tag": "section",
+   "max_blocks": 5,
+   "settings": [
+      {
+         "type": "color",
+         "id": "section_bg_color",
+         "label": "Background color",
+         "default": "#ffffff"
+      },
+      {
+         "type"  :"text",
+         "id"    :"section_padding",
+         "label" :"Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type": "text",
+         "id": "section_height",
+         "label": "Section Height",
+         "default": "30px",
+         "placeholder": "E.g: 30px"
+      },
+      {
+      	"type": "header",
+      	"content": "Block settings"
+      },
+      {
+         "type": "text",
+         "id": "block_title_fs",
+         "label": "Title font size",
+         "default": "13px",
+         "placeholder": "E.g: 13px"
+      },
+      {
+         "type": "color",
+         "id": "block_title_cl",
+         "label": "Title color",
+         "default": "#222222"
+      },
+      {
+         "type": "color",
+         "id": "block_ic_cl",
+         "label": "Icon color",
+         "default": "#222222"
+      }
+   ],
+   "blocks": [
+      {
+         "type": "links",
+         "name": "Icon block",
+         "settings": [
+            {
+               "type": "url",
+               "id": "link",
+               "label": "Link"
+            },
+            {
+               "type": "text",
+               "id": "block_text",
+               "label": "Title",
+               "default": "Title"
+            },
+            {
+               "type": "select",
+               "id": "icon_type",
+               "label": "Icon type",
+               "options": [
+                  {
+                     "value": "icon",
+                     "label": "Font icon"
+                  },
+                  {
+                     "value": "svg",
+                     "label": "SVG"
+                  },
+                  {
+                     "value": "image",
+                     "label": "Image"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "block_icon",
+               "label": "Font icon name/ SVG content"
+            },
+            {
+               "type": "image_picker",
+               "id": "block_image",
+               "label": "Image"
+            },
+            {
+               "type": "header",
+               "content": "Advanced settings"
+            },
+            {
+               "type": "text",
+               "id": "block_ic_fs",
+               "label": "Icon size/ Image size",
+               "default": "22px",
+               "placeholder": "E.g: 22px"
+            },
+            {
+            	"type": "color",
+            	"id": "block_ic_cl",
+            	"label": "Icon color"
+            }
+         ]
+      },
+      {
+         "type": "menu",
+         "name": "Menu Block",
+         "settings": [
+            {
+               "type": "link_list",
+               "id": "nav_link",
+               "label": "Menu list"
+            },
+            {
+               "type": "text",
+               "id": "block_text",
+               "label": "Title",
+               "default": "More"
+            },
+            {
+               "type": "select",
+               "id": "icon_type",
+               "label": "Icon type",
+               "options": [
+                  {
+                     "value": "icon",
+                     "label": "Font icon"
+                  },
+                  {
+                     "value": "svg",
+                     "label": "SVG"
+                  },
+                  {
+                     "value": "image",
+                     "label": "Image"
+                  }
+               ]
+            },
+            {
+               "type": "text",
+               "id": "block_icon",
+               "label": "Font icon name/ SVG content"
+            },
+            {
+               "type": "image_picker",
+               "id": "block_image",
+               "label": "Image"
+            },
+            {
+               "type": "header",
+               "content": "Advanced settings"
+            },
+            {
+               "type": "text",
+               "id": "block_ic_fs",
+               "label": "Icon size/ Image size",
+               "default": "22px",
+               "placeholder": "E.g: 22px"
+            },
+            {
+            	"type": "color",
+            	"id": "block_ic_cl",
+            	"label": "Icon color"
+            }
+         ]
+      }
+   ]
+}
+{% endschema %}

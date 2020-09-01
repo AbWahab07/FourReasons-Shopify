@@ -1,0 +1,271 @@
+{%- include 'breadcrumb' -%}
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _lazyload        = settings.use_lazyload -%}
+{%- assign _banner_image    = section.settings.banner_image -%}
+{%- assign _right_padding   = section.settings.right_padding -%}
+
+<div id="col-main" class="page-about-us-2" style="background-color:{{section.settings.background_color | default: 'rgba(0,0,0,0)' }};">
+  <div class="page-content">
+    {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+      <div class="row">
+        {%- unless _banner_image == blank -%}
+          {%- capture _banner_bg -%}{{_banner_image | img_url: '1920x'}}{%- endcapture -%}
+          <div class="col-md-6 col-12">
+            <div class="page-heading-banner{% if _lazyload %} lazyload" data-bgset="{{_banner_bg}} 1920w{%- endif -%}">
+              <style>
+                {%- include 'css-responsive', classID: '.page-heading-banner', css_value: section.settings.min_height, css_property: 'min-height' -%}
+                {%- unless _lazyload -%}.page-heading-banner{background-image: url({{_banner_bg}});}{%- endunless -%}
+              </style>
+            </div>
+          </div>
+        {%- endunless -%}
+
+
+        {%- if section.blocks.size > 0 -%}
+        <div class="col-md-6 col-12" id="blocks-column">
+          {%- assign _r_heading                = section.settings.heading -%}
+          {%- assign _r_content                = section.settings.content -%}
+          {%- assign _r_heading_size           = section.settings.heading_font_size -%}
+          {%- assign _r_hor_align              = section.settings.hor_align -%}
+
+          <div class="content-container">
+            <div class="row">
+
+              {%- unless _r_heading == blank and _r_content == blank -%}
+                <div class="col-12">
+                  <div class="heading-container text-{{_r_hor_align}}">
+                    {%- unless _r_heading == blank -%}
+                      <div class="heading-content h{{_r_heading_size}}">{{_r_heading}}</div>
+                    {%- endunless -%}
+
+                    {%- unless _r_content == blank -%}
+                      <div class="text-content">{{_r_content}}</div>
+                    {%- endunless -%}
+                  </div>
+                </div>
+              {%- endunless -%}
+
+              {%- assign _blockIndex   = 0 -%}
+
+              {%- for block in section.blocks -%}
+                {%- assign block_type = block.type -%}
+                {%- assign _b_hor_align  = block.settings.hor_align -%}
+
+                {%- capture b_class -%}{%- include 'set-width-bootstrap',in_type: 'width', number: block.settings.width_resp -%}{{_out}}{%- endcapture -%}
+                {%- capture _blockAlign -%}{%- unless _b_hor_align == blank -%}{{_b_hor_align | prepend: ' text-' }}{%- endunless -%}{%- endcapture -%}
+
+                <div class="{{b_class}}"{{block.shopify_attributes}}>
+                  <div class="item-content block-{{block_type}} block-id-{{block.id}}{{_blockAlign}}">
+
+                  {%- case block_type -%}
+                    {%- when 'image' -%}{%- include 'image-style', image: block.settings.image -%}
+
+                    {%- when 'text' -%}
+                      {%- assign _b_heading       = block.settings.heading -%}
+                      {%- assign _b_content       = block.settings.content -%}
+                      {%- assign _b_heading_size  = block.settings.heading_font_size -%}
+                      {%- assign _b_block_index   = block.settings.show_block_index -%}
+                      {%- assign _blockIndex      = _blockIndex | plus: 1 -%}
+
+                      {%- unless _b_heading == blank -%}
+                        <div class="heading h{{_b_heading_size}}">
+                          {%- if _b_block_index -%}<span class="index">{{_blockIndex}}.</span>{%- endif -%}
+                          <span>{{_b_heading}}</span>
+                        </div>
+                      {%- endunless -%}
+
+                      {%- unless _b_content == blank -%}
+                        <div class="content">{{_b_content}}</div>
+                      {%- endunless -%}
+
+                    {%- else -%}
+                  {%- endcase -%}
+
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+        {%- endif -%}
+      </div>
+
+
+    {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+    {%- unless _right_padding == blank -%}
+    <style>{%- include 'css-responsive', classID: '#blocks-column > div', css_value: _right_padding -%}</style>
+
+    {%- endunless -%}
+  </div>
+</div>
+
+{% schema %}
+{
+   "name":"About 2 Page",
+   "tag": "section",
+   "max_blocks":50,
+   "settings":[
+      {
+         "type":"header",
+         "content":"Layout"
+      },
+      {
+        "type":"checkbox",
+        "id":"boxed_layout",
+        "label":"Boxed layout"
+      },
+      {
+         "type":"color",
+         "id"    :"background_color",
+         "label":"Background color",
+         "default": "rgba(0,0,0,0)"
+      },
+      {
+         "type":"header",
+         "content": "Left column"
+      },
+      {
+         "type":"image_picker",
+         "id"   :"banner_image",
+         "label":"Banner Image"
+      },
+      {
+        "type":"text",
+        "id":"min_height",
+        "label":"Min height",
+        "default": "500px, 250px",
+        "info": "Support breakpoint"
+      },
+      {
+         "type":"header",
+         "content": "Right column"
+      },
+      {
+         "type":"text",
+         "id"   :"right_padding",
+         "label":"Right column padding",
+         "placeholder":"E.g: 5px 20px 5px 20px",
+         "info":"Order: Top Right Bottom Left"
+      },
+      {
+        "type":"text",
+        "id"   :"heading",
+        "label":"Heading content"
+      },
+      {
+         "type":"range",
+         "id"   :"heading_font_size",
+         "label":"Heading font size (h1-h6)",
+         "min"   :1,
+         "max"   :6,
+         "default":4
+      },
+      {
+        "type":"textarea",
+        "id"   :"content",
+        "label":"Content"
+      },
+      {
+        "type":"select",
+        "id":"hor_align",
+        "label":"Horizontal alignment",
+        "default":"left",
+        "options":[
+          {
+            "value":"left",
+            "label":"Left"
+          },
+          {
+            "value":"center",
+            "label":"Center"
+          },
+          {
+            "value":"right",
+            "label":"Right"
+          }
+        ]
+      }
+   ],
+   "blocks":[
+   {
+      "type":"image",
+      "name":"Image",
+      "settings": [
+        {
+           "type":"image_picker",
+           "id"   :"image",
+           "label":"Image"
+        },
+        {
+           "type":"text",
+           "id"   :"width_resp",
+           "label":"Width (1->12)",
+           "placeholder": "xl,lg,md,sm,xs,xxs",
+           "info": "0 to hide. E.g: 4,6,12",
+           "default": "6"
+        }
+      ]
+   },
+   {
+      "type":"text",
+      "name":"Text",
+      "settings": [
+        {
+          "type":"text",
+          "id"   :"heading",
+          "label":"Heading content",
+          "default": "Sapien pellentesque"
+        },
+        {
+           "type":"range",
+           "id"   :"heading_font_size",
+           "label":"Heading font size (h1-h6)",
+           "min"   :1,
+           "max"   :6,
+           "default":4
+        },
+        {
+          "type":"textarea",
+          "id"   :"content",
+          "label":"Content",
+          "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis risus sed vulputate odio ut enim blandit volutpat maecenas.</p>"
+        },
+        {
+          "type":"select",
+          "id":"hor_align",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "options":[
+            {
+              "value":"left",
+              "label":"Left"
+            },
+            {
+              "value":"center",
+              "label":"Center"
+            },
+            {
+              "value":"right",
+              "label":"Right"
+            }
+          ]
+        },
+        {
+           "type":"checkbox",
+           "id"   :"show_block_index",
+           "label":"Show block index",
+           "default": true
+        },
+        {
+           "type":"text",
+           "id"   :"width_resp",
+           "label":"Width (1->12)",
+           "placeholder": "xl,lg,md,sm,xs,xxs",
+           "info": "0 to hide. E.g: 4,6,12",
+           "default": "6,12"
+        }
+      ]
+   }
+   ]
+}
+{% endschema %}

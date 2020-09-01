@@ -1,0 +1,5490 @@
+/*============================================================================
+ *  Custom StyleSheet                                                        *
+ *                                                                           *
+ *  Date created: 03/06/2020                                                 *
+ *  Author: Alexey                                                           *
+ *                                                                           *
+ *  Custom stylesheet for overriding existing stylesheets & new features     *
+ *  NOTE:                                                                    *
+ *   - Sass is compiled on Shopify's server so you don't need to convert     *
+ *     it to CSS yourself                                                    *
+ *   - The output CSS is compressed and comments are removed                 *
+ *   - You cannot use native CSS/Sass @imports in this file                  *
+ *     without a build script                                                *
+=============================================================================*/
+
+/*============================================================================
+ *  Feature : Global                                                         *
+ *  Type : StyleSheet & Variables                                            *
+ *  Global variables for custom design break point                           *
+=============================================================================*/
+$design-screen-large: 1440px;
+$design-screen-medium: 1200px;
+$design-screen-interm: 991px;
+$design-screen-small: 768px;
+
+$large: 'large';
+$medium: 'medium';
+$interm: 'interm';
+$small: 'small';
+
+$grid-breakpoints: (
+  $small '(max-width: #{$design-screen-small})',
+  $interm '(max-width: #{$design-screen-interm})',
+  $medium '(max-width: #{$design-screen-medium})',
+  $large '(min-width: #{$design-screen-large + 1})'
+);
+@mixin media-query($media-query) {
+  $breakpoint-found: false;
+
+  @each $breakpoint in $grid-breakpoints {
+    $name: nth($breakpoint, 1);
+    $declaration: nth($breakpoint, 2);
+
+    @if $media-query == $name and $declaration {
+      $breakpoint-found: true;
+
+      @media #{$declaration} {
+        @content;
+      }
+    }
+  }
+
+  @if $breakpoint-found == false {
+    @warn 'Breakpoint "#{$media-query}" does not exist';
+  }
+}
+
+@font-face {
+    font-family: "4Reasons";
+    src: url("4Reasons-Regular.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*********************
+ * Layout Custom Css *
+ *********************/
+@include media-query($interm) {
+  .container {
+  	padding-right: 15px !important;
+    padding-left: 15px !important;
+  }
+}
+
+.header-desktop {
+  .main-menu {
+    .menu-list {
+      span {
+      	font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 16px;
+        color: #262728;
+        line-height: 22px;
+        letter-spacing: 0.03642px;
+      }
+    }
+  }
+  
+  .header-icons {
+    .li-cart {
+      .cart-title {
+        font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 16px;
+        color: #262728;
+        line-height: 22px;
+        letter-spacing: 0.03642px;
+        margin-right: 12px;
+      }
+      
+      .number {
+      	width: 31px;
+        height: 31px;
+        background: transparent;
+        border: 1px solid #262728;
+    	box-sizing: border-box;
+      }
+      
+      .n-item {
+      	font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 14px;
+        color: #262728;
+        line-height: 14px;
+        letter-spacing: 0.03642px;
+      }
+    }
+  }
+}
+
+#header-fixed {
+  .table-wrap-items {
+  	padding-right: 50px !important;
+    padding-left: 50px !important;
+    
+    .menu-list {
+      a {
+      	margin: 0 30px !important;
+        
+        span {
+          font-family: "4Reasons";
+          font-weight: normal;
+          font-size: 16px;
+          color: #262728;
+          line-height: 22px;
+          letter-spacing: 0.03642px;
+        }
+      }
+    }
+    
+    .header-icons {
+      .li-cart {
+        .cart-title {
+          font-family: "4Reasons";
+          font-weight: normal;
+          font-size: 16px;
+          color: #262728;
+          line-height: 22px;
+          letter-spacing: 0.03642px;
+          margin-right: 12px;
+        }
+
+        .number {
+          width: 31px;
+          height: 31px;
+          background: transparent;
+          border: 1px solid #262728;
+          box-sizing: border-box;
+        }
+
+        .n-item {
+          font-family: "4Reasons";
+          font-weight: normal;
+          font-size: 14px;
+          color: #262728;
+          line-height: 14px;
+          letter-spacing: 0.03642px;
+        }
+      }
+    }
+  }
+}
+
+.footer-container {
+  background-color: #CBC3BC;
+  
+  .footer-block {
+    .footer-block-heading {
+      font-family: "4Reasons";
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 24px;
+    }
+    
+    .menu-list {
+      a {
+      	padding: 7px 10px !important;
+        
+        span {
+          font-family: "4Reasons";
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 24px;
+        }
+      }
+    }
+  }
+  
+  .copyright-block {
+  	margin-top: 80px;
+    
+    .copyright {
+      p {
+        font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 21px;
+      	padding: 0;
+      }
+    }
+  }
+}
+
+/*============================================================================
+ *  Feature.01 - Home Page                                                   *
+ *  Type : StyleSheet                                                        *
+=============================================================================*/
+
+/*******************************
+ * Feature.01.01 - Home Banner *
+ *******************************/
+.home-banner-wrapper {
+  .banner-content {
+    .text-container {
+      .title {
+        max-width: 482px;
+      	font-family: "4Reasons";
+      }
+      
+      .text-1 {
+      	max-width: 453px;
+        font-family: "4Reasons";
+        margin: 0 auto;
+        margin-bottom: 154px;
+      }
+      
+      .btn-group {
+        a {
+          background:url({{ 'icon-right-arrow.svg' | asset_url }});
+          background-size: 33px 12px;
+          background-position: 216px;
+          background-repeat: no-repeat;
+          background-color: #AAB06E;
+          border: none;
+          padding: 14px 105px 14px 20px;
+        }
+        
+        span {
+          font-family: "4Reasons";
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 1px;
+          line-height: 21px;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($medium) {
+  .home-banner-wrapper {
+    .banner-content {
+      .text {
+      	top: 50% !important;
+    	transform: translate(-0%,-50%) !important;
+      }
+      
+      .text-container {
+        .title {
+          max-width: 100%;
+          font-size: 50px;
+          line-height: 50px;
+          margin-bottom: 25px;
+        }
+
+        .text-1 {
+          max-width: 100%;
+          font-size: 16px;
+          margin-bottom: 100px;
+        }
+
+        .btn-group {
+          a {
+            background-size: 27px 12px;
+            background-position: 216px;
+            padding: 13px 105px 13px 20px;
+          }
+
+          span {
+            font-size: 13px;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include media-query($interm) {
+  .home-banner-wrapper {
+    .banner-content {
+      .text-container {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .home-banner-wrapper {
+    .banner-content {
+      .text-container {
+        .title {
+          font-size: 35px;
+          line-height: 35px;
+        }
+
+        .text-1 {
+          font-size: 14px;
+        }
+
+        .btn-group {
+          a {
+            background-size: 24px 12px;
+            background-position: 194px;
+            padding: 12px 90px 12px 20px;
+          }
+
+          span {
+            font-size: 12px;
+            line-height: 12px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/*************************************************
+ * Feature.01.02 - Collection Color Mask Section *
+ *************************************************/
+.product-grid-cm-section {
+  .product-grid-wrapper {
+  	padding: 160px 0;
+  }
+  
+  .section-header {
+    text-align: center;
+    padding-bottom: 150px;
+    
+    span {
+      font-family: "4Reasons";
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 17px;
+      letter-spacing: 7px;
+      text-transform: uppercase;
+      color: #DB9AA6;
+    }
+    
+    p {
+      font-family: "4Reasons";
+      font-size: 58px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 72px;
+      letter-spacing: 0.03642px;
+      color: #262728;
+      margin-top: 15px;
+      margin-bottom: 0;
+    }
+  }
+  
+  .section-featured-row {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    width: 100%;
+    -webkit-justify-content: space-between;
+    -ms-justify-content: space-between;
+    justify-content: space-between;
+    -ms-flex-align: center;
+    -webkit-align-items: flex-end;
+    -moz-align-items: flex-end;
+    -ms-align-items: flex-end;
+    -o-align-items: flex-end;
+    align-items: flex-end;
+    overflow: auto;
+    padding: 0 15px 110px 15px;
+    
+    .featured-left-row {
+      float:left;
+      width: 50%;
+      
+      .image-wrap {
+        text-align: center;
+        margin-bottom: 122px;
+        
+      	img {
+          width: auto;
+          object-fit: cover;
+        }
+      }
+      
+      h2 {
+        font-family: "4Reasons";
+        font-style: normal;
+        font-size: 45px;
+        font-weight: 500;
+        letter-spacing: 0.03642px;
+        line-height: 56px;
+        color: #262728;
+        margin-bottom: 10px;
+      }
+      
+      p {
+        max-width: 306px;
+      	font-family: "4Reasons";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 24px;
+        letter-spacing: 0.03642px;
+        color: #262728;
+        margin-bottom: 40px;
+      }
+      
+      a {
+        position: relative;
+      	font-family: "4Reasons";
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 21px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #FD672D;
+        
+        svg {
+          position: absolute;
+          top: 3px;
+          right: -72px;
+          width: 32px;
+          height: 12px;
+          
+          path {
+          	fill: #FD672D;
+          }
+        }
+      }
+    }
+    
+    .featured-right-row {
+      float: left;
+      width: 50%;
+    }
+  }
+  
+  .product-card-grid-wrapper {
+  	padding: 0 15px;
+  }
+  
+  .products-grid-item {
+    .product-card {
+      padding: 0;
+      margin: 0;
+      
+      .card-image {
+      	background-color: #ffffff;
+        height: 400px;
+        
+        img {
+          padding: 45px 65px;
+        }
+      }
+      
+      .card-body {
+        padding: 0;
+        
+        .product-name {
+          font-family: "4Reasons" !important;
+          color: #262728;
+          line-height: 24px;
+        }
+        
+        .price-single {
+          font-family: "4Reasons";
+          color: #262728;
+          line-height: 24px;
+          opacity: 0.4;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($medium) {
+  .product-grid-cm-section {
+    .product-grid-wrapper {
+      padding: 100px 0;
+    }
+
+    .section-header {
+      padding-bottom: 100px;
+
+      p {
+        font-size: 40px;
+        line-height: 40px;
+      }
+    }
+
+    .section-featured-row {
+      padding: 0 15px 80px 15px;
+
+      .featured-left-row {
+        .image-wrap {
+          margin-bottom: 80px;
+        }
+
+        h2 {
+          font-size: 35px;
+          line-height: 35px;
+        }
+
+        a {
+          font-size: 13px;
+          line-height: 18px;
+
+          svg {
+            right: -67px;
+            width: 27px;
+          }
+        }
+      }
+    }
+
+    .products-grid-item {
+      .product-card {
+        .card-image {
+          img {
+            padding: 25px 30px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .product-grid-cm-section {
+    .product-grid-wrapper {
+      padding: 80px 0 50px 0;
+    }
+
+    .section-header {
+      padding-bottom: 80px;
+
+      span {
+        font-size: 13px;
+        line-height: 15px;
+      }
+
+      p {
+        font-size: 35px;
+        line-height: 35px;
+      }
+    }
+
+    .section-featured-row {
+      display: block;
+      padding: 0 0 80px 0;
+
+      .featured-left-row {
+        float:none;
+        width: 100%;
+        margin-bottom: 80px;
+
+        .image-wrap {
+          margin-bottom: 65px;
+        }
+
+        h2 {
+          font-size: 25px;
+          line-height: 25px;
+        }
+
+        p {
+          max-width: 100%;
+          font-size: 14px;
+          line-height: 22px;
+          margin-bottom: 30px;
+        }
+
+        a {
+          font-size: 12px;
+          line-height: 12px;
+
+          svg {
+            top: 2px;
+            right: -64px;
+            width: 24px;
+          }
+        }
+      }
+
+      .featured-right-row {
+        float: none;
+        width: 100%;
+      }
+    }
+    
+    .product-card-grid-wrapper {
+      padding: 0;
+    }
+
+    .products-grid-item {
+      .product-card {
+        margin-bottom: 30px;
+        
+        .card-body {
+          padding: 0;
+
+          .product-name {
+            font-size: 14px;
+            line-height: 18px;
+          }
+
+          .price-single {
+            font-size: 14px;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/***************************************************
+ * Feature.01.03 - Professional Collection Section *
+ ***************************************************/
+.product-grid-pro-section {
+  .product-grid-wrapper {
+  	padding: 160px 0;
+  }
+  
+  .section-featured-row {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    width: 100%;
+    -webkit-justify-content: space-between;
+    -ms-justify-content: space-between;
+    justify-content: space-between;
+    -ms-flex-align: center;
+    -webkit-align-items: initial;
+    -moz-align-items: initial;
+    -ms-align-items: initial;
+    -o-align-items: initial;
+    align-items: initial;
+    overflow: auto;
+    padding: 0 15px 110px 15px;
+    
+    .featured-left-row-desktop {
+      float:left;
+      width: 63%;
+    }
+    
+    .featured-left-row-mobile {
+      display: none;
+    }
+    
+    .featured-right-row {
+      float: left;
+      width: 37%;
+      padding-left: 100px;
+      
+      .image-wrap-desktop {
+        text-align: right;
+        margin-top: 70px;
+        
+      	img {
+          width: auto;
+          object-fit: cover;
+        }
+      }
+      
+      .image-wrap-mobile {
+      	display: none;
+      }
+      
+      h2 {
+        font-family: "4Reasons";
+        font-style: normal;
+        font-size: 45px;
+        font-weight: 500;
+        letter-spacing: 0.03642px;
+        line-height: 56px;
+        color: #262728;
+        margin-bottom: 10px;
+      }
+      
+      p {
+        max-width: 306px;
+      	font-family: "4Reasons";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 24px;
+        letter-spacing: 0.03642px;
+        color: #262728;
+        margin-bottom: 40px;
+      }
+      
+      a {
+        position: relative;
+      	font-family: "4Reasons";
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 21px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #DB9AA6;
+        
+        svg {
+          position: absolute;
+          top: 3px;
+          right: -72px;
+          width: 32px;
+          height: 12px;
+          
+          path {
+          	fill: #DB9AA6;
+          }
+        }
+      }
+    }
+  }
+  
+  .product-card-grid-wrapper {
+  	padding: 0 15px;
+  }
+  
+  .products-grid-item {
+    .product-card {
+      padding: 0;
+      margin: 0;
+      
+      .card-image {
+      	background-color: #ffffff;
+        height: 400px;
+        img {
+          padding: 45px 65px;
+        }
+      }
+      
+      .card-body {
+        padding: 0;
+        
+        .product-name {
+          font-family: "4Reasons" !important;
+          color: #262728;
+          line-height: 24px;
+        }
+        
+        .price-single {
+          font-family: "4Reasons";
+          color: #262728;
+          line-height: 24px;
+          opacity: 0.4;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($medium) {
+  .product-grid-pro-section {
+    .product-grid-wrapper {
+      padding: 100px 0;
+    }
+
+    .section-featured-row {
+      padding: 0 15px 80px 15px;
+
+      .featured-right-row {
+        padding-left: 65px;
+        
+        .image-wrap-desktop {
+          margin-top: 80px;
+        }
+
+        h2 {
+          font-size: 35px;
+          line-height: 35px;
+        }
+
+        a {
+          font-size: 13px;
+          line-height: 18px;
+
+          svg {
+            right: -67px;
+            width: 27px;
+          }
+        }
+      }
+    }
+
+    .products-grid-item {
+      .product-card {
+        .card-image {
+          img {
+            padding: 25px 30px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .product-grid-pro-section {
+    .product-grid-wrapper {
+      padding: 80px 0 50px 0;
+    }
+
+    .section-featured-row {
+      display: block;
+      padding: 0 0 80px 0;
+
+      .featured-right-row {
+        float:none;
+        width: 100%;
+        margin-bottom: 80px;
+        padding-left: 0;
+
+        .image-wrap-desktop {
+          display: none;
+        }
+        
+        .image-wrap-mobile {
+          display: block;
+          text-align: center;
+          margin-bottom: 65px;
+          
+          img {
+          	width: auto;
+            object-fit: cover;
+          }
+        }
+
+        h2 {
+          font-size: 25px;
+          line-height: 25px;
+        }
+
+        p {
+          max-width: 100%;
+          font-size: 14px;
+          line-height: 22px;
+          margin-bottom: 30px;
+        }
+
+        a {
+          font-size: 12px;
+          line-height: 12px;
+
+          svg {
+            top: 2px;
+            right: -64px;
+            width: 24px;
+          }
+        }
+      }
+
+      .featured-left-row-desktop {
+        display: none;
+      }
+      
+      .featured-left-row-mobile {
+      	display: block;
+      }
+    }
+    
+    .product-card-grid-wrapper {
+      padding: 0;
+    }
+
+    .products-grid-item {
+      .product-card {
+        margin-bottom: 30px;
+        
+        .card-body {
+          padding: 0;
+
+          .product-name {
+            font-size: 14px;
+            line-height: 18px;
+          }
+
+          .price-single {
+            font-size: 14px;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/*********************************************
+ * Feature.01.04 - Nature Collection Section *
+ *********************************************/
+.product-grid-nat-section {
+  .product-grid-wrapper {
+  	padding: 160px 0;
+  }
+  
+  .section-featured-row {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    width: 100%;
+    -webkit-justify-content: space-between;
+    -ms-justify-content: space-between;
+    justify-content: space-between;
+    -ms-flex-align: center;
+    -webkit-align-items: initial;
+    -moz-align-items: initial;
+    -ms-align-items: initial;
+    -o-align-items: initial;
+    align-items: initial;
+    overflow: auto;
+    padding: 0 15px 110px 15px;
+    
+    .featured-left-row {
+      float:left;
+      width: 50%;
+      
+      .image-wrap-desktop {
+        text-align: left;
+        clear: both;
+        
+      	img {
+          width: auto;
+          object-fit: cover;
+        }
+      }
+      
+      .image-wrap-mobile {
+      	display: none;
+      }
+      
+      .text-wrap {
+        float: right;
+        max-width: 306px;
+        margin-right: 20px;
+        margin-bottom: 60px;
+        
+      	h2 {
+          font-family: "4Reasons";
+          font-style: normal;
+          font-size: 45px;
+          font-weight: 500;
+          letter-spacing: 0.03642px;
+          line-height: 56px;
+          color: #262728;
+          margin-bottom: 10px;
+        }
+
+        p {
+          font-family: "4Reasons";
+          font-size: 16px;
+          font-style: normal;
+          font-weight: normal;
+          line-height: 24px;
+          letter-spacing: 0.03642px;
+          color: #262728;
+          margin-bottom: 40px;
+        }
+
+        a {
+          position: relative;
+          font-family: "4Reasons";
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 21px;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          color: #AAB06E;
+
+          svg {
+            position: absolute;
+            top: 3px;
+            right: -72px;
+            width: 32px;
+            height: 12px;
+
+            path {
+              fill: #AAB06E;
+            }
+          }
+        }
+      }
+    }
+    
+    .featured-right-row {
+      float: left;
+      width: 50%;
+    }
+  }
+  
+  .product-card-grid-wrapper {
+  	padding: 0 15px;
+  }
+  
+  .products-grid-item {
+    .product-card {
+      padding: 0;
+      margin: 0;
+      
+      .card-image {
+      	background-color: #ffffff;
+        height: 400px;
+        img {
+          padding: 45px 65px;
+        }
+      }
+      
+      .card-body {
+        padding: 0;
+        
+        .product-name {
+          font-family: "4Reasons" !important;
+          color: #262728;
+          line-height: 24px;
+        }
+        
+        .price-single {
+          font-family: "4Reasons";
+          color: #262728;
+          line-height: 24px;
+          opacity: 0.4;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($medium) {
+  .product-grid-nat-section {
+    .product-grid-wrapper {
+      padding: 100px 0;
+    }
+
+    .section-featured-row {
+      padding: 0 15px 80px 15px;
+
+      .featured-left-row {
+        .text-wrap {
+          margin-bottom: 80px;
+          
+          h2 {
+            font-size: 35px;
+            line-height: 35px;
+          }
+
+          a {
+            font-size: 13px;
+            line-height: 18px;
+
+            svg {
+              right: -67px;
+              width: 27px;
+            }
+          }
+        }
+      }
+    }
+
+    .products-grid-item {
+      .product-card {
+        .card-image {
+          img {
+            padding: 25px 30px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .product-grid-nat-section {
+    .product-grid-wrapper {
+      padding: 80px 0 50px 0;
+    }
+
+    .section-featured-row {
+      display: block;
+      padding: 0 0 80px 0;
+
+      .featured-left-row {
+        float:none;
+        width: 100%;
+        margin-bottom: 80px;
+
+        .image-wrap-desktop {
+          display: none;
+        }
+        
+        .image-wrap-mobile {
+          display: block;
+          text-align: center;
+          margin-bottom: 65px;
+          
+          img {
+          	width: auto;
+            object-fit: cover;
+          }
+        }
+        
+        .text-wrap {
+          float: none;
+          max-width: 100%;
+          margin-right: 0;
+          margin-bottom: 0;
+          
+          h2 {
+            font-size: 25px;
+            line-height: 25px;
+          }
+
+          p {
+            font-size: 14px;
+            line-height: 22px;
+            margin-bottom: 30px;
+          }
+
+          a {
+            font-size: 12px;
+            line-height: 12px;
+
+            svg {
+              top: 2px;
+              right: -64px;
+              width: 24px;
+            }
+          }
+        }
+      }
+
+      .featured-right-row {
+        float: none;
+        width: 100%;
+      }
+    }
+    
+    .product-card-grid-wrapper {
+      padding: 0;
+    }
+
+    .products-grid-item {
+      .product-card {
+        margin-bottom: 30px;
+        
+        .card-body {
+          padding: 0;
+
+          .product-name {
+            font-size: 14px;
+            line-height: 18px;
+          }
+
+          .price-single {
+            font-size: 14px;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/*********************************************
+ * Feature.01.05 - Collection Optima Section *
+ *********************************************/
+.product-grid-opt-section {
+  .product-grid-wrapper {
+  	padding: 160px 0 10px 0;
+  }
+  
+  .section-featured-row {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    width: 100%;
+    -webkit-justify-content: space-between;
+    -ms-justify-content: space-between;
+    justify-content: space-between;
+    -ms-flex-align: center;
+    -webkit-align-items: initial;
+    -moz-align-items: initial;
+    -ms-align-items: initial;
+    -o-align-items: initial;
+    align-items: initial;
+    overflow: auto;
+    padding: 0 15px 110px 15px;
+    
+    .featured-left-row {
+      float:left;
+      width: 50%;
+      padding-right: 150px;
+      
+      .image-wrap-desktop {
+        text-align: right;
+        margin-top: 78px;
+        
+      	img {
+          width: auto;
+          object-fit: cover;
+        }
+      }
+      
+      .image-wrap-mobile {
+      	display: none;
+      }
+      
+      h2 {
+        font-family: "4Reasons";
+        font-style: normal;
+        font-size: 45px;
+        font-weight: 500;
+        letter-spacing: 0.03642px;
+        line-height: 56px;
+        color: #262728;
+        margin-bottom: 10px;
+      }
+      
+      p {
+        max-width: 306px;
+      	font-family: "4Reasons";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 24px;
+        letter-spacing: 0.03642px;
+        color: #262728;
+        margin-bottom: 40px;
+      }
+      
+      a {
+        position: relative;
+      	font-family: "4Reasons";
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 21px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #FD672D;
+        
+        svg {
+          position: absolute;
+          top: 3px;
+          right: -72px;
+          width: 32px;
+          height: 12px;
+          
+          path {
+          	fill: #FD672D;
+          }
+        }
+      }
+    }
+    
+    .featured-right-row {
+      float: left;
+      width: 50%;
+    }
+  }
+  
+  .product-card-grid-wrapper {
+  	padding: 0 15px;
+  }
+  
+  .products-grid-item {
+    .product-card {
+      padding: 0;
+      margin: 0;
+      
+      .card-image {
+      	background-color: #ffffff;
+        height: 400px;
+        img {
+          padding: 45px 65px;
+        }
+      }
+      
+      .card-body {
+        padding: 0;
+        
+        .product-name {
+          font-family: "4Reasons" !important;
+          color: #262728;
+          line-height: 24px;
+        }
+        
+        .price-single {
+          font-family: "4Reasons";
+          color: #262728;
+          line-height: 24px;
+          opacity: 0.4;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($medium) {
+  .product-grid-opt-section {
+    .product-grid-wrapper {
+      padding: 100px 0;
+    }
+
+    .section-featured-row {
+      padding: 0 15px 80px 15px;
+
+      .featured-left-row {
+        padding-right: 80px;
+        
+        .image-wrap-desktop {
+          margin-top: 80px;
+        }
+
+        h2 {
+          font-size: 35px;
+          line-height: 35px;
+        }
+
+        a {
+          font-size: 13px;
+          line-height: 18px;
+
+          svg {
+            right: -67px;
+            width: 27px;
+          }
+        }
+      }
+    }
+
+    .products-grid-item {
+      .product-card {
+        .card-image {
+          img {
+            padding: 25px 30px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .product-grid-opt-section {
+    .product-grid-wrapper {
+      padding: 80px 0 50px 0;
+    }
+
+    .section-featured-row {
+      display: block;
+      padding: 0 0 80px 0;
+
+      .featured-left-row {
+        float:none;
+        width: 100%;
+        margin-bottom: 80px;
+        padding-right: 0;
+
+        .image-wrap-desktop {
+          display: none;
+        }
+        
+        .image-wrap-mobile {
+          display: block;
+          text-align: center;
+          margin-bottom: 65px;
+          
+          img {
+          	width: auto;
+          	object-fit: cover;
+          }
+        }
+
+        h2 {
+          font-size: 25px;
+          line-height: 25px;
+        }
+
+        p {
+          max-width: 100%;
+          font-size: 14px;
+          line-height: 18px;
+          margin-bottom: 30px;
+        }
+
+        a {
+          font-size: 12px;
+          line-height: 12px;
+
+          svg {
+            top: 2px;
+            right: -64px;
+            width: 24px;
+          }
+        }
+      }
+
+      .featured-right-row {
+        float: none;
+        width: 100%;
+      }
+    }
+    
+    .product-card-grid-wrapper {
+      padding: 0;
+    }
+
+    .products-grid-item {
+      .product-card {
+        margin-bottom: 30px;
+        
+        .card-body {
+          padding: 0;
+
+          .product-name {
+            font-size: 14px;
+            line-height: 18px;
+          }
+
+          .price-single {
+            font-size: 14px;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/*******************************************
+ * Feature.01.06 - Collection List Section *
+ *******************************************/
+.collection-grid-section {
+  max-width: 1440px;
+  background-color: #F6F4F2;
+  margin: 0 auto;
+  
+  .collection-grid-bg {
+    float: left;
+    width: 553px;
+    
+    img {
+      width: auto;
+      object-fit: cover;
+    }
+  }
+  
+  .collection-featured-content{
+    margin-left: 553px;
+    padding-top: 108px;
+    padding-left: 167px;
+    
+    .section-header {
+      margin-bottom: 50px;
+      
+      p {
+        font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 14px;
+        color: #CBC3BC;
+        line-height: 17px;
+        letter-spacing: 7px;
+        text-transform: uppercase;
+      }
+      
+      h2 {
+        max-width: 550px;
+        font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 45px;
+        color: #262728;
+        line-height: 50px;
+        letter-spacing: 0.03642px;
+      }
+    }
+    
+    .collection-featured-row {
+      margin-bottom: 45px;
+
+      a {
+        display: inline-block;
+        font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 30px;
+        color: #CBC3BC;
+        line-height: 37px;
+        letter-spacing: 0.03642px;
+
+        &:hover {
+          color: #262728;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($medium) {
+  .collection-grid-section {
+    .collection-grid-bg {
+      width: 400px;
+    }
+
+    .collection-featured-content{
+      margin-left: 400px;
+      padding-top: 70px;
+      padding-left: 100px;
+
+      .section-header {
+        margin-bottom: 35px;
+
+        h2 {
+          font-size: 35px;
+          line-height: 40px;
+        }
+      }
+
+      .collection-featured-row {
+        margin-bottom: 35px;
+
+        a {
+          font-size: 20px;
+          line-height: 25px;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($interm) {
+  .collection-grid-section {
+    .collection-grid-bg {
+      width: 300px;
+    }
+
+    .collection-featured-content{
+      margin-left: 300px;
+      padding-top: 50px;
+      padding-left: 80px;
+
+      .section-header {
+        margin-bottom: 30px;
+
+        h2 {
+          max-width: 350px;
+          font-size: 25px;
+          line-height: 35px;
+        }
+      }
+
+      .collection-featured-row {
+        margin-bottom: 25px;
+
+        a {
+          font-size: 16px;
+          line-height: 18px;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .collection-grid-section {
+    padding: 80px 15px 55px 15px;
+    
+    .collection-grid-bg {
+      float: none;
+      width: 100%;
+      
+      img {
+      	width: 100%;
+      }
+    }
+
+    .collection-featured-content{
+      margin-left: 0;
+      padding-top: 80px;
+      padding-left: 0;
+
+      .section-header {
+        h2 {
+          max-width: 100%;
+        }
+      }
+    }
+  }
+}
+
+/*******************************************
+ * Feature.01.07 - Collection Home Section *
+ *******************************************/
+.product-grid-home-section {
+  background-color: #e8e6d9;
+  
+  .product-grid-wrapper {
+    padding-top: 160px;
+    
+  	.section-heading {
+      margin-bottom: 35px;
+      
+      .title {
+        margin: 0 !important;
+        margin-bottom: 15px !important;
+        
+        span {
+          font-family: "4Reasons";
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 17px;
+          letter-spacing: 7px;
+          text-transform: uppercase;
+        }
+      }
+      
+      .subtitle {
+        span {
+          font-family: "4Reasons";
+          font-weight: 500;
+          font-size: 58px;
+          line-height: 64px;
+          letter-spacing: 0.03642px;
+        }
+      }
+    }
+  }
+  
+  .product-card-grid-wrapper {
+    margin-top: 0;
+    padding: 0 15px;
+    
+    .product-card {
+      padding: 0;
+      margin: 0;
+      
+      .card-content {
+      	position: absolute;
+        
+        .card-image {
+          background-color: #ffffff;
+          height: 400px;
+          img {
+          	padding: 45px 65px;
+          }
+        }
+        
+        .product-name {
+          font-family: "4Reasons" !important;
+          color: #262728;
+          line-height: 24px
+        }
+        
+        .price-single {
+          font-family: "4Reasons";
+          color: #262728;
+          line-height: 24px;
+          opacity: 0.4;
+        }
+      }
+    }
+    
+    .products-grid-item {
+      &:nth-child(1) {
+        .card-content {
+          top: 95px;
+        }
+      }
+      
+      &:nth-child(2) {
+        .card-content {
+          top: 175px;
+        }
+      }
+      
+      &:nth-child(4) {
+        .card-content {
+          top: 230px;
+        }
+      }
+    }
+  }
+  
+  .btn-wrap {
+    .btn {
+      background-color: #8B8041;
+      border-color: #8B8041;
+      padding: 12px 120px 12px 20px;
+      
+      .btn--label {
+      	font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 21px;
+        letter-spacing: 1px;
+      }
+      
+      svg {
+      	position: absolute;
+        right: 20px;
+        width: 32px;
+        height: 12px;
+      }
+    }
+  }
+}
+
+.product-card .card-header .card-image {
+  height: 400px;
+  img.featured-image.front.img-lazy {
+    padding: 15px;
+    object-fit: contain;
+  }
+}
+
+@include media-query($medium) {
+  .product-grid-home-section {
+    .product-grid-wrapper {
+      padding-top: 100px;
+
+      .section-heading {
+        .subtitle {
+          span {
+            font-size: 40px;
+            line-height: 40px;
+          }
+        }
+      }
+    }
+
+    .product-card-grid-wrapper {
+      .product-card {
+        .card-content {
+          .card-image {
+            img {
+              padding: 25px 30px;
+            }
+          }
+        }
+      }
+
+      .products-grid-item {
+        &:nth-child(1) {
+          .card-content {
+            top: 95px;
+          }
+        }
+
+        &:nth-child(2) {
+          .card-content {
+            top: 175px;
+          }
+        }
+
+        &:nth-child(4) {
+          .card-content {
+            top: 230px;
+          }
+        }
+      }
+    }
+    
+    .btn-wrap {
+      .btn {
+        padding: 11px 120px 11px 20px;
+
+        .btn--label {
+          font-size: 13px;
+          line-height: 18px;
+        }
+
+        svg {
+          width: 27px;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .product-grid-home-section {
+    height: 100% !important;
+    
+    .product-grid-wrapper {
+      padding-top: 80px;
+      padding-bottom: 85px;
+
+      .section-heading {
+        .title {
+          span {
+            font-size: 13px;
+            line-height: 15px;
+          }
+        }
+
+        .subtitle {
+          span {
+            font-size: 35px;
+            line-height: 35px;
+          }
+        }
+      }
+    }
+
+    .product-card-grid-wrapper {
+      padding: 0;
+
+      .product-card {
+        margin-bottom: 30px;
+        
+        .card-content {
+          position: relative;
+
+          .card-image {
+            img {
+              padding: 25px 30px;
+            }
+          }
+
+          .product-name {
+            font-size: 14px;
+    		line-height: 18px;
+          }
+
+          .price-single {
+            font-size: 14px;
+    		line-height: 18px;
+          }
+        }
+        
+        .card-body {
+          padding: 0;
+        }
+      }
+
+      .products-grid-item {
+        &:nth-child(1) {
+          .card-content {
+            top: 0;
+          }
+        }
+
+        &:nth-child(2) {
+          .card-content {
+            top: 0;
+          }
+        }
+
+        &:nth-child(4) {
+          .card-content {
+            top: 0;
+          }
+        }
+      }
+    }
+
+    .btn-wrap {
+      margin-top: 0 !important;
+      
+      .btn {
+        .btn--label {
+          font-size: 12px;
+          line-height: 12px;
+        }
+
+        svg {
+          right: 20px;
+          width: 24px;
+        }
+      }
+    }
+  }
+}
+
+/**********************************************
+ * Feature.01.08 - Home Image Gallery Section *
+ **********************************************/
+.home-image-gallery {
+  .home-image-gallery-content {
+    float: left;
+  	width: 50%;
+    padding: 147px 110px 147px 50px;
+    
+    .home-gallery-content {
+      display: none;
+      height: 430px;
+      
+      h2 {
+      	font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 25px;
+        color: #262728;
+        line-height: 28px;
+        letter-spacing: 0.03642px;
+        margin-bottom: 45px;
+      }
+      
+      p {
+      	font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 16px;
+        color: #262728;
+        line-height: 24px;
+        letter-spacing: 0.03642px;
+      }
+      
+      &:first-child {
+      	display: block;
+      }
+    }
+    
+    .move-wrap {
+      span {
+      	font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 14px;
+        color: #C2A282;
+        line-height: 21px;
+        letter-spacing: 0.03642px;
+      }
+      
+      .home-gallery__arrow {
+        float: right;
+        
+      	svg {
+          width: 32px;
+          height: 12px;
+          text-align: right;
+          cursor: pointer;
+
+          path {
+            fill: #C2A282;
+          }
+        }
+        
+        &.home-gallery__arrow-left {
+          margin-right: 25px;
+        }
+      }
+      
+      .content-width {
+      	height: 2px;
+        background-color: #C2A282;
+        margin-top: 15px;
+      }
+    }
+    
+    &.active-index {
+      .home-gallery__arrow-left {
+      	display: none;
+      }
+    }
+    
+    &.active-last {
+      .home-gallery__arrow-right {
+      	display: none;
+      }
+    }
+  }
+  
+  .home-image-gallery-banner {
+    float: left;
+  	width: 50%;
+    background-color: #C2A282;
+    padding: 147px 130px 94px 130px;
+    position: relative;
+    .home-banner-header {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      width: 100%;
+      
+      p {
+        font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 14px;
+		color: #ECE2D5;        
+        line-height: 17px;
+        letter-spacing: 7px;
+        text-align: center;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      
+      h2 {
+      	font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 58px;
+        color: #FFFFFF;
+        line-height: 72px;
+        letter-spacing: 0.03642px;
+        text-align: center;
+      }
+    }
+    
+    .home-banner-image {
+      text-align: center;
+      
+      img {
+        display: block;
+      	width: auto;
+        object-fit: cover;
+        margin: 0 auto;
+        margin-bottom: 35px;
+      }
+      
+      a {
+        position: relative;
+      	font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 14px;
+        color: #FFFFFF;
+        line-height: 21px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding-right: 50px;
+        
+        svg {
+          position: absolute;
+          right: -32px;
+          top: 3px;
+          width: 32px;
+          height: 12px;
+        }
+      }
+    }
+  }
+}
+
+.sidebar-column .sb-widget.sb-filters .sbw-filter.accordion .grid-uniform {
+  margin-bottom: 0px !important;
+}
+
+@include media-query($medium) {
+  .home-image-gallery {
+    .home-image-gallery-content {
+      padding: 100px 60px 100px 110px;
+
+      .home-gallery-content {
+        height: 350px;
+      }
+
+      .move-wrap {
+        .home-gallery__arrow {
+          svg {
+            width: 27px;
+          }
+
+          &.home-gallery__arrow-left {
+            margin-right: 20px;
+          }
+        }
+      }
+    }
+
+    .home-image-gallery-banner {
+      padding: 100px 110px 60px 110px;
+
+      .home-banner-header {
+        top: 50px;
+
+        h2 {
+          font-size: 40px;
+          line-height: 40px;
+        }
+      }
+
+      .home-banner-image {
+        img {
+          margin-bottom: 25px;
+        }
+
+        a {
+          font-size: 13px;
+          line-height: 18px;
+          padding-right: 45px;
+
+          svg {
+            right: -27px;
+            top: 2px;
+            width: 27px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include media-query($interm) {
+  .home-image-gallery {
+    .home-image-gallery-content {
+      float: left;
+      width: 50%;
+      padding: 80px 50px 80px 50px;
+
+      .home-gallery-content {
+        height: 300px;
+
+        h2 {
+          font-size: 20px;
+          line-height: 20px;
+          margin-bottom: 30px;
+        }
+
+        p {
+          font-size: 14px;
+          line-height: 18px;
+        }
+
+        &:first-child {
+          display: block;
+        }
+      }
+
+      .move-wrap {
+        span {
+          font-size: 13px;
+          line-height: 18px;
+        }
+
+        .home-gallery__arrow {
+          svg {
+            width: 24px;
+          }
+        }
+      }
+    }
+
+    .home-image-gallery-banner {
+      padding: 80px 50px 30px 50px;
+
+      .home-banner-header {
+        top: 38px;
+
+        p {
+          font-size: 13px;
+          line-height: 15px;
+        }
+
+        h2 {
+          font-size: 30px;
+          line-height: 30px;
+        }
+      }
+
+      .home-banner-image {
+        img {
+          margin-bottom: 30px;
+        }
+
+        a {
+          font-size: 12px;
+          line-height: 12px;
+          padding-right: 40px;
+
+          svg {
+            right: -24px;
+            width: 24px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .home-image-gallery {
+    .home-image-gallery-content {
+      float: none;
+      width: 100%;
+      padding: 80px 15px 80px 15px;
+    }
+
+    .home-image-gallery-banner {
+      float: none;
+      width: 100%;
+      padding: 80px 15px 30px 15px;
+    }
+  }
+}
+
+.home-banner {
+  .panel-logo {
+    position: absolute; top: -35px; z-index: 1; left: 410px;
+  }
+}
+
+@include media-query($medium) {
+  .home-banner {
+    .panel-logo {
+      display: none;
+    }
+  }
+}
+
+#about-template {
+  background: #F9F9F9;
+  .section-about-us {
+    .group1 {
+      .left-panel {
+        width: 50%;
+        .title {
+          font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 78px; line-height: 110%; letter-spacing: 0.0364238px; color: #262728; margin-top: 350px; width: 60%; position: relative; z-index: 50;
+        }
+        img {
+          width: auto; object-fit: cover; margin-left: 180px; margin-top: -30px;
+        }
+      }
+      .right-panel {
+        width: 50%;
+        position: relative;
+        .img-right-panel {
+          width: auto; object-fit: cover; margin-top: 130px;
+        }
+        .sub-title {
+          font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 14px; line-height: 17px; letter-spacing: 7px; text-transform: uppercase; color: #AAB06E; padding-top: 120px;
+        }
+        .description {
+          font-family: '4Reasons'; font-style: normal; font-weight: 300; font-size: 30px; line-height: 150%; letter-spacing: 0.0364238px; color: #262728; padding-top: 30px; width: 75%;
+        }
+      }
+
+    }
+    .group2 {
+      margin-top: 100px; margin-bottom: 100px;
+      .title {
+        font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 58px; line-height: 72px; letter-spacing: 0.0364238px; color: #262728; margin-bottom: 30px;
+      }
+      .left-panel {
+        width: 40%;
+        .description {
+          font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 16px; line-height: 150%; color: #262728; width: 80%;
+        }
+      }
+      .right-panel {
+        width: 60%;
+        img {
+          object-fit: cover; margin-bottom: 100px;
+        }
+        .descriptions {
+          border-top: 2px solid #AAB06E; padding-top: 80px;
+          .item-description {
+            width: 31%; float: left; margin-right: 2%;
+            .item-title {
+              font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 25px; line-height: 110%; letter-spacing: 0.0364238px; color: #AAB06E;
+            }
+            .item-text {
+              font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 16px; line-height: 150%; color: #262728; margin-top: 50px;
+            }
+          }
+        }
+        
+      }
+    }
+    
+    .group3 {
+      margin-top: 100px; margin-bottom: 100px;
+      .left-panel {
+        width: 60%;
+        img {
+          width: auto; object-fit: cover;
+        }
+      }
+      .right-panel {
+        width: 40%;
+        .title {
+          font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 58px; line-height: 72px; letter-spacing: 0.0364238px; color: #262728; margin-bottom: 30px; margin-left: 70px;
+        }
+      }
+      .left-panel2 {
+        width: 60%;
+        .text {
+          font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 16px; line-height: 150%; color: #262728; width: 55%; margin-left: 25%;
+        }
+      }
+      .right-panel2 {
+        width: 40%;
+        .description {
+          font-family: '4Reasons'; font-style: normal; font-weight: 300; font-size: 30px; line-height: 150%; letter-spacing: 0.0364238px; color: #262728; width: 85%; margin-left: 8%;
+        }
+      }
+    }
+    
+    .group4 {
+      margin-top: 100px; margin-bottom: 100px;
+      .sub-title {
+        font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 14px; line-height: 17px; letter-spacing: 7px; text-transform: uppercase; color: #AAB06E;
+      }
+      .title {
+        font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 58px; line-height: 72px; letter-spacing: 0.0364238px; color: #262728; margin-top: 50px; margin-bottom: 50px;
+      }
+      img {
+        width: auto; object-fit: cover;
+      }
+      .item-description {
+        width: 46%; float: left; margin-left: 2%; margin-right: 2%;
+        .item-title {
+          font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 25px; line-height: 110%; letter-spacing: 0.0364238px; color: #AAB06E; margin-top: 70px;
+        }
+        .item-text {
+          font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 16px; line-height: 150%; color: #262728; margin-top: 25px;
+        }
+      }
+    }
+  }
+  .panel-logo {
+    width: 110px; height: 110px; position: absolute; top: 550px; left: -55px;
+  }
+}
+
+@include media-query($medium) {
+  #about-template {
+    .section-about-us {
+      .group1 {
+        .left-panel {
+          .title {
+            font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 60px; line-height: 110%; letter-spacing: 0.0364238px; color: #262728; margin-top: 250px; width: 60%; position: relative; z-index: 50;
+          }
+          img {
+            width: 50%; object-fit: cover; margin-left: 180px; margin-top: -30px;
+          }
+        }
+        .right-panel {
+          img {
+            width: 60%; margin-top: 130px;
+          }
+          .sub-title {
+            font-size: 14px; line-height: 17px; letter-spacing: 7px; padding-top: 80px;
+          }
+          .description {
+            font-size: 18px; line-height: 150%; color: #262728; padding-top: 30px; width: 75%;
+          }
+        }
+
+      }
+    }
+    
+    .panel-logo {
+      display: none;
+    }    
+    
+  }
+}
+
+@include media-query($interm) {
+  #about-template {
+    .section-about-us {
+      .group1 {
+        .left-panel {
+          width: 100%;
+          .title {
+            font-size: 40px; margin-top: 50px; width: 100%;
+          }
+          img {
+            display: none;
+          }
+        }
+        .right-panel {
+          width: 100%;
+          img {
+            display: none;
+          }
+          .sub-title {
+            font-size: 14px; line-height: 17px; letter-spacing: 7px; padding-top: 30px;
+          }
+          .description {
+            font-size: 14px; line-height: 150%; padding-top: 20px; width: 75%;
+          }
+        }
+
+      }
+      
+      .group2 {
+        margin-top: 50px; margin-bottom: 100px;
+        .title {
+          font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 40px; line-height: 72px; letter-spacing: 0.0364238px; color: #262728; margin-bottom: 30px;
+        }
+        .left-panel {
+          width: 100%;
+          .description {
+            font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 16px; line-height: 150%; color: #262728; width: 80%;
+          }
+        }
+        .right-panel {
+          width: 100%;
+          img {
+            object-fit: cover; margin-bottom: 100px; width: 70%; margin-left: 15%;
+          }
+          .descriptions {
+            border-top: 2px solid #AAB06E; padding-top: 80px;
+            .item-description {
+              width: 31%; float: left; margin-right: 2%;
+              .item-title {
+                font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 25px; line-height: 110%; letter-spacing: 0.0364238px; color: #AAB06E;
+              }
+              .item-text {
+                font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 16px; line-height: 150%; color: #262728; margin-top: 50px;
+              }
+            }
+          }
+
+        }
+      }
+
+      .group3 {
+        margin-top: 100px; margin-bottom: 100px;
+        .left-panel {
+          width: 60%;
+          img {
+            width: auto; object-fit: cover;
+          }
+        }
+        .right-panel {
+          width: 40%;
+          .title {
+            font-size: 40px; margin-bottom: 30px; margin-left: 20px;
+          }
+        }
+        .left-panel2 {
+          width: 100%;
+          .text {
+            font-size: 16px; width: 100%; margin-left: 0%;
+          }
+        }
+        .right-panel2 {
+          width: 100%;
+          .description {
+            font-size: 20px; width: 100%; margin-left: 0%;
+          }
+        }
+      }
+
+      .group4 {
+        margin-top: 0px; margin-bottom: 50px;
+        .sub-title {
+          font-size: 14px; line-height: 17px; letter-spacing: 7px;
+        }
+        .title {
+          font-size: 32px; line-height: 48px; margin-top: 20px; margin-bottom: 20px;
+        }
+        .item-description {
+          width: 46%; 
+          .item-title {
+            font-size: 25px; margin-top: 35px;
+          }
+          .item-text {
+            font-size: 16px; margin-top: 10px;
+          }
+        }
+      }
+    }
+  }  
+}
+
+@include media-query($small) {
+  #about-template {
+    .section-about-us {
+      .group1 {
+        .left-panel {
+          width: 100%;
+          .title {
+            font-size: 30px;
+          }
+          img {
+            display: none;
+          }
+        }
+        .right-panel {
+          width: 100%;
+          img {
+            display: none;
+          }
+          .sub-title {
+            font-size: 14px;
+          }
+          .description {
+            font-size: 16px; 
+            width: 100%;
+          }
+        }
+      }
+      
+      .group2 {
+        margin-top: 30px; margin-bottom: 50px;
+        .title {
+          font-size: 24px;
+        }
+        .left-panel {
+          width: 100%;
+          .description {
+            font-size: 16px; width: 100%;
+          }
+        }
+        .right-panel {
+          width: 100%;
+          img {
+            margin-bottom: 20px; width: 100%; margin-left: 0%;
+          }
+          .descriptions {
+            padding-top: 0px;
+            .item-description {
+              width: 90%; float: left; margin-right: 8%; margin-top: 30px;
+              .item-title {
+                font-size: 20px;
+              }
+              .item-text {
+                font-size: 16px; margin-top: 10px;
+              }
+            }
+          }
+        }
+      }
+
+      .group3 {
+        margin-top: 50px; margin-bottom: 50px;
+        .left-panel {
+          width: 100%;
+          img {
+            width: auto; object-fit: cover;
+          }
+        }
+        .right-panel {
+          width: 100%;
+          .title {
+            font-size: 24px; margin-bottom: 10px; margin-left: 0px;
+          }
+        }
+        .left-panel2 {
+          width: 100%;
+          margin-top: -100px;
+          .text {
+            font-size: 14px;
+          }
+        }
+        .right-panel2 {
+          width: 100%;
+          .description {
+            font-size: 16px;
+          }
+        }
+      }
+
+      .group4 {
+        margin-top: 0px; margin-bottom: 50px;
+        .sub-title {
+          font-size: 16px; line-height: 20px; letter-spacing: 7px;
+        }
+        .title {
+          font-size: 20px; line-height: 32px; margin-top: 20px; margin-bottom: 20px;
+        }
+        .item-description {
+          width: 90%; 
+          .item-title {
+            font-size: 20px; margin-top: 35px;
+          }
+          .item-text {
+            font-size: 16px; margin-top: 10px;
+          }
+        }
+      }
+    }
+  }    
+}
+
+/*==================================================================================
+ *  Feature.01 - Collection Page                                                   *
+ *  Type : StyleSheet                                                              *
+===================================================================================*/
+.collection-template {
+  background-color: #F9F9F9;
+}
+
+.collection-color-mask-template {
+  .text-columns-wrapper {
+    .text-columns-container{
+      h3 {
+      	color: #B0878D;
+      }
+      
+      span {
+      	color: #D8B5BA;
+        
+        .column-indicator {
+          background-color: #D8B5BA;
+        }
+      }
+    }
+  }
+  
+  .text-grid-wrapper {
+    .text-grid-container {
+      .grid-header {
+        h2 {
+          width: 50%;
+          border-bottom: 1px solid #E9CCCE;
+          
+          &.active {
+          	color: #C7979E;
+            border-bottom: 2px solid #E9CCCE;
+            padding-bottom: 14px;
+          }
+        }
+      }
+    }
+    
+    .grid-item-wrapper {
+      .grid-item {
+        span {
+          color: #D8B5BA;
+
+          .column-indicator {
+            background-color: #D8B5BA;
+          }
+        }
+        
+        h3 {
+          color: #B0878D;
+        }
+      }
+    }
+  }
+}
+
+.collection-professional-template {
+  .text-columns-wrapper {
+    .text-columns-container{
+      h3 {
+      	color: #81A4B8;
+      }
+      
+      span {
+      	color: #8FB6CC;
+        
+        .column-indicator {
+          background-color: #8FB6CC;
+        }
+      }
+    }
+  }
+  
+  .text-grid-wrapper {
+    .text-grid-container {
+      .grid-header {
+        h2 {
+          width: 50%;
+          border-bottom: 1px solid #C2D6E1;
+          
+          &.active {
+          	color: #8FB6CC;
+            border-bottom: 2px solid #8FB6CC;
+            padding-bottom: 14px;
+          }
+        }
+      }
+    }
+    
+    .grid-item-wrapper {
+      .grid-item {
+        span {
+          color: #8FB6CC;
+
+          .column-indicator {
+            background-color: #8FB6CC;
+          }
+        }
+        
+        h3 {
+          color: #81A4B8;
+        }
+      }
+    }
+  }
+}
+
+.collection-optima-template {
+  .text-columns-wrapper {
+    .text-columns-container{
+      h3 {
+      	color: #FD672D;
+      }
+      
+      span {
+      	color: #FEC3A7;
+        
+        .column-indicator {
+          background-color: #FEC3A7;
+        }
+      }
+    }
+  }
+  
+  .text-grid-wrapper {
+    .text-grid-container {
+      .grid-header {
+        h2 {
+          width: 25%;
+          border-bottom: 1px solid #FEC3A7;
+          
+          &.active {
+          	color: #FD672D;
+            border-bottom: 2px solid #FD672D;
+            padding-bottom: 14px;
+          }
+        }
+      }
+    }
+    
+    .grid-item-wrapper {
+      .grid-item {
+        span {
+          color: #FEC3A7;
+
+          .column-indicator {
+            background-color: #FEC3A7;
+          }
+        }
+        
+        h3 {
+          color: #FD672D;
+        }
+      }
+    }
+  }
+}
+
+.collection-nature-template {
+  .text-columns-wrapper {
+    .text-columns-container{
+      h3 {
+      	color: #AAB06E;
+      }
+      
+      span {
+      	color: #C8CBA3;
+        
+        .column-indicator {
+          background-color: #C8CBA3;
+        }
+      }
+    }
+  }
+  
+  .text-grid-wrapper {
+    .text-grid-container {
+      .grid-header {
+        h2 {
+          width: 25%;
+          border-bottom: 1px solid #C5C19F;
+          
+          &.active {
+          	color: #AAB06E;
+            border-bottom: 2px solid #AAB06E;
+            padding-bottom: 14px;
+          }
+        }
+      }
+    }
+    
+    .grid-item-wrapper {
+      .grid-item {
+        span {
+          color: #C8CBA3;
+
+          .column-indicator {
+            background-color: #C8CBA3;
+          }
+        }
+        
+        h3 {
+          color: #AAB06E;
+        }
+      }
+    }
+  }
+}
+
+/********************************
+ * Feature.02.01 - Hero Section *
+ ********************************/
+#body-content {
+  margin: 0 !important;
+}
+
+.collection-hero-wrapper {
+  position: relative;
+  padding-bottom: 150px;
+  
+  .collection-hero-bg {
+    img {
+      position: absolute;
+      width: 100%;
+      height: 488px;
+      object-fit: cover;
+    }
+  }
+  
+  .collection-hero-content {
+    position: relative;
+    padding-top: 150px;
+    
+    .section-header {
+      position: absolute;
+      left: 50%;
+      width: 100%;
+      text-align: center;
+      transform: translateX(-50%);
+      z-index: 1;
+      
+      p {
+      	font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 14px;
+        color: #FFFFFF;
+        line-height: 17px;
+        letter-spacing: 7px;
+        text-transform: uppercase;
+        margin: 0 0 10px 0;
+      }
+      
+      h2 {
+      	font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 78px;
+        color: #FFFFFF;
+        line-height: 96px;
+        letter-spacing: 0.03642px;
+      }
+    }
+    
+    .collection-hero-banner {
+      max-width: 671px;
+      margin: 0 auto;
+      margin-top: 90px;
+    }
+    
+    .collection-hero-logo {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translate(-50%);
+      
+      img {
+      	width: 80px;
+        height: 80px;
+      }
+    }
+  }
+}
+
+@include media-query($medium) {
+  .collection-hero-wrapper {
+    padding-bottom: 110px;
+    
+    .collection-hero-bg {
+      img {
+        height: 420px;
+      }
+    }
+
+    .collection-hero-content {
+      padding-top: 110px;
+
+      .section-header {
+        h2 {
+          font-size: 50px;
+          line-height: 50px;
+        }
+      }
+
+      .collection-hero-banner {
+        margin-top: 60px;
+      }
+      
+      .collection-hero-logo {
+        bottom: -32px;
+
+        img {
+          width: 64px;
+          height: 64px;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .collection-hero-wrapper {
+    padding-bottom: 80px;
+
+    .collection-hero-bg {
+      img {
+        height: 60%;
+      }
+    }
+
+    .collection-hero-content {
+      padding-top: 80px;
+
+      .section-header {
+        p {
+          font-size: 13px;
+          line-height: 13px;
+        }
+
+        h2 {
+          font-size: 35px;
+          line-height: 35px;
+        }
+      }
+
+      .collection-hero-banner {
+        max-width: 100%;
+        margin-top: 47px;
+        padding: 0 15px;
+      }
+      
+      .collection-hero-logo {
+        bottom: -25px;
+
+        img {
+          width: 50px;
+          height: 50px;
+        }
+      }
+    }
+  }
+}
+
+/****************************************
+ * Feature.02.02 - Text Columns Section *
+ ****************************************/
+.text-columns-wrapper {
+  padding-bottom: 150px;
+  
+  .section-header {
+    float: left;
+    max-width: 335px;
+    
+    h2 {
+      font-family: "4Reasons";
+      font-weight: 500;
+      font-size: 45px;
+      color: #262728;
+      line-height: 50px;
+    }
+  }
+  
+  .text-columns-container {
+  	margin-left: 335px;
+    padding: 0 30px 0 80px;
+    
+    .grid-column {
+      float: left;
+      width: 25%;
+      padding-left: 30px;
+      
+      span {
+        font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 24px;
+        
+        .column-indicator {
+          display: inline-block;
+          width: 20px;
+          height: 1px;
+          margin-right: 15px;
+          margin-bottom: 5px;
+        }
+      }
+      
+      h3 {
+      	font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 24px;
+        margin-top: 10px;
+      }
+      
+      &:first-child {
+      	padding-left: 0;
+        padding-right: 5px;
+      }
+    }
+    
+    .text-wrap {
+      max-width: 422px;
+      padding-top: 30px;
+      clear: both;
+      
+      p {
+      	font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 16px;
+        color: #262728;
+        line-height: 24px;
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@include media-query($medium) {
+  .text-columns-wrapper {
+    padding-bottom: 110px;
+    
+    .section-header {
+      max-width: 250px;
+
+      h2 {
+        font-size: 35px;
+        line-height: 40px;
+      }
+    }
+
+    .text-columns-container {
+      margin-left: 250px;
+      padding: 0 0 0 50px;
+
+      .grid-column {
+        padding-left: 20px;
+
+        span {
+          font-size: 14px;
+          line-height: 18px;
+        }
+
+        h3 {
+          font-size: 14px;
+          line-height: 18px;
+        }
+      }
+
+      .text-wrap {
+        max-width: 350px;
+
+        p {
+          font-size: 14px;
+          line-height: 18px;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($interm) {
+  .text-columns-wrapper {
+    .section-header {
+      max-width: 180px;
+
+      h2 {
+        font-size: 25px;
+        line-height: 35px;
+      }
+    }
+
+    .text-columns-container {
+      margin-left: 180px;
+      padding: 0 0 0 30px;
+
+      .grid-column {
+        padding-left: 20px;
+      }
+
+      .text-wrap {
+        max-width: 320px;
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .text-columns-wrapper {
+    padding-bottom: 80px;
+    
+    .section-header {
+      float: none;
+      max-width: 100%;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .text-columns-container {
+      margin-left: 0;
+      padding: 0;
+
+      .grid-column {
+        width: 50%;
+        padding-left: 15px;
+        margin-bottom: 25px;
+        height: 50px;
+        
+        h3 {
+          margin-top: 5px;
+        }
+
+        &:first-child {
+          padding-left: 15px;
+        }
+      }
+
+      .text-wrap {
+        max-width: 100%;
+        padding-top: 30px;
+      }
+    }
+  }
+}
+
+/*********************************
+ * Feature.02.03 - Image Section *
+ *********************************/
+.collection-image-wrapper {
+  padding-bottom: 150px;
+  /*
+  overflow: hidden;
+  */
+  
+  .image-wrap {
+    float: left;
+  	width: 56.5%;
+  }
+  
+  .text-wrap {
+  	float: left;
+    width: 43.5%;
+    padding-left: 80px;
+    
+    h2 {
+      font-family: "4Reasons";
+      font-weight: 500;
+      font-size: 45px;
+      color: #262728;
+      line-height: 50px;
+      margin-bottom: 40px;
+    }
+    
+    p {
+      font-family: "4Reasons";
+      font-weight: normal;
+      font-size: 16px;
+      color: #262728;
+      line-height: 24px;
+      margin-bottom: 45px;
+    }
+    
+    button {
+      position: relative;
+      display: inline-block;
+      font-family: "4Reasons";
+      font-weight: 500;
+      font-size: 14px;
+      color: #FFFFFF;
+      line-height: 21px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background-color: #FD672D;
+      padding: 14px 135px 14px 20px;
+      border: none;
+      svg {
+        position: absolute;
+        top: 18px;
+        right: 20px;
+        width: 32px;
+        height: 12px;
+      }
+    }
+  }
+}
+
+@include media-query($medium) {
+  .collection-image-wrapper {
+    padding-bottom: 110px;
+
+    .text-wrap {
+      padding-left: 50px;
+
+      h2 {
+        font-size: 35px;
+        line-height: 40px;
+      }
+
+      a {
+        font-size: 13px;
+        line-height: 18px;
+        padding: 13px 110px 13px 20px;
+
+        svg {
+          top: 16px;
+          width: 27px;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .collection-image-wrapper {
+    padding-bottom: 80px;
+
+    .image-wrap {
+      float: none;
+      width: 100%;
+      margin-bottom: 80px;
+    }
+
+    .text-wrap {
+      float: none;
+      width: 100%;
+      padding-left: 0;
+
+      h2 {
+        font-size: 25px;
+        line-height: 35px;
+        margin-bottom: 30px;
+      }
+
+      p {
+        font-size: 14px;
+        line-height: 18px;
+        margin-bottom: 30px;
+      }
+
+      a {
+        font-size: 12px;
+        line-height: 12px;
+        padding: 13px 100px 13px 20px;
+
+        svg {
+          top: 13px;
+          width: 24px;
+        }
+      }
+    }
+  }
+}
+
+/*********************************
+ * Feature.02.04 - Video Section *
+ *********************************/
+.collection-video-wrapper {
+  padding-bottom: 150px;
+  overflow: hidden;
+  
+  .video-wrap {
+  	float: left;
+    width: 74%;
+  }
+  
+  .text-wrap {
+  	float: left;
+    width: 26%;
+    padding-left: 30px;
+    
+    h2 {
+      max-width: 300px;
+      font-family: "4Reasons";
+      font-weight: 500;
+      font-size: 45px;
+      color: #262728;
+      line-height: 50px;
+      margin-bottom: 45px;
+    }
+    
+    p {
+      font-family: "4Reasons";
+      font-weight: normal;
+      font-size: 16px;
+      color: #262728;
+      line-height: 24px;
+      margin-bottom: 0;
+    }
+  }
+}
+
+@include media-query($medium) {
+  .collection-video-wrapper {
+    padding-bottom: 110px;
+    
+    .video-wrap {
+      width: 56.5%;
+    }
+
+    .text-wrap {
+      width: 43.5%;
+      padding-left: 50px;
+
+      h2 {
+        font-size: 35px;
+        line-height: 40px;
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .collection-video-wrapper {
+    padding-bottom: 80px;
+
+    .video-wrap {
+      float: none;
+      width: 100%;
+      margin-bottom: 80px;
+    }
+
+    .text-wrap {
+      float: none;
+      width: 100%;
+      padding-left: 0;
+
+      h2 {
+        font-size: 25px;
+        line-height: 35px;
+        margin-bottom: 30px;
+      }
+
+      p {
+        font-size: 14px;
+        line-height: 18px;
+      }
+    }
+  }
+}
+
+/********************************
+ * Feature.02.05 - Grid Section *
+ ********************************/
+.text-grid-wrapper {
+  padding: 0 15px 45px 15px;
+  
+  .section-header {
+    h2 {
+      font-family: "4Reasons";
+      font-weight: 500;
+      font-size: 58px;
+      color: #262728;
+      line-height: 72px;
+      letter-spacing: 0.03642px;
+      margin-bottom: 60px;
+    }
+  }
+  
+  .text-grid-container {
+    .grid-header {
+      margin-bottom: 60px;
+      overflow: hidden;
+      
+      h2 {
+        float: left;
+      	font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 25px;
+        color: #262728;
+        line-height: 28px;
+        letter-spacing: 0.03642px;
+        padding-bottom: 15px;
+      }
+    }
+    
+    .grid-content {
+      display: none;
+      overflow: hidden;
+      
+      .text-wrap {
+        float: left;
+        max-width: 406px;
+        
+        p {
+          font-family: "4Reasons";
+          font-weight: normal;
+          font-size: 16px;
+          color: #262728;
+          line-height: 24px;
+        }
+      }
+      
+      &.active {
+      	display: block;
+      }
+    }
+  }
+  
+  .grid-item-wrapper {
+    max-width: 830px;
+  	margin-left: 406px;
+    padding-left: 80px;
+    overflow: hidden;
+    
+    .grid-item {
+      float: left;
+      max-width: 201px;
+      width: 100%;
+      margin-right: 60px;
+      margin-bottom: 35px;
+      
+      span {
+        font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 24px;
+        
+        .column-indicator {
+          display: inline-block;
+          width: 20px;
+          height: 1px;
+          margin-right: 15px;
+          margin-bottom: 5px;
+        }
+      }
+      
+      h3 {
+      	font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 24px;
+        margin-top: 10px;
+      }
+    }
+  }
+}
+
+@include media-query($medium) {
+  .text-grid-wrapper {
+    .section-header {
+      h2 {
+        font-size: 40px;
+        line-height: 40px;
+        margin-bottom: 45px;
+      }
+    }
+
+    .text-grid-container {
+      .grid-header {
+        margin-bottom: 45px;
+
+        h2 {
+          font-size: 20px;
+          line-height: 20px;
+        }
+      }
+
+      .grid-content {
+        .text-wrap {
+          max-width: 260px;
+
+          p {
+            font-size: 14px;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+
+    .grid-item-wrapper {
+      max-width: 460px;
+      margin-left: 260px;
+      padding-left: 40px;
+
+      .grid-item {
+        max-width: 180px;
+        margin-right: 30px;
+        margin-bottom: 25px;
+
+        span {
+          font-size: 14px;
+          line-height: 18px;
+        }
+
+        h3 {
+          font-size: 14px;
+          line-height: 18px;
+        }
+        
+        &:nth-child(2) {
+          margin-right: 0;
+        }
+        
+        &:nth-child(4) {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small) {
+  .text-grid-wrapper {
+    padding: 0 0 55px 0;
+
+    .section-header {
+      h2 {
+        font-size: 35px;
+        line-height: 35px;
+      }
+    }
+
+    .text-grid-container {
+      .grid-content {
+        .text-wrap {
+          float: none;
+          max-width: 100%;
+        }
+      }
+    }
+
+    .grid-item-wrapper {
+      max-width: 100%;
+      margin-left: 0;
+      padding-left: 0;
+
+      .grid-item {
+        max-width: 100%;
+        width: 50%;
+        margin-right: 0;
+        margin-bottom: 25px;
+        padding-left: 20px;
+      }
+    }
+  }
+}
+
+/***********************************
+ * Feature.02.06 - Product Section *
+ ***********************************/
+.collection-products-grid {
+  padding-bottom: 110px;
+  
+  .product-card-grid-wrapper{
+  	padding: 0 15px;
+    
+    .product-logo {
+      position: absolute;
+      top: 10px;
+      left: 25px;
+      width: 65px;
+      height: 65px;
+      z-index: 1;
+    }
+    
+    .card-header {
+      .card-image {
+      	background-color: #FFFFFF;
+        
+        img {
+          padding: 45px 65px;
+        }
+      }
+    }
+    
+    .card-body {
+      padding-bottom: 15px;
+      
+      .product-name {
+      	font-family: "4Reasons";
+        color: #262728;
+        line-height: 24px;
+      }
+      
+      .price-single {
+      	font-family: "4Reasons";
+        color: #262728;
+        line-height: 24px;
+        opacity: 0.4;
+      }
+    }
+  }
+}
+
+@include media-query($medium){
+  .collection-products-grid {
+    padding-bottom: 65px;
+
+    .product-card-grid-wrapper{
+      .product-logo {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .card-header {
+        .card-image {
+          img {
+            padding: 25px 30px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small){
+  .collection-products-grid {
+    padding-bottom: 35px;
+
+    .product-card-grid-wrapper{
+      padding: 0;
+      
+      .product-logo {
+        width: 35px;
+        height: 35px;
+      }
+
+      .card-body {
+        .product-name {
+          font-size: 14px;
+    	  line-height: 18px;
+        }
+
+        .price-single {
+          font-size: 14px;
+    	  line-height: 18px;
+        }
+      }
+    }
+  }
+}
+
+/***********************************
+ * Feature.02.07 - Gallery Section *
+ ***********************************/
+.collection-gallery-wrapper {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  background-color: #C2A282;
+  -webkit-justify-content: space-between;
+  -ms-justify-content: space-between;
+  justify-content: space-between;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  -o-align-items: center;
+  align-items: center;
+  overflow: hidden;
+  
+  .gallery-container {
+  	float: left;
+    max-width: 550px;
+    width: 50%;
+    padding-left: 65px;
+    
+    .section-header {
+      margin-bottom: 65px;
+      
+      h2 {
+      	font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 45px;
+        color: #FFFFFF;
+        line-height: 50px;
+      }
+    }
+    
+    .gallery-column-wrapper {
+      overflow: hidden;
+      
+      .gallery-column {
+        float: left;
+      	width: 50%;
+        margin-bottom: 40px;
+        
+        span {
+          font-family: "4Reasons";
+          font-weight: normal;
+          font-size: 16px;
+          color: #FFFFFF;
+          line-height: 24px;
+          
+          .column-indicator {
+          	display: inline-block;
+            width: 20px;
+            height: 1px;
+            background-color: #FFFFFF;
+            margin-right: 15px;
+            margin-bottom: 5px;
+          }
+        }
+        
+        h3 {
+          font-family: "4Reasons";
+          font-weight: normal;
+          font-size: 16px;
+          color: #FFFFFF;
+          line-height: 24px;
+          margin-top: 10px;
+        }
+        
+        &:nth-child(3) {
+          margin-bottom: 0;
+        }
+
+        &:nth-child(4) {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  
+  .gallery-bg {
+  	float: left;
+    width: 50%;
+    -webkit-flex: 0 1 50%;
+    -moz-flex: 0 1 50%;
+    -ms-flex: 0 1 50%;
+    flex: 0 1 50%;
+  }
+}
+
+@include media-query($large){
+  .collection-gallery-wrapper {
+    .gallery-container {
+      margin: 0 auto;
+      padding-left: 0;
+    }
+  }
+}
+
+@include media-query($medium){
+  .collection-gallery-wrapper {
+    .gallery-container {
+      max-width: 500px;
+      padding-left: 65px;
+
+      .section-header {
+        margin-bottom: 45px;
+
+        h2 {
+          font-size: 35px;
+          line-height: 40px;
+        }
+      }
+
+      .gallery-column-wrapper {
+        .gallery-column {
+          margin-bottom: 25px;
+
+          span {
+            font-size: 14px;
+            line-height: 18px;
+          }
+
+          h3 {
+            font-size: 14px;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+    
+    .gallery-bg {
+      img {
+      	height: 410px;
+      }
+    }
+  }
+}
+
+@include media-query($interm){
+  .collection-gallery-wrapper {
+    .gallery-container {
+      max-width: 460px;
+      padding-left: 30px;
+
+      .section-header {
+        margin-bottom: 30px;
+
+        h2 {
+          font-size: 25px;
+          line-height: 30px;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small){
+  .collection-gallery-wrapper {
+    display: block;
+    
+    .gallery-container {
+      float: none;
+      max-width: 100%;
+      width: 100%;
+      padding: 80px 15px;
+      
+      .gallery-column-wrapper {
+        .gallery-column {
+          padding-left: 20px;
+        }
+      }
+    }
+
+    .gallery-bg {
+      float: none;
+      width: 100%;
+      flex: none;
+      
+      img {
+      	height: auto;
+      }
+    }
+  }
+}
+
+/*********************************
+ * Feature.02.08 - Slide Section *
+ *********************************/
+.slide-wrapper {
+  padding: 150px 0;
+  
+  .slick-prev,
+  .slick-next {
+  	position: absolute;
+    display: block;
+    width: 33px;
+    height: 33px;
+    font-size: 0px;
+    line-height: 0px;
+    transform: translate(0, -50%);
+  }
+  
+  .slick-prev {
+    left: 10%;
+    top: 60%;
+  	background:url({{ 'icon-left-arrow.svg' | asset_url }});
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #FFFFFF;
+    border-radius: 50%;
+    padding: 33px;
+    z-index: 1;
+  }
+  
+  .slick-next {
+    right: 10%;
+    top: 60%;
+  	background:url({{ 'icon-right-arrow.svg' | asset_url }});
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #FFFFFF;
+    border-radius: 50%;
+    padding: 33px;
+    z-index: 1;
+  }
+}
+
+#section-product-fixed-center {
+  .slide-wrapper {
+    .slick-prev {
+      left: 3%;
+      top: 50%;
+      background:url({{ 'icon-left-arrow.svg' | asset_url }});
+      background-position: center;
+      background-repeat: no-repeat;      
+    }
+
+    .slick-next {
+      right: 3%;
+      top: 50%;
+      background:url({{ 'icon-right-arrow.svg' | asset_url }});
+      background-position: center;
+      background-repeat: no-repeat;       
+    }
+  }
+}
+
+@include media-query($medium){
+  .slide-wrapper {
+    padding: 110px 0;
+
+    .slick-prev,
+    .slick-next {
+      width: 27px;
+      height: 27px;
+    }
+
+    .slick-prev {
+      padding: 27px;
+    }
+
+    .slick-next {
+      padding: 27px;
+    }
+  }
+}
+
+@include media-query($small){
+  .slide-wrapper {
+    padding: 80px 0;
+
+    .slick-prev,
+    .slick-next {
+      width: 24px;
+      height: 24px;
+    }
+
+    .slick-prev {
+      padding: 24px;
+    }
+
+    .slick-next {
+      padding: 24px;
+    }
+  }
+}
+
+/**************************************
+ * Feature.02.09 - Default Collection *
+ **************************************/
+
+.templateCollection {
+  .collection-template {
+  	padding-top: 140px;
+  }
+  
+  .collection_title {
+  	font-family: "4Reasons";
+    font-weight: 500;
+    font-size: 58px;
+    color: #262728;
+    line-height: 72px;
+    letter-spacing: 0.03642px;
+    margin-bottom: 60px;
+    padding: 0 15px;
+  }
+  
+  .product--grid-container {
+  	margin-left: 0;
+    margin-right: 0;
+    
+    .sidebar-title {
+      font-family: "4Reasons";
+      font-weight: 500;
+      font-size: 20px;
+      color: #262728;
+      line-height: 22px;
+      letter-spacing: 0.03642px;
+      border-bottom: 1px solid #E0DBD7;
+      padding-bottom: 25px;
+    }
+    
+    .sbf-title {
+      padding: 20px 0;
+      border: none;
+      margin-bottom: 0 !important;
+      
+      .filter-block-title {
+      	font-family: "4Reasons";
+        font-weight: normal;
+        font-size: 20px;
+        color: #262728;
+        line-height: 22px;
+        letter-spacing: 0.03642px;
+      }
+      
+      &:before {
+      	display: none;
+      }
+      
+      &:after {
+      	display: none;
+      }
+      
+      svg {
+      	position: absolute;
+        top: 25px;
+        right: 0;
+        width: 12px;
+        fill: #A69C93;
+      }
+      
+      .clear-filter {
+      	position: absolute;
+        right: 25px;
+        top: 20px;
+        font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 16px;
+        color: #A69C93;
+        line-height: 18px;
+        letter-spacing: 0.03642px;
+        padding-right: 19px;
+        
+        svg {
+          top: 5px;
+          width: 9px;
+        }
+      }
+    }
+    
+    .sb-filter {
+      border-bottom: 1px solid #E0DBD7;
+      
+      .advanced-filters {
+      	display: none;
+        padding-bottom: 20px;
+        
+        a {
+          font-family: "4Reasons";
+          font-weight: normal;
+          font-size: 16px;
+          color: #262728;
+          line-height: 20px;
+          -webkit-padding-start: 35px !important;
+          -moz-padding-start: 35px !important;
+    	  padding-start: 35px !important;
+          
+          &:before {
+            top: calc(50% - 10px) !important;
+          	width: 20px !important;
+            height: 20px !important;
+            border: 1px solid #CBC3BC !important;
+          }
+          
+          &:after {
+            top: calc(50% - 10px) !important;
+          	width: 20px !important;
+            height: 20px !important;
+            color: #FFFFFF !important;
+            line-height: 22px !important;
+            text-align: center;
+            background: #CBC3BC !important;
+            border: none !important
+          }
+        }
+      }
+      
+      &.active {
+        .advanced-filters {
+          display: block !important;
+        }
+        
+        svg {
+          transform: rotate(90deg);
+        }
+      }
+    }
+    
+    .product--grid-wrapper {
+      padding: 0;
+      
+      .cata-toolbar {
+      	padding: 0 15px;
+        margin-bottom: 25px;
+      }
+      
+      .group-toolbar {
+        float: right;
+        
+        .sort-by {
+          -webkit-margin-end: 0;
+          -moz-margin-end: 0;
+          margin-end: 0;
+          
+          .sort-by-inner {
+          	border: none;
+            
+            label {
+              font-family: "4Reasons";
+              font-weight: normal;
+              font-size: 16px;
+              color: #262728;
+              line-height: 20px;
+            }
+            
+            #sort_by_box {
+              padding: 20px;
+              
+              a {
+              	font-family: "4Reasons";
+                font-weight: normal;
+                font-size: 16px;
+                color: #262728;
+                line-height: 18px;
+                letter-spacing: 0.03642px;
+              }
+              
+              li {
+                &:hover {
+                  a {
+                    color: #A69C93;
+                  }
+                }
+                
+                &.active {
+                  a {
+                  	color: #A69C93;
+                  }
+                }
+              }
+            }
+            
+            #sort_by_button {
+              a {
+              	font-family: "4Reasons";
+                font-weight: 500;
+                font-size: 16px;
+                color: #A69C93;
+                line-height: 18px;
+                letter-spacing: 0.03642px;
+              }
+            }
+          }
+        }
+        
+      	.show-number {
+          display: none !important;
+        }
+      }
+      
+      #col-main {
+      	margin-top: 10px;
+      }
+      
+      .pagination-holder {
+        padding-top: 55px;
+        padding-bottom: 165px;
+        
+        .pagination {
+          border-top: none;
+          padding-top: 0;
+          
+          li {
+            margin-bottom: 0;
+            
+            a {
+              width: 41px;
+              height: 41px;
+              font-family: "4Reasons";
+              font-weight: 500;
+              font-size: 16px;
+              color: #A69C93;
+              line-height: 41px;
+              text-align: center;
+              background: transparent;
+              border: 1px solid transparent;
+              box-sizing: border-box;
+              padding: 0;
+              
+              &:hover {
+                background: #F6F4F2;
+              	color: #A69C93;
+                border: 1px solid #CBC3BC;
+              }
+            }
+          }
+          
+          .active {
+            a {
+              color: #FFFFFF !important;
+              background: #CBC3BC !important;
+              border: 1px solid #CBC3BC !important;
+              box-sizing: border-box;
+              
+              &:hover {
+                color: #FFFFFF;
+              }
+            }
+          }
+          
+          .pagination-prev {
+            margin-right: 90px;
+            
+            a {
+              width: 100%;
+              font-family: "4Reasons";
+              font-weight: 500;
+              font-size: 16px;
+              color: #A69C93;
+              line-height: 41px;
+              background: transparent;
+              border: none;
+              
+              &:hover {
+                color: #A69C93;
+              	background: transparent;
+                border: none;
+              }
+              
+              &:before {
+              	display: none;
+              }
+            }
+          }
+          
+          .pagination-prev-disable {
+            a {
+              color: #E0DBD7;
+              pointer-events: none;
+            }
+          }
+          
+          .pagination-next {
+            margin-left: 90px;
+            
+            a {
+              width: 100%;
+              font-family: "4Reasons";
+              font-weight: 500;
+              font-size: 16px;
+              color: #A69C93;
+              line-height: 41px;
+              background: transparent;
+              border: none;
+              
+              &:hover {
+                color: #A69C93;
+              	background: transparent;
+                border: none;
+              }
+              
+              &:before {
+              	display: none;
+              }
+            }
+          }
+          
+          .pagination-next-disable {
+            a {
+              color: #E0DBD7;
+              pointer-events: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .mode-view-item {
+  	padding: 0 15px;
+    margin-bottom: 45px;
+  }
+  
+  .product-card {
+    .card-image {
+      background-color: #FFFFFF;
+
+      img {
+        padding: 45px 65px;
+      }
+    }
+    
+    .card-body {
+      .product-name {
+        a {
+          font-family: "4Reasons";
+          font-weight: normal;
+          font-size: 16px;
+          color: #262728;
+          line-height: 24px;
+          letter-spacing: 0.03642px;
+        }
+      }
+      
+      .card-price {
+        span {
+          font-family: "4Reasons";
+          font-weight: normal;
+          font-size: 16px;
+          color: #262728;
+          line-height: 24px;
+          letter-spacing: 0.03642px;
+          opacity: 0.4;
+        }
+      }
+    }
+  }
+}
+
+@include media-query($medium){
+  .templateCollection {
+    .collection-template {
+      padding-top: 125px;
+    }
+
+    .collection_title {
+      font-size: 40px;
+      line-height: 40px;
+      margin-bottom: 45px;
+    }
+
+    .product--grid-container {
+      .sidebar-title {
+        font-size: 18px;
+      }
+
+      .sbf-title {
+        .filter-block-title {
+          font-size: 18px;
+          line-height: 20px;
+        }
+
+        .clear-filter {
+          display: block;
+          font-size: 14px;
+        }
+      }
+
+      .sb-filter {
+        .advanced-filters {
+          a {
+            font-size: 14px;
+            line-height: 18px;
+            -webkit-padding-start: 30px !important;
+            -moz-padding-start: 30px !important;
+            padding-start: 30px !important;
+
+            &:before {
+              width: 18px !important;
+              height: 18px !important;
+            }
+
+            &:after {
+              width: 18px !important;
+              height: 18px !important;
+              line-height: 20px !important;
+            }
+          }
+        }
+      }
+
+      .product--grid-wrapper {
+        .group-toolbar {
+          .sort-by {
+            .sort-by-inner {
+              label {
+                font-size: 14px;
+                line-height: 18px;
+              }
+
+              #sort_by_box {
+                a {
+                  font-size: 14px;
+                }
+              }
+
+              #sort_by_button {
+                a {
+                  font-size: 14px;
+                }
+              }
+            }
+          }
+        }
+
+        .pagination-holder {
+          padding-top: 50px;
+          padding-bottom: 110px;
+
+          .pagination {
+            li {
+              a {
+                width: 38px;
+                height: 38px;
+                font-size: 14px;
+                line-height: 38px;
+              }
+            }
+
+            .pagination-prev {
+              margin-right: 75px;
+
+              a {
+                font-size: 14px;
+                line-height: 38px;
+              }
+            }
+
+            .pagination-next {
+              margin-left: 75px;
+
+              a {
+                font-size: 14px;
+                line-height: 38px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .mode-view-item {
+      margin-bottom: 30px;
+    }
+
+    .product-card {
+      .card-image {
+        img {
+          padding: 25px 30px;
+        }
+      }
+
+      .card-body {
+        .product-name {
+          a {
+            font-size: 14px;
+            line-height: 18px;
+          }
+        }
+
+        .card-price {
+          span {
+            font-size: 14px;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include media-query($interm){
+  .templateCollection {
+    .collection-template {
+      padding-top: 80px;
+    }
+
+    .collection_title {
+      text-align: center;
+      padding: 0;
+    }
+
+    .product--grid-container {
+      .sidebar-title {
+        display: none;
+      }
+      
+      .sidebar-title-mobile {
+        font-family: "4Reasons";
+        font-weight: 500;
+        font-size: 18px;
+        color: #262728;
+        line-height: 20px;
+        letter-spacing: 0.03642px;
+        border-bottom: 1px solid #E0DBD7;
+        padding: 25px 0;
+      }
+
+      .f-close {
+        top: 20px;
+        right: 22px;
+        width: 30px;
+        height: 30px;
+        
+        &:hover {
+          color: #000000;
+        }
+        
+        &:before {
+          font-size: 14px;
+          line-height: 30px;
+        }
+      }
+      
+      .mobile-layout-bar {
+        padding: 20px 0;
+        
+        .cata-toolbar {
+          padding: 0 !important;
+          
+          .filter-label {
+          	font-family: "4Reasons";
+            font-weight: 500;
+            font-size: 14px;
+            color: #262728;
+            line-height: 18px;
+            letter-spacing: 0.03642px;
+          }
+          
+          .select-sort {
+          	font-family: "4Reasons";
+            font-weight: 500;
+            font-size: 14px;
+            color: #262728;
+            line-height: 18px;
+            letter-spacing: 0.03642px;
+            
+            option {
+              font-family: "4Reasons";
+              font-weight: 500;
+              font-size: 14px;
+              color: #262728;
+              line-height: 18px;
+              letter-spacing: 0.03642px;
+              
+              &:checked {
+              	color: #A69C93;
+              }
+              
+              &:hover {
+              	color: #A69C93;
+              }
+            }
+          }
+          
+          .sort-by-inner {
+            &:after {
+              right: 15px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@include media-query($small){
+  .templateCollection {
+    .collection-template {
+      padding-top: 50px;
+    }
+
+    .collection_title {
+      font-size: 35px;
+      line-height: 35px;
+      margin-bottom: 30px;
+    }
+
+    .product--grid-container {
+      .sidebar-title-mobile {
+        font-size: 16px;
+        line-height: 18px;
+      }
+
+      .f-close {
+        width: 27px;
+        height: 27px;
+        
+        &:before {
+          font-size: 12px;
+          line-height: 27px;
+        }
+      }
+
+      .sbf-title {
+        .filter-block-title {
+          font-size: 16px;
+          line-height: 18px;
+        }
+
+        .clear-filter {
+          font-size: 12px;
+        }
+      }
+
+      .sb-filter {
+        .advanced-filters {
+          a {
+            font-size: 12px;
+            line-height: 16px;
+            -webkit-padding-start: 27px !important;
+            -moz-padding-start: 27px !important;
+            padding-start: 27px !important;
+
+            &:before {
+              width: 16px !important;
+              height: 16px !important;
+            }
+
+            &:after {
+              width: 16px !important;
+              height: 16px !important;
+              line-height: 18px !important;
+            }
+          }
+        }
+      }
+
+      .product--grid-wrapper {
+        .pagination-holder {
+          padding-top: 30px;
+          padding-bottom: 80px;
+
+          .pagination {
+            li {
+              a {
+                width: 35px;
+                height: 35px;
+                font-size: 12px;
+                line-height: 35px;
+              }
+            }
+
+            .pagination-prev {
+              margin-right: 50px;
+
+              a {
+                font-size: 12px;
+                line-height: 35px;
+              }
+            }
+
+            .pagination-next {
+              margin-left: 50px;
+
+              a {
+                font-size: 12px;
+                line-height: 35px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .mode-view-item {
+      margin-bottom: 20px;
+      
+      &:nth-child(2n + 1) {
+      	padding-left: 0;
+      }
+      
+      &:nth-child(2n) {
+      	padding-right: 0;
+      }
+    }
+
+    .product-card {
+      .card-image {
+        img {
+          padding: 25px 30px;
+        }
+      }
+
+      .card-body {
+        .product-name {
+          a {
+            font-size: 14px;
+            line-height: 18px;
+          }
+        }
+
+        .card-price {
+          span {
+            font-size: 14px;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/***********************************
+ * Feature.02.10 - Collection List *
+ ***********************************/
+.sub-collection-wrapper {
+  .section-header {
+  	padding: 0 15px;
+    margin-bottom: 100px;
+    
+    h2 {
+      font-family: "4Reasons";
+      font-weight: 500;
+      font-size: 58px;
+      color: #262728;
+      line-height: 72px;
+      letter-spacing: 0.03642px;
+    }
+  }
+  
+  .sub-collection-list {
+  	padding: 0 15px;
+    margin-bottom: 45px;
+    
+    h3 {
+      float: left;
+      width: 200px;
+      font-family: "4Reasons";
+      font-weight: normal;
+      font-size: 25px;
+      color: #A69C93;
+      line-height: 28px;
+      letter-spacing: 0.03642px;
+    }
+    
+    .collection-list-wrapper {
+      margin-left: 200px;
+      padding-left: 110px;
+      
+      .list-item {
+        position: relative;
+        display: inline-block;
+        margin-right: 40px;
+        margin-bottom: 45px;
+        padding-right: 125px;
+        
+        a {
+          font-family: "4Reasons";
+          font-weight: 500;
+          font-size: 25px;
+          color: #CBC3BC;
+          line-height: 30px;
+          letter-spacing: 0.03642px;
+          
+          &:hover {
+          	color: #262728;
+          }
+        }
+        
+        .list-indicator {
+          position: absolute;
+          right: 0;
+          top: 15px;
+          width: 85px;
+          height: 2px;
+          background-color: #CBC3BC;
+        }
+        
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}
+
+.product-grid-title {
+  font-family: "4Reasons";
+  font-weight: normal;
+  font-size: 25px;
+  color: #A69C93;
+  line-height: 28px;
+  letter-spacing: 0.03642px;
+  padding: 0 15px;
+}
+
+.collection_sub_title {
+  font-family: "4Reasons";
+  font-weight: 500;
+  font-size: 58px;
+  line-height: 72px;
+  letter-spacing: 0.03642px;
+  color: #262728;
+  margin-bottom: 100px;
+  padding: 0 15px;
+  
+  span {
+    font-size: 25px;
+    color: #A69C93;
+    line-height: 28px;
+  }
+}
+
+.back-to-deal {
+  float: left;
+  
+  
+  a {
+    position: relative;
+    font-family: "4Reasons";
+    font-weight: 500;
+    font-size: 14px;
+    color: #AAB06E;
+    line-height: 28px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding-left: 72px;
+    
+    svg {
+      position: absolute;
+      left: 0;
+      top: 3px;
+      width: 32px;
+      height: 12px;
+      
+      path {
+      	fill: #AAB06E;
+      }
+    }
+  }
+}
+
+.back-to-deal-mobile {
+  display: none;
+}
+
+.instafeed-title {
+  font-family: '4Reasons' !important;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 17px;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  color: #8B8041;
+  font-size: 14px;
+  margin-top: 10px;  
+}
+
+.instafeed-subtitle {
+  font-family: '4Reasons';
+  font-style: normal;
+  font-weight: 500;
+  line-height: 110%;
+  letter-spacing: 0.0364238px;
+  color: #262728;
+  font-size: 58px;
+  margin-top: 30px;  
+}
+
+div.home-instagram {
+  background: #ECE2D5;
+  padding-left: 80px;
+  padding-top: 100px;
+  padding-bottom: 130px;
+  
+  div.instafeed-link a {
+    background: transparent;
+    border: none;
+    font-family: 4Reasons;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #8B8041;
+    font-size: 14px;
+    margin-top: 100px;    
+  }  
+
+  .owl-nav>button span {
+    color: #8B8041;
+  }
+}
+
+@include media-query($medium) {
+  div.home-instagram {
+    padding-left: 60px;
+    padding-top: 60px;
+    padding-bottom: 60px;    
+  }
+  
+  .instafeed-title {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
+  .instafeed-subtitle {
+    font-size: 58px;
+    margin-top: 30px;
+  }  
+  
+  div.instafeed-link a {
+    font-size: 14px;
+    margin-top: 100px;
+  }
+}
+
+@include media-query($small) {
+  div.home-instagram {
+    padding-left: 40px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  
+  .instafeed-title {
+    font-size: 12px;
+    margin-top: 10px;
+  }
+  
+  .instafeed-subtitle {
+    font-size: 32px;
+    margin-top: 10px;
+  }
+  
+  div.instafeed-link a {
+    font-size: 12px;
+    padding: 0px;
+    margin-top: 40px;
+  }
+}
+
+div.home-image-gallery-brown {
+  position: absolute !important; top: 0px; right: 0px; bottom: 0px; width: 50%; background: #C2A282;
+}
+
+@include media-query($medium) {
+  div.home-image-gallery-brown {
+    display: inherit;
+  }
+}
+
+@include media-query($interm) {
+  div.home-image-gallery-brown {
+    display: none;
+  }
+}
+
+div.homepage-video {
+  div.video-area {
+    display: flex;
+    cursor: pointer;
+  }
+  img.img-play-button {
+    width: 110px; 
+    margin-left: calc(50% - 55px); 
+    margin-top: 240px; 
+    position: absolute;
+  }  
+}
+
+div#video-play-button {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+div#video-play-icon {
+  background-repeat: no-repeat;
+  background-position: center center;  
+}
+
+div.collection-video-wrapper {
+  div.video-area {
+    display: flex;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  img.img-play-button {
+    width: 110px; 
+    margin-left: calc(50% - 55px); 
+    margin-top: 200px; 
+    position: absolute;
+  }
+}
+
+#product-detail_tabs {
+  float: left; width: 35%;
+}
+
+.product-detail_steps {
+  float: right; width: 35%;
+}
+
+.page-product .product-detail_tab-content .nav-ver-2>li>a span {
+  font-family: '4Reasons';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px !important;
+  line-height: 150%;
+  letter-spacing: 0.0364238px;
+  text-transform: none;
+}
+
+.product-detail-steps {
+  margin-bottom: 20px;
+  .heading {
+    font-family: '4Reasons';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 110%;
+    letter-spacing: 0.0364238px;
+    color: #262728;
+    margin-top: 10px;
+  }
+  .title, .text {
+    font-family: '4Reasons';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 150%;
+  }
+  
+  .title {
+    margin-top: 30px;
+  }
+  
+  .text {
+    margin-top: 10px;
+  }
+}
+
+.tab-content {
+  font-family: '4Reasons';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 150%;
+  color: #262728;
+}
+
+.product-info-type {
+  font-family: '4Reasons';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  padding-top: 10px;
+}
+
+.product-info-name {
+  font-family: '4Reasons';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 110%;
+  letter-spacing: 0.0364238px;
+  color: #262728;
+}
+
+.product-info-short-description {
+  font-family: '4Reasons';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 110%;
+  letter-spacing: 0.0364238px;
+  color: #262728;
+  padding-top: 20px;
+}
+
+.product-cart_btn {
+  .action-button {
+    .add-to-cart {
+      height: 50px;
+      width: 218px;
+      .btn-label {
+        font-family: '4Reasons';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 150%;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+    }
+  }
+}
+
+.product-detail-price {
+  font-family: 4Reasons;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 25px;
+  line-height: 110%;
+  text-align: left;
+  letter-spacing: 0.0364238px;
+  color: #262728;
+  padding-bottom: 15px;
+}
+
+
+#product-detail_tabs {
+  float: left;
+  width: 35%;
+}
+
+.learn-more-text {
+  font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 30px; line-height: 110%; letter-spacing: 0.0364238px; color: #262728; margin-bottom: 50px; margin-top: 100px;
+}
+
+.learn-more-title {
+  font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 20px; line-height: 150%; margin-bottom: 10px;
+}
+
+.learn-more-subtitle {
+  font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 16px; line-height: 150%; color: #262728; margin-bottom: 25px;
+}
+
+.more-photo-area {
+  padding-top: 150px;
+}
+
+.more-photo-title {
+  font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 14px; line-height: 17px; letter-spacing: 7px; text-transform: uppercase; padding: 20px;
+}
+
+.more-photo-subtitle {
+  font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 58px; line-height: 110%; letter-spacing: 0.0364238px; color: #262728; padding: 25px;
+}
+
+.slide-item-padding {
+  padding: 15px;
+}
+
+.sleek-title {
+  font-family: '4Reasons'; font-style: normal; font-weight: 500; font-size: 45px; line-height: 110%; color: #262728;
+}
+
+.sleek-description {
+  font-family: '4Reasons'; font-style: normal; font-weight: normal; font-size: 16px; line-height: 150%; color: #262728; margin-top: 50px; margin-bottom: 20px;
+}
+
+.sleek-text-area1 {
+  display: none;
+}
+
+.sleek-text-area2 {
+  display: block;
+}
+
+@include media-query($medium) {
+  .more-photo-subtitle {
+    font-size: 40px;
+  }
+}
+
+@include media-query($interm) {
+  #product-detail_tabs {
+    width: 45%;
+  }
+  .product-detail_steps {
+    width: 45%;
+  }
+  .slide-item-padding {
+    padding: 7px;
+  }
+  
+  .more-photo-subtitle {
+    font-size: 30px;
+  }
+  .slide-wrapper {
+    padding: 30px 0px 50px 0px !important;
+  }
+  .more-photo-area {
+    padding-top: 100px;
+  }
+  .sleek-title {
+    font-size: 30px;
+  }
+  
+  .sleek-text-area1 {
+    display: block;
+  }
+
+  .sleek-text-area2 {
+    display: none;
+  }
+}
+
+@include media-query($small) { 
+  #product-detail_tabs {
+    width: 95%;
+  }
+  .product-detail_steps {
+    width: 95%;
+  }  
+  .learn-more-text {
+    font-size: 24px;
+  }
+  .more-photo-subtitle {
+    font-size: 24px;
+  }
+  .more-photo-area {
+    padding-top: 50px;
+  }  
+  .sleek-title {
+    font-size: 24px;
+  }  
+}
+
+.mobile-layout-bar {
+  background: #DFCEB8;
+}
+
+#product-image {
+  margin-top: -120px;
+  height: 550px;
+}
+#product-image .product-image-inner.fixed-content{
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  .image-zoom-parent .image--style{
+    padding-top: 0 !important;
+  }
+}
+#product-image .slider-main-image img.custom-relative{
+  transform: none !important;
+  position: relative;
+}
+/*
+.cart-item-image {
+  .image--style {
+    height: inherit !important;
+  }  
+}
+*/
+
+.image-zoom-parent {
+  .image--style {
+    height: 550px;
+  }
+}
+
+@include media-query($small) {
+  .image--style {
+    height: inherit;
+  }
+}
+
+.cart-sb .cart-info .items-inner .cart-item-image a img {
+  object-fit: contain;
+}
+
+.iframe-color-quiz {
+  width: 70%; height: 570px; border:none; max-width: 100%; margin:0; margin-left: 15%;
+}
+
+@include media-query($medium) { 
+  .iframe-color-quiz {
+    width: 90%; height: 570px; margin-left: 5%;
+  }
+}
+
+@include media-query($interm) { 
+  .iframe-color-quiz {
+    width: 100%; height: 570px; margin-left: 0%;
+  }
+}
+
+@include media-query($small) { 
+  .iframe-color-quiz {
+    width: 100%; height: 500px; margin-left: 0%;
+  }
+}
+
+.page-product .product-detail_tab-content .nav-ver-2 .tab-content .tab-pane {
+  padding-left: 16px;
+}
+
+.card .btn-add-cart .cart-icon-text, .card .add-to-cart .cart-icon-text:after {
+  /* content: url('//cdn.shopify.com/s/files/1/0047/8209/6456/files/Union.png?v=1594220350'); */
+  content: "\2192";
+}
+
+.card .btn-add-cart .cart-icon-text, .card .add-to-cart .cart-icon-text {
+  font-family: '4Reasons';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 200%;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #AAB06E;
+  border-bottom: 1px solid #AAB06E;
+  padding-bottom: 3px;
+}
+
+@include media-query($medium){
+  .sub-collection-wrapper {
+    .section-header {
+      margin-bottom: 80px;
+
+      h2 {
+        font-size: 40px;
+        line-height: 40px;
+      }
+    }
+
+    .sub-collection-list {
+      margin-bottom: 30px;
+      
+      h3 {
+        width: 160px;
+        font-size: 20px;
+        line-height: 20px;
+      }
+
+      .collection-list-wrapper {
+        margin-left: 160px;
+        padding-left: 80px;
+
+        .list-item {
+          margin-right: 30px;
+          margin-bottom: 30px;
+          padding-right: 90px;
+
+          a {
+            font-size: 20px;
+            line-height: 20px;
+          }
+
+          .list-indicator {
+            top: 10px;
+            width: 60px;
+          }
+        }
+      }
+    }
+  }
+  
+  .product-grid-title {
+    font-size: 20px;
+    line-height: 20px;
+  }
+  
+  .collection_sub_title {
+    font-size: 40px;
+    line-height: 40px;
+    margin-bottom: 80px;
+
+    span {
+      font-size: 20px;
+      line-height: 20px;
+    }
+  }
+
+  .back-to-deal {
+    a {
+      font-size: 13px;
+      padding-left: 67px;
+
+      svg {
+        top: 3px;
+        width: 27px;
+      }
+    }
+  }
+}
+
+@include media-query($interm){
+  .sub-collection-wrapper {
+    .section-header {
+      margin-bottom: 50px;
+
+      h2 {
+        font-size: 35px;
+        line-height: 35px;
+        text-align: center;
+      }
+    }
+
+    .sub-collection-list {
+      h3 {
+        float: none;
+        width: 100%;
+        margin-bottom: 30px;
+      }
+
+      .collection-list-wrapper {
+        margin-left: 0;
+        padding-left: 0;
+
+        .list-item {
+          margin-right: 20px;
+          margin-bottom: 20px;
+          padding-right: 70px;
+
+          a {
+            font-size: 16px;
+            line-height: 18px;
+          }
+
+          .list-indicator {
+            top: 9px;
+            width: 50px;
+          }
+        }
+      }
+    }
+  }
+  
+  .product-grid-title {
+    margin-bottom: 30px;
+  }
+  
+  .back-to-deal {
+  	display: none;
+  }
+  
+  .back-to-deal-mobile {
+    display: block;
+    padding: 0 15px;
+    margin-bottom: 25px;
+    
+  	a {
+      position: relative;
+      font-family: "4Reasons";
+      font-weight: 500;
+      font-size: 13px;
+      color: #AAB06E;
+      line-height: 15px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding-left: 67px;
+
+      svg {
+        position: absolute;
+        left: 0;
+        top: 3px;
+        width: 27px;
+        height: 12px;
+
+        path {
+          fill: #AAB06E;
+        }
+      }
+    }
+  }
+  .image-zoom-parent .image--style {
+    padding-top: 0 !important;
+  }
+}
+
+@include media-query($small){
+  .sub-collection-wrapper {
+    .section-header {
+      padding: 0;
+    }
+
+    .sub-collection-list {
+      padding: 0;
+    }
+  }
+  
+  .product-grid-title {
+    padding: 0;
+  }
+  
+  .collection_sub_title {
+    font-size: 35px;
+    line-height: 35px;
+    margin-bottom: 40px;
+    padding: 0;
+
+    span {
+      font-size: 16px;
+      line-height: 18px;
+    }
+  }
+  
+  .back-to-deal-mobile {
+    padding: 0;
+    margin-bottom: 20px;
+    
+  	a {
+      font-size: 12px;
+      line-height: 12px;
+      padding-left: 64px;
+
+      svg {
+        top: 2px;
+        width: 24px;
+      }
+    }
+  }
+}
+
+#video-play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 110px;
+  height: 110px;
+  margin:-55px 0 0 -55px;
+  -webkit-animation:video-spin 8s linear infinite;
+  -moz-animation:video-spin 8s linear infinite;
+  animation:video-spin 8s linear infinite;
+  transform: inherit;
+}
+@-moz-keyframes video-spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes video-spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes video-spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }

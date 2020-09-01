@@ -1,0 +1,33 @@
+{%- if type == 'block' -%}{%- assign _s = block -%}{%- else -%}{%- assign _s = section -%}{%- endif -%}
+{%- if item_resp == blank -%}{%- assign item_resp = _s.settings.items_resp -%}{%- endif -%}
+
+{%- unless item_resp == blank -%}  
+  {%- assign _item_resp = item_resp | split: ',' -%}
+
+  {%- if _item_resp.size == 1 -%}
+    {%- include 'set-width-bootstrap', number: _item_resp[0] -%}
+    {%- assign _class_xs = _out | strip | prepend: 'col-' -%}
+    {%- if _out == '5' -%}{%- assign _class_xs = _class_xs | append: 'th' -%}{%- endif -%}
+    {%- capture items_resp -%}{{_class_xs}}{%- endcapture -%}
+
+  {%- else -%}
+    {%- case _item_resp.size -%}  
+      {%- when 2 -%}{%- assign ii = 1 -%}{%- assign arClass = 'col-md-, col-' -%}
+      {%- when 3 -%}{%- assign ii = 2 -%}{%- assign arClass = 'col-lg-, col-md-, col-' -%}  
+      {%- when 4 -%}{%- assign ii = 3 -%}{%- assign arClass = 'col-lg-, col-md-, col-sm-, col-' -%}
+      {%- when 5 -%}{%- assign ii = 4 -%}{%- assign arClass = 'col-xl-, col-lg-, col-md-, col-sm-, col-' -%}
+      {%- else -%}  {%- assign ii = 5 -%}{%- assign arClass = 'col-xl-, col-lg-, col-md-, col-sm-, col-xxs-, col-' -%}
+    {%- endcase -%}
+
+    {%- assign items_resp  = '' -%}
+    {%- assign arrClass    = arClass | split: ',' -%}
+    {%- for i in (0..ii) -%}
+      {%- include 'set-width-bootstrap', number: _item_resp[i] -%}
+      {%- assign _classItem = _out | prepend: arrClass[i] -%}
+      {%- if _out == '5' -%}{%- assign _classItem = _classItem | append: 'th' -%}{%- endif -%}
+      {%- assign items_resp = items_resp | append: _classItem -%}
+    {%- endfor -%}  
+  {%- endif -%}
+  {%- capture items_class -%}{{items_resp}}{%- endcapture -%}
+  
+{%- endunless -%}

@@ -1,0 +1,464 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- if section.settings.carousel_layout -%}{%- assign _type = 'carousel' -%}{%- else -%}{%- assign _type = 'row' -%}{%- endif -%}
+{%- assign _lazyload        = settings.use_lazyload -%}
+{%- assign _border_item     = section.settings.border_item -%}
+{%- assign _spacing_items   = section.settings.padding_item -%}
+{%- assign _padding         = section.settings.section_padding -%}
+{%- assign _bg_color        = section.settings.section_bg_color -%}
+{%- assign _bg_image        = section.settings.section_bg_image -%}
+{%- assign _bg_fixed        = section.settings.background_fixed -%}
+{%- assign _bg_style        = section.settings.background_style -%}
+{%- assign sb_position      = section.settings.sb_position -%}
+
+
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+{%- include 'include-item-per-row' -%}
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="logo-list-wrapper layout-{{_layout }} section-show-{{section.id}}{% if _bg_style == 'boxed' %} bg-boxed{% endif %}{% if _bg_image != blank %} bg-image{% if _bg_fixed %} bg-fixed{% endif %}{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="logo_list" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    <div class="logo-list-wrapper-content{% if sb_position == 'none' %} no-sidebar{% endif %}">
+      {%- include 'head-title' -%}
+
+      {%- unless sb_position == 'none' -%}
+        {%- assign sb_title           = section.settings.sb_title -%}
+        {%- assign sb_content         = section.settings.sb_content -%}
+        {%- assign sb_title_color     = section.settings.sb_title_color -%}
+        {%- assign sb_content_color   = section.settings.sb_content_color -%}
+        {%- assign sb_bg_color        = section.settings.sb_bg_color -%}
+        {%- assign btn_label          = section.settings.button -%}
+
+           <div class="row sb-layout">
+              <aside class="col-md-6 col-12{% if sb_position == 'right' %} order-md-2{% endif %}">
+                <div class="aside-inner"{% if sb_bg_color != blank and sb_bg_color != 'rgba(0,0,0,0)' %} style="background-color: {{sb_bg_color}};"{% endif %}>
+
+                   {%- unless sb_title == blank -%}<div class="sb-title" style="color:{{sb_title_color}};">{{sb_title}}</div>{%- endunless -%}
+                   {%- unless sb_content == blank -%}<div class="sb-content" style="color:{{sb_content_color}};">{{sb_content}}</div>{%- endunless -%}
+                   {%- unless btn_label == blank -%}
+                      {%- assign btn_link     = section.settings.button_link | default: 'javascript:void(0);' -%}
+                      {%- assign btn_align    = section.settings.button_align -%}
+                      {%- assign btn_inherit  = section.settings.button_inherit_style -%}
+                      {%- assign btn_color    = section.settings.button_color       | default: 'rgba(0,0,0,0)' -%}
+                      {%- assign btn_bg_color = section.settings.button_bg_color    | default: 'rgba(0,0,0,0)' -%}
+                      {%- assign btn_border   = section.settings.button_border      | default: 'rgba(0,0,0,0)' -%}
+                      {%- assign btn_corner   = section.settings.button_rd -%}
+
+                      <div class="button-group text-{{btn_align}}">
+                        <a href="{{btn_link}}" class="btn btn-{{btn_inherit}}">{{btn_label}}</a>
+                      </div>
+
+                      {%- capture sb_btn_id -%}.section-show-{{section.id}} aside a.btn{%- endcapture -%}
+
+                      {%- capture sb_css -%}
+                        {%- if btn_inherit == 0 -%}
+                        {{- sb_btn_id}}{color: {{btn_color}};background:{{btn_bg_color}};border:1px solid {{btn_border}};}
+                        {%- endif -%}
+                        {%- include 'css-responsive', classID: sb_btn_id, css_value: btn_corner ,css_property: 'border-radius' -%}
+                      {%- endcapture -%}
+
+                      {%- assign section_css = section_css | append: sb_css -%}
+                   {%- endunless -%}
+
+                </div>
+              </aside>
+              <div class="col-md-6 col-12{% if sb_position == 'right' %} order-md-1{% endif %}">
+      {%- endunless -%}
+
+        <div class="widget-logo-list{% if _type == 'row' %} row{% else %} widget-logo-list-{{_type}} owl-carousel{% endif %}{% unless _spacing_items %} no-padding{% endunless %}{% if _border_item %} has-border{% endif %}"
+          {%- include 'include-carousel-attr' -%}>
+           {%- if section.blocks.size > 0 -%}
+              {%- for block in section.blocks -%}
+                 <div class="logo-list-item{% if _type == 'row' %} {{ items_class }}{% endif %}"{{ block.shopify_attributes }}>
+                    {%- unless block.settings.image == blank -%}
+                       <div class="item-content">
+                          <a href="{{ block.settings.link }}">
+
+                             {%- if section.settings.image_fill -%}
+                              {%- include 'image-style' with image: block.settings.image -%}
+                             {%- else -%}
+                              <span class="img--style d-block text-center">
+                                <img class="w-auto lazyload" data-src="{{block.settings.image | img_url: 'master'}}">
+                              </span>
+                             {%- endif -%}
+                          </a>
+                       </div>
+                    {%- else -%}
+                      <a href="/collections"><div class="logo-list-item">{%- render 'svgset' -%}</div></a>
+                    {%- endunless -%}
+                 </div>
+              {%- endfor -%}
+
+           {%- else -%}
+              {%- for i in (1..10) -%}
+                 <div class="logo-list-item{% if _type == 'row' %} {{ items_class }}{% endif %} cvh">
+                    <a href="/collections"><div class="logo-list-item">{%- include 'svgset' -%}</div></a>
+                 </div>
+              {%- endfor -%}
+           {%- endif -%}
+        </div>
+
+     {%- unless sb_position == 'none' -%}
+           </div>
+        </div>
+     {%- endunless -%}
+    </div>
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+  {%- capture _secionID -%}.section-show-{{section.id}}{%- endcapture -%}
+
+  {%- assign _bg_color   = section.settings.section_bg_color -%}
+  {%- assign _padding    = section.settings.section_padding -%}
+
+  <style>
+    {%- unless section.settings.section_bg_image == blank -%}
+      {{_secionID}}.bg-image{background-size: {{section.settings.section_bg_size}};background-repeat: {{section.settings.section_bg_repeat}};background-position: {{section.settings.section_bg_position}};{%- unless _lazyload -%}background-image: url({{_bg_image}});{%- endunless -%} }
+    {% endunless %}
+    {%- include 'css-responsive', classID: _secionID, css_value: _padding -%}
+    {%- if _bg_color != blank -%}{{_secionID}}{% if _bg_style == 'content' %} .logo-list-wrapper-content{% endif %}{background-color: {{_bg_color}};}{%- endif -%}
+    {%- if _padding != blank and sb_position != 'none' -%}{{_secionID}} .sb-layout > *{padding: {{_padding}};}{%- endif -%}
+    {{- section_css -}}
+  </style>
+</div>
+{% schema %}
+{
+   "name":"Logo List",
+   "tag":"section",
+   "settings":[
+      {
+         "type":"paragraph",
+         "content":"Created by 'Logo' section"
+      },
+      {
+         "type":"text",
+         "id":"title",
+         "label":"Section Label [:id]","default": "Logo list"
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT"
+      },
+      {
+         "type":"checkbox",
+         "id":"boxed_layout",
+         "label":"Boxed layout",
+         "default":true
+      },
+    {
+      "type":"text",
+      "id":"section_padding",
+      "label":"Section Padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+      {
+         "type":"select",
+         "id":"background_style",
+         "label":"Background style",
+         "default":"section",
+         "options":[
+           {
+             "value":"section",
+             "label":"Section"
+           },
+           {
+             "value":"content",
+             "label":"Content"
+           },
+           {
+             "value":"boxed",
+             "label":"Boxed"
+           }
+         ]
+      },
+      {
+         "type":"color",
+         "id":"section_bg_color",
+         "label":"Background color",
+         "default": "#FFFFFF"
+      },
+      {
+        "type":"image_picker",
+        "id":"section_bg_image",
+        "label":"Background image"
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"background_fixed",
+         "label" :"Background fixed"
+      },
+      {
+        "type":"select",
+        "id"   :"section_bg_size",
+        "label":"Background Size",
+        "default": "cover",
+        "options":[
+        {"value":"auto","label":"Auto"},
+        {"value":"cover","label":"Cover"},
+        {"value":"contain","label":"Contain"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_repeat",
+        "label": "Background Image Repeat:",
+        "default": "no-repeat",
+        "options": [
+        {"value":"no-repeat","label":"No Repeat"},
+        {"value":"repeat","label":"Repeat"},
+        {"value":"repeat-x","label":"Repeat X"},
+        {"value":"repeat-y","label":"Repeat Y"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_position",
+        "label": "Background Image Position:",
+        "default": "center center",
+        "options": [
+        {"value":"left top","label":"Left Top"},
+        {"value":"center top","label":"Center Top"},
+        {"value":"right top","label":"Right Top"},
+        {"value":"left center","label":"Left Center"},
+        {"value":"center center","label":"Center Center"},
+        {"value":"right center","label":"Right Center"},
+        {"value":"left bottom","label":"Left Bottom"},
+        {"value":"center bottom","label":"Center Bottom"},
+        {"value":"right bottom","label":"Right Bottom"}
+        ]
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT CONTENT"
+      },
+      {
+         "type"  :"text",
+         "id"    :"items_resp",
+         "label":"Max number of items per row",
+         "placeholder": "xl,lg,md,sm,xs,xxs",
+         "info": "E.g: 4,3,2",
+         "default": "5,3,2"
+      },
+      {
+         "type":"checkbox",
+         "id":"padding_item",
+         "label":"Spacing items",
+         "default":true
+      },
+      {
+         "type":"checkbox",
+         "id":"border_item",
+         "label":"Border items"
+      },
+      {
+         "type":"checkbox",
+         "id":"image_fill",
+         "label":"Image fill width",
+         "default": true
+      },
+      {
+         "type":"header",
+         "content":"Section Heading"
+      },
+      {
+         "type":"text",
+         "id":"heading_text",
+         "label":"Heading"
+      },
+      {
+         "type":"text",
+         "id":"subheading_text",
+         "label":"Subheading"
+      },
+      {
+         "type":"textarea",
+         "id":"subheading2_text",
+         "label":"Subheading 2"
+      },
+      {
+         "type":"select",
+         "id":"heading_content_align",
+         "label":"Heading alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type":"color",
+         "id":"section_heading_color",
+         "label":"Heading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading_color",
+         "label":"Subheading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading2_color",
+         "label":"Subheading 2 color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type"  :"header",
+         "content":"Sidebar content"
+      },
+      {
+         "type"  :"select",
+         "id"    :"sb_position",
+         "label" :"Sidebar position",
+         "options":[
+           {"value":"none","label":"None"},
+           {"value":"left","label":"Left"},
+           {"value":"right","label":"Right"}
+         ]
+      },
+      {
+         "type"  :"text",
+         "id"    :"sb_title",
+         "label" :"Title"
+      },
+      {
+         "type"  :"textarea",
+         "id"    :"sb_content",
+         "label" :"Content"
+      },
+      {
+         "type"  :"color",
+         "id"    :"sb_title_color",
+         "label" :"Title color",
+         "default":"#000000"
+      },
+      {
+         "type"  :"color",
+         "id"    :"sb_content_color",
+         "label" :"Content color",
+         "default":"#000000"
+      },
+      {
+         "type":"color",
+         "id":"sb_bg_color",
+         "label":"Sidebar Background color"
+      },
+      {
+         "type"  :"text",
+         "id"    :"button",
+         "label" :"Button Label"
+      },
+      {
+         "type"  :"url",
+         "id"    :"button_link",
+         "label" :"Button Link"
+      },
+      {
+         "type":"select",
+         "id":"button_align",
+         "label":"Horizontal alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"left"
+      },
+      {
+         "type":"range",
+         "id"   :"button_inherit_style",
+         "label":"Inherit Button style:",
+         "min"   :0,
+         "max"   :3,
+         "default":1,
+         "info": "Set 0 to customize button"
+      },
+      {
+         "type"  :"text",
+         "id"    :"button_rd",
+         "label" :"Button Rounded Corners",
+         "placeholder": "E.g: 5px 5px 5px 5px"
+      },
+      {
+         "type"  :"color",
+         "id"    :"button_color",
+         "label" :"Button Text color",
+         "default":"#000000"
+      },
+      {
+         "type"  :"color",
+         "id"    :"button_border",
+         "label" :"Button Border color",
+         "default":"#000000"
+      },
+      {
+         "type"  :"color",
+         "id"    :"button_bg_color",
+         "label" :"Button Background color",
+         "default":"#FFFFFF"
+      },
+      {
+         "type":"header",
+         "content":"Slider settings"
+      },
+      {
+         "type":"checkbox",
+         "id":"carousel_layout",
+         "label":"Enable Slider"
+      },
+      {
+         "type":"checkbox",
+         "id":"autoplay",
+         "label":"Enable Autoplay"
+      },
+      {
+         "type":"checkbox",
+         "id":"loop",
+         "label":"Enable Loop"
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"stage_padding",
+         "label" :"Enable Stage Padding"
+      },
+      {
+         "type":"checkbox",
+         "id":"nav",
+         "label":"Show Next & Prev arrows",
+         "default":true
+      },
+      {
+         "type":"checkbox",
+         "id":"dot",
+         "label":"Show Dots",
+         "default":false
+      }
+   ],
+   "blocks":[
+      {
+         "type":"image",
+         "name":"Image",
+         "settings":[
+            {
+               "type":"image_picker",
+               "id":"image",
+               "label":"Image"
+            },
+            {
+               "type":"url",
+               "id":"link",
+               "label":"Link",
+               "default":"/collections"
+            }
+         ]
+      }
+   ],
+   "presets":[
+      {
+         "name":"Logo List",
+         "category":"Banner"
+      }
+   ]
+}
+{% endschema %}

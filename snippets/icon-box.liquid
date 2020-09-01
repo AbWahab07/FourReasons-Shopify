@@ -1,0 +1,48 @@
+{%- include 'include-item-per-row', item_resp: section.settings.ib_per_row -%}
+{%- assign _ib_class = items_class -%}
+
+{%- assign ib_style         = section.settings.ib_style | default: 1 -%}
+{%- assign ib_bg_color      = section.settings.ib_bg_color -%}
+{%- assign ib_head_color    = section.settings.ib_heading_color -%}
+{%- assign ib_txt_color     = section.settings.ib_txt_color -%}
+{%- assign ib_border_color  = section.settings.ib_border_color -%}
+
+<div class="icon-box-container ib-style-{{ib_style}}">
+  <div class="row">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'icon_box' -%}
+        <div class="icon-box-item {{_ib_class}}{% if ib_style == '2' %} p-0{% endif %}">
+          <div class="ib-inner text-center">
+            <div class="ib-header">
+              {%- assign _ib_icon   = block.settings.icon -%}
+              {%- assign _ib_image  = block.settings.image -%}
+              {%- if _ib_image != blank -%}
+                  <div class="ib-image">
+                    {%- include 'image-style', image: _ib_image, image_width: '[100,300,500]' -%}
+                  </div>
+              {%- elsif _ib_icon != blank -%}
+                <div class="ib-icon">
+                  {%- include 'icons', type: 'icon_free', name: _ib_icon -%}
+                </div>
+              {%- endif -%}
+            </div>
+            <div class="ib-body">
+              {%- assign _ib_title    = block.settings.title -%}
+              {%- assign _ib_content  = block.settings.content -%}
+
+              {%- unless _ib_title == blank -%}<div class="ib-title">{{_ib_title}}</div>{%- endunless -%}
+              {%- unless _ib_content == blank -%}<div class="ib-content">{{_ib_content}}</div>{%- endunless -%}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  <style>
+    {{- -}}.icon-box-container .ib-inner{background-color: {{ib_bg_color}};}
+    {{- -}}.icon-box-container .ib-title{color: {{ib_head_color}};}
+    {{- -}}.icon-box-container .ib-content{color: {{ib_txt_color}};}
+    {{- -}}.icon-box-container.ib-style-1 .ib-inner{border: 1px solid {{ib_border_color}};}
+    {{- -}}.icon-box-container.ib-style-2 .icon-box-item:not(:last-child) .ib-inner{border-right: 1px solid {{ib_border_color}};}
+  </style>
+</div>

@@ -1,0 +1,1334 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _lazyload          = settings.use_lazyload -%}
+{%- assign _bg_color          = section.settings.section_bg_color -%}
+{%- assign _bg_image          = section.settings.section_bg_image -%}
+{%- assign _content_bg_color  = section.settings.bg_content_color -%}
+{%- assign _spacing_items     = section.settings.spacing_items -%}
+{%- assign _border            = section.settings.use_border -%}
+{%- assign _use_item_border   = section.settings.use_item_border -%}
+{%- assign _reverse           = section.settings.reverse_margin -%}
+{%- assign margin_top         = section.settings.margin_top -%}
+{%- assign section_padding    = section.settings.section_padding -%}
+{%- assign p_type             = section.settings.b_heading_type -%}
+{%- assign p_align            = section.settings.content_align -%}
+{%- assign p_h_pos            = section.settings.heading_position -%}
+{%- assign p_h_img_align      = section.settings.heading_img_align -%}
+{%- assign p_h_color          = section.settings.heading_color -%}
+{%- assign h_content_color    = section.settings.h_content_color -%}
+{%- assign content_color      = section.settings.content_color -%}
+{%- assign content_inline     = section.settings.content_inline -%}
+{%- assign show_h_section     = section.settings.show_section_heading -%}
+{%- assign p_h_cusPos         = section.settings.custom_pos -%}
+{%- assign _show_shadow       = section.settings.show_shadow -%}
+{%- assign _ib_item_padding   = section.settings.ib_item_padding -%}
+{%- assign _i_btn_inherit     = section.settings.i_btn_inherit -%}
+{%- assign _heading_fs        = section.settings.heading_fs -%}
+{%- assign _content_fs0       = section.settings.content_fs0 -%}
+{%- assign _content_fs1       = section.settings.content_fs1 -%}
+{%- assign _content_fw0       = section.settings.content_fw0 -%}
+{%- assign _content_fw1       = section.settings.content_fw1 -%}
+
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+{%- capture image_empty -%}<div class="empty-image" style="max-width: 80px;margin: 0 auto;">{%- include 'svgset', type: 'image' -%}</div>{%- endcapture -%}
+{%- capture section_ID -%}.section-show-{{section.id}}{%- endcapture -%}
+
+{%- include 'include-item-per-row' -%}
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="policies-v2 policies-wrapper layout-{{_layout }} section-show-{{section.id}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="policies" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    {%- unless show_h_section -%}{%- include 'head-title' -%}{%- endunless -%}
+
+    <div class="policies-content{% if _border %} has-border{% endif %}{% unless _spacing_items %} no-padding{% endunless %}{% if _use_item_border %} item-has-border{% endif %}{% if _show_shadow %} has-shadow{% endif %}">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'big_content' -%}
+            {%- assign _big_type     = block.settings.big_type -%}
+            {%- unless _big_type == 'none' -%}
+              {%- assign has_big = true -%}
+              {%- assign _big_pos      = block.settings.big_pos -%}
+              {%- assign _big_width    = block.settings.big_width -%}
+              {%- assign _hide_mobile  = block.settings.hide_mobile -%}
+
+              <div class="row"{{ block.shopify_attributes }}>
+                <div class="col-md-{{_big_width}} col-12{% if _big_pos == 'right' %} order-md-2{% endif %}{% if _hide_mobile %} d-none d-md-block{% endif %}">
+                  <div class="big-content-{{_big_type}} {% if _big_type == 'text' %} content-{{block.settings.align_vertical}}{% endif %}">
+                    {%- case _big_type -%}
+                      {%- when 'image' -%}
+                        {%- assign _image = block.settings.image -%}
+                        {%- unless _image == blank -%}
+                          {%- include 'image-style', image: _image -%}
+                        {%- else -%}
+                          <div class="empty-image">{%- include 'svgset' -%}</div>
+                        {%- endunless -%}
+
+                      {%- when 'text' -%}
+                        {%- assign heading    = block.settings.heading -%}
+                        {%- assign content    = block.settings.content -%}
+                        {%- assign c_align    = block.settings.align -%}
+                        {%- assign h_fsize    = block.settings.heading_font_size -%}
+
+                        <div class="big-content-wrap text-{{c_align}}">
+                          <div class="big-heading"><p>{{heading}}</p></div>
+                          {%- unless content == blank -%}<div class="big-content">{{content}}</div>{%- endunless -%}
+                        </div>
+                        {%- capture big_content_css -%}
+                          {%- include 'css-responsive', classID: section_ID, nextClassID: ' .big-content-wrap .big-heading', css_value: h_fsize, css_property: 'font-size' -%}
+                        {%- endcapture -%}
+                        {%- assign block_css = block_css | append: big_content_css -%}
+                      {%- else -%}
+                    {%- endcase -%}
+                  </div>
+                </div>
+                <div class="col-md-{% if _big_width == '4' %}8{% else %}6{% endif %} col-12{% if _big_pos == 'right' %} order-md-1{% endif %}">
+            {%- endunless -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+                {%- if show_h_section -%}{%- include 'head-title' -%}{%- endif -%}
+                <div class="row">
+                  {%- for block in section.blocks -%}
+                    {%- if block.type == 'block_content' -%}
+                      {%- assign b_bg_color   = block.settings.block_bg_color -%}
+                      {%- assign b_bg_image   = block.settings.block_bg_image -%}
+                      {%- assign p_heading    = block.settings.block_heading -%}
+                      {%- assign p_h_content  = block.settings.heading_color -%}
+                      {%- assign p_image      = block.settings.image -%}
+                      {%- assign p_icon       = block.settings.icon -%}
+                      {%- assign p_title      = block.settings.title -%}
+                      {%- assign p_content    = block.settings.content -%}
+                      {%- assign p_btn_text   = block.settings.button -%}
+                      {%- assign p_btn_link   = block.settings.button_link | default: 'javascript:void(0);' -%}
+                      {%- unless b_bg_image == blank -%}
+                        {%- assign _block_bg_size       = block.settings.block_bg_size -%}
+                        {%- assign _block_bg_repeat     = block.settings.block_bg_repeat -%}
+                        {%- assign _block_bg_position   = block.settings.block_bg_position -%}
+                      {%- endunless -%}
+
+                      {%- capture _b_bg_image -%}{% if b_bg_image != blank %}{{b_bg_image | img_url: '768x'}}{% endif %}{%- endcapture -%}
+
+                      <div class="policy-item-{{block.id}} policy-wrap-item {{items_class}}"{{ block.shopify_attributes }}>
+                        <div class="policy-item text-{{p_align}}{% if p_h_pos =='left' and p_type != 'none' %} heading-left{% endif %}{% if _b_bg_image != blank %} block-bg-image{% if _lazyload %} lazyload" data-bgset="{{_b_bg_image}} 768w{%- endif -%}{%- endif -%}">
+
+                          {%- capture _policy_heading_item -%}
+                            {%- unless p_type == 'none' -%}
+                              <div class="policy-heading policy-{{p_type}}{% if p_h_cusPos %} d-inline-block{% else %}{% if p_h_pos =='left' %} align-{{p_h_img_align}}{% endif %}{% endif %}">
+                                {%- case p_type -%}
+                                  {%- when 'image' -%}
+                                    <div class="image">
+                                      {%- unless p_image == blank -%}
+                                        <img {% if _lazyload %}class="lazyload" data-{% endif %}src="{{p_image | img_url: '80x'}}">
+                                      {%- else -%}{{image_empty}}{%- endunless -%}
+                                    </div>
+
+                                  {%- when 'icon' -%}
+                                    {%- unless p_icon == blank -%}
+                                      {% include 'icons', type: 'icon_free', name: p_icon %}
+                                    {%- else -%}{{image_empty}}{%- endunless -%}
+                                  {%- when 'text' -%}
+                                    {%- unless p_heading == blank -%}<p class="ib-heading--text{% if _heading_fs contains 'h' %} {{_heading_fs}}{% endif %} fw-{{section.settings.heading_text_fw}}">{{p_heading}}</p>{%- endunless -%}
+                                  {%- else -%}
+                                {%- endcase -%}
+                              </div>
+                            {%- endunless -%}
+                          {%- endcapture -%}
+
+                          {%- unless p_h_cusPos -%}{{_policy_heading_item}}{%- endunless -%}
+                          <div class="policy-content{% if content_inline %} d-md-flex{% endif %}">
+                            <div class="title {% if _content_fs0 contains 'h' %} {{_content_fs0}}{% endif %} fw-{{_content_fw0}}">
+                              {%- if p_h_cusPos -%}
+                                {{- p_title | replace: '[Heading]', _policy_heading_item -}}
+                              {%- else -%}
+                                {{- p_title -}}
+                              {%- endif -%}
+                            </div>
+                            {%- unless p_content == blank -%}
+                              <div class="content{% if _content_fs1 contains 'h' %} {{_content_fs1}}{% endif %} fw-{{_content_fw1}}">
+                                {%- if p_h_cusPos -%}
+                                  {{- p_content | replace: '[Heading]', _policy_heading_item -}}
+                                {%- else -%}
+                                  {{- p_content -}}
+                                {%- endif -%}
+                              </div>
+                            {%- endunless -%}
+                            {%- unless p_btn_text == blank -%}
+                              <div class="btn-group">
+                                <a href="{{ p_btn_link }}" class="btn ib-item_btn btn-{{_i_btn_inherit}}" aria-label="PolicyButton">
+                                  <span class="button-label">{{ p_btn_text }}</span>
+                                </a>
+                              </div>
+                            {%- endunless -%}
+                          </div>
+                        </div>
+
+                      {%- capture block_item_css -%}
+                        {%- if b_bg_color != blank  -%}.policy-item-{{block.id}} > div{background-color: {{b_bg_color}};}{%- endif -%}
+                        {%- if p_h_content != blank and p_h_content != 'rbga(0,0,0,0)' -%}
+                        .policies-wrapper.section-show-{{section.id}} .policy-item-{{block.id}} .policy-content .title{color: {{p_h_content}};
+                        }{%- endif -%}
+                        {%- if _b_bg_image != blank -%}
+                        .policy-item-{{block.id}} .block-bg-image{background-size: {{_block_bg_size}};background-repeat: {{_block_bg_repeat}};background-position: {{_block_bg_position}};{%- if _lazyload == false -%}background-image: url({{_b_bg_image}});{%- endif -%}
+                        }{%- endif -%}
+                      {%- endcapture -%}
+                      {%- assign block_css = block_css | append: block_item_css -%}
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+
+
+          {%- include 'include-button', btn_type: 'section' -%}
+        {%- if has_big -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- else -%}
+
+      <div class="row">
+        {%- for i in (1..3) -%}
+          <div class="{{items_class}}">
+            <div class="policy-item">
+              <div class="policy-image">
+                {{image_empty}}
+              </div>
+              <div class="text">
+                <div class="title">Block content</div>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- endif -%}
+
+    </div>
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+  {%- capture ib_itemClass -%}.section-show-{{section.id}} .policy-item{%- endcapture -%}
+
+  {%- capture section_final_css -%}
+    {%- include 'section-general-css' -%}{{block_css}}
+    {% if margin_top > 0 %}.policies-wrapper.section-show-{{section.id}}{
+      margin-top: {%- if _reverse -%}-{%- endif -%}{{margin_top}}px;}{%- endif -%}
+    {%- if p_h_color != blank and p_h_color != 'rgba(0,0,0,0)' -%}
+    .policies-wrapper.section-show-{{section.id}} .policy-heading{color: {{p_h_color}};}{%- endif -%}
+    {%- if h_content_color != blank and h_content_color != 'rgba(0,0,0,0)' -%}
+    .policies-wrapper.section-show-{{section.id}} .policy-content .title{color:{{h_content_color}};}{%- endif -%}
+    {%- if content_color != blank and content_color != 'rgba(0,0,0,0)' -%}
+    .policies-wrapper.section-show-{{section.id}} .policy-content .content{color:{{content_color}};}{%- endif -%}
+    {%- if _content_bg_color != blank and _content_bg_color != 'rgba(0,0,0,0)' -%}
+    .policies-wrapper.section-show-{{section.id}} .policies-content{background-color: {{_content_bg_color}};}{%- endif -%}
+
+    {%- unless _heading_fs  contains 'h' -%}
+      {%- if p_type == 'image' -%}
+        {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-heading > *' ,css_value: _heading_fs  ,css_property: 'width' -%}
+      {%- else -%}
+        {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-heading > *' ,css_value: _heading_fs  ,css_property: 'font-size' -%}
+        {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-heading > *' ,css_value: section.settings.heading_lh  ,css_property: 'line-height' -%}
+        {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-content .ib-heading--text' ,css_value: section.settings.heading_lsp ,css_property: 'letter-spacing' -%}
+      {%- endif -%}
+    {%- endunless -%}
+    {%- unless _content_fs0 contains 'h' -%}{%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-content .title'    ,css_value: _content_fs0 ,css_property: 'font-size' -%}{%- endunless -%}
+    {%- unless _content_fs1 contains 'h' -%}{%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-content .content'  ,css_value: _content_fs1 ,css_property: 'font-size' -%}{%- endunless -%}
+    {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-content .title'    ,css_value: section.settings.content_lh0 ,css_property: 'line-height' -%}
+    {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-content .content'  ,css_value: section.settings.content_lh1 ,css_property: 'line-height' -%}
+
+    {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-content .title'    ,css_value: section.settings.content_lsp0 ,css_property: 'letter-spacing' -%}
+    {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-content .content'  ,css_value: section.settings.content_lsp1 ,css_property: 'letter-spacing' -%}
+
+    {%- include 'css-responsive', classID: ib_itemClass ,css_value: _ib_item_padding -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-wrap-item'            ,css_value: section.settings.blocks_margin       ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .title'       ,css_value: section.settings.ib_title_margin     ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .content'     ,css_value: section.settings.ib_content_margin   ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .btn-group'   ,css_value: section.settings.ib_button_margin    ,css_property: 'margin' -%}
+
+    {%- if _i_btn_inherit == 0 -%}
+      {%- assign _i_btn_color           = section.settings.i_btn_color    | default: 'rgba(0,0,0,0)' -%}
+      {%- assign _i_btn_border          = section.settings.i_btn_border   | default: 'rgba(0,0,0,0)' -%}
+      {%- assign _i_btn_bg_color        = section.settings.i_btn_bg_color | default: 'rgba(0,0,0,0)' -%}
+
+      {{- ib_itemClass}} .ib-item_btn{font-weight: {{section.settings.i_btn_fw}};
+          {%- unless _i_btn_color == 'rgba(0,0,0,0)'    -%}color: {{_i_btn_color}};{%- endunless -%}
+          {%- unless _i_btn_border == 'rgba(0,0,0,0)'   -%}border: 1px solid {{_i_btn_border}};{%- endunless -%}
+          {%- unless _i_btn_bg_color == 'rgba(0,0,0,0)' -%}background-color: {{_i_btn_bg_color}}{%- endunless -%}
+      }
+      {%- include 'css-responsive', classID: ib_itemClass ,nextClassID: ' .ib-item_btn.btn-0' ,css_value: section.settings.ib_button_padding -%}
+      {%- include 'css-responsive', classID: ib_itemClass ,nextClassID: ' .ib-item_btn.btn-0' ,css_value: section.settings.i_btn_fs              ,css_property: 'font-size' -%}
+      {%- include 'css-responsive', classID: ib_itemClass ,nextClassID: ' .ib-item_btn.btn-0' ,css_value: section.settings.ib_button_lh          ,css_property: 'line-height' -%}
+      {%- include 'css-responsive', classID: ib_itemClass ,nextClassID: ' .ib-item_btn.btn-0' ,css_value: section.settings.ib_button_lsp         ,css_property: 'letter-spacing' -%}
+      {%- include 'css-responsive', classID: ib_itemClass ,nextClassID: ' .ib-item_btn.btn-0' ,css_value: section.settings.i_btn_border_radius   ,css_property: 'border-radius' -%}
+    {%- endif -%}
+  {%- endcapture -%}
+
+  <style>{{section_final_css | strip_newlines }}</style>
+</div>
+{% schema %}
+{
+  "name":"Icon box v2",
+  "tag":"section",
+  "settings":[
+    {
+      "type":"paragraph",
+      "content":"Created by 'Icon box v2' section"
+    },
+    {
+      "type":"text",
+      "id":"title",
+      "label":"Section Label [:id]","default": "Icon box v2"
+    },
+    {
+      "type":"header",
+      "content":"LAYOUT"
+    },
+    {
+      "type":"checkbox",
+      "id":"boxed_layout",
+      "label":"Boxed layout",
+      "default":true
+    },
+    {
+      "type":"text",
+      "id":"section_padding",
+      "label":"Section Padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"color",
+      "id":"section_bg_color",
+      "label":"Background color",
+      "default":"#FFFFFF"
+    },
+    {
+      "type":"image_picker",
+      "id":"section_bg_image",
+      "label":"Background image"
+    },
+    {
+      "type":"select",
+      "id":"section_bg_size",
+      "label":"Background Size",
+      "default":"cover",
+      "options":[
+        {
+          "value":"auto",
+          "label":"Auto"
+        },
+        {
+          "value":"cover",
+          "label":"Cover"
+        },
+        {
+          "value":"contain",
+          "label":"Contain"
+        }
+      ]
+    },
+    {
+      "type":"select",
+      "id":"section_bg_repeat",
+      "label":"Background Image Repeat:",
+      "default":"no-repeat",
+      "options":[
+        {
+          "value":"no-repeat",
+          "label":"No Repeat"
+        },
+        {
+          "value":"repeat",
+          "label":"Repeat"
+        },
+        {
+          "value":"repeat-x",
+          "label":"Repeat X"
+        },
+        {
+          "value":"repeat-y",
+          "label":"Repeat Y"
+        }
+      ]
+    },
+    {
+      "type":"select",
+      "id":"section_bg_position",
+      "label":"Background Image Position:",
+      "default":"center center",
+      "options":[
+        {
+          "value":"left top",
+          "label":"Left Top"
+        },
+        {
+          "value":"center top",
+          "label":"Center Top"
+        },
+        {
+          "value":"right top",
+          "label":"Right Top"
+        },
+        {
+          "value":"left center",
+          "label":"Left Center"
+        },
+        {
+          "value":"center center",
+          "label":"Center Center"
+        },
+        {
+          "value":"right center",
+          "label":"Right Center"
+        },
+        {
+          "value":"left bottom",
+          "label":"Left Bottom"
+        },
+        {
+          "value":"center bottom",
+          "label":"Center Bottom"
+        },
+        {
+          "value":"right bottom",
+          "label":"Right Bottom"
+        }
+      ]
+    },
+    {
+      "type":"header",
+      "content":"Section Heading"
+    },
+    {
+      "type":"select",
+      "id":"heading_content_align",
+      "label":"Heading alignment",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"center",
+          "label":"Center"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ],
+      "default":"center"
+    },
+    {
+      "type":"text",
+      "id":"heading_text",
+      "label":"Heading"
+    },
+    {
+      "type":"text",
+      "id":"subheading_text",
+      "label":"Subheading"
+    },
+    {
+      "type":"textarea",
+      "id":"subheading2_text",
+      "label":"Subheading 2"
+    },
+    {
+      "type":"color",
+      "id":"section_heading_color",
+      "label":"Heading color",
+      "info":"Blank to inherit color"
+    },
+    {
+      "type":"color",
+      "id":"section_subheading_color",
+      "label":"Subheading color",
+      "info":"Blank to inherit color"
+    },
+    {
+      "type":"color",
+      "id":"section_subheading2_color",
+      "label":"Subheading 2 color",
+      "info":"Blank to inherit color"
+    },
+    {
+      "type":"header",
+      "content":"Section button"
+    },
+    {
+      "type":"text",
+      "id":"button",
+      "label":"Button Label"
+    },
+    {
+      "type":"url",
+      "id":"button_link",
+      "label":"Button Link",
+      "info":"Remove link to hide"
+    },
+    {
+      "type":"select",
+      "id":"button_align",
+      "label":"Horizontal alignment",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"center",
+          "label":"Center"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ],
+      "default":"center"
+    },
+    {
+      "type":"checkbox",
+      "id":"button_corner",
+      "label":"Button Rounded Corners"
+    },
+    {
+      "type":"range",
+      "id":"button_inherit_style",
+      "label":"Inherit Button style:",
+      "min":0,
+      "max":3,
+      "default":1,
+      "info":"Set 0 to customize button"
+    },
+    {
+      "type":"color",
+      "id":"button_color",
+      "label":"Button Text color",
+      "default":"#000000"
+    },
+    {
+      "type":"color",
+      "id":"button_border",
+      "label":"Button Border color",
+      "default":"#000000"
+    },
+    {
+      "type":"color",
+      "id":"button_bg_color",
+      "label":"Button Background color",
+      "default":"#FFFFFF"
+    },
+    {
+      "type":"header",
+      "content":"Layout content"
+    },
+    {
+      "type":"text",
+      "id":"items_resp",
+      "label":"Max number of items per row",
+      "placeholder":"xl,lg,md,sm,xs,xxs",
+      "info":"E.g: 4,3,2",
+      "default":"3,1"
+    },
+    {
+      "type":"checkbox",
+      "id":"spacing_items",
+      "label":"Spacing items",
+      "default":true
+    },
+    {
+      "type":"checkbox",
+      "id":"show_section_heading",
+      "label":"Show Section Heading inside"
+    },
+    {
+      "type":"checkbox",
+      "id":"show_shadow",
+      "label":"Show Shadow"
+    },
+    {
+      "type":"checkbox",
+      "id":"use_item_border",
+      "label":"Show Border items"
+    },
+    {
+      "type":"checkbox",
+      "id":"use_border",
+      "label":"Show Border between items"
+    },
+    {
+      "type":"checkbox",
+      "id":"content_inline",
+      "label":"Show Content on same line"
+    },
+    {
+      "type":"checkbox",
+      "id":"custom_pos",
+      "label":"Custom Heading position",
+      "info":"Use keyword [Heading] in your content to customize"
+    },
+    {
+      "type":"text",
+      "id":"ib_item_padding",
+      "label":"Item padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"text",
+      "id":"blocks_margin",
+      "label":"Item margin",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"select",
+      "id":"content_align",
+      "label":"Content alignment",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"center",
+          "label":"Center"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ],
+      "default":"center"
+    },
+    {
+      "type":"color",
+      "id":"bg_content_color",
+      "label":"Background content color",
+      "default":"rgba(0,0,0,0)"
+    },
+    {
+      "type":"header",
+      "content":"Heading settings"
+    },
+    {
+      "type":"select",
+      "id":"b_heading_type",
+      "label":"Heading items type:",
+      "default":"icon",
+      "options":[
+        {
+          "value":"none",
+          "label":"None"
+        },
+        {
+          "value":"text",
+          "label":"Use text"
+        },
+        {
+          "value":"icon",
+          "label":"Use icon"
+        },
+        {
+          "value":"image",
+          "label":"Use image"
+        }
+      ]
+    },
+    {
+      "type":"select",
+      "id":"heading_position",
+      "label":"Heading items position:",
+      "options":[
+        {
+          "value":"top",
+          "label":"Top"
+        },
+        {
+          "value":"left",
+          "label":"Left"
+        }
+      ],
+      "default":"top"
+    },
+    {
+      "type":"select",
+      "id":"heading_img_align",
+      "label":"Heading items vertical align:",
+      "options":[
+        {
+          "value":"top",
+          "label":"Top"
+        },
+        {
+          "value":"middle",
+          "label":"Middle"
+        },
+        {
+          "value":"bottom",
+          "label":"Bottom"
+        }
+      ],
+      "default":"top",
+      "info":"Only for Heading items in left"
+    },
+    {
+      "type":"text",
+      "id":"heading_fs",
+      "label":"Heading font size/ Image width",
+      "default":"28px"
+    },
+    {
+      "type":"color",
+      "id":"heading_color",
+      "label":"Heading text color",
+      "default":"#000000"
+    },
+    {
+      "type":"select",
+      "id":"heading_text_fw",
+      "label":"Heading Text font weight",
+      "default":"900",
+      "options":[
+        {
+          "value":"100",
+          "label":"100 Thin (Hairline)"
+        },
+        {
+          "value":"200",
+          "label":"200 Extra Light (Ultra Light)"
+        },
+        {
+          "value":"300",
+          "label":"300 Light"
+        },
+        {
+          "value":"400",
+          "label":"400 Normal"
+        },
+        {
+          "value":"500",
+          "label":"500 Medium"
+        },
+        {
+          "value":"600",
+          "label":"600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value":"700",
+          "label":"700 Bold"
+        },
+        {
+          "value":"800",
+          "label":"800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value":"900",
+          "label":"900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type":"text",
+      "id":"heading_lh",
+      "label":"Heading line height"
+    },
+    {
+      "type":"text",
+      "id":"heading_lsp",
+      "label":"Heading letter spacing"
+    },
+    {
+      "type":"header",
+      "content":"Text 1 settings"
+    },
+    {
+      "type":"text",
+      "id":"content_fs0",
+      "label":"Text 1 font size",
+      "default":"h4"
+    },
+    {
+      "type":"color",
+      "id":"h_content_color",
+      "label":"Text 1 color",
+      "default":"#000000"
+    },
+    {
+      "type":"select",
+      "id":"content_fw0",
+      "label":"Text 1 font weight",
+      "default":"400",
+      "options":[
+        {
+          "value":"100",
+          "label":"100 Thin (Hairline)"
+        },
+        {
+          "value":"200",
+          "label":"200 Extra Light (Ultra Light)"
+        },
+        {
+          "value":"300",
+          "label":"300 Light"
+        },
+        {
+          "value":"400",
+          "label":"400 Normal"
+        },
+        {
+          "value":"500",
+          "label":"500 Medium"
+        },
+        {
+          "value":"600",
+          "label":"600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value":"700",
+          "label":"700 Bold"
+        },
+        {
+          "value":"800",
+          "label":"800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value":"900",
+          "label":"900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type":"text",
+      "id":"ib_title_margin",
+      "label":"Text 1 margin",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"text",
+      "id":"content_lh0",
+      "label":"Text 1 line height"
+    },
+    {
+      "type":"text",
+      "id":"content_lsp0",
+      "label":"Text 1 letter spacing"
+    },
+    {
+      "type":"header",
+      "content":"Text 2 settings"
+    },
+    {
+      "type":"text",
+      "id":"content_fs1",
+      "label":"Text 2 font size",
+      "default":"h5"
+    },
+    {
+      "type":"color",
+      "id":"content_color",
+      "label":"Text 2 color",
+      "default":"#000000"
+    },
+    {
+      "type":"select",
+      "id":"content_fw1",
+      "label":"Text 2 font weight",
+      "default":"400",
+      "options":[
+        {
+          "value":"100",
+          "label":"100 Thin (Hairline)"
+        },
+        {
+          "value":"200",
+          "label":"200 Extra Light (Ultra Light)"
+        },
+        {
+          "value":"300",
+          "label":"300 Light"
+        },
+        {
+          "value":"400",
+          "label":"400 Normal"
+        },
+        {
+          "value":"500",
+          "label":"500 Medium"
+        },
+        {
+          "value":"600",
+          "label":"600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value":"700",
+          "label":"700 Bold"
+        },
+        {
+          "value":"800",
+          "label":"800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value":"900",
+          "label":"900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type":"text",
+      "id":"ib_content_margin",
+      "label":"Text 2 margin",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"text",
+      "id":"content_lh1",
+      "label":"Text 2 line height"
+    },
+    {
+      "type":"text",
+      "id":"content_lsp1",
+      "label":"Text 2 letter spacing"
+    },
+    {
+      "type":"header",
+      "content":"Button settings"
+    },
+    {
+      "type":"range",
+      "id":"i_btn_inherit",
+      "label":"Inherit Button style:",
+      "min":0,
+      "max":3,
+      "default":1,
+      "info":"0 to customize button"
+    },
+    {
+       "type":"text",
+       "id":"i_btn_fs",
+       "label":"Button font size",
+       "default": "14px"
+    },
+    {
+      "type":"select",
+      "id":"i_btn_fw",
+      "label":"Button font weight",
+      "default":"400",
+      "options":[
+        {
+          "value":"100",
+          "label":"100 Thin (Hairline)"
+        },
+        {
+          "value":"200",
+          "label":"200 Extra Light (Ultra Light)"
+        },
+        {
+          "value":"300",
+          "label":"300 Light"
+        },
+        {
+          "value":"400",
+          "label":"400 Normal"
+        },
+        {
+          "value":"500",
+          "label":"500 Medium"
+        },
+        {
+          "value":"600",
+          "label":"600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value":"700",
+          "label":"700 Bold"
+        },
+        {
+          "value":"800",
+          "label":"800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value":"900",
+          "label":"900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type":"color",
+      "id":"i_btn_color",
+      "label":"Button Text color",
+      "default":"#000000"
+    },
+    {
+      "type":"color",
+      "id":"i_btn_bg_color",
+      "label":"Button Background color",
+      "default":"#FFFFFF"
+    },
+    {
+      "type":"color",
+      "id":"i_btn_border",
+      "label":"Button Border color",
+      "default":"#000000"
+    },
+    {
+      "type":"text",
+      "id":"i_btn_border_radius",
+      "label":"Button Border radius",
+      "placeholder":"E.g: 4px 4px 4px 4px"
+    },
+    {
+      "type":"text",
+      "id":"ib_button_padding",
+      "label":"Button padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"text",
+      "id":"ib_button_margin",
+      "label":"Button margin",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"text",
+      "id":"ib_button_lh",
+      "label":"Button line height"
+    },
+    {
+      "type":"text",
+      "id":"ib_button_lsp",
+      "label":"Button letter spacing"
+    }
+  ],
+  "blocks":[
+    {
+      "type":"block_content",
+      "name":"Block content",
+      "settings":[
+        {
+          "type":"header",
+          "content":"Heading"
+        },
+        {
+          "type":"text",
+          "id":"block_heading",
+          "label":"Text",
+          "default":"Block Heading"
+        },
+        {
+          "type":"text",
+          "id":"icon",
+          "label":"Font icon name"
+        },
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Image"
+        },
+        {
+          "type":"header",
+          "content":"Content"
+        },
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Text #1",
+          "default":"Dolor purus"
+        },
+        {
+          "type":"textarea",
+          "id":"content",
+          "label":"Text #2"
+        },
+        {
+          "type":"text",
+          "id":"button",
+          "label":"Button label"
+        },
+        {
+          "type":"url",
+          "id":"button_link",
+          "label":"Button Link"
+        },
+        {
+          "type":"header",
+          "content":"Layout"
+        },
+        {
+          "type":"color",
+          "id":"heading_color",
+          "label":"Text #1 color"
+        },
+        {
+          "type":"color",
+          "id":"block_bg_color",
+          "label":"Background color"
+        },
+        {
+          "type":"image_picker",
+          "id":"block_bg_image",
+          "label":"Background image"
+        },
+        {
+          "type":"select",
+          "id":"block_bg_size",
+          "label":"Background Size",
+          "default":"cover",
+          "options":[
+            {
+              "value":"auto",
+              "label":"Auto"
+            },
+            {
+              "value":"cover",
+              "label":"Cover"
+            },
+            {
+              "value":"contain",
+              "label":"Contain"
+            }
+          ]
+        },
+        {
+          "type":"select",
+          "id":"block_bg_repeat",
+          "label":"Background Image Repeat:",
+          "default":"no-repeat",
+          "options":[
+            {
+              "value":"no-repeat",
+              "label":"No Repeat"
+            },
+            {
+              "value":"repeat",
+              "label":"Repeat"
+            },
+            {
+              "value":"repeat-x",
+              "label":"Repeat X"
+            },
+            {
+              "value":"repeat-y",
+              "label":"Repeat Y"
+            }
+          ]
+        },
+        {
+          "type":"select",
+          "id":"block_bg_position",
+          "label":"Background Image Position:",
+          "default":"center center",
+          "options":[
+            {
+              "value":"left top",
+              "label":"Left Top"
+            },
+            {
+              "value":"center top",
+              "label":"Center Top"
+            },
+            {
+              "value":"right top",
+              "label":"Right Top"
+            },
+            {
+              "value":"left center",
+              "label":"Left Center"
+            },
+            {
+              "value":"center center",
+              "label":"Center Center"
+            },
+            {
+              "value":"right center",
+              "label":"Right Center"
+            },
+            {
+              "value":"left bottom",
+              "label":"Left Bottom"
+            },
+            {
+              "value":"center bottom",
+              "label":"Center Bottom"
+            },
+            {
+              "value":"right bottom",
+              "label":"Right Bottom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type":"big_content",
+      "limit":1,
+      "name":"Sidebar content",
+      "settings":[
+        {
+          "type":"select",
+          "id":"big_width",
+          "label":"Width",
+          "options":[
+            {
+              "value":"4",
+              "label":"33,3%"
+            },
+            {
+              "value":"6",
+              "label":"50%"
+            }
+          ],
+          "default":"4"
+        },
+        {
+          "type":"select",
+          "id":"big_pos",
+          "label":"Position",
+          "options":[
+            {
+              "value":"left",
+              "label":"Left"
+            },
+            {
+              "value":"right",
+              "label":"Right"
+            }
+          ],
+          "default":"left"
+        },
+        {
+          "type":"select",
+          "id":"big_type",
+          "label":"Type:",
+          "default":"text",
+          "options":[
+            {
+              "value":"none",
+              "label":"None"
+            },
+            {
+              "value":"image",
+              "label":"Image"
+            },
+            {
+              "value":"text",
+              "label":"Text content"
+            }
+          ]
+        },
+        {
+          "type":"checkbox",
+          "id":"hide_mobile",
+          "label":"Hide on Mobile devices"
+        },
+        {
+          "type":"header",
+          "content":"Content"
+        },
+        {
+          "type":"paragraph",
+          "content":"+ IMAGE"
+        },
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Image"
+        },
+        {
+          "type":"paragraph",
+          "content":"+ TEXT CONTENT"
+        },
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"Heading content",
+          "default":"Sed ullamcorper morbi"
+        },
+        {
+          "type":"textarea",
+          "id":"content",
+          "label":"Content",
+          "default":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vel fringilla est ullamcorper eget nulla facilisi etiam. Duis ultricies lacus sed turpis tincidunt."
+        },
+        {
+          "type":"select",
+          "id":"align",
+          "label":"Content horizontal alignment",
+          "options":[
+            {
+              "value":"left",
+              "label":"Left"
+            },
+            {
+              "value":"center",
+              "label":"Center"
+            },
+            {
+              "value":"right",
+              "label":"Right"
+            }
+          ],
+          "default":"left"
+        },
+        {
+          "type":"select",
+          "id":"align_vertical",
+          "label":"Content vertical alignment",
+          "options":[
+            {
+              "value":"top",
+              "label":"Top"
+            },
+            {
+              "value":"middle",
+              "label":"Middle"
+            },
+            {
+              "value":"bottom",
+              "label":"Bottom"
+            }
+          ],
+          "default":"top"
+        },
+        {
+          "type":"text",
+          "id":"heading_font_size",
+          "label":"Heading font size",
+          "default":"24px"
+        }
+      ]
+    }
+  ],
+  "presets":[
+    {
+      "name":"Icon Box v2",
+      "category":"Banner",
+      "blocks":[
+        {
+          "type":"big_content"
+        },
+        {
+          "type":"block_content",
+          "settings":{
+            "icon":"icon-uniE93A"
+          }
+        },
+        {
+          "type":"block_content",
+          "settings":{
+            "icon":"icon-uniE945"
+          }
+        },
+        {
+          "type":"block_content",
+          "settings":{
+            "icon":"icon-uniE939"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

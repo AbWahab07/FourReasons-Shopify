@@ -1,0 +1,419 @@
+{%- if mega_column_type != 'mg_col_content' -%}
+  {%- assign _mega_menu_block_border_for = block.settings.mega_menu_block_border_for -%}
+  {%- assign _mega_menu_block_border_color = nil -%}
+  {%- capture mega_col_ID -%}#header-style .columns-{{block.id}}{%- endcapture -%}
+
+  {%- if style == _header_style or style == 'sticky' and _header_style == '4' -%}
+    {%- assign mega_css_condition = true -%}
+  {%- else -%}
+    {%- assign mega_css_condition = false -%}
+  {%- endif -%}
+  {%- comment -%}
+    ============
+      Mega CSS config
+    ============
+  {%- endcomment-%}
+  {%- if mega_css_condition -%}
+    {%- capture block_css -%}
+
+      {{- mega_col_ID }}{background-color:{{menu_bg_color}}!important;width:{{ manually_width }}!important;min-height:{{ min_height }}!important;
+        {%- if menu_bg_img != blank -%}
+          {{- -}}background-size: {{       block.settings.mega_menu_bg_size      }}! important;
+          {{- -}}background-position: {{   block.settings.mega_menu_bg_position  }}! important;
+          {{- -}}background-repeat: {{     block.settings.mega_menu_bg_repeat    }}! important;
+          {%- unless _lazyload -%}background-image: url({{mega_background_img}})! important;{%- endunless -%}
+        {%- endif -%}
+      }
+
+      {%- include 'css-responsive' ,classID: mega_col_ID ,css_value: _mega_menu_padding -%}
+      {%- include 'css-responsive' ,classID: mega_col_ID ,nextClassID: ' .mega-block-items' ,css_value: block.settings.mega_menu_block_padding -%}
+      {%- unless _mega_menu_block_border_for == 'none' -%}
+        {%- assign _mega_menu_block_border_color = block.settings.mega_menu_block_border_color | default: 'rgba(0,0,0,0)' -%}
+        {%- unless _mega_menu_block_border_color == 'rgba(0,0,0,0)' -%}
+            {{- mega_col_ID }} .mega-block-items{% if _mega_menu_block_border_for == 'content' %} > div{% endif %}{border: 1px solid {{_mega_menu_block_border_color}};}
+        {%- endunless -%}
+      {%- endunless -%}
+
+    {%- endcapture -%}
+    {%- assign mega_section_css = mega_section_css | append: block_css -%}
+  {%- endif -%}
+  {%- comment -%}
+    ============
+      Mega blocks content
+    ============
+  {%- endcomment-%}
+
+  {%- for block in section.blocks offset: mega_menu_index -%}
+    {%- if forloop.first -%}<div class="row row-1 no-gutters d-block d-lg-flex">
+    {%- else -%}{%- unless block.type contains 'mega_block_' -%}</div>{%- break -%}{%- endunless -%}
+    {%- endif -%}
+
+    {%- include 'mega-menu-columns' ,mega_column_type: 'mg_col_content'-%}
+  {%- endfor -%}
+
+{%- else -%}
+  {%- comment -%}
+    ============
+      Mega blocks content
+    ============
+  {%- endcomment-%}
+  {%- assign _mega_menu_width       = block.settings.mega_menu_width -%}
+  {%- assign _mega_menu_title       = block.settings.mega_menu_title -%}
+  {%- assign _mega_block_type       = _mega_block_type | default: block.type | remove: 'mega_block_' -%}
+  {%- assign _mega_menu_content     = 'mega_menu_' | append: _mega_block_type -%}
+  {%- assign _mega_menu_link        = block.settings.mega_menu_link | default: 'javascript:void(0);' -%}
+  {%- assign _mega_border_top       = block.settings.border_top -%}
+  {%- assign _mega_border_right     = block.settings.border_right -%}
+  {%- assign _mega_border_bottom    = block.settings.border_bottom -%}
+  {%- assign _mega_border_left      = block.settings.border_left -%}
+
+  {%- assign _mega_mega_mutilple_exist = nil -%}
+
+  {%- capture mega_block_ID     -%}{{mega_col_ID}} .mega-block-items.mega-block-{{block.id}}{%- endcapture -%}
+  {%- capture new_mega_block_ID -%}.mega-block-items.mega-block-{{block.id}}{%- endcapture -%}
+  {%- capture _mega_boder -%}
+    {% unless _mega_border_top     %} border-top-0{% endunless -%}
+    {% unless _mega_border_right   %} border-right-0{% endunless -%}
+    {% unless _mega_border_bottom  %} border-bottom-0{% endunless -%}
+    {% unless _mega_border_left    %} border-left-0{% endunless -%}
+  {%- endcapture -%}
+
+  {%- capture _mega_menu_width -%}{%- if mega_type != 'mobile' %}col-lg{%- if _mega_menu_width > 0 -%}-{{_mega_menu_width}}{%- endif -%}
+    {% if _mega_menu_block_border_for != 'none' %}{{_mega_boder | strip_newlines }}{% endif -%}{% endif -%}
+  {%- endcapture -%}
+
+  <div class="dropdown mega-block-items mega-type--{{_mega_block_type}} mega-block-{{block.id}} {{_mega_menu_width | strip_newlines }}"{{block.shopify_attributes}}>
+    <div class="mega-block-items-inner{% if _mega_menu_block_border_for == 'content' %}{{ _mega_boder | strip_newlines }}{% endif %}{% if _mega_menu_title == blank  %} mega-col-no-title{% endif %}">
+      {%- if _mega_menu_title != blank and mega_type != 'mobile' or mega_type == 'mobile' and _mega_block_type == 'menu' -%}
+        <a href="{{_mega_menu_link}}" class="mega-column--heading{{__mega_col_heading_ff}}">
+          <span>{{ _mega_menu_title }}</span>
+        </a>
+        <span class="expand"></span>
+      {%- endif -%}
+
+      <div class="mega-block-content-inner">
+        {%- case _mega_block_type -%}
+
+          {%- when 'menu' -%}{%- comment -%}============                  MENU        ============{%- endcomment-%}
+
+            {%- assign _mega_menu_tab_ll_col = linklists[block.settings[_mega_menu_content]] -%}
+
+            <ul class="dropdown-{% if mega_type == 'mobile' and _mega_menu_title == blank %}-sub-{% endif %}menu">
+              {%- if mega_type == 'mobile' and _mega_menu_title != blank -%}
+                <li class="back-prev-menu"><span class="expand">{{- 'general.text.back' | t -}}</span></li>
+              {%- endif -%}
+
+              {%- if _mega_menu_tab_ll_col.links.size > 0 -%}
+                {%- for ml in _mega_menu_tab_ll_col.links -%}
+                  {%- assign submenu = ml.title | handle -%}
+
+                  {%- if linklists[submenu].links.size > 0 -%}
+                    {%- assign _mega_mega_mutilple_exist = true -%}
+
+                    <li class="mega-sub-link mega-mutiple-link">
+                      <a href="{{ ml.url | default: 'javascript:void(0);' }}" class="mega-column--heading{{__mega_col_heading_ff}} dropdown-link">
+                        <span>{{ ml.title }}</span>
+                        {%- capture n_title -%}{{ _mega_menu_tab_ll_col.title}}-{{ml.title}}{%- endcapture -%}
+                        {%- include 'include-label-handle' ,l_title: n_title -%}
+                      </a>
+                      {%- if mega_type == 'mobile' -%}
+                        <span class="expand"></span>
+                      {%- endif -%}
+                      <div class="mega-sub-dropdown">
+                        <ul class="dropdown-menu{% unless mega_type == 'mobile' %}-sub{% endunless %}">
+                          {%- if mega_type == 'mobile' -%}
+                          <li class="back-prev-menu"><span class="expand">{{- 'general.text.back' | t -}}</span></li>
+                          {%- endif -%}
+                          {%- for l in linklists[submenu].links -%}
+                            <li class="mega-sub-mutiple-link">
+                              <a href="{{ l.url | default: 'javascript:void(0);' }}">
+                                <span>{{ l.title }}</span>
+                                {%- capture n_title -%}{{ _mega_menu_tab_ll_col.title}}-{{l.title}}{%- endcapture -%}
+                                {%- include 'include-label-handle' ,l_title: n_title -%}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      </div>
+                    </li>
+
+                  {%- else -%}
+                    <li class="mega-sub-link">
+                      <a href="{{ ml.url | default: 'javascript:void(0);' }}">
+                        <span>{{ ml.title }}</span>
+                        {%- capture n_title -%}{{ _mega_menu_tab_ll_col.title}}-{{ml.title}}{%- endcapture -%}
+                        {%- include 'include-label-handle' ,l_title: n_title -%}
+                      </a>
+                    </li>
+                  {%- endif -%}
+
+                {%- endfor -%}
+              {%- else -%}
+                {%- for i in (1..4) -%}<li>Sample menu item</li>{%- endfor -%}
+              {%- endif -%}
+            </ul>
+
+          {%- when 'image' -%}{%- comment -%}============                 IMAGE         ============{%- endcomment-%}
+            {%- assign _mega_menu_image_wide_mode = block.settings.mega_menu_image_wide_mode -%}
+
+            <div class="mega-menu--block_image-item mega-image-width--{{_mega_menu_image_wide_mode}}">
+              <a href="{{ block.settings.mega_menu_image_link | default: 'javascript:void(0);' }}">
+                {%- capture block_image_class -%}{%- if _mega_menu_image_wide_mode == 'fill' -%}w-100{%- endif -%}{%- endcapture -%}
+
+                {%- unless block.settings[_mega_menu_content] == blank  -%}
+
+                  {%- if mega_type == 'mobile' or block.settings.mega_menu_image_wide != blank -%}
+                    {%- include 'image-style', image: block.settings[_mega_menu_content] ,image_class: block_image_class ,_type: 'no-padding' -%}
+                  {%- else -%}
+                    {%- include 'image-style', image: block.settings[_mega_menu_content] ,image_class: block_image_class -%}
+                  {%- endif -%}
+
+                  {%- if mega_css_condition -%}
+                    {%- capture mega_block_css -%}
+                      {%- include 'css-responsive' ,classID: new_mega_block_ID ,nextClassID: ' img' ,css_value: block.settings.mega_menu_image_wide ,css_property: 'width' -%}
+                    {%- endcapture -%}
+                    {%- assign mega_section_css = mega_section_css | append: mega_block_css -%}
+                  {%- endif -%}
+                {%- else -%}
+                  <img src="{{ 'default-image.jpg' | asset_url }}"/>
+                {%- endunless -%}
+              </a>
+            </div>
+
+          {%- when 'collection' -%}{%- comment -%}============            COLLECTION      ============{%- endcomment-%}
+            {%- assign _mega_collection      = collections[block.settings[_mega_menu_content]] -%}
+            {%- assign _mega_enable_slider   = block.settings.mega_menu_enable_slider -%}
+            {%- assign __mega_items_resp     = block.settings.mega_menu_collection_item_resp | default: '2,1' -%}
+            {%- assign __mega_owl_id         = 'mega-collection-' | append: block.id -%}
+            {%- assign __mega_owl            = nil -%}
+            {%- assign __items_resp          = nil -%}
+
+            {%- capture mega_items_resp -%}{%- include 'include-item-per-row' ,item_resp: __mega_items_resp -%}{{__items_resp}}{%- endcapture -%}
+            {%- capture __mega_owl -%}{%- if _mega_enable_slider -%}{%- render 'include-carousel-attr' ,_type: 'carousel', owl_id: __mega_owl_id ,owl_items: __mega_items_resp ,owl_padding: true -%}{%- endif -%}{%- endcapture -%}
+
+            <div class="menu-proudct-carousel{% if _mega_enable_slider %} mega-menu-slider-element{% else %} row{% endif %}"{{__mega_owl}}>
+              {%- if block.settings[_mega_menu_content] != blank and _mega_collection.all_products_count > 0 -%}
+                {%- for product in _mega_collection.products limit: block.settings.mega_menu_collection_limit -%}
+                  {%- unless _mega_enable_slider -%}<div class="{{mega_items_resp}}">{%- endunless -%}
+                    {%- include 'product-item' , type: 'mega-menu-product' ,collection: _mega_collection -%}
+                  {%- unless _mega_enable_slider -%}</div>{%- endunless -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for i in (0..block.settings.mega_menu_collection_limit) -%}
+                  {%- unless _mega_enable_slider -%}<div class="{{mega_items_resp}}">{%- endunless -%}
+                    {%- include 'product-item' ,type: 'empty-product' -%}
+                  {%- unless _mega_enable_slider -%}</div>{%- endunless -%}
+                {%- endfor -%}
+              {%- endif -%}
+            </div>
+
+          {%- when 'blog' -%}{%- comment -%}============            COLLECTION      ============{%- endcomment-%}
+            {%- assign _mega_blog      = blogs[block.settings[_mega_menu_content]] -%}
+
+              {%- assign __mega_items_resp  = block.settings.mega_menu_blog_item_resp | default: '2,1' -%}
+              {%- assign __mega_owl_id      = 'mega-blog-' | append: block.id -%}
+              {%- assign __mega_owl         = nil -%}
+
+              {%- capture __mega_owl -%}{%- render 'include-carousel-attr' ,_type: 'carousel', owl_id: __mega_owl_id ,owl_items: __mega_items_resp ,owl_padding: true -%}{%- endcapture -%}
+
+              <div class="mega-menu-slider-element"{{ __mega_owl }}>
+                {%- if block.settings[_mega_menu_content] != blank and _mega_blog.articles_count > 0 -%}
+                  {%- for article in _mega_blog.articles limit: block.settings.mega_menu_blog_limit -%}
+                    {%- include 'featured-blog-item' ,style: '1' ,ar_label: 'tag' ,_hide_article_info: true ,mega_menu_blog: true -%}
+                  {%- endfor -%}
+                {%- else -%}
+                  {%- for i in (0..block.settings.mega_menu_collection_limit) -%}
+                    {%- include 'svgset' ,type: 'empty-blog' -%}
+                  {%- endfor -%}
+                {%- endif -%}
+              </div>
+
+          {%- when 'product' -%}{%- comment -%}============               PRODUCT       ============{%- endcomment-%}
+            {%- liquid
+              assign __mega_menu_block_product_1  = block.settings.mega_menu_product_1
+              assign __mega_menu_block_product_2  = block.settings.mega_menu_product_2
+              assign _mega_menu_block_product_1   = all_products[__mega_menu_block_product_1]
+              assign _mega_menu_block_product_2   = all_products[__mega_menu_block_product_2]
+            -%}
+
+            {%- include 'product-item' ,product: _mega_menu_block_product_1 ,type: 'listing-item', mega_menu: true -%}
+            {%- if __mega_menu_block_product_2 != blank -%}
+              {%- include 'product-item' ,product: _mega_menu_block_product_2 ,type: 'listing-item', mega_menu: true -%}
+            {%- endif -%}
+
+          {%- when 'menu-product' -%}{%- comment -%}============          MENU-PRODUCT    ============{%- endcomment-%}
+
+            <div class="mega-block-content-inner--menu">
+              <ul class="dropdown{% if mega_type == 'mobile' %}-sub{% endif %}-menu">
+                {%- if linklists[block.settings.mega_menu_menu].links.size > 0 -%}
+                  {%- for l in linklists[block.settings.mega_menu_menu].links -%}
+                    <li class="mega-sub-link">
+                      <a href="{{ l.url | default: 'javascript:void(0);' }}">{{ l.title }}
+                        {%- capture n_title -%}{{ linklists[block.settings.mega_menu_menu].title }}-{{l.title}}{%- endcapture -%}
+                        {%- include 'include-label-handle' ,l_title: n_title -%}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                {%- else -%}
+                  {%- for i in (1..4) -%}
+                    <li>Sample menu item</li>
+                  {%- endfor -%}
+                {%- endif -%}
+              </ul>
+            </div>
+
+            {%- assign _mega_collection = collections[block.settings.mega_menu_collection] -%}
+
+            <div class="mega-block-content-inner--products">
+              {%- assign __mega_items_resp = block.settings.mega_menu_collection_item_resp | default: '2,1' -%}
+              {%- assign __mega_owl_id     = 'mega-collection-' | append: block.id -%}
+
+              {%- capture __mega_owl -%}{%- render 'include-carousel-attr' ,_type: 'carousel', owl_id: __mega_owl_id ,owl_items: __mega_items_resp ,owl_padding: true -%}{%- endcapture -%}
+
+              <div class="menu-proudct-carousel"{{ __mega_owl }}>
+                {%- if block.settings.mega_menu_collection != blank and _mega_collection.products.size > 0 -%}
+                  {%- for product in _mega_collection.products limit: block.settings.mega_menu_collection_limit -%}
+                    {%- include 'product-item' , type: 'mega-menu-product' ,collection: _mega_collection -%}
+                  {%- endfor -%}
+                {%- else -%}
+                  {%- for i in (0..block.settings.mega_menu_collection_limit) -%}
+                    {%- include 'product-item' ,type: 'empty-product' -%}
+                  {%- endfor -%}
+                {%- endif -%}
+              </div>
+            </div>
+
+          {%- when 'html' -%}{%- comment -%}============                  HTML    ============{%- endcomment-%}
+
+            <div class="mega-block-content-inner--{{_mega_block_type}}">{{- block.settings[_mega_menu_content] -}}</div>
+
+          {%- when 'map' -%}
+            {%- assign _pin = 'pin.png' | asset_url -%}
+
+            <div class="map-wrapper map-element-ui"
+                data-latlong="{{  block.settings.contact_latlong | strip }}"
+                data-zoom="{{     block.settings.contact_zoom_lv }}"
+                data-scroll="{{   block.settings.contact_scroll }}"
+                data-icon="{{     _pin }}"
+                data-content="{{ shop.address.street }}, {{ shop.address.city }}, {{ shop.address.country }}">
+              <div class="map map-element" style="min-height: {{block.settings.min_height | default: '200px'}};"></div>
+            </div>
+
+          {%- when 'image_text' -%}{%- comment -%}============            IMAGE         ============{%- endcomment-%}
+            {%- assign _mega_menu_image_wide_mode = block.settings.mega_menu_image_wide_mode -%}
+
+            <div class="mega-menu--block_image-item mega-overlay-content mega-image-width--{{_mega_menu_image_wide_mode}}">
+              <a href="{{ block.settings.mega_menu_image_link | default: 'javascript:void(0);' }}">
+
+                {%- capture block_image_class -%}{%- if _mega_menu_image_wide_mode == 'fill' -%}w-100{%- endif -%}{%- endcapture -%}
+
+                {%- unless block.settings.mega_menu_image == blank  -%}
+                  {%- if mega_type == 'mobile' or block.settings.mega_menu_image_wide != blank -%}
+                    {%- include 'image-style', image: block.settings.mega_menu_image ,image_class: block_image_class ,_type: 'no-padding' -%}
+                  {%- else -%}
+                    {%- include 'image-style', image: block.settings.mega_menu_image ,image_class: block_image_class -%}
+                  {%- endif -%}
+
+                  {%- if mega_css_condition -%}
+                    {%- capture mega_block_css -%}
+                      {%- include 'css-responsive' ,classID: new_mega_block_ID ,nextClassID: ' img' ,css_value: block.settings.mega_menu_image_wide ,css_property: 'width' -%}
+                    {%- endcapture -%}
+                    {%- assign mega_section_css = mega_section_css | append: mega_block_css -%}
+                  {%- endif -%}
+                {%- else -%}
+                  <img src="{{ 'default-image.jpg' | asset_url }}"/>
+                {%- endunless -%}
+              </a>
+
+              {%- comment -%}
+                ============
+                  Image Overlay content
+                ============
+              {%- endcomment-%}
+              {%- unless block.settings.mg_overlay_text_1 == blank and block.settings.mg_overlay_text_2 == blank -%}
+
+                <div class="mega-overlay-content--item text-{{block.settings.mg_overlay_text_align}}">
+                  {%- for i in (1..2) -%}
+                    {%- assign tempo_text = 'mg_overlay_text_' | append: i -%}
+
+                    {%- unless block.settings[tempo_text] == blank -%}
+                      {%- capture textID %} .text-{{i}}{%- endcapture -%}
+                      {%- assign tempo_text_color      = 'mg_overlay_text_color_'         | append: i -%}
+                      {%- assign tempo_text_fs         = 'mg_overlay_text_fs_'            | append: i -%}
+                      {%- assign tempo_text_fw         = 'mg_overlay_text_fw_'            | append: i -%}
+                      {%- assign tempo_text_mb         = 'mg_overlay_text_margin_'        | append: i -%}
+                      {%- assign tempo_text_lsp        = 'mg_overlay_text_lsp_'           | append: i -%}
+                      {%- assign tempo_text_lh         = 'mg_overlay_text_lh_'            | append: i -%}
+                      {%- assign slide_txt_color       = block.settings[tempo_text_color] | default: 'rgba(0,0,0,0)' -%}
+
+                      <div class="text-{{i}}"><span>{{block.settings[tempo_text]}}</span></div>
+
+                      {%- capture text_single_css -%}
+                        color:{{             slide_txt_color}};
+                        font-weight: {{      block.settings[tempo_text_fw]  }};
+                      {%- endcapture -%}
+
+                      {%- capture mega_block_css -%}
+                        {%- include 'css-responsive', classID: new_mega_block_ID ,nextClassID: textID ,css_values: text_single_css -%}
+                        {%- include 'css-responsive' ,classID: new_mega_block_ID ,nextClassID: textID ,css_value: block.settings[tempo_text_fs]  ,css_property: 'font-size' -%}
+                        {%- include 'css-responsive' ,classID: new_mega_block_ID ,nextClassID: textID ,css_value: block.settings[tempo_text_mb]  ,css_property: 'margin' -%}
+                        {%- include 'css-responsive' ,classID: new_mega_block_ID ,nextClassID: textID ,css_value: block.settings[tempo_text_lsp] ,css_property: 'letter-spacing' -%}
+                        {%- include 'css-responsive' ,classID: new_mega_block_ID ,nextClassID: textID ,css_value: block.settings[tempo_text_lh]  ,css_property: 'line-height' -%}
+                      {%- endcapture -%}
+                      {%- if mega_css_condition -%}{%- assign mega_section_css = mega_section_css | append: mega_block_css -%}{%- endif -%}
+                    {%- endunless -%}
+                  {%- endfor -%}
+                </div>
+
+
+                {%- capture mega_block_css -%}
+                  {%- include 'css-responsive' ,classID: new_mega_block_ID ,nextClassID: ' .mega-overlay-content--item' ,css_value: block.settings.mg_overlay_padding -%}
+                  {%- include 'css-responsive' ,classID: new_mega_block_ID ,nextClassID: ' .mega-overlay-content--item' ,css_value: block.settings.mg_overlay_min_wide ,css_property: 'min-width' -%}
+                  {%- include 'css-responsive' ,classID: new_mega_block_ID ,nextClassID: ' .mega-overlay-content--item' ,css_value: block.settings.mg_overlay_position ,type: 'position' -%}
+                {%- endcapture -%}
+                {%- if mega_css_condition -%}{%- assign mega_section_css = mega_section_css | append: mega_block_css -%}{%- endif -%}
+              {%- endunless -%}
+            </div>
+
+
+            {%- comment -%}
+              ============
+                Content under image
+              ============
+            {%- endcomment-%}
+            {%- assign __mg_sub_text = block.settings.mg_sub_text -%}
+            {%- unless __mg_sub_text == blank -%}
+              <div class="mega-block-image--sub-text text-{{block.settings.mg_sub_text_align}}">
+                <p>{{__mg_sub_text}}</p>
+              </div>
+              {%- capture mega_block_css -%}
+                {{- new_mega_block_ID }} .mega-block-image--sub-text p{color: {{block.settings.mg_sub_text_color | default: 'rgba(0,0,0,0)' }};}
+                {%- include 'css-responsive' ,classID: new_mega_block_ID ,nextClassID: ' .mega-block-image--sub-text p' ,css_value: block.settings.mg_sub_text_fs     ,css_property: 'font-size' -%}
+                {%- include 'css-responsive' ,classID: new_mega_block_ID ,nextClassID: ' .mega-block-image--sub-text p' ,css_value: block.settings.mg_sub_text_margin ,css_property: 'margin' -%}
+              {%- endcapture -%}
+              {%- if mega_css_condition -%}{%- assign mega_section_css = mega_section_css | append: mega_block_css -%}{%- endif -%}
+            {%- endunless -%}
+
+
+        {%- endcase -%}
+        {%- assign _mega_block_type = nil -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if mega_css_condition -%}
+    {%- capture mega_block_css -%}
+      {%- if _mega_mega_mutilple_exist and _mega_menu_block_border_color and _mega_menu_block_border_color != 'rgba(0,0,0,0)' -%}
+        {%- if _mega_menu_block_border_for == 'content' -%}
+          {{- mega_block_ID }},
+          {{- mega_block_ID }} > div{border: none!important;}
+          {{- mega_block_ID }} .mega-sub-link{border: 1px solid {{_mega_menu_block_border_color}};{{_mega_boder | strip_newlines | replace: '-0', ': none;' }}}
+        {%- endif -%}
+        {{- mega_block_ID }} .mega-sub-link.mega-mutiple-link{display: block !important;}
+      {%- endif -%}
+
+      {%- include 'css-responsive' ,classID: mega_block_ID ,css_value: block.settings.mega_menu_padding -%}
+    {%- endcapture -%}
+    {%- assign mega_section_css = mega_section_css | append: mega_block_css -%}
+  {%- endif -%}
+{%- endif -%}

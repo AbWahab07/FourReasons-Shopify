@@ -1,0 +1,3219 @@
+{%- include 'snippet-custom-content' -%}
+
+{% schema %}
+{
+  "name": "Custom content",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Created by 'Custom content' section"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Label [:id]","default": "Custom content"
+    },
+    {
+      "type": "header",
+      "content": "LAYOUT"
+    },
+    {
+      "type": "checkbox",
+      "id": "boxed_layout",
+      "label": "Boxed layout",
+      "default": true
+    },
+    {
+      "type":"text",
+      "id":"section_padding",
+      "label":"Section Padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "select",
+      "id": "use_bg_color",
+      "label": "Use background color for:",
+      "default": "section",
+      "options": [
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "content",
+          "label": "Content"
+        }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_bg_fixed",
+      "label": "Background Image Fixed"
+    },
+    {
+      "type": "select",
+      "id": "use_bg_img",
+      "label": "Use background image for:",
+      "default": "section",
+      "options": [
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "content",
+          "label": "Content"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_size",
+      "label": "Background Size",
+      "default": "cover",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_repeat",
+      "label": "Background Image Repeat:",
+      "default": "no-repeat",
+      "options": [
+        {
+          "value": "no-repeat",
+          "label": "No Repeat"
+        },
+        {
+          "value": "repeat",
+          "label": "Repeat"
+        },
+        {
+          "value": "repeat-x",
+          "label": "Repeat X"
+        },
+        {
+          "value": "repeat-y",
+          "label": "Repeat Y"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_position",
+      "label": "Background Image Position:",
+      "default": "center center",
+      "options": [
+        {
+          "value": "left top",
+          "label": "Left Top"
+        },
+        {
+          "value": "center top",
+          "label": "Center Top"
+        },
+        {
+          "value": "right top",
+          "label": "Right Top"
+        },
+        {
+          "value": "left center",
+          "label": "Left Center"
+        },
+        {
+          "value": "center center",
+          "label": "Center Center"
+        },
+        {
+          "value": "right center",
+          "label": "Right Center"
+        },
+        {
+          "value": "left bottom",
+          "label": "Left Bottom"
+        },
+        {
+          "value": "center bottom",
+          "label": "Center Bottom"
+        },
+        {
+          "value": "right bottom",
+          "label": "Right Bottom"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Section Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading_text",
+      "label": "Subheading"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading2_text",
+      "label": "Subheading 2"
+    },
+    {
+      "type": "select",
+      "id": "heading_content_align",
+      "label": "Heading alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_head_break_container",
+      "label": "Break out container"
+    },
+    {
+      "type": "color",
+      "id": "section_heading_color",
+      "label": "Heading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "color",
+      "id": "section_subheading_color",
+      "label": "Subheading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "color",
+      "id": "section_subheading2_color",
+      "label": "Subheading 2 color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "header",
+      "content": "Section button"
+    },
+    {
+      "type": "text",
+      "id": "button",
+      "label": "Button Label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link",
+      "info": "Remove link to hide"
+    },
+    {
+      "type": "select",
+      "id": "button_align",
+      "label": "Horizontal alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_corner",
+      "label": "Button Rounded Corners"
+    },
+    {
+      "type": "range",
+      "id": "button_inherit_style",
+      "label": "Inherit Button style:",
+      "min": 0,
+      "max": 3,
+      "default": 1,
+      "info": "Set 0 to customize button"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_border",
+      "label": "Button Border color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Layout content"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_items",
+      "label": "Spacing items"
+    },
+    {
+      "type": "checkbox",
+      "id": "nested_spacing",
+      "label": "Spacing items (Nested)"
+    },
+    {
+      "type": "text",
+      "id": "content_shadow",
+      "label": "Content Box Shadow"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Paragraph",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "head_text",
+          "label": "Heading",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "textarea",
+          "id": "par1_text",
+          "label": "Paragraph 1",
+          "default": "Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store."
+        },
+        {
+          "type": "textarea",
+          "id": "par2_text",
+          "label": "Paragraph 2"
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Button Label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "header",
+          "content": "Heading settings"
+        },
+        {
+          "type": "color",
+          "id": "head_color",
+          "label": "Heading color",
+          "default": "#3a3a3a"
+        },
+        {
+          "type": "text",
+          "id": "head_size",
+          "label": "Heading font size",
+          "default": "24px"
+        },
+        {
+          "type": "select",
+          "id": "head_bold",
+          "label": "Heading font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "head_margin",
+          "label": "Heading margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {"type":"text","id":"head_lsp","label":"Heading letters spacing","placeholder": "E.g: 2px"},
+        {
+          "type": "text",
+          "id": "head_lh",
+          "label": "Heading line height",
+          "placeholder": "E.g: 20px"
+        },
+        {
+          "type": "header",
+          "content": "Paragraph 1 settings"
+        },
+        {
+          "type": "color",
+          "id": "par1_color",
+          "label": "Paragraph 1 color",
+          "default": "#4a4a4a"
+        },
+        {
+          "type": "text",
+          "id": "par1_size",
+          "label": "Paragraph 1 font size",
+          "default": "16px"
+        },
+        {
+          "type": "select",
+          "id": "par1_bold",
+          "label": "Paragraph 1 font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "par1_margin",
+          "label": "Paragraph 1 margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {"type":"text","id":"par1_lsp","label":"Paragraph 1 letters spacing","placeholder": "E.g: 2px"},
+        {
+          "type": "text",
+          "id": "par1_lh",
+          "label": "Paragraph 1 line height",
+          "placeholder": "E.g: 20px"
+        },
+        {
+          "type": "header",
+          "content": "Paragraph 2 settings"
+        },
+        {
+          "type": "color",
+          "id": "par2_color",
+          "label": "Paragraph 2 color",
+          "default": "#4a4a4a"
+        },
+        {
+          "type": "text",
+          "id": "par2_size",
+          "label": "Paragraph 2 font size",
+          "default": "16px"
+        },
+        {
+          "type": "select",
+          "id": "par2_bold",
+          "label": "Paragraph 2 font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "par2_margin",
+          "label": "Paragraph 2 margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {"type":"text","id":"par2_lsp","label":"Paragraph 2 letters spacing","placeholder": "E.g: 2px"},
+        {
+          "type": "text",
+          "id": "par2_lh",
+          "label": "Paragraph # line height2",
+          "placeholder": "E.g: 20px"
+        },
+        {
+          "type": "header",
+          "content": "Button settings"
+        },
+        {
+          "type": "text",
+          "id": "btns_size",
+          "label": "Button font size",
+          "default": "14px"
+        },
+        {
+          "type": "text",
+          "id": "btns_margin",
+          "label": "Button margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {"type":"text","id":"btns_lsp","label":"Button letters spacing","placeholder": "E.g: 2px"},
+        {
+          "type": "checkbox",
+          "id": "style_as_btn",
+          "label": "Style as button",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "btn_inherit",
+          "label": "Inherit Button style:",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "info": "0 to customize"
+        },
+        {
+          "type": "select",
+          "id": "btns_bold",
+          "label": "Button font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "btn_padding",
+          "label": "Button padding",
+          "default": "6px 30px"
+        },
+        {
+          "type": "text",
+          "id": "btn_radius",
+          "label": "Button Rounded Corners (optional)",
+          "placeholder": "E.g: 4px 4px 4px 4px"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Button Text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color",
+          "label": "Button Background color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "button_border",
+          "label": "Button Border color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "btn_border_width",
+          "label": "Button border size:",
+          "min": 0,
+          "max": 10,
+          "unit": "px",
+          "default": 1
+        },
+        {
+          "type": "checkbox",
+          "id": "btn_hover",
+          "label": "Enable button hover"
+        },
+        {
+          "type": "color",
+          "id": "button_color_hover",
+          "label": "Button Text color on Hover",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color_hover",
+          "label": "Button Background color on Hover",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "button_border_hover",
+          "label": "Button Border color on Hover",
+          "default": "#ffffff"
+        },
+        {
+          "type": "range",
+          "id": "btn_border_width_hover",
+          "label": "Button border size on Hover:",
+          "min": 0,
+          "max": 10,
+          "unit": "px",
+          "default": 1
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Paragraph"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Vertical alignment",
+          "default": "none",
+          "options": [
+            {
+              "value": "none-2",
+              "label": "No alignment (content in top)"
+            },
+            {
+              "value": "none",
+              "label": "No alignment (content in middle)"
+            },
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align_text",
+          "label": "Horizontal alignment",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "range",
+          "id": "border_size",
+          "label": "Border size",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "text",
+          "id": "item_margin",
+          "label": "Item Margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "block_image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "block_image_link",
+          "label": "Image link"
+        },
+        {
+          "type": "text",
+          "id": "image_border_rd",
+          "label": "Image Border radius",
+          "placeholder": "E.g: 4px"
+        },
+        {
+          "type": "text",
+          "id": "img_max_width",
+          "label": "Image max width",
+          "placeholder": "E.g: 50% or 300px"
+        },
+        {
+          "type": "select",
+          "id": "effect",
+          "label": "Hover effect",
+          "default": "1",
+          "options": [
+            {
+              "value": "1",
+              "label": "None"
+            },
+            {
+              "value": "2",
+              "label": "Fade Image"
+            },
+            {
+              "value": "3",
+              "label": "Zoom In"
+            },
+            {
+              "value": "4",
+              "label": "Flash Zoom"
+            },
+            {
+              "value": "7",
+              "label": "Black & White"
+            },
+            {
+              "value": "9",
+              "label": "Grey Scale"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "img_height_method",
+          "label": "Image Size Mode",
+          "default": "auto",
+          "options": [
+            {
+              "value": "auto",
+              "label": "Default"
+            },
+            {
+              "value": "fit",
+              "label": "Default (Middle align)"
+            },
+            {
+              "value": "fill",
+              "label": "Fill"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "img_position",
+          "label": "Image position",
+          "default": "center center",
+          "placeholder": "E.g: left center",
+          "info": "Only Image Size Mode = Fill"
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Image"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Vertical alignment",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "No alignment"
+            },
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align_text",
+          "label": "Horizontal alignment",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "range",
+          "id": "border_size",
+          "label": "Border size",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type": "html",
+      "name": "Custom HTML",
+      "settings": [
+        {
+          "type": "html",
+          "id": "code",
+          "label": "HTML",
+          "default": "<div><p>Write your own custom HTML content.</p></div>"
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Custom HTML"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Vertical alignment",
+          "default": "top",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align_text",
+          "label": "Horizontal alignment",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Menu list",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading_text",
+          "label": "Heading",
+          "default": "Talk about your brand"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu item"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Heading Color",
+          "default": "#3a3a3a"
+        },
+        {
+          "type": "color",
+          "id": "paragraph_color",
+          "label": "Paragraph Color",
+          "default": "#4a4a4a"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "label": "Heading Font size (h1-> h6)",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "default": 2
+        },
+        {
+           "type":"text",
+           "id":"menu_fs",
+           "label":"Menu Font size",
+           "default": "18px",
+           "placeholder": "E.g: 14px"
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Menu item"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Vertical alignment",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "No alignment"
+            },
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align_text",
+          "label": "Horizontal alignment",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type": "iconbox",
+      "name": "Icon box",
+      "settings": [
+        {
+          "type": "select",
+          "id": "font_icon_type",
+          "label": "Font icon type",
+          "default": "font_icon",
+          "options": [
+            {
+              "value": "font_icon",
+              "label": "Font icon"
+            },
+            {
+              "value": "image",
+              "label": "Image"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "ib_content_inline",
+          "label": "Show Font icon & Text same row",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "ib_inline",
+          "label": "Show Icon box item same row"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "text",
+          "id": "ib_img_max_width",
+          "label": "Image max width"
+        },
+        {
+          "type": "text",
+          "id": "ib_img_margin_bottom",
+          "label": "Image margin bottom"
+        },
+        {
+          "type": "header",
+          "content": "Icon box #1"
+        },
+        {
+          "type": "text",
+          "id": "font_1",
+          "label": "Font icon name #1",
+          "default": "icon-uniE93A",
+          "placeholder": "E.g: icon-phone"
+        },
+        {
+          "type": "image_picker",
+          "id": "font_image_1",
+          "label": "Image #1"
+        },
+        {
+          "type": "textarea",
+          "id": "text_1",
+          "label": "Text #1",
+          "default": "Here your content. "
+        },
+        {
+          "type": "header",
+          "content": "Icon box #2"
+        },
+        {
+          "type": "text",
+          "id": "font_2",
+          "label": "Font icon name #2",
+          "placeholder": "E.g: icon-phone"
+        },
+        {
+          "type": "image_picker",
+          "id": "font_image_2",
+          "label": "Image #2"
+        },
+        {
+          "type": "textarea",
+          "id": "text_2",
+          "label": "Text #2"
+        },
+        {
+          "type": "header",
+          "content": "Icon box #3"
+        },
+        {
+          "type": "text",
+          "id": "font_3",
+          "label": "Font icon name #3",
+          "placeholder": "E.g: icon-phone"
+        },
+        {
+          "type": "image_picker",
+          "id": "font_image_3",
+          "label": "Image #3"
+        },
+        {
+          "type": "textarea",
+          "id": "text_3",
+          "label": "Text #3"
+        },
+        {
+          "type": "header",
+          "content": "Icon box #4"
+        },
+        {
+          "type": "text",
+          "id": "font_4",
+          "label": "Font icon name #4",
+          "placeholder": "E.g: icon-phone"
+        },
+        {
+          "type": "image_picker",
+          "id": "font_image_4",
+          "label": "Image #4"
+        },
+        {
+          "type": "textarea",
+          "id": "text_4",
+          "label": "Text #4"
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Icon box group"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Vertical alignment",
+          "default": "top",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align_text",
+          "label": "Horizontal alignment",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product item"
+        },
+        {
+          "type": "color",
+          "id": "product_bg_color",
+          "label": "Product background Color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "text",
+          "id": "product_padding",
+          "label": "Product Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Product Item"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "select",
+          "id": "align_text",
+          "label": "Horizontal alignment",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type": "progress",
+      "name": "Progress bar",
+      "settings": [
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Progress bar style",
+          "default": "1",
+          "options": [
+            {
+              "value": "1",
+              "label": "1"
+            },
+            {
+              "value": "2",
+              "label": "2"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Heading settings"
+        },
+        {
+          "type": "color",
+          "id": "head_color",
+          "label": "Heading color",
+          "default": "#3a3a3a"
+        },
+        {
+          "type": "text",
+          "id": "head_size",
+          "label": "Heading font size",
+          "default": "24px"
+        },
+        {
+          "type": "select",
+          "id": "head_bold",
+          "label": "Heading font weight",
+          "default": "300",
+          "options": [
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type": "text",
+          "id": "head_margin",
+          "label": "Heading margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "text",
+          "id": "head_lsp",
+          "label": "Heading letters spacing"
+        },
+        {
+          "type": "text",
+          "id": "head_lh",
+          "label": "Heading line height",
+          "placeholder": "E.g: 20px"
+        },
+        {
+          "type": "header",
+          "content": "Content settings"
+        },
+        {
+          "type": "color",
+          "id": "cont_color",
+          "label": "Content color",
+          "default": "#4a4a4a"
+        },
+        {
+          "type": "text",
+          "id": "cont_fs",
+          "label": "Content font size",
+          "default": "14px"
+        },
+        {
+          "type": "select",
+          "id": "cont_bold",
+          "label": "Content font weight",
+          "default": "300",
+          "options": [
+            {"value":"100","label":"100 Thin (Hairline)"},
+            {"value":"200","label":"200 Extra Light (Ultra Light)"},
+            {"value":"300","label":"300 Light"},
+            {"value":"400","label":"400 Normal"},
+            {"value":"500","label":"500 Medium"},
+            {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+            {"value":"700","label":"700 Bold"},
+            {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+            {"value":"900","label":"900 Black (Heavy)"}
+          ]
+        },
+        {
+          "type": "text",
+          "id": "cont_margin",
+          "label": "Content margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "text",
+          "id": "cont_lsp",
+          "label": "Content letters spacing"
+        },
+        {
+          "type": "text",
+          "id": "cont_lh",
+          "label": "Content line height",
+          "placeholder": "E.g: 20px"
+        },
+        {
+          "type": "header",
+          "content": "Progressbar #1"
+        },
+        {
+          "type": "range",
+          "id": "progress_1",
+          "label": "Progressbar #1",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50,
+          "info": "0 to hide"
+        },
+        {
+          "type": "text",
+          "id": "progress_text_1",
+          "label": "Heading title for progressbar #1"
+        },
+        {
+          "type": "textarea",
+          "id": "progress_textarea_1",
+          "label": "Content for progressbar #1"
+        },
+        {
+          "type": "header",
+          "content": "Progressbar #2"
+        },
+        {
+          "type": "range",
+          "id": "progress_2",
+          "label": "Progressbar #2",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50,
+          "info": "0 to hide"
+        },
+        {
+          "type": "text",
+          "id": "progress_text_2",
+          "label": "Heading title for progressbar #2"
+        },
+        {
+          "type": "textarea",
+          "id": "progress_textarea_2",
+          "label": "Content for progressbar #2"
+        },
+        {
+          "type": "header",
+          "content": "Progressbar #3"
+        },
+        {
+          "type": "range",
+          "id": "progress_3",
+          "label": "Progressbar #3",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50,
+          "info": "0 to hide"
+        },
+        {
+          "type": "text",
+          "id": "progress_text_3",
+          "label": "Heading title for progressbar #3"
+        },
+        {
+          "type": "textarea",
+          "id": "progress_textarea_3",
+          "label": "Content for progressbar #3"
+        },
+        {
+          "type": "header",
+          "content": "Progressbar #4"
+        },
+        {
+          "type": "range",
+          "id": "progress_4",
+          "label": "Progressbar #4",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50,
+          "info": "0 to hide"
+        },
+        {
+          "type": "text",
+          "id": "progress_text_4",
+          "label": "Heading title for progressbar #4"
+        },
+        {
+          "type": "textarea",
+          "id": "progress_textarea_4",
+          "label": "Content for progressbar #4"
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Progress bar"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Vertical alignment",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "No alignment"
+            },
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align_text",
+          "label": "Horizontal alignment",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color"
+        },
+        {
+          "type": "range",
+          "id": "border_size",
+          "label": "Border size",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "text",
+          "id": "item_margin",
+          "label": "Item Margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "video",
+          "label": "Video link"
+        },
+        {
+          "type": "checkbox",
+          "id": "popup",
+          "label": "Video popup",
+          "default": true,
+          "info": "Required a placeholder image"
+        },
+        {
+          "type": "header",
+          "content": "Placeholder Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "block_image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_height",
+          "label": "Image height"
+        },
+        {
+          "type": "checkbox",
+          "id": "image_rd",
+          "label": "Image Rounded Corners"
+        },
+        {
+          "type": "header",
+          "content": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "heading_text",
+          "label": "Heading",
+          "info": "Blank to hide"
+        },
+        {
+          "type": "text",
+          "id": "heading_size",
+          "label": "Heading font size",
+          "default": "18px"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Heading Color",
+          "default": "#3a3a3a"
+        },
+        {
+          "type": "select",
+          "id": "head_bold",
+          "label": "Heading font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "heading_margin",
+          "label": "Heading margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "header",
+          "content": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "subheading_text",
+          "label": "Subheading",
+          "info": "Blank to hide"
+        },
+        {
+          "type": "text",
+          "id": "subheading_size",
+          "label": "Subheading font size",
+          "default": "16px"
+        },
+        {
+          "type": "color",
+          "id": "subheading_color",
+          "label": "Subheading Color",
+          "default": "#3a3a3a"
+        },
+        {
+          "type": "select",
+          "id": "sub_bold",
+          "label": "Subheading font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "subheading_margin",
+          "label": "Subheading margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "textarea",
+          "id": "content_text",
+          "label": "Content",
+          "info": "Blank to hide"
+        },
+        {
+          "type": "text",
+          "id": "content_size",
+          "label": "Content font size",
+          "default": "16px"
+        },
+        {
+          "type": "color",
+          "id": "content_color",
+          "label": "Content Color",
+          "default": "#888888"
+        },
+        {
+          "type": "select",
+          "id": "con_bold",
+          "label": "Content font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "content_margin",
+          "label": "Content margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "header",
+          "content": "Button"
+        },
+        {
+          "type": "text",
+          "id": "button_icon",
+          "label": "Button icon"
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Button label"
+        },
+        {
+          "type": "checkbox",
+          "id": "btn_circle",
+          "label": "Show Button Circle"
+        },
+        {
+          "type": "range",
+          "id": "btn_inherit",
+          "label": "Inherit button style",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "info": "0 to customize"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Button Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "button_border",
+          "label": "Button Border color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color",
+          "label": "Button Background color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Video"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type": "blog",
+      "name": "Blog list",
+      "settings": [
+        {
+          "type": "blog",
+          "id": "blog",
+          "label": "Blog"
+        },
+        {
+          "type": "range",
+          "id": "limit",
+          "label": "Limit item",
+          "min": 1,
+          "max": 5,
+          "default": 4
+        },
+        {
+          "type": "header",
+          "content": "Blog Heading"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Title",
+          "default": "RECENT NEWS"
+        },
+        {
+          "type": "color",
+          "id": "head_color",
+          "label": "Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "text",
+          "id": "head_fs",
+          "label": "Font size",
+          "default": "h3",
+          "placeholder": "E.g: h3 or 24px"
+        },
+        {
+          "type": "select",
+          "id": "head_fw",
+          "label": "Font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "head_margin",
+          "label": "Margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "text",
+          "id": "head_lsp",
+          "label": "Letter spacing",
+          "info": "E.g: 2px"
+        },
+        {
+          "type": "header",
+          "content": "Blog item title"
+        },
+        {
+          "type": "color",
+          "id": "blog_item_title_color",
+          "label": "Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "text",
+          "id": "blog_item_title_fs",
+          "label": "Font size",
+          "default": "16px",
+          "placeholder": "16px"
+        },
+        {
+          "type": "select",
+          "id": "blog_item_title_fw",
+          "label": "Font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Blog list"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Vertical alignment",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "No alignment"
+            },
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align_text",
+          "label": "Horizontal alignment",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "range",
+          "id": "border_size",
+          "label": "Border size",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type": "form",
+      "name": "Form subscribe",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Form settings"
+        },
+        {
+          "type": "select",
+          "id": "action_type",
+          "label": "Form Type:",
+          "options": [
+            {
+              "value": "mailchimp",
+              "label": "Mailchimp"
+            },
+            {
+              "value": "klaviyo",
+              "label": "Klaviyo"
+            }
+          ],
+          "default": "mailchimp"
+        },
+        {
+          "type": "textarea",
+          "id": "action",
+          "label": "Form Action"
+        },
+        {
+          "type": "paragraph",
+          "content": "Mailchimp: [Where do I get my MailChimp Form Action](https://www.arenacommerce.com/blogs/faq/shopify-theme-how-to-get-a-mailchimp-form-action-url)"
+        },
+        {
+          "type": "paragraph",
+          "content": "KLAVIYO: Please copy the hidden input[name='g'] value from the KLAVIYO form and paste here."
+        },
+        {
+          "type": "text",
+          "id": "placeholder",
+          "label": "Form placeholder",
+          "default": "Yourmail@email.com"
+        },
+        {
+          "type": "checkbox",
+          "id": "form_corner",
+          "label": "Form Rounded Corners"
+        },
+        {
+          "type": "checkbox",
+          "id": "btn_corner",
+          "label": "Button Rounded Corners"
+        },
+        {
+          "type": "select",
+          "id": "form_btn_display",
+          "label": "Button type:",
+          "default": "all",
+          "options": [
+            {
+              "value": "all",
+              "label": "Use Text & Icon"
+            },
+            {
+              "value": "icon",
+              "label": "Use Icon"
+            },
+            {
+              "value": "text",
+              "label": "Use Text"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "btn_icon",
+          "label": "Button Font Icon Name"
+        },
+        {
+          "type": "text",
+          "id": "btn_text",
+          "label": "Button Label",
+          "default": "Subcrible"
+        },
+        {
+          "type": "range",
+          "id": "btn_inherit",
+          "label": "Button style",
+          "min": 0,
+          "max": 3,
+          "step": 1,
+          "default": 1,
+          "info": "0 to customize"
+        },
+        {
+          "type": "header",
+          "content": "Button form style"
+        },
+        {
+          "type": "text",
+          "id": "btn_frm_padding",
+          "label": "Button padding",
+          "placeholder": "top right left bottom",
+          "info": "E.g: 10px 5px 10px 5px"
+        },
+        {
+          "type": "text",
+          "id": "btn_frm_radius",
+          "label": "Button radius corners",
+          "placeholder": "E.g: 4px 4px 4px 4px"
+        },
+        {
+          "type": "text",
+          "id": "btn_frm_fs",
+          "label": "Button font size",
+          "placeholder": "E.g: 14px"
+        },
+        {
+          "type": "select",
+          "id": "btn_frm_fw",
+          "label": "Button font weight",
+          "default": "300",
+          "options": [
+            {
+              "value": "100",
+              "label": "100 Thin (Hairline)"
+            },
+            {
+              "value": "200",
+              "label": "200 Extra Light (Ultra Light)"
+            },
+            {
+              "value": "300",
+              "label": "300 Light"
+            },
+            {
+              "value": "400",
+              "label": "400 Normal"
+            },
+            {
+              "value": "500",
+              "label": "500 Medium"
+            },
+            {
+              "value": "600",
+              "label": "600 Semi Bold (Demi Bold)"
+            },
+            {
+              "value": "700",
+              "label": "700 Bold"
+            },
+            {
+              "value": "800",
+              "label": "800 Extra Bold (Ultra Bold)"
+            },
+            {
+              "value": "900",
+              "label": "900 Black (Heavy)"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "btn_frm_color",
+          "label": "Button text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "btn_frm_bg_color",
+          "label": "Button background color",
+          "default": "#000000"
+        },
+        {
+          "type": "text",
+          "id": "btn_frm_lsp",
+          "label": "Letter spacing",
+          "placeholder": "E.g: 2px"
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Form"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Vertical alignment",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "No alignment"
+            },
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align_text",
+          "label": "Horizontal alignment",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "range",
+          "id": "border_size",
+          "label": "Border size",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type": "social_icon",
+      "name": "Social icon",
+      "settings": [
+        {
+          "type": "text",
+          "id": "social_icon",
+          "label": "Font icon name",
+          "default": "icon-facebook",
+          "placeholder": "E.g: icon-facebook"
+        },
+        {
+          "type": "image_picker",
+          "id": "social_image",
+          "label": "Image",
+          "info": "Blank to use icon"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Icon style"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "icon_bg_color",
+          "label": "Background color",
+          "default": "#000000"
+        },
+        {
+          "type": "text",
+          "id": "social_size",
+          "label": "Social icon/image size",
+          "placeholder": "E.g: 24px"
+        },
+        {
+          "type": "text",
+          "id": "social_padding",
+          "label": "Social Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Social Icon"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        }
+      ]
+    },
+    {
+      "type": "social_group",
+      "name": "Group Social icon",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Social icon settings"
+        },
+        {
+          "type": "text",
+          "id": "soc_fs",
+          "label": "Social icon font size",
+          "default": "18px"
+        },
+        {
+          "type": "color",
+          "id": "soc_color",
+          "label": "Icon color",
+          "default": "#1A1A1A"
+        },
+        {
+          "type": "color",
+          "id": "soc_bg_color",
+          "label": "Icon background color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "text",
+          "id": "soc_padding",
+          "label": "Social item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "text",
+          "id": "soc_margin",
+          "label": "Social item Margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "header",
+          "content": "Social icon 1"
+        },
+        {
+          "type": "text",
+          "id": "soc_icon_1",
+          "label": "Font icon name",
+          "default": "icon-facebook"
+        },
+        {
+          "type": "url",
+          "id": "soc_link_1",
+          "label": "Social link"
+        },
+        {
+          "type": "header",
+          "content": "Social icon 2"
+        },
+        {
+          "type": "text",
+          "id": "soc_icon_2",
+          "label": "Font icon name",
+          "default": "icon-twitter"
+        },
+        {
+          "type": "url",
+          "id": "soc_link_2",
+          "label": "Social link"
+        },
+        {
+          "type": "header",
+          "content": "Social icon 3"
+        },
+        {
+          "type": "text",
+          "id": "soc_icon_3",
+          "label": "Font icon name",
+          "default": "icon-instagram"
+        },
+        {
+          "type": "url",
+          "id": "soc_link_3",
+          "label": "Social link"
+        },
+        {
+          "type": "header",
+          "content": "Social icon 4"
+        },
+        {
+          "type": "text",
+          "id": "soc_icon_4",
+          "label": "Font icon name"
+        },
+        {
+          "type": "url",
+          "id": "soc_link_4",
+          "label": "Social link"
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "header",
+          "content": "Block settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Group Social icon"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Vertical alignment",
+          "default": "none",
+          "options": [
+            {
+              "value": "none-2",
+              "label": "No alignment (content in top)"
+            },
+            {
+              "value": "none",
+              "label": "No alignment (content in middle)"
+            },
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "align_text",
+          "label": "Horizontal alignment",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "range",
+          "id": "border_size",
+          "label": "Border size",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "text",
+          "id": "item_margin",
+          "label": "Item Margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    },
+    {
+      "type": "merge",
+      "name": "Merge blocks",
+      "settings": [
+        {
+          "type": "select",
+          "id": "type",
+          "label": "Merge method:",
+          "default": "start",
+          "options": [
+            {
+              "value": "start",
+              "label": "Start"
+            },
+            {
+              "value": "end",
+              "label": "End"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Nested with above Block"
+        },
+        {
+          "type": "checkbox",
+          "id": "nested",
+          "label": "Enable Nested"
+        },
+        {
+          "type": "color",
+          "id": "background_nested",
+          "label": "Nested Background color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "text",
+          "id": "nested_padding",
+          "label": "Nested Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "text",
+          "id": "nested_margin",
+          "label": "Nested Margin",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        },
+        {
+          "type": "text",
+          "id": "nested_corners",
+          "label": "Nested Rounded Corners",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top-left Top-right Bottom-right Bottom-Left"
+        },
+        {
+          "type": "text",
+          "id": "nested_shadow",
+          "label": "Nested Box Shadow"
+        },
+        {
+          "type": "header",
+          "content": "Slider settings (Optional)"
+        },
+        {
+          "type": "paragraph",
+          "content": "Setting width on each blocks will be disabled when Enable Slider is active"
+        },
+        {
+          "type": "checkbox",
+          "id": "carousel_layout",
+          "label": "Enable Slider"
+        },
+        {
+          "type": "checkbox",
+          "id": "autoplay",
+          "label": "Enable Autoplay"
+        },
+        {
+          "type": "checkbox",
+          "id": "loop",
+          "label": "Enable Loop"
+        },
+        {
+          "type": "checkbox",
+          "id": "center",
+          "label": "Enable Center mode"
+        },
+        {
+          "type": "checkbox",
+          "id": "nav",
+          "label": "Show Next & Prev arrows",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "dot",
+          "label": "Show Dots",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "padding_item",
+          "label": "Spacing Items"
+        },
+        {
+          "type": "text",
+          "id": "items_resp",
+          "label": "Max number of items per row",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "info": "E.g: 4,3,2",
+          "default": "4,3,2"
+        },
+        {
+          "type": "header",
+          "content": "Block settings",
+          "info": "Use with method Start Merge"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Block label",
+          "default": "Merge Block"
+        },
+        {
+          "type": "text",
+          "id": "width_resp",
+          "label": "Width (1->12)",
+          "placeholder": "xl,lg,md,sm,xs,xxs",
+          "default": "6,12",
+          "info": "0 to hide. E.g: 4,6,12"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Vertical alignment",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "No alignment"
+            },
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "item_padding",
+          "label": "Item Padding",
+          "placeholder": "E.g: 5px 20px 5px 20px",
+          "info": "Order: Top Right Bottom Left"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Content",
+      "category": "Advanced layout"
+    }
+  ]
+}
+{% endschema %}

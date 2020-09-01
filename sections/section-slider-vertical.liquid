@@ -1,0 +1,303 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _s_type    		 	  = 'slider-image' -%}
+{%- assign _lazyload  		 	  = settings.use_lazyload -%}
+{%- assign _large_image  	 	  = section.settings.large_image -%}
+{%- assign _slider_padding   	= section.settings.slider_padding -%}
+{%- assign _general_content  	= section.settings.general_content -%}
+
+{%- assign _bg_image  		 	= section.settings.section_bg_image -%}
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="home-slider-ver-image layout-{{_layout }} section-show-{{section.id}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="{{_s_type}}" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+  	<div class="slider-vertical">
+  		<div class="row">
+  			<div class="col-md-6 d-none d-md-block align-self-center">
+    			{%- include 'head-title' -%}
+    			<div class="content-wrap">
+    				{%- unless _general_content == blank -%}
+    				<div class="general-content">{{_general_content}}</div>
+    				{%- endunless -%}
+
+
+    				<div class="tab-content" id="slider-content-{{section.id}}">
+    					{%- if section.blocks.size > 0 -%}
+
+	    					{%- for block in section.blocks -%}
+		    					{%- assign _b_img = block.settings.image -%}
+		    					{%- assign _b_con = block.settings.content -%}
+
+		    					{%- if _b_img != blank	and _b_con != blank -%}
+			    					<div class="tab-pane{% if forloop.first %} show active{% endif %} tab-pane-{{section.id}}" id="sc-{{section.id}}-{{forloop.index0}}"{{ block.shopify_attributes }}>
+			    						{{_b_con}}
+			    					</div>
+		    					{%- endif -%}
+	    					{%- endfor -%}
+
+	    				{%- else -%}
+		    				{%- for i in (1..3) -%}
+			    				<div class="tab-pane{% if forloop.first %} show active{% endif %}" id="sc-{{forloop.index0}}" role="tabpanel" aria-labelledby="sc-{{forloop.index0}}"{{ block.shopify_attributes }}>
+			    					{{forloop.index0}} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+			    				</div>
+		    				{%- endfor -%}
+    					{%- endif -%}
+    				</div>
+    			</div>
+
+  			</div>
+  			<div class="col-md-6 col-12">
+  				<div class="slider-images">
+  					<div class="row">
+  						<div class="col-9{% if _large_image != blank %} align-self-center{% endif %}">
+  							<div class="main-slider">
+                  {%- if section.blocks.size > 0 -%}
+    								{%- for block in section.blocks -%}
+  	  								{%- assign _b_img = block.settings.image -%}
+
+  	  								<div class="slide-item">
+  	  									<div class="image">
+  	  										{%- include 'image-style', image: _b_img -%}
+  	  									</div>
+  	  								</div>
+    								{%- endfor -%}
+                  {%- else -%}
+                    {%- for i in (1..3) -%}
+                      <div class="slide-item">
+                        <div class="image">
+                          {%- include 'svgset', type: 'product' -%}
+                        </div>
+                      </div>
+                    {%- endfor -%}
+                  {%- endif -%}
+  							</div>
+
+                {%- unless _large_image == blank -%}
+    							<div class="large-image">
+    								<div class="image">
+    									{%- include 'image-style', image: _large_image -%}
+    								</div>
+    							</div>
+                {%- endunless -%}
+  						</div>
+  						<div class="col-3">
+                <div class="nav nav-tabs d-block" id="slider-img-{{section.id}}" data-show="4">
+  								{%- if section.blocks.size > 0 -%}
+  										{%- for block in section.blocks -%}
+  											{%- assign _b_img = block.settings.image -%}
+
+  											<div class="nav-item d-block">
+  												<a class="nav-link p-1{% if forloop.first %} active{% endif %}" data-index="{{forloop.index0}}" data-section-id="{{section.id}}">
+  													{%- include 'image-style', image: _b_img -%}
+  												</a>
+  											</div>
+  										{%- endfor -%}
+  								{%- else -%}
+  				    				{%- for i in (1..3) -%}
+                        <div class="nav-item d-block">
+                          <a class="nav-link p-1{% if forloop.first %} active{% endif %}" data-index="{{forloop.index0}}" data-section-id="{{section.id}}">
+                            {%- include 'svgset', type: 'product', svg_group: '02' -%}
+                          </a>
+                        </div>
+  				    				{%- endfor -%}
+  								{%- endif -%}
+								</div>
+  						</div>
+  					</div>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+  {%- capture mainSliderID -%}.section-show-{{section.id}} .main-slider{%- endcapture -%}
+  <style>{%- include 'section-general-css' -%}
+  {%- include 'css-responsive', classID:mainSliderID, css_value: _slider_padding -%}</style>
+</div>
+{% schema %}{
+  "name":"Vertical slider",
+  "tag":"section",
+  "settings":[
+    {
+      "type":"paragraph",
+      "content":"Created by 'Slider Vertical' section"
+    },
+    {
+      "type":"text",
+      "id":"title",
+      "label":"Section Label [:id]","default": "Vertical slider"
+    },
+    {
+      "type":"header",
+      "content":"LAYOUT"
+    },
+    {
+      "type":"checkbox",
+      "id":"boxed_layout",
+      "label":"Boxed layout",
+      "default":true
+    },
+    {
+      "type":"text",
+      "id":"section_padding",
+      "label":"Section Padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"color",
+      "id":"section_bg_color",
+      "label":"Background color",
+      "default":"#FFFFFF"
+    },
+    {
+      "type":"image_picker",
+      "id":"section_bg_image",
+      "label":"Background image"
+    },
+    {
+    	"type":"select",
+    	"id"   :"section_bg_size",
+    	"label":"Background Size",
+    	"default": "cover",
+    	"options":[
+    	{"value":"auto","label":"Auto"},
+    	{"value":"cover","label":"Cover"},
+    	{"value":"contain","label":"Contain"}
+    	]
+    },
+    {
+    	"type": "select",
+    	"id": "section_bg_repeat",
+    	"label": "Background Image Repeat:",
+    	"default": "no-repeat",
+    	"options": [
+    	{"value":"no-repeat","label":"No Repeat"},
+    	{"value":"repeat","label":"Repeat"},
+    	{"value":"repeat-x","label":"Repeat X"},
+    	{"value":"repeat-y","label":"Repeat Y"}
+    	]
+    },
+    {
+    	"type": "select",
+    	"id": "section_bg_position",
+    	"label": "Background Image Position:",
+    	"default": "center center",
+    	"options": [
+    	{"value":"left top","label":"Left Top"},
+    	{"value":"center top","label":"Center Top"},
+    	{"value":"right top","label":"Right Top"},
+    	{"value":"left center","label":"Left Center"},
+    	{"value":"center center","label":"Center Center"},
+    	{"value":"right center","label":"Right Center"},
+    	{"value":"left bottom","label":"Left Bottom"},
+    	{"value":"center bottom","label":"Center Bottom"},
+    	{"value":"right bottom","label":"Right Bottom"}
+    	]
+    },
+    {
+      "type":"header",
+      "content":"General Content"
+    },
+    {
+       "type":"text",
+       "id"  :"slider_padding",
+       "label":"Slider padding",
+       "placeholder":"E.g: 5px 20px 5px 20px",
+       "info":"Order: Top Right Bottom Left"
+     },
+     {
+       "type":"textarea",
+       "id"	 :"general_content",
+       "label":"Content"
+     },
+     {
+       "type":"image_picker",
+       "id"  :"large_image",
+       "label":"Large image"
+     },
+     {
+       "type":"header",
+       "content":"Section Heading"
+     },
+     {
+       "type":"text",
+       "id":"heading_text",
+       "label":"Heading",
+       "default": "Lorem ipsum dolor sit amet"
+     },
+     {
+       "type":"text",
+       "id":"subheading_text",
+       "label":"Subheading"
+     },
+     {
+       "type":"textarea",
+       "id":"subheading2_text",
+       "label":"Subheading 2",
+       "default": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure"
+     },
+     {
+       "type":"select",
+       "id":"heading_content_align",
+       "label":"Heading alignment",
+       "options":[
+       {"value":"left","label":"Left"},
+       {"value":"center","label":"Center"},
+       {"value":"right","label":"Right"}
+       ],
+       "default":"center"
+     },
+     {
+       "type":"color",
+       "id":"section_heading_color",
+       "label":"Heading color",
+       "info": "Blank to inherit color"
+     },
+     {
+       "type":"color",
+       "id":"section_subheading_color",
+       "label":"Subheading color",
+       "info": "Blank to inherit color"
+     },
+     {
+       "type":"color",
+       "id":"section_subheading2_color",
+       "label":"Subheading 2 color",
+       "info": "Blank to inherit color"
+     }
+  ],
+  "blocks":[
+    {
+      "type":"image",
+      "name":"Image",
+      "settings":[
+	      {
+	         "type":"image_picker",
+	         "id"	 :"image",
+	         "label":"Image"
+	      },
+	      {
+	         "type":"header",
+	         "content": "Text content"
+	      },
+	      {
+	         "type":"textarea",
+	         "id"	 :"content",
+	         "label":"Content"
+	      }
+
+      ]
+    }
+  ],
+  "presets":[
+    {
+      "name":"Vertical Slider",
+      "category":"Banner",
+      "blocks":[
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,70 @@
+{%- assign faq_align          = section.settings.faq_heading_content_align -%}
+{%- assign faq_heading        = section.settings.faq_heading_text -%}
+{%- assign faq_subhead        = section.settings.faq_subheading_text -%}
+{%- assign faq_subhead_2      = section.settings.faq_subheading_2_text -%}
+{%- assign faq_text_align     = section.settings.faq_text_align -%}
+
+{%- comment -%}
+  ============
+    NOTE*: 'faq_heading_size' variable's called in page-contact-template
+  ============
+{%- endcomment-%}
+
+<aside class="faq-column">
+  <div class="faq-header">
+    {%- if page_name == 'contact' -%}
+        {%- capture faq_content_length -%}{{- faq_heading -}}{{- faq_subhead -}}{%- endcapture -%}
+
+        {%- unless faq_content_length.size == 0 -%}
+
+          <div class="faq-heading text-{{faq_align}}">
+            {%- unless faq_heading == blank -%}
+              <div class="faq-title h{{faq_heading_size}}">
+                <span>{{- faq_heading -}}</span>
+              </div>
+            {%- endunless -%}
+
+            {%- unless faq_subhead == blank -%}
+              <div class="faq-subtitle">
+                <span>{{- faq_subhead -}}</span>
+              </div>
+            {%- endunless -%}
+          </div>
+        {%- endunless -%}
+
+    {%- else  -%}
+      {%- include 'head-title',_title: faq_heading ,_subtitle: faq_subhead ,_subtitle2: faq_subhead_2 ,_title_alignment: faq_align -%}
+    {%- endif -%}
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="faq-body">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'faq' -%}
+          {%- assign faq_heading = block.settings.heading -%}
+          {%- assign faq_content = block.settings.content -%}
+
+          {%- unless faq_heading == blank -%}
+            {%- capture faqBlock_ID -%}faqtarget_{{block.id}}_{{forloop.index}}{%- endcapture -%}
+            
+            <div class="faq-item" id="FAQcolumn-{{forloop.index}}">
+              <div class="faq-item-inner text-{{faq_text_align}} collapse-ui">
+                <div class="faq-header-item" id="faq-{{forloop.index}}">
+                  <a href="javascript:void(0);" data-target="#{{faqBlock_ID}}" aria-controls="{{faqBlock_ID}}"{% if forloop.first %} class="collapsed" aria-expanded="true"{% else %}aria-expanded="false"{% endif %}>
+                    <span class="text">{{- faq_heading -}}</span>
+                    <span class="expand"></span>
+                  </a>
+                </div>
+
+                <div id="{{faqBlock_ID}}" class="faq-body-item collapse{% if forloop.first %} show{% endif %}" aria-labelledby="faq-{{forloop.index}}" data-parent="#FAQcolumn-{{forloop.index}}">
+                  <div class="faq-item-content">{{- faq_content -}}</div>
+                </div>
+              </div>
+            </div>
+          {%- endunless -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+  <p>
+</aside>

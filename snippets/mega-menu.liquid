@@ -1,0 +1,45 @@
+{%- assign _lazyload         	= settings.use_lazyload -%}
+{%- assign menu_bg_img       	= block.settings.mega_menu_bg_img -%}
+{%- assign menu_bg_color     	= block.settings.mega_menu_bg_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign min_height        	= block.settings.mega_menu_height | default: '300px' -%}
+{%- assign _mega_menu_padding 	= block.settings.mega_menu_padding | default: '0' -%}
+
+{%- if mega_type == 'vertical' -%}
+	{% comment %}
+	==================
+	  VERTICAL MEGA MENU 4 COLUMNS
+	==================
+	{% endcomment %}
+
+	{%- assign manually_width    = block.settings.manually_width | default: 'inherit' -%}
+	{%- capture mega_menu_class -%}{%- endcapture -%}
+
+{%- else -%}
+	{% comment %}
+	==================
+	  MEGA MENU 4 COLUMNS
+	==================
+	{% endcomment %}
+
+	{%- assign manually_width    = block.settings.manually_width | append: '%' -%}
+	{%- if _header_style == '9' or _header_style == '10' -%}
+		{%- assign manually_width    = block.settings.manually_width | append: 'vw' -%}
+	{%- endif -%}
+	{%- capture mega_menu_class %} position-{{ block.settings.position }}{%- endcapture -%}
+
+{%- endif -%}
+
+{%- if mega_type == 'mobile' -%}
+
+	<div class="dropdown-menu mega_columns{{ mega_menu_class }} columns-{{block.id}}" data-mega-title="{{l.title}}">
+		<div class="back-prev-menu"><span class="expand">Back</span></div>
+		{%- include 'mega-menu-columns' ,mega_menu_index: forloop.index ,mega_type: 'mobile' -%}
+	</div>
+
+{%- else -%}
+
+	{%- capture mega_background_img -%}{%- if menu_bg_img != blank and style == _header_style -%}{{ menu_bg_img | img_url: '1024x' }}{%- endif -%}{% endcapture -%}
+	<div class="dropdown-menu mega_columns{{ mega_menu_class }} columns-{{block.id}}{% if _lazyload and mega_background_img != blank %} lazyload" data-bgset="{{mega_background_img}}{% endif %}" data-mega-title="{{l.title}}">
+	  	{%- include 'mega-menu-columns' ,mega_menu_index: forloop.index -%}
+	</div>
+{%- endif -%}

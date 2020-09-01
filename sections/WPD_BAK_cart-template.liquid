@@ -1,0 +1,526 @@
+{%- include 'breadcrumb' -%}
+{%- assign _lazyload              = settings.use_lazyload -%}
+{%- assign dis_ajax               = settings.disable_ajax_cart -%}
+{%- assign enable_term            = settings.enable_term -%}
+{%- assign link_term              = settings.link_term -%}
+{%- assign enable_free_shipping   = settings.enable_free_shipping | default: false -%}
+{%- assign _free_shipping_price   = settings.free_shipping_price | strip | default: 0 | plus: 0 -%}
+{%- assign _free_shipping_success = 'cart.shipping_text.free_shipping_success' | t  -%}
+{%- assign _free_shipping_text_1  = 'cart.shipping_text.free_shipping_text_1' | t -%}
+{%- assign _free_shipping_text_2  = 'cart.shipping_text.free_shipping_text_2' | t -%}
+{%- assign _text                  = section.settings.text -%}
+{%- assign _content               = section.settings.content -%}
+{%- assign _banner_image          = section.settings.banner_image -%}
+{%- assign _cart_notes            = section.settings.show_cart_notes -%}
+{%- assign _show_related          = section.settings.show_related -%}
+
+{%- if _free_shipping_price == 0 or settings.currency_type == '1' -%}{%- assign enable_free_shipping = false -%}{%- endif -%}
+
+<div id="col-main" class="page-cart" data-section-type="cart-section" data-section-id="{{section.id}}">
+  <div class="container">
+
+    {%- if cart.item_count > 0 -%}
+      <!-- h1 class="cart-title text-center">{{- 'cart.general.cart_title' | t -}}</h1 -->
+
+      <form action="/cart" method="post" id="cartform" style="padding-top: 80px;">
+
+        <div class="cart-table">
+          <div class="row">
+            <div class="col-md-7 col-12">
+              <div class="cart-container">
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="item">       {{- 'cart.general.table_item'     | t -}} </th>
+                      <th class="price">      {{- 'cart.general.table_price'    | t -}} </th>
+                      <th class="qty">        {{- 'cart.general.table_quantity' | t -}} </th>
+                      <th class="total-price">{{- 'cart.general.table_total'    | t -}} </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {%- for line_item in cart.items -%}
+                      <tr class="cart-item" data-id="{{ line_item.id }}">
+                        {%- assign item_tags = line_item.product.tags | join: '+++' -%}
+                        <input type="hidden" name="related_tags" value="{{item_tags}}">
+
+                        <td class="item-name">
+                          <div class="item-image">
+                            <a href="{{ line_item.url }}">
+                              {% include 'image-style' with image:line_item.image , image_size: 'medium' %}
+                            </a>
+                          </div>
+                          <div class="item-title">
+                            <p><a href="{{ line_item.url }}"><span class="item-name">{{ line_item.product.title }}</span></a></p>
+
+                            {%- unless line_item.product.has_only_default_variant -%}
+                              <div class="cart-item-variants">{{ line_item.variant.title }}</div>
+                            {%- endunless -%}
+                            <div class="cart-item-remove">
+                              <a href="/cart/change?line={{ forloop.index }}&quantity=0" class="cart-remove-btn remove-{{ line_item.id }}" type="button" title="{{ 'cart.button_label.remove' | t }}">
+                                <u>{{- 'cart.general.remove' | t -}}</u>
+                              </a>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="item-price">
+                          <div class="item-title">
+                            <a href="{{ line_item.url }}"><span class="item-name">{{ line_item.product.title }}</span></a>
+
+                            {%- unless line_item.variant.title contains 'Default' -%}
+                              <div class="wrap-item-variant">
+                                {% for option in line_item.product.options %}
+                                  <span class="item-variant"><span class="variant-title">{{ line_item.variant.options[forloop.index0] }}</span></span>
+                                {% endfor %}
+                              </div>
+                            {%- endunless -%}
+                          </div>
+                          <div class="price-single">{{ line_item.original_price | money }}</div>
+                          <div class="cart-item-remove d-md-none">
+                            <a href="/cart/change?line={{ forloop.index }}&quantity=0" class="cart-remove-btn remove-{{ line_item.id }}" type="button" title="{{ 'cart.button_label.remove' | t }}">
+                              <u>{{- 'cart.general.remove' | t -}}</u>
+                            </a>
+                          </div>
+                        </td>
+
+                        <td class="item-qty">
+                          <div class="wrapper-fix">
+                            <div class="quantity">
+                              <div class="qty-wrapper" data-id="{{ line_item.id }}">
+                                <span class="qty-inner">
+                                  <span class="qty-down-{{ line_item.id }} qty-down">
+                                    {%- include 'icons', type: 'icon_free', name:'icon-K' -%}
+                                  </span>
+                                </span>
+                                <input class="replace input-cart-qty" id="{{ line_item.id }}" value="{{ line_item.quantity }}" type="text"{% unless dis_ajax %} readonly name="item-quantity"{% else %} name="updates[]"{% endunless %}>
+                                <span class="qty-inner">
+                                  <span class="qty-up-{{ line_item.id }} qty-up">
+                                    {%- include 'icons', type: 'icon_free', name:'icon-L' -%}
+                                  </span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                        </td>
+                        <td class="item-total">
+                          {{- line_item.line_price | money -}}
+                        </td>
+                      </tr>
+                    {%- endfor -%}
+                  </tbody>
+                </table>
+
+                <div class="row">
+                  <div class="col-md-6 col-12 order-md-1 order-2">
+                    {%- if _cart_notes -%}
+                      <div class="cart-order-note collapse-ui">
+                        <div class="d-md-none">
+                          <a href="javascript:void(0);" data-target="#cart_note">
+                            {{ 'cart.general.add_note' | t }}
+                            <i class="demo-icon icon-angle-down float-right"></i>
+                          </a>
+                        </div>
+                        <div class="cart-note collapse" id="cart_note">
+                          <textarea name="note" id="CartSpecialInstructions" placeholder="{{ 'cart.general.add_note' | t }}">{{ cart.note }}</textarea>
+                        </div>
+                      </div>
+                    {%- endif -%}
+                  </div>
+
+                  <div class="col-md-6 col-12 order-md-2 order-1">
+                    <div class="cart-clear">
+                      <div class="d-flex justify-content-between">
+                        <div class="col-6">
+                          <a href="/collections" class="btn-continue">
+                            <i class="demo-icon icon-angle-left"></i>
+                            {{ 'cart.general.continue_shopping' | t }}
+                          </a>
+                        </div>
+                        <div class="col-6 text-right">
+                          {%- if dis_ajax -%}
+                            <button type="submit" name="update" class="btn btn-2 btn-update mb-2">
+                              <i class="demo-icon icon-compare-1"></i>{{- 'cart.button_label.update' | t -}}
+                            </button>
+                          {%- endif -%}
+                          <a class="btn btn-3 btn-clear" href="/cart/clear">{{ 'cart.button_label.clear_cart' | t }}</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5 col-12">
+              <div class="cart-summary">
+                <p class="summary-order-text cart-heading-content">{{'cart.general.cart_totals' | t }}</p>
+
+                <div class="cart-detail-info">
+                  <div class="row">
+                    <div class="col-5"><span>{{ 'cart.general.subtotal' | t }}</span></div>
+                    <div class="col-7 text-right"><span class="tt-price">{{ cart.total_price | money }}</span></div>
+
+                    <div class="col-5"><span>{{'cart.general.shipping' | t }}</span></div>
+                    <div class="col-7 text-right"><span>{{'cart.general.taxes_and_shipping' | t }}</span></div>
+                  </div>
+                </div>
+
+                {%- if enable_term -%}
+                  <div class="terms-conditions">
+                    <input type="checkbox" class="agree">
+                    <a href="{{link_term}}" target="_blank" rel="noopener">{{'cart.general.terms_conditions' | t }}</a>
+                  </div>
+                {%- endif -%}
+
+                <div class="checkout-wrapper">
+                  <input type="submit" name="checkout" class="btn btn-1" value="{{ 'cart.button_label.checkout' | t }}" data-term="{{enable_term}}">
+                </div>
+
+                {%- if enable_free_shipping -%}
+                  <div class="free-shipping">
+                    {%- assign cart_total              = cart.total_price | times: 1 -%}
+                    {%- assign free_shipping_price     = _free_shipping_price -%}
+                    {%- assign free_shipping_price_100 = _free_shipping_price | times: 100.0 -%}
+
+                    {%- if cart_total > free_shipping_price_100 -%}
+                      <div class="text">{{'cart.shipping_text.free_shipping_success' | t }}</div>
+                      <div class="progress"><span class="progress-bar" style="width:100%">100%</span></div>
+                    {%- else -%}
+                      {%- capture progress -%}{{ cart_total | times: 1.0 | divided_by: free_shipping_price | round: 2 }}{%- endcapture -%}
+                      {%- assign spend = free_shipping_price_100 | minus: cart_total -%}
+                      {%- if spend > 0 -%}
+                        <div class="text">{{ 'cart.shipping_text.free_shipping_text_1' | t }} {{ spend | money }} {{ 'cart.shipping_text.free_shipping_text_2' | t }}</div>
+                      {%- else -%}
+                        <div class="text">{{ 'cart.shipping_text.free_shipping_success' | t }}</div>
+                      {%- endif -%}
+                      <div class="progress"><span class="progress-bar" style="width:{{ progress }}%">{{ progress }}%</span></div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+
+              <div class="cart-summary">
+                {%- unless _text == blank -%}
+                  <div class="cart-condition">
+                    <div class="cart-condition-heading cart-heading-content">{{_text}}</div>
+
+                    <div class="cart-condition-body">
+                      <div class="cart-condition-content">{{_content}}</div>
+
+                      {%- unless _banner_image == blank -%}
+                        <div class="cart-condition-image">
+                          {%- include 'image-style', image: _banner_image -%}
+                        </div>
+                      {%- endunless -%}
+                    </div>
+                  </div>
+                {%- endunless -%}
+
+                {% if settings.shipping_calculator %}{% include 'shipping-calculator' %}{% endif %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </form>
+
+    {%- else -%}
+      <div class="text-center cart-empty-wrapper">
+        <p class="cart empty">{{ 'cart.general.empty' | t }}</p>
+        <a href="/collections"><i class="demo-icon icon-angle-left"></i> {{ 'cart.general.continue_shopping' | t }}</a>
+      </div>
+    {%- endif -%}
+
+    {%- include 'include-recently-viewed' -%}
+
+    {%- comment -%}
+      ============
+        -- Cart Related
+      ============
+    {%- endcomment-%}
+
+    {%- if _show_related -%}
+      {%- assign search_url = shop.secure_url | append: '/search.json?type=product&options:unavailable_products=hide&q= tag:' -%}
+      {%- capture _related_tags  -%}{{related_tags | split: '+++' | uniq | join: ' OR ' }}{%- endcapture -%}
+      {%- assign _search_uri          = search_url | append: _related_tags -%}
+      {%- assign _related_items_resp  = section.settings.related_items_resp -%}
+      {%- assign _related_total       = section.settings.related_total | default: '0' -%}
+
+      <div id="cart_related_wrapper" style="display: none;">
+        <style>
+          #cart_related_wrapper{padding-top: 20px;}
+          #cart_related_wrapper h2{margin-bottom: 30px;}
+        </style>
+        <h2>{{- section.settings.related_items_title -}}</h2>
+
+        <div class="hide cart_related_slide" data-total="{{ _related_total }}">
+          {%- include 'include-carousel-attr' _type: 'carousel' ,owl_items: _related_items_resp -%}
+        </div>
+        <div id="cart_related"></div>
+
+        <script>
+          var _relatedCart = ()=>{
+            if (!$('input[name="related_tags"]').length) {$('#cart_related_wrapper').hide();return}
+
+            let tag_arr = '';
+            $('input[name="related_tags"]').each((i,v)=>{tag_arr+= $(v).val();})
+            tag_arr = [...new Set(tag_arr.split('+++'))];
+
+            let _url = '{{search_url}}' + tag_arr.join(' OR ');
+
+            AT_Main._requestAjax({},'GET', _url, 'text')
+            .fail(err=>console.log('Error',err))
+            .done(resp=>{
+              let slide_attr = $('#cart_related_wrapper .cart_related_slide')
+              ,ob = $(resp)
+              ,limit = +slide_attr.attr('data-total')
+              ,relatedHTML = ''
+              ,resultParent = '.cata-product';
+
+              if (!ob.find(resultParent).children().length ) {
+                $('#cart_related_wrapper').hide();
+                return;
+              }
+
+              ob.find(resultParent).children().each((i,v)=>{
+                if (limit < 1) { return;}
+                relatedHTML += $(v)[0].outerHTML;
+                limit--;
+              });
+
+              $('#cart_related')
+              .html(`<div class="slide-ui-element owl-carousel" ${slide_attr.html()}>${relatedHTML}</div>`)
+              .closest('#cart_related_wrapper')
+              .show();
+
+              $('#cart_related .product-grid-item').attr('class', 'product-grid-item');
+
+              AT_Main.currenciesFormat(`#cart_related span.money`);
+              AT_Main.init_carousel($('#cart_related .slide-ui-element'));
+            })
+          }
+        </script>
+      </div>
+    {%- endif -%}
+  </div>
+  <style>#col-main{background-color:{{section.settings.background_color | default: 'rgba(0,0,0,0)' }};</style>
+</div>
+
+{%- unless dis_ajax -%}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script type="text/javascript">
+    var cartObj = (function($,_){
+
+      var cartPage = {
+        init: function() {
+          this.qtyUp = $('.qty-up');
+          this.qtyDown = $('.qty-down');
+          this.totalPrice = $('#cartform .tt-price');
+          this.actionHandle();
+        },
+        showLoading: function(){$('body').addClass('cart-loading');},
+        hideLoading: function(){$('body').removeClass('cart-loading');},
+        actionHandle: function() {
+            var _this = this;
+            this.qtyUp.on('click',   _.debounce(function(e){_this.updateCart(e.currentTarget);}, 250));
+            this.qtyDown.on('click', _.debounce(function(e){_this.updateCart(e.currentTarget);}, 250));
+        },
+        updateCart: function(elem){
+          let _this  = this
+          ,jqElem    = $(elem)
+          ,patt      = /\d+/g
+          ,_class    = jqElem.attr('class')
+          ,prodId    = +patt.exec(_class)[0]
+          ,qtyInput  = jqElem.closest('.quantity').find('.input-cart-qty')
+          ,linePrice = jqElem.closest('.cart-item').find('.item-total')
+          ,qtyVal    = qtyInput.val();
+
+          _this.showLoading();
+
+          if (_class.indexOf('up') != -1) {
+            qtyVal++;
+          } else {
+            qtyVal--;
+            if (qtyVal < 1) {
+              return false;
+            }
+          }
+          qtyInput.val(qtyVal);
+
+          let postData = {quantity: qtyVal,id: prodId};
+
+          AT_Main._requestAjax(postData)
+          .fail(err=>{console.log(err);})
+          .done(resp=>{
+            let selectItem = [...resp.items].filter(s=>{return s.id == prodId;});
+
+            if (selectItem.length ) {
+              _this.totalPrice.html(Shopify.formatMoney(resp.total_price, _bc_config.money_format));
+              linePrice.html(Shopify.formatMoney(selectItem[0].line_price, _bc_config.money_format));
+              AT_Main.currenciesFormat(`.cart-item[data-id="${prodId}"] span.money ,#cartform .tt-price span.money`);
+              Shopify.getCart(function(cart) {$('.cart-target .number').html('<span class="n-item">' + cart.item_count + '</span>')})
+            }
+            {%- if enable_free_shipping -%}  
+              let cart_total           = resp.total_price
+              ,free_shipping_price     = +'{{ _free_shipping_price }}'
+              ,free_shipping_price_100 = +'{{ _free_shipping_price }}'*100;
+
+              if (cart_total >= free_shipping_price_100){
+                $('.free-shipping .progress').html('<span class="progress-bar" style="width: 100%">100%</span>');
+                $('.free-shipping .text').html("{{ _free_shipping_success }}");
+              }
+              else {
+
+                let progress = (Number(cart_total/free_shipping_price)).toFixed(2)
+                ,_spend = (free_shipping_price_100 - cart_total)
+                ,__spend = Shopify.formatMoney(_spend, _bc_config.money_format);
+
+                $('.free-shipping .progress').html(`<span class="progress-bar" style="width:${progress}%">${progress}%</span>`);
+                $('.free-shipping .text').html(`{{ _free_shipping_text_1 }} ${__spend} {{ _free_shipping_text_2 }}`);
+                AT_Main.currenciesFormat('.free-shipping span.money');
+              }
+            {%- endif -%}
+            _this.hideLoading();
+          })
+          
+        }
+      }
+      cartPage.init();
+
+      return {
+        syncCartSB: function(res, id) {
+          cartPage.totalPrice.html(Shopify.formatMoney(res.total_price, _bc_config.money_format));
+
+          $('.cart-table .cart-item').each(function(index,item){
+            if($(item).data('id') == id) {
+              $(item).remove();
+              return false;
+            }
+          });
+          if (res.item_count == 0) {
+            location.reload();
+          }
+        }
+      }
+    })(jQuery,_)
+  </script>
+{%- else -%}
+  <script type="text/javascript">
+    $('.qty-inner > span').on("click", e=>{
+      let _this = $(e.currentTarget)
+      ,qty_id   = _this.closest('.qty-wrapper').data('id')
+      ,_target  = $('#' + qty_id)
+      ,_value = +_target.val();
+
+      if (_this.hasClass('qty-up')) {
+        _value++;
+      }
+      else if (_this.hasClass('qty-down')) {
+        _value > 1 && _value--;
+      }
+      else{
+        return false;
+      }
+      _target.val(_value);
+    });
+  </script>
+{%- endunless -%}
+
+
+{% schema %}
+{
+   "name":"Cart Page",
+   "tag": "section",
+   "settings":[
+    {
+       "type":"header",
+       "content":"Breadcrumb"
+    },
+    {
+       "type":"checkbox",
+       "id":"show_breabcrumb",
+       "label":"Show Breadcrumb",
+       "default":true
+    },
+    {
+       "type":"checkbox",
+       "id":"breadcrumb_image_inherit",
+       "label":"Inherit Background image",
+       "info": "Please upload image in Theme settings > Breadcrumb","default":true
+    },
+    {
+       "type":"image_picker",
+       "id":"breadcrumb_image",
+       "label":"Breadcrumb image"
+    },
+    {
+       "type":"header",
+       "content":"Layout"
+    },
+    {
+       "type":"color",
+       "id":"background_color",
+       "label":"Background color",
+       "default": "rgba(0,0,0,0)"
+    },
+    {
+       "type":"checkbox",
+       "id"   :"show_cart_notes",
+       "label":"Show cart note",
+       "default": true
+    },
+    {
+       "type":"header",
+       "content":"Cart Information"
+    },
+    {
+       "type":"text",
+       "id"   :"text",
+       "label":"Heading",
+       "default": "PAYMENT SECURITY"
+    },
+    {
+       "type":"richtext",
+       "id"   :"content",
+       "label":"Content",
+       "default": "<p>Encryption ensures increased transaction security. SSL technology protects data linked to personal and payment info</p>"
+    },
+    {
+       "type":"image_picker",
+       "id"   :"banner_image",
+       "label":"Image"
+    },
+    {
+       "type":"header",
+       "content":"Related Products"
+    },
+    {
+       "type":"checkbox",
+       "id":"show_related",
+       "label":"Show related"
+    },
+    {
+       "type":"text",
+       "id":"related_items_title",
+       "label":"Title",
+       "default": "Recommend for you"
+    },
+    {
+       "type":"text",
+       "id":"related_items_resp",
+       "label":"Max number of items per row",
+       "placeholder": "xl,lg,md,sm,xs,xxs",
+       "info": "E.g: 4,3,2",
+       "default": "6,4,2"
+    },
+    {
+       "type":"text",
+       "id":"related_total",
+       "label":"Total items",
+       "default": "12"
+    }
+   ]
+}
+{% endschema %}

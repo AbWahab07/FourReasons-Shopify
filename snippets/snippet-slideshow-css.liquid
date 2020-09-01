@@ -1,0 +1,300 @@
+{%- if type == 'navigation_css' -%}
+  {%- assign _dots_color        = section.settings.dots_color   | default: 'rgba(0,0,0,0)' -%}
+  {%- assign _nav_bg_color      = section.settings.nav_bg_color | default: 'rgba(0,0,0,0)' -%}
+  {%- assign _nav_color         = section.settings.nav_color    | default: 'rgba(0,0,0,0)' -%}
+  {%- assign _nav_opacity       = section.settings.nav_bg_opacity | times: 0.01 -%}
+  {%- assign _nav_size          = section.settings.nav_size -%}
+  {%- assign _pag_margin        = section.settings.pagination_margin -%}
+  {%- assign _pag_width         = section.settings.pagination_width -%}
+  {%- assign _pag_height        = section.settings.pagination_height -%}
+  {%- assign _pag_border_color  = section.settings.dots_border_color | default: 'rgba(0,0,0,0)' -%}
+  {%- assign _pag_border_size   = section.settings.dots_border_size -%}
+  {%- assign _navStyle          = section.settings.nav_pag_style | plus: 0 -%}
+
+  {%- capture _navStyle_ID -%}{{sectionID}} .bc-wrapper.navigator-style-{{_navStyle}} .swiper-pagination .swiper-pagination-bullet{%- endcapture -%}
+
+  {%- unless _nav_bg_color == 'rgba(0,0,0,0)' -%}
+    {%- assign _nav_bg = _nav_bg_color | color_modify: 'alpha',  _nav_opacity -%}
+  {%- endunless -%}
+
+  {%- unless _dots_color == 'rgba(0,0,0,0)' -%}
+    {{- _navStyle_ID}}{background: {{_dots_color}};}
+    {%- if _navStyle == 2 -%}
+    {{- _navStyle_ID}} {box-shadow: inset 0 0 0 2px {{_dots_color}};background: none;}
+    {{- _navStyle_ID}}:hover,{{_navStyle_ID}}.swiper-pagination-bullet-active {background: {{_dots_color}};}
+    {%- endif -%}
+
+    {%- if _navStyle == 3 -%}
+    {{- _navStyle_ID}}:hover,{{_navStyle_ID}}.swiper-pagination-bullet-active {box-shadow: 0 0 0 3px {{_dots_color}};}
+    {%- endif -%}
+    {%- if _navStyle == 5 -%}
+    {{- _navStyle_ID}}:hover:after,{{_navStyle_ID}}.swiper-pagination-bullet-active:after {background: {{_dots_color}};}
+    {%- endif -%}
+    {%- if _navStyle == 8 -%}
+    {{- _navStyle_ID}}{background: none;color: {{_dots_color}};}
+    {%- endif -%}
+    {%- if _navStyle == 4 or _navStyle == 6 -%}
+    {{- _navStyle_ID}}:after {background: {{_dots_color}};}{{_navStyle_ID}}.swiper-pagination-bullet-active,{{_navStyle_ID}}:hover {background: none;box-shadow:0 0 0 2px {{_dots_color}};}
+    {%- endif -%}
+  {%- endunless -%}
+
+  {%- if _pag_border_color != 'rgba(0,0,0,0)' and _pag_border_size > 0 -%}
+    {{- _navStyle_ID}}{border: {{_pag_border_size}}px solid {{_pag_border_color}};}
+  {%- endif -%}
+
+  {%- unless _nav_bg_color == 'rgba(0,0,0,0)' and _nav_color == 'rgba(0,0,0,0)' -%}
+    {{- sectionID}} .bc-wrapper .swiper-button-white {
+      {%- unless _nav_bg_color == 'rgba(0,0,0,0)' -%}background: {{_nav_bg}};{%- endunless -%}
+      {%- unless _nav_color == 'rgba(0,0,0,0)' -%}color: {{_nav_color}};{%- endunless -%}
+    }
+  {%- endunless -%}
+  {%- include 'css-responsive', classID: sectionID, nextClassID: ' .bc-wrapper .swiper-button-white:before', css_value: _nav_size,    css_property: 'font-size' -%}
+  {%- include 'css-responsive', classID: sectionID, nextClassID: ' .bc-wrapper .swiper-pagination-bullet',   css_value: _pag_margin,  css_property: 'margin' -%}
+  {%- include 'css-responsive', classID: sectionID, nextClassID: ' .bc-wrapper .swiper-pagination-bullet',   css_value: _pag_width,   css_property: 'width' -%}
+  {%- include 'css-responsive', classID: sectionID, nextClassID: ' .bc-wrapper .swiper-pagination-bullet',   css_value: _pag_height,  css_property: 'height' -%}
+
+  {%- assign slide_height_mob   = section.settings.slide_height_mob -%}
+
+  {%- unless slide_height_mob == blank -%}
+    {%- if slide_height_mob contains ',' -%}
+      {%- assign _slide_height_mob = slide_height_mob | replace: ',', '!important,' -%}
+    {%- else -%}
+      {%- assign _slide_height_mob = slide_height_mob -%}
+    {%- endif -%}
+    {%- assign _slide_height_mob = _slide_height_mob | append: '!important' -%}
+
+    {%- capture slider_height_Style -%}
+      {%- include 'css-responsive', classID: sectionID, nextClassID: ' .home-slideshow .swiper-slide .slider-layer span.image--style', css_property: 'padding-top', css_value: _slide_height_mob -%}
+      {%- include 'css-responsive', classID: sectionID, nextClassID: ' .home-slideshow .swiper-slide', css_property: 'height', css_value: _slide_height_mob -%}
+      {%- unless _slide_center -%}
+        {%- include 'css-responsive', classID: sectionID, nextClassID: ' .home-slideshow .swiper-slide .slider-layer span.image--style img', css_values: 'height: 100%; object-fit:cover;' -%}
+      {%- endunless -%}
+    {%- endcapture -%}
+  {%- endunless -%}
+  {{- slider_height_Style -}}
+{%- else -%}
+  {%- assign _position_top            = block.settings.position_top   | append: '%' -%}
+  {%- assign _position_left           = block.settings.position_left  | append: '%' -%}
+  {%- assign _content_mwidth          = block.settings.content_width -%}
+  {%- assign _hea_mb                  = block.settings.title_mb -%}
+  {%- assign _sub_mb                  = block.settings.subtitle_mb -%}
+  {%- assign _cap_mb                  = block.settings.caption_mb -%}
+  {%- assign _hea_lsp                 = block.settings.title_lsp -%}
+  {%- assign _sub_lsp                 = block.settings.subtitle_lsp -%}
+  {%- assign _cap_lsp                 = block.settings.caption_lsp -%}
+  {%- assign _tit_bold                = block.settings.tit_bold -%}
+  {%- assign _sub_bold                = block.settings.sub_bold -%}
+  {%- assign _cap_bold                = block.settings.cap_bold -%}
+  {%- assign _hea_size                = block.settings.title_font_size    -%}
+  {%- assign _sub_size                = block.settings.subtitle_font_size -%}
+  {%- assign _cap_size                = block.settings.caption_font_size  -%}
+  {%- assign headingColor             = block.settings.title_color     -%}
+  {%- assign subheadingColor          = block.settings.subtitle_color  -%}
+  {%- assign captionColor             = block.settings.caption_color   -%}
+  {%- assign headingAnimation         = block.settings.title_animation    -%}
+  {%- assign subheadingAnimation      = block.settings.subtitle_animation -%}
+  {%- assign captionAnimation         = block.settings.caption_animation  -%}
+  {%- assign headingAnimationDelay    = block.settings.title_animation_delay    | append: 's' -%}
+  {%- assign subheadingAnimationDelay = block.settings.subtitle_animation_delay | append: 's' -%}
+  {%- assign captionAnimationDelay    = block.settings.caption_animation_delay  | append: 's' -%}
+  {%- assign _content_padding         = block.settings.content_padding   -%}
+  {%- assign _content_bg              = block.settings.content_bg   -%}
+  {%- assign _content_op              = block.settings.content_bg_opacity | times: 0.01 -%}
+  {%- assign _overlay_color           = block.settings.overlay_color | default: 'rgba(0,0,0,0)' -%}
+  {%- assign _btn_padding             = block.settings.padding_button -%}
+  {%- assign _btn_radius              = block.settings.button_radius -%}
+  {%- assign _btn_bold                = block.settings.btn_bold -%}
+  {%- assign _btn_size                = block.settings.button_font_size   -%}
+  {%- assign buttonColor              = block.settings.button_color    -%}
+  {%- assign buttonBg                 = block.settings.button_bg_color -%}
+  {%- assign _btn_lsp                 = block.settings.button_lsp -%}
+  {%- assign buttonAnimation          = block.settings.button_animation   -%}
+  {%- assign buttonAnimationDelay     = block.settings.button_animation_delay   | append: 's' -%}
+
+  {%- unless _content_bg == 'rgba(0,0,0,0)' -%}
+    {%- assign _content_bg_color = _content_bg  | color_modify: 'alpha',  _content_op -%}
+  {%- else -%}
+    {%- assign _content_bg_color = _content_bg -%}
+  {%- endunless -%}
+
+  {%- if type == 'general' -%}
+    {%- capture swiper_slide_id -%}.section-show-{{section.id}} .swiper-slide{%- endcapture -%}
+  {%- else -%}
+    {%- capture swiper_slide_id -%}.section-show-{{section.id}} .swiper-slide.swiper-slide-{{ block.id }}{%- endcapture -%}
+  {%- endif -%}
+
+  {%- capture _slide_active -%}{{swiper_slide_id}}.swiper-slide-active{%- endcapture -%}
+
+  {%- capture slide_item_style -%}
+    {%- unless _overlay_color == 'rgba(0,0,0,0)' -%}
+      {{swiper_slide_id}} .slider-layer:before{content: '';background-color: {{_overlay_color}};opacity: {{block.settings.image_overlay | times: 0.01 }};}
+    {%- endunless -%}
+    {%- if _use_text or type == 'general' -%}
+      {%- capture _contentID -%}{{swiper_slide_id}} .swiper-content .container-box{%- endcapture -%}
+      {%- capture _hea_ID -%}{{swiper_slide_id}} .heading{%- endcapture -%}
+      {%- capture _sub_ID -%}{{swiper_slide_id}} .subheading{%- endcapture -%}
+      {%- capture _cap_ID -%}{{swiper_slide_id}} .cation{%- endcapture -%}
+      {%- capture _btn_ID -%}{{swiper_slide_id}} .slider-button{%- endcapture -%}
+      {%- capture _btn2ID -%}{{swiper_slide_id}} .slider-button-2{%- endcapture -%}
+
+      {%- comment -%}      ============        Content Box CSS      ============    {%- endcomment-%}
+
+      {%- unless block.settings.position == blank -%}
+        {%- include 'css-responsive', classID: _contentID, css_values: block.settings.position ,type: 'position' -%}
+      {%- else -%}
+        {%- capture _content_Styles -%}
+          top:{{ _position_top }};
+          left:{{ _position_left}};
+          transform: translate(-{{_position_left}},-{{_position_top}});
+          background: {{ _content_bg_color }};
+        {%- endcapture -%}
+        {%- include 'css-responsive', classID: _contentID, css_values: _content_Styles -%}
+      {%- endunless -%}
+      {%- include 'css-responsive', classID: _contentID, css_value: _content_padding -%}
+      {%- include 'css-responsive', classID: _contentID, css_property: 'max-width', css_value: _content_mwidth -%}
+
+      {%- comment -%}      ============        Heading CSS      ============    {%- endcomment-%}
+      {%- if headingText != blank or type == 'general' -%}
+        {%- capture head_Styles -%}
+        {%- unless headingColor == 'rgba(0,0,0,0)' -%}color: {{ headingColor }};{%- endunless -%}
+        {%- unless _tit_bold == 'inherit' -%}font-weight: {{_tit_bold}};{%- endunless -%}
+        -webkit-animation-name: {{headingAnimation }};
+        animation-name: {{ headingAnimation }};
+        -webkit-animation-delay: {{ headingAnimationDelay }};
+        animation-delay: {{ headingAnimationDelay }};
+        {%- endcapture -%}
+        {%- include 'css-responsive', classID: _slide_active, nextClassID: ' .heading'  ,css_values: head_Styles -%}
+        {%- include 'css-responsive', classID: _hea_ID ,css_value: _hea_size  ,css_property: 'font-size'        -%}
+        {%- include 'css-responsive', classID: _hea_ID ,css_value: _hea_mb    ,css_property: 'margin-bottom'    -%}
+        {%- include 'css-responsive', classID: _hea_ID ,css_value: _hea_lsp   ,css_property: 'letter-spacing'   -%}
+        {%- include 'css-responsive', classID: _hea_ID ,css_value: block.settings.tit_lh ,css_property: 'line-height' -%}
+      {%- endif -%}
+
+      {%- comment -%}      ============        SubHeading CSS      ============    {%- endcomment-%}
+      {%- if subheadingText != blank or type == 'general' -%}
+        {%- capture sub_Styles -%}
+        {%- unless _sub_bold == 'inherit' -%}font-weight: {{_sub_bold}};{%- endunless -%}
+        {%- unless subheadingColor == 'rgba(0,0,0,0)' -%}color: {{ subheadingColor }};{%- endunless -%}
+        -webkit-animation-name: {{ subheadingAnimation }};
+        animation-name: {{ subheadingAnimation }};
+        -webkit-animation-delay: {{ subheadingAnimationDelay }};
+        animation-delay: {{ subheadingAnimationDelay }};
+        {%- endcapture -%}
+        {%- include 'css-responsive', classID: _slide_active, nextClassID: ' .subheading' ,css_values: sub_Styles -%}
+        {%- include 'css-responsive', classID: _sub_ID ,css_value: _sub_size  ,css_property: 'font-size'         -%}
+        {%- include 'css-responsive', classID: _sub_ID ,css_value: _sub_mb    ,css_property: 'margin-bottom'     -%}
+        {%- include 'css-responsive', classID: _sub_ID ,css_value: _sub_lsp   ,css_property: 'letter-spacing'    -%}
+        {%- include 'css-responsive', classID: _sub_ID ,css_value: block.settings.sub_lh ,css_property: 'line-height' -%}
+      {%- endif -%}
+
+      {%- comment -%}      ============        SubHeading #2 CSS      ============    {%- endcomment-%}
+      {%- if captionText != blank or type == 'general' -%}
+        {%- capture cap_Styles -%}
+        {%- unless _cap_bold == 'inherit' -%}font-weight: {{_cap_bold}};{%- endunless -%}
+          display: block;
+          {%- unless captionColor == 'rgba(0,0,0,0)' -%}color: {{ captionColor }};{%- endunless -%}
+          -webkit-animation-name: {{ captionAnimation }};
+          animation-name: {{ captionAnimation }};
+          -webkit-animation-delay: {{ captionAnimationDelay }};
+          animation-delay: {{ captionAnimationDelay }};
+        {%- endcapture -%}
+        {%- include 'css-responsive', classID: _slide_active, nextClassID: ' .cation'   ,css_values: cap_Styles -%}
+        {%- include 'css-responsive', classID: _cap_ID ,css_value: _cap_size  ,css_property: 'font-size'       -%}
+        {%- include 'css-responsive', classID: _cap_ID ,css_value: _cap_mb    ,css_property: 'margin-bottom'   -%}
+        {%- include 'css-responsive', classID: _cap_ID ,css_value: _cap_lsp   ,css_property: 'letter-spacing'  -%}
+        {%- include 'css-responsive', classID: _cap_ID ,css_value: block.settings.cap_lh ,css_property: 'line-height' -%}
+      {%- endif -%}
+
+      {%- comment -%}      ============        Button CSS      ============    {%- endcomment-%}
+      {%- if buttonText != blank or type == 'general' -%}
+
+        {%- capture btn_Styles -%}
+        -webkit-animation-name: {{ buttonAnimation }};
+        animation-name: {{ buttonAnimation }};
+        -webkit-animation-delay: {{ buttonAnimationDelay }};
+        animation-delay: {{ buttonAnimationDelay }};
+        {%- endcapture -%}
+
+        {%- include 'css-responsive', classID: _slide_active, nextClassID: ' .button-link',css_values: btn_Styles -%}
+
+        {%- include 'css-responsive', classID: _btn_ID, css_value: _btn_padding -%}
+        {%- include 'css-responsive', classID: _btn_ID, css_value: block.settings.margin_button     ,css_property: 'margin'-%}
+        {%- include 'css-responsive', classID: _btn_ID ,css_value: _btn_size              ,css_property: 'font-size'        -%}
+        {%- include 'css-responsive', classID: _btn_ID ,css_value: _btn_radius            ,css_property: 'border-radius'    -%}
+        {%- include 'css-responsive', classID: _btn_ID ,css_value: block.settings.btn_lh  ,css_property: 'line-height' -%}
+        {%- include 'css-responsive', classID: _btn_ID ,css_value: _btn_lsp               ,css_property: 'letter-spacing'   -%}
+
+        {%- assign _button_border_color = block.settings.button_border_color | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _button_border_size  = block.settings.button_border_size -%}
+
+        {%- capture btn_Styles_1 -%}
+          {%- unless buttonColor == 'rgba(0,0,0,0)' -%}color: {{ buttonColor }};{%- endunless -%}
+          {%- unless _btn_bold == 'inherit'         -%}font-weight: {{_btn_bold}};{%- endunless -%}
+          {%- unless buttonBg == 'rgba(0,0,0,0)'    -%}background-color: {{ buttonBg }};{%- endunless -%}
+          {%- if _button_border_color != 'rgba(0,0,0,0)' and _button_border_size > 0 -%}border: {{_button_border_size}}px solid {{_button_border_color}};{%- endif -%}
+        {%- endcapture -%}
+        {%- include 'css-responsive', classID: _slide_active, nextClassID: ' .button-link .slider-button.slider-btn-custom',css_values: btn_Styles_1 -%}
+      {%- endif -%}
+
+      {%- if _btn_icon != blank or type == 'general' -%}
+
+        {%- assign _ic_color    = block.settings.btn_ic_color    | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _ic_bg_color = block.settings.btn_ic_bg_color | default: 'rgba(0,0,0,0)' -%}
+
+        {%- unless _ic_color == 'rgba(0,0,0,0)' and  _ic_bg_color == 'rgba(0,0,0,0)' -%}
+        {{- _slide_active }} .slider-btn-icon{
+          {%- unless _ic_color    == 'rgba(0,0,0,0)' -%}color: {{_ic_color}};{%- endunless -%}
+          {%- unless _ic_bg_color == 'rgba(0,0,0,0)' -%}background-color: {{_ic_bg_color}};{%- endunless -%}
+        }
+        {%- endunless -%}
+        {%- include 'css-responsive', classID: _slide_active ,nextClassID: ' .slider-btn-icon' , css_value: block.settings.btn_ic_padding -%}
+        {%- include 'css-responsive', classID: _slide_active ,nextClassID: ' .slider-btn-icon' , css_property: 'font-size'      ,css_value: block.settings.btn_ic_fs -%}
+        {%- include 'css-responsive', classID: _slide_active ,nextClassID: ' .slider-btn-icon' , css_property: 'margin'         ,css_value: block.settings.btn_ic_margin -%}
+        {%- include 'css-responsive', classID: _slide_active ,nextClassID: ' .slider-btn-icon' , css_property: 'border-radius'  ,css_value: block.settings.btn_ic_rd -%}
+      {%- endif -%}
+
+      {%- comment -%}      ============      Button 2 CSS      ============    {%- endcomment-%}
+      {%- if buttonText_2 != blank or type == 'general' -%}
+
+        {%- include 'css-responsive', classID: _btn2ID, css_value: block.settings.padding_button_2 -%}
+        {%- include 'css-responsive', classID: _btn2ID, css_value: block.settings.margin_button_2     ,css_property: 'margin'-%}
+        {%- include 'css-responsive', classID: _btn2ID ,css_value: block.settings.button_font_size_2  ,css_property: 'font-size' -%}
+        {%- include 'css-responsive', classID: _btn2ID ,css_value: block.settings.button_radius_2     ,css_property: 'border-radius' -%}
+        {%- include 'css-responsive', classID: _btn2ID ,css_value: block.settings.btn_lh_2            ,css_property: 'line-height' -%}
+        {%- include 'css-responsive', classID: _btn2ID ,css_value: block.settings.button_lsp_2        ,css_property: 'letter-spacing' -%}
+
+        {%- assign _btn_bold_2            = block.settings.btn_bold_2 -%}
+        {%- assign _button_color_2        = block.settings.button_color_2 | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _button_bg_color_2     = block.settings.button_bg_color_2 | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _button_border_color_2 = block.settings.button_border_color_2 | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _button_border_size_2  = block.settings.button_border_size_2 -%}
+
+
+        {%- capture btn_Styles2 -%}
+          {%- unless _button_color_2 == 'rgba(0,0,0,0)'   -%}color: {{      _button_color_2 }};{%- endunless -%}
+          {%- unless _btn_bold_2 == 'inherit'             -%}font-weight: {{    _btn_bold_2}};{%- endunless -%}
+          {%- unless _button_bg_color_2 == 'rgba(0,0,0,0)'-%}background-color: {{ _button_bg_color_2 }};{%- endunless -%}
+          {%- if _button_border_color_2 != 'rgba(0,0,0,0)' and _button_border_size_2 > 0 -%}border: {{_button_border_size_2}}px solid {{_button_border_color_2}};{%- endif -%}
+        {%- endcapture -%}
+        {%- include 'css-responsive', classID: _btn2ID, nextClassID: '.slider-btn-custom-2',css_values: btn_Styles2 -%}
+      {%- endif -%}
+
+      {%- if _btn_icon_2 != blank or type == 'general' -%}
+
+        {%- assign _ic_color_2    = block.settings.btn_ic_color_2    | default: 'rgba(0,0,0,0)' -%}
+        {%- assign _ic_bg_color_2 = block.settings.btn_ic_bg_color_2 | default: 'rgba(0,0,0,0)' -%}
+
+        {%- unless _ic_color_2 == 'rgba(0,0,0,0)' and  _ic_bg_color_2 == 'rgba(0,0,0,0)' -%}
+        {{- _slide_active }} .slider-btn-icon-2{
+          {%- unless _ic_color_2    == 'rgba(0,0,0,0)' -%}color: {{_ic_color_2}};{%- endunless -%}
+          {%- unless _ic_bg_color_2 == 'rgba(0,0,0,0)' -%}background-color: {{_ic_bg_color_2}};{%- endunless -%}
+        }
+        {%- endunless -%}
+        {%- include 'css-responsive', classID: _slide_active ,nextClassID: ' .slider-btn-icon-2' ,css_value: block.settings.btn_ic_padding_2 -%}
+        {%- include 'css-responsive', classID: _slide_active ,nextClassID: ' .slider-btn-icon-2' ,css_value: block.settings.btn_ic_fs_2      ,css_property: 'font-size' -%}
+        {%- include 'css-responsive', classID: _slide_active ,nextClassID: ' .slider-btn-icon-2' ,css_value: block.settings.btn_ic_margin_2  ,css_property: 'margin' -%}
+        {%- include 'css-responsive', classID: _slide_active ,nextClassID: ' .slider-btn-icon-2' ,css_value: block.settings.btn_ic_rd_2      ,css_property: 'border-radius' -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endcapture -%}
+{%- endif -%}

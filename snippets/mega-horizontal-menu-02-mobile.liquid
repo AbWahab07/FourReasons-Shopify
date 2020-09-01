@@ -1,0 +1,162 @@
+{%- comment -%} 
+=================
+  [MOBILE]  Mega Menu Tab
+=================
+{%- endcomment -%}
+
+{%- assign _mega_bg_image = block.settings.mega_bg_image -%}
+{%- capture mega_bg_image -%}{%- if _mega_bg_image != blank -%}{{_mega_bg_image | img_url: '1920x'}}{%- endif -%}{%- endcapture -%}
+{%- capture __mega_heading_class -%}mega-column--heading{%- endcapture -%}
+
+<div id="mega-{{block.id}}" class="dropdown-menu mega_columns dropdown-menu-tabs" data-mega-title="{{l.title}}">
+  <div class="mega-navigation-with-tab-mobile">
+    <ul class="tab-title">
+      {%- assign j = 0 -%}
+      <li class="back-prev-menu"><span class="expand">Back</span></li>
+      {%- assign _mega_tab_index = number -%}
+
+      {%- for block in section.blocks offset: number -%}
+        {%- assign _mega_tab_index = _mega_tab_index | plus: 1 -%}
+        {%- capture _block_type -%}++{{block.type}}++{%- endcapture -%}
+
+        {%- if _except_block_type contains _block_type -%}{%- break -%}
+        {%- elsif block.type == 'tab-menu' -%}
+
+          {%- assign j = j | plus: 1 -%}
+          {%- assign _mega_menu_tab_col_content = block.settings.mega_menu_tab_col_content -%}
+          {%- assign _mega_menu_tab_title       = block.settings.tab_title -%}
+
+          <li class="title-item title-item-{{ j }} mega-tab--li-item" data-mega-id="{{block.id}}"{{ block.shopify_attributes }}>
+              <a href="javascript:void(0);" class="mega-column--heading">
+                <span>{{- _mega_menu_tab_title -}}</span>
+              </a>
+              <span class="expand"></span>
+
+            {%- assign _mega_tab_bg_image = block.settings.mega_bg_image -%}
+            {%- capture mega_tab_bg_image -%}{%- if _mega_tab_bg_image != blank -%}{{_mega_tab_bg_image | img_url: '1920x'}}{%- endif -%}{%- endcapture -%}
+            {%- capture mega_col_ID -%}#header-style .columns-{{block.id}}{%- endcapture -%}
+            {%- capture mega_tab_bg_lazy -%}{% if _mega_tab_bg_image != blank and _lazyload %} lazyload" data-bgset="{{mega_tab_bg_image}} 1920w{% endif %}{%- endcapture -%}
+
+            <div class="dropdown-menu tab-content-inner mega-tab--content" data-mega-id="{{block.id}}" data-mega-title="{{ block.settings.tab_title }}"{{ block.shopify_attributes }}>
+              {%- comment -%}
+                ============
+                  Default first column in tab menu
+                ============
+              {%- endcomment-%}
+              <div class="back-prev-menu"><span class="expand">Back</span></div>
+              
+              {%- unless _mega_menu_tab_col_content == 'none' -%}
+                {%- assign _mega_menu_tab_width_col = block.settings.mega_menu_tab_width_col -%}
+                {%- assign _mega_menu_tab_title_col = block.settings.mega_menu_tab_title_col -%}
+                {%- assign _mega_menu_tab_link_col  = block.settings.mega_menu_tab_link_col | default: 'javascript:void(0);' -%}
+
+                {%- capture _mega_menu_width -%}col-lg{%- if _mega_menu_tab_width_col > 0 -%}-{{_mega_menu_tab_width_col}}{%- endif -%}{{_mega_boder | strip_newlines }}{%- endcapture -%}
+                
+                <div class="dropdown mega-block-items mega-type--{{_mega_menu_tab_col_content}} mega-block-{{block.id}}">
+                  <div class="mega-block-items-inner">
+                    {%- if _mega_menu_tab_col_content == 'menu' and _mega_menu_tab_title_col != blank -%}
+                      <a href="{{ _mega_menu_tab_link_col }}" class="mega-column--heading">
+                        <span>{{ _mega_menu_tab_title_col }}</span>
+                      </a>
+                      <span class="expand"></span>
+                    {%- endif -%}
+                    <div class="mega-block-content-inner">
+                      {%- case _mega_menu_tab_col_content -%}
+
+                        {%- when 'menu' -%}
+                          {%- assign _mega_menu_tab_ll_col = linklists[block.settings.mega_menu_tab_ll_col] -%}
+
+                          <ul class="dropdown-{% if _mega_menu_tab_title_col == blank %}-sub-{% endif %}menu">
+                            {%- if _mega_menu_tab_title_col != blank -%}
+                              <li class="back-prev-menu"><span class="expand">Back</span></li>                            
+                            {%- endif -%}
+                            {%- if _mega_menu_tab_ll_col.links.size > 0 -%}
+                              {%- for ml in _mega_menu_tab_ll_col.links -%}
+                                {%- assign submenu = ml.title | handle -%}
+
+                                {%- if linklists[submenu].links.size > 0 -%}
+                                  <li class="mega-sub-link mega-mutiple-link">
+                                    <a href="{{ ml.url | default: 'javascript:void(0);' }}" class="mega-column--heading dropdown-link">
+                                      <span>{{ ml.title }}</span>
+                                      {%- capture n_title -%}{{ _mega_menu_tab_ll_col.title}}-{{ml.title}}{%- endcapture -%}
+                                      {%- include 'include-label-handle' ,l_title: n_title -%}
+                                    </a>
+
+                                    <div class="mega-sub-dropdown">
+                                      <ul class="dropdown-menu-sub">
+                                        {%- for l in linklists[submenu].links -%}
+                                          <li class="mega-sub-mutiple-link">
+                                            <a href="{{ l.url | default: 'javascript:void(0);' }}">
+                                              <span>{{ l.title }}</span>
+                                              {%- capture n_title -%}{{ _mega_menu_tab_ll_col.title}}-{{l.title}}{%- endcapture -%}
+                                              {%- include 'include-label-handle' ,l_title: n_title -%}
+                                            </a>
+                                          </li>
+                                        {%- endfor -%}
+                                      </ul>
+                                    </div>
+                                  </li>
+
+                                {%- else -%}
+                                  <li class="mega-sub-link">
+                                    <a href="{{ ml.url | default: 'javascript:void(0);' }}">
+                                      <span>{{ ml.title }}</span>
+                                      {%- capture n_title -%}{{ _mega_menu_tab_ll_col.title}}-{{ml.title}}{%- endcapture -%}
+                                      {%- include 'include-label-handle' ,l_title: n_title -%}
+                                    </a>
+                                  </li>
+                                {%- endif -%}
+
+                              {%- endfor -%}
+                            {%- else -%}
+                              {%- for i in (1..4) -%}
+                                <li>Sample menu item</li>
+                              {%- endfor -%}
+                            {%- endif -%}
+                          </ul>
+
+                        {%- when 'image' -%}
+                          {%- assign _mega_menu_tab_image_col         = block.settings.mega_menu_tab_image_col -%}
+                          {%- assign _mega_menu_tab_image_link_col    = block.settings.mega_menu_tab_image_link_col -%}
+
+                          <a class="d-block" href="{{ _mega_menu_tab_image_link_col | default: 'javascript:void(0);' }}">
+                            {%- unless _mega_menu_tab_image_col == blank  -%}
+                              {%- include 'image-style', image: _mega_menu_tab_image_col -%}
+                            {%- else -%}
+                              <img src="{{ 'default-image.jpg' | asset_url }}"/>
+                            {%- endunless -%}
+                          </a>
+
+                        {%- when 'product' -%}
+                          {%- assign _mega_menu_tab_product_col_1     = all_products[block.settings.mega_menu_tab_product_col_1] -%}
+                          {%- assign _mega_menu_tab_product_col_2     = all_products[block.settings.mega_menu_tab_product_col_2] -%}
+                          {%- if _mega_menu_tab_product_col_1.available -%}
+                            {%- include 'product-item' ,product: _mega_menu_tab_product_col_1 ,type: 'listing-item' -%}
+                          {%- endif -%}
+                          {%- if _mega_menu_tab_product_col_2.available -%}
+                            {%- include 'product-item' ,product: _mega_menu_tab_product_col_2 ,type: 'listing-item' -%}
+                          {%- endif -%}
+                      {%- endcase -%}
+                    </div>
+                  </div>
+                </div>
+              {%- endunless -%}
+
+              {%- comment -%}
+                ============
+                  Add more column into tab
+                ============
+              {%- endcomment-%}
+              {%- for block in section.blocks offset: _mega_tab_index -%}
+                {%- capture _next_mega_block -%}++{{block.type}}++{%- endcapture -%}
+
+                {%- if _except_block_type contains _next_mega_block or block.type == 'tab-menu' -%}{%- break -%}{%- endif -%}
+                {%- include 'mega-menu-columns' ,mega_column_type: 'mg_col_content' ,mega_type: 'mobile' -%}
+              {%- endfor -%}
+            </div>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>

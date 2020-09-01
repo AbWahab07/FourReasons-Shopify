@@ -1,0 +1,790 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+
+{%- assign _s_type          = 'categories' -%}
+{%- assign _lazyload        = settings.use_lazyload -%}
+{%- assign _bg_image        = section.settings.section_bg_image -%}
+{%- assign _spacing_items   = section.settings.padding_item -%}
+{%- assign image_position   = section.settings.image_position -%}
+{%- assign image_w          = section.settings.image_width -%}
+{%- assign border_type      = section.settings.border_type -%}
+{%- assign item_align       = section.settings.item_align -%}
+{%- assign overlay_content  = section.settings.overlay_content -%}
+{%- assign text_content_cl  = section.settings.text_content_cl -%}
+{%- assign text_content_bg  = section.settings.text_content_bg -%}
+{%- assign cate_title_size  = section.settings.cate_title_size -%}
+{%- assign cate_height      = section.settings.min_height -%}
+{%- assign _type = section.settings.type -%}
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+
+{%- assign _item_count_position      = section.settings.cate_item_count_position -%}
+{%- assign cate_hover                = section.settings.image_hover_effect -%}
+{%- assign prod_name_fw              = section.settings.product_name_fw -%}
+{%- assign _cate_img_bg              = section.settings.img_bg_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign _cate_img_circle          = section.settings.cate_image_circle_radius -%}
+{%- assign _cate_primary_hover       = section.settings.hover_main_color -%}
+
+{%- include 'include-item-per-row' -%}
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="categories-wrapper layout-{{_layout }} section-show-{{section.id}} cate-hover-{{cate_hover}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="{{_s_type}}" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    {%- include 'head-title' -%}
+
+    <div class="categories-content cate-image-{{image_position}}{% unless _spacing_items %} no-padding{% endunless %} border-{{border_type}}{% if overlay_content %} content-overlay{% endif %}{% if _cate_img_circle != blank %} cate-img--bg-circle{% endif %}{% if _cate_primary_hover %} hover-primary-color{% endif %}">
+      {%- if section.blocks.size > 0 -%}
+        {%- if _type == 'masonry' -%}
+        <div class="home-banner-masonry masonry_{{section.id}}">
+          <div class="bc-masonry">
+            {%- else -%}
+              <div class="{% if _type == 'row' %}row{% else %}categories-carousel owl-carousel{% endif %}"{% include 'include-carousel-attr' %}>
+              {%- endif -%}
+            {%- for block in section.blocks -%}
+              {%- assign _image         = block.settings.image -%}
+              {%- assign _link          = block.settings.image_link -%}
+              {%- assign cate_title     = block.settings.title -%}
+              {%- assign cate_content   = block.settings.content -%}
+              {%- assign btn_label      = block.settings.button -%}
+              {%- assign btn_link       = block.settings.button_link | default: 'javascript:void(0);' -%}
+              {%- if _type != 'carousel' -%}
+                {%- assign _width   = block.settings.width -%}
+                {%- unless _width == blank -%}
+                  {%- capture b_class -%}{%- include 'set-width-bootstrap',in_type: 'width', number: _width -%}{{_out}}{%- endcapture -%}
+                {%- else -%}
+                  {%- capture b_class -%}{{items_class}}{%- endcapture -%}
+                {%- endunless -%}
+              {%- endif -%}
+
+              <div class="category-item cate-{{block.id}}{% if _type != 'carousel' %} {{b_class}}{% endif %}{% if _type == 'masonry' %} banner-item{% endif %}">
+                <div class="cate-wrap">
+
+                  <div class="cate-image image-{{image_w}}">
+                    {%- unless _image == blank -%}
+                      {%- unless _link == blank -%}<a href="{{_link}}">{%- endunless -%}
+                        {%- include 'image-style', image: _image -%}
+                      {%- unless _link == blank -%}</a>{%- endunless -%}
+                    {%- else -%}
+                      {%- if block.type == 'collection_item' -%}
+                        {%- assign item_color     = block.settings.item_color -%}
+                        {%- assign min_height     = block.settings.min_height -%}
+                        <div class="image-color" style="background-color: {{item_color}};{% unless _spacing_items %}margin: 2px;{% endunless %}">
+                          {%- capture cateblockID -%}.section-show-{{section.id}} .category-item.cate-{{block.id}} .image-color{%- endcapture -%}
+                          {%- unless min_height == blank -%}
+                            <style>{%- include 'css-responsive', classID: cateblockID, css_value: min_height, css_property: 'min-height' -%}</style>
+                          {%- else -%}
+                            <style>{%- include 'css-responsive', classID: cateblockID, css_value: cate_height, css_property: 'min-height' -%}</style>
+                          {%- endunless -%}
+                        </div>
+                      {%- else -%}
+                        {%- include 'svgset', type: 'collection' -%}
+                      {%- endif -%}
+                    {%- endunless -%}
+                  </div>
+
+                  <div class="cate-content-container text-{{item_align}}">
+                    {%- unless cate_title == blank -%}
+                      <p class="cate-title h{{cate_title_size}}"><a href="{{_link | default: 'javascript:void(0);' }}">{{cate_title}}</a></p>
+                    {%- endunless -%}
+
+                    {%- if _item_count_position == 'under_content' or _item_count_position == 'hide' -%}
+                      <span class="cate-content">{{cate_content}}</span>
+                    {%- endif -%}
+
+                    <ul class="list-category">
+                      {%- if block.type == 'collection_item' -%}
+                        {%- assign col_item   = collections[block.settings.collection] -%}
+                        {%- assign _product   = 'collections.general.product' | t -%}
+                        {%- assign _products  = 'collections.general.products' | t -%}
+
+                        {%- if col_item != blank and col_item.all_products_count > 0 and _item_count_position != 'hide' -%}
+                          <li class="cate-item">
+                            <a href="{{ col_item.url }}">
+                              <span class="count">{{col_item.all_products_count}}</span>
+                              <span class="count-text">{{col_item.all_products_count | pluralize: _product, _products }}</span>
+                            </a>
+                          </li>
+                        {%- endif -%}
+
+                        {%- if _item_count_position == 'under_title' and cate_content != blank -%}
+                        <li class="cate-content">{{cate_content}}</li>
+                        {%- endif -%}
+
+                      {%- else -%}
+                        {%- for i in (1..4) -%}
+                          {%- assign col = 'collection_' | append: i -%}
+                          {%- assign col_item = collections[block.settings[col]] -%}
+                          {%- unless col_item == blank or col_item.all_products_count == 0 -%}
+                            <li class="cate-item">
+                              <a href="{{ col_item.url }}">
+                                <span class="count-text">{{col_item.title}}</span>
+                                <span class="count">({{col_item.all_products_count}})</span>
+                              </a>
+                            </li>
+                          {%- endunless -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </ul>
+
+                    {%- unless block.settings.best_product == blank -%}
+                      {%- assign _has_best_product = true -%}
+                      {%- assign _best_product = all_products[block.settings.best_product] -%}
+                      <div class="best-product-item">
+                        <div class="product-header">
+                          <div class="product-image mx-auto">
+                            {%- include 'image-style', image: _best_product.featured_image -%}
+                          </div>
+                        </div>
+                        <div class="product-content">
+                          <div class="product-name-inner fw-{{prod_name_fw}}{% if section.settings.product_name_uppercase %} text-uppercase{% endif %}">
+                            <a href="{{_best_product.url}}" class="product-name">{{_best_product.title}}</a>
+                          </div>
+                          <div class="product-description">{{block.settings.best_product_description}}</div>
+                        </div>
+                      </div>
+                    {%- endunless -%}
+                    {%- unless btn_label == blank -%}
+                      <div class="cate-btn">
+                        <a href="{{btn_link}}">{{btn_label}}</a>
+                      </div>
+                    {%- endunless -%}
+                  </div>
+                </div>
+              </div>
+            {%- endfor -%}
+
+        {%- if _type == 'masonry' -%}
+            </div>
+          </div>
+          {%- else -%}
+        </div>
+        {%- endif -%}
+      {%- else -%}
+        <div class="row">
+        {%- for i in (1..4) -%}
+          <div class="category-item {{items_class}}">
+            <div class="cate-image">{%- include 'svgset', type:'collection' -%}</div>
+            <div class="cate-content">
+              <p class="cate-title">Category Item</p>
+            </div>
+          </div>
+        {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+  {%- capture _tempClassCSS -%}.section-show-{{section.id}} .categories-content .cate-content-container{%- endcapture -%}
+
+
+  <style>{%- include 'section-general-css' -%}
+    {{_tempClassCSS}} .cate-item a,
+    {{_tempClassCSS}} .cate-title a,
+    {{_tempClassCSS}} .cate-content{color: {{text_content_cl}};}
+    {{_tempClassCSS}}{background-color: {{text_content_bg}};}
+    {{_secionID}} .container{background-color: {{section.settings.section_bg_color}};}
+    {%- if overlay_content -%}
+      {%- include 'css-responsive', classID: _tempClassCSS, css_value: section.settings.position, type: 'position' -%}
+    {%- endif -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .cate-title'   , css_value: section.settings.title_margin      ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .cate-content' , css_value: section.settings.content_margin    ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .cate-btn'     , css_value: section.settings.link_margin       ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' li.cate-item'  , css_value: section.settings.list_item_margin  ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .cate-wrap'    , css_value: section.settings.cate_item_padding -%}
+    {%- if _has_best_product -%}
+      {%- include 'css-responsive', classID: _secionID, nextClassID: ' .best-product-item .product-name-inner'    ,css_value: section.settings.product_name_margin      ,css_property: 'margin' -%}
+      {%- include 'css-responsive', classID: _secionID, nextClassID: ' .best-product-item .product-name'          ,css_value: section.settings.product_name_fs          ,css_property: 'font-size' -%}
+      {%- include 'css-responsive', classID: _secionID, nextClassID: ' .best-product-item .product-description'   ,css_value: section.settings.product_description_fs   ,css_property: 'font-size' -%}
+      {%- include 'css-responsive', classID: _secionID, nextClassID: ' .best-product-item .product-image'         ,css_value: section.settings.best_prod_max_width      ,css_property: 'max-width' -%}
+      {{_secionID}} .best-product-item .product-name{ color: {{section.settings.product_name_color | default: 'rgba(0,0,0,0)'}};}
+      {{_secionID}} .best-product-item .product-description{ color: {{section.settings.product_description_color | default: 'rgba(0,0,0,0)'}};}  
+    {%- endif -%}
+    {%- unless _cate_img_bg == 'rgba(0,0,0,0)' -%}{{_secionID}} .category-item .cate-image{background: {{_cate_img_bg}};}{%- endunless -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .category-item .cate-image' ,css_value: _cate_img_circle ,css_property: 'width' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .category-item .cate-image' ,css_value: _cate_img_circle ,css_property: 'height' -%}
+  </style>
+</div>
+{% schema %}
+{
+   "name":"Categories",
+   "tag": "section",
+   "settings":[
+      {
+         "type":"paragraph",
+         "content":"Created by 'Categories' section"
+      },
+      {
+         "type":"text",
+         "id":"title",
+         "label":"Section Label [:id]","default": "Categories"
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT"
+      },
+      {
+         "type":"checkbox",
+         "id":"boxed_layout",
+         "label":"Boxed layout",
+         "default":true
+      },
+    {
+      "type":"text",
+      "id":"section_padding",
+      "label":"Section Padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+      {
+         "type":"color",
+         "id":"section_bg_color",
+         "label":"Background color",
+         "default": "#FFFFFF"
+      },
+      {
+        "type":"image_picker",
+        "id":"section_bg_image",
+        "label":"Background image"
+      },
+      {
+         "type":"select",
+         "id"   :"section_bg_size",
+         "label":"Background Size",
+         "default": "cover",
+         "options":[
+           {"value":"auto","label":"Auto"},
+           {"value":"cover","label":"Cover"},
+           {"value":"contain","label":"Contain"}
+         ]
+      },
+        {
+          "type": "select",
+          "id": "section_bg_repeat",
+          "label": "Background Image Repeat:",
+          "default": "no-repeat",
+          "options": [
+            {"value":"no-repeat","label":"No Repeat"},
+            {"value":"repeat","label":"Repeat"},
+            {"value":"repeat-x","label":"Repeat X"},
+            {"value":"repeat-y","label":"Repeat Y"}
+          ]
+        },
+        {
+          "type": "select",
+          "id": "section_bg_position",
+          "label": "Background Image Position:",
+          "default": "center center",
+          "options": [
+            {"value":"left top","label":"Left Top"},
+            {"value":"center top","label":"Center Top"},
+            {"value":"right top","label":"Right Top"},
+            {"value":"left center","label":"Left Center"},
+            {"value":"center center","label":"Center Center"},
+            {"value":"right center","label":"Right Center"},
+            {"value":"left bottom","label":"Left Bottom"},
+            {"value":"center bottom","label":"Center Bottom"},
+            {"value":"right bottom","label":"Right Bottom"}
+          ]
+        },
+      {
+         "type":"header",
+         "content":"Section Heading"
+      },
+      {
+         "type":"text",
+         "id":"heading_text",
+         "label":"Heading"
+      },
+      {
+         "type":"text",
+         "id":"subheading_text",
+         "label":"Subheading"
+      },
+      {
+         "type":"textarea",
+         "id":"subheading2_text",
+         "label":"Subheading 2"
+      },
+      {
+         "type":"select",
+         "id":"heading_content_align",
+         "label":"Heading alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type":"color",
+         "id":"section_heading_color",
+         "label":"Heading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading_color",
+         "label":"Subheading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading2_color",
+         "label":"Subheading 2 color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"header",
+         "content":"Slider settings"
+      },
+      {
+         "type":"checkbox",
+         "id":"autoplay",
+         "label":"Enable Autoplay"
+      },
+      {
+         "type":"checkbox",
+         "id":"center",
+         "label":"Enable Center mode"
+      },
+      {
+         "type":"checkbox",
+         "id":"loop",
+         "label":"Enable Loop"
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"stage_padding",
+         "label" :"Enable Stage Padding"
+      },
+      {
+         "type":"checkbox",
+         "id":"nav",
+         "label":"Show Next & Prev arrows",
+         "default":true
+      },
+      {
+         "type":"checkbox",
+         "id":"dot",
+         "label":"Show Dots",
+         "default":false
+      },
+      {
+         "type"  :"header",
+         "content" :"Layout content"
+      },
+      {
+          "type":"select",
+          "id":"type",
+          "label":"Type",
+          "options":[
+              {"value":"row","label":"Row"},
+              {"value":"carousel","label":"Slider"},
+              {"value":"masonry","label":"Masonry"}
+          ],
+          "default":"row"
+      },
+      {
+         "type"  :"text",
+         "id"    :"items_resp",
+         "label":"Max number of items per row",
+         "placeholder": "xl,lg,md,sm,xs,xxs",
+         "info": "E.g: 4,3,2",
+         "default": "4,3,2"
+      },
+      {
+         "type":"checkbox",
+         "id":"padding_item",
+         "label":"Spacing items",
+         "default":true
+      },
+      {
+         "type":"select",
+         "id":"border_type",
+         "label":"Border element:",
+         "options":[
+            {"value":"none","label":"None"},
+            {"value":"image","label":"Image"},
+            {"value":"content","label":"Block content"},
+            {"value":"underline","label":"Underline content"}
+         ],
+         "default":"none"
+      },
+      {
+         "type"  :"text",
+         "id"    :"min_height",
+         "label": "Items min height (in px)",
+         "default": "200px"
+      },
+      {
+         "type":"header",
+         "content":"Category item image"
+      },
+      {
+         "type":"select",
+         "id":"image_position",
+         "label":"Image position:",
+         "options":[
+            {"value":"top","label":"Top"},
+            {"value":"left","label":"Left"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"top"
+      },
+      {
+         "type":"select",
+         "id":"image_width",
+         "label":"Image width:",
+         "options":[
+            {"value":"auto","label":"Auto"},
+            {"value":"fill","label":"Fill"}
+         ],
+         "default":"fill"
+      },
+      {
+         "type":"select",
+         "id":"image_hover_effect",
+         "label":"Image hover effect",
+         "options":[
+           {
+             "value":"none",
+             "label":"No effect"
+           },
+           {
+             "value":"zoom-in",
+             "label":"Zoom in"
+           }
+         ]
+      },
+      {
+         "type":"color",
+         "id":"img_bg_color",
+         "label":"Background color",
+         "default": "rgba(0,0,0,0)"
+      },
+      {
+         "type":"checkbox",
+         "id":"hover_main_color",
+         "label":"Hover effect with Primary color"
+      },
+      {
+         "type":"text",
+         "id":"cate_image_circle_radius",
+         "label":"Categories image background Circle radius "
+      },
+      {
+         "type":"header",
+         "content":"Category item content"
+      },
+      {
+         "type":"checkbox",
+         "id":"overlay_content",
+         "label":"Content overlay"
+      },
+      {
+         "type":"text",
+         "id"   :"position",
+         "label":"Content position",
+         "default": "50%,50%",
+         "info": "Horizontal(%),Vertical(%)"
+      },
+      {
+         "type":"color",
+         "id"   :"text_content_cl",
+         "label":"Content text color",
+         "default": "#000000"
+      },
+      {
+         "type":"color",
+         "id"   :"text_content_bg",
+         "label":"Content background color",
+         "default": "#ffffff"
+      },
+      {
+         "type":"range",
+         "id"   :"cate_title_size",
+         "label":"Category Title font size (h1 - h6)",
+         "min"   :1,
+         "max"   :6,
+         "step"  :1,
+         "default":4
+      },
+      {
+         "type":"select",
+         "id":"item_align",
+         "label":"Content alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"left"
+      },
+      {
+         "type":"select",
+         "id":"cate_item_count_position",
+         "label":"Category item count position",
+         "options":[
+           {
+             "value":"hide",
+             "label":"Hide"
+           },
+           {
+             "value":"under_title",
+             "label":"Under Category title"
+           },
+           {
+             "value":"under_content",
+             "label":"Under Category content"
+           }
+         ]
+      },
+      {
+         "type":"header",
+         "content":"Content padding/margin"
+      },
+      {
+         "type":"paragraph",
+         "content": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"paragraph",
+         "content": "E.g: 5px 20px 5px 20px"
+      },
+      {
+         "type":"text",
+         "id"   :"cate_item_padding",
+         "label":"Category item padding"
+      },
+      {
+         "type":"text",
+         "id"   :"title_margin",
+         "label":"Category title margin"
+      },
+      {
+         "type":"text",
+         "id"   :"content_margin",
+         "label":"Category content margin"
+      },
+      {
+         "type":"text",
+         "id"   :"list_item_margin",
+         "label":"Category list item margin"
+      },
+      {
+         "type":"text",
+         "id"   :"link_margin",
+         "label":"Category link margin"
+      },
+      {
+         "type":"header",
+         "content":"Best product in collection item"
+      },
+      {
+         "type":"text",
+         "id":"best_prod_max_width",
+         "label":"Max width",
+         "default": "50%"
+      },
+      {
+         "type":"checkbox",
+         "id":"product_name_uppercase",
+         "label":"Show product name uppercase",
+         "default": true
+      },
+      {
+         "type":"text",
+         "id":"product_name_fs",
+         "label":"Product name font size",
+         "default": "16px"
+      },
+      {
+         "type":"text",
+         "id":"product_description_fs",
+         "label":"Product description font size",
+         "default": "14px"
+      },
+      {
+         "type":"color",
+         "id":"product_name_color",
+         "label":"Product name color",
+         "default": "#000000"
+      },
+      {
+         "type":"color",
+         "id":"product_description_color",
+         "label":"Product description color",
+         "default": "#888888"
+      },
+      {
+        "type":"select",
+        "id":"product_name_fw",
+        "label":"Product name font weight",
+        "default":"600",
+        "options":[
+          {"value":"100","label":"100 Thin (Hairline)"},
+          {"value":"200","label":"200 Extra Light (Ultra Light)"},
+          {"value":"300","label":"300 Light"},
+          {"value":"400","label":"400 Normal"},
+          {"value":"500","label":"500 Medium"},
+          {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+          {"value":"700","label":"700 Bold"},
+          {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+          {"value":"900","label":"900 Black (Heavy)"}
+        ]
+      },
+      {
+         "type":"text",
+         "id"   :"product_name_margin",
+         "label":"Product name margin",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      }
+   ],
+   "blocks":[
+
+      {
+         "type":"collection_item",
+         "name":"Collection Item",
+         "settings":[
+            {
+              "type"  :"image_picker",
+              "id"    :"image",
+              "label" :"Representative Image",
+              "info": "Blank to use Background Color"
+            },
+            {
+               "type"  :"url",
+               "id"    :"image_link",
+               "label" :"Image link",
+               "default": "/collections"
+            },
+            {
+               "type"  :"color",
+               "id"    :"item_color",
+               "label" :"Background Color",
+               "default": "#9D9D9D"
+            },
+            {
+               "type"  :"text",
+               "id"    :"min_height",
+               "label": "Min height (in px)",
+               "info":"Blank to auto"
+            },
+            {
+               "type"  :"collection",
+               "id"    :"collection",
+               "label" :"Collection item"
+            },
+            {
+               "type"  :"text",
+               "id"    :"title",
+               "label" :"Category Title",
+               "default" :"Category Item"
+            },
+            {
+               "type"  :"textarea",
+               "id"    :"content",
+               "label" :"Category content"
+            },
+            {
+               "type":"product",
+               "id":"best_product",
+               "label":"Best product"
+            },
+            {
+               "type":"textarea",
+               "id":"best_product_description",
+               "label":"Product description"
+            },
+            {
+               "type"  :"text",
+               "id"    :"button",
+               "label" :"Link label"
+            },
+            {
+               "type"  :"url",
+               "id"    :"button_link",
+               "label" :"Link"
+            },
+            {
+               "type":"text",
+               "id"   :"width",
+               "label":"Width",
+               "placeholder": "xl,lg,md,sm,xs,xxs",
+               "info": "Blank to auto"
+            }
+         ]
+      },
+      {
+         "type":"collection_group",
+         "name":"Collection Group",
+         "settings":[
+            {
+              "type"  :"image_picker",
+              "id"    :"image",
+              "label" :"Representative Image"
+            },
+            {
+               "type"  :"url",
+               "id"    :"image_link",
+               "label" :"Image link",
+               "default": "/collections"
+            },
+            {
+               "type"  :"text",
+               "id"    :"title",
+               "label" :"Category Title",
+               "default" :"Category Title"
+            },
+            {
+               "type"  :"textarea",
+               "id"    :"content",
+               "label" :"Category content"
+            },
+            {
+               "type"  :"text",
+               "id"    :"button",
+               "label" :"Link label"
+            },
+            {
+               "type"  :"url",
+               "id"    :"button_link",
+               "label" :"Link"
+            },
+            {
+               "type"  :"collection",
+               "id"    :"collection_1",
+               "label" :"Collection #1"
+            },
+            {
+               "type"  :"collection",
+               "id"    :"collection_2",
+               "label" :"Collection #2"
+            },
+            {
+               "type"  :"collection",
+               "id"    :"collection_3",
+               "label" :"Collection #3"
+            },
+            {
+               "type"  :"collection",
+               "id"    :"collection_4",
+               "label" :"Collection #4"
+            },
+            {
+               "type":"text",
+               "id"   :"width",
+               "label":"Width",
+               "placeholder": "xl,lg,md,sm,xs,xxs",
+               "info": "Blank to auto"
+            }
+         ]
+      }
+   ],
+   "presets":[
+      {
+         "name":"Categories",
+         "category":"Collection"
+      }
+   ]
+}
+{% endschema %}

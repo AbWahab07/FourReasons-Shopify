@@ -1,0 +1,70 @@
+<div class="collection-image-wrapper">
+  <div class="container">
+    
+    {%- if section.settings.image != blank -%}
+      <div class="image-wrap" id="js-hide-wrapper">
+    	<img class="lazyautosizes lazyloaded img-parallax" src="{{ section.settings.image | img_url: 'master' }}">
+      </div>
+    {% endif %}
+    
+    {%- if section.settings.button_link !=blank -%}
+      <div class="text-wrap" id="js-hide-wrapper">
+        {%- if section.settings.header_title != blank -%}
+          <h2>{{ section.settings.header_title }}</h2>
+        {%- endif -%}
+        
+        {%- if section.settings.header_text != blank -%}
+          {{ section.settings.header_text }}
+        {%- endif -%}
+        
+        <button id="btn-find-my-shade">
+          {{ section.settings.button_label }}
+          {%- include 'icon-right-arrow' -%}
+        </button>
+      </div>
+    {%- endif -%}
+    
+	<iframe id="interactApp5e6774855c30fc0014ddb250" class="iframe-color-quiz" style="display: none;" allowTransparency="true" frameborder="0" src="https://quiz.tryinteract.com/#/5e6774855c30fc0014ddb250?method=iframe"></iframe>
+  </div>
+  <div style="clear: both;"></div>
+</div>
+
+{% javascript %}
+  $("button#btn-find-my-shade").click(function() {
+    $("div#js-hide-wrapper").fadeOut();
+    $("iframe#interactApp5e6774855c30fc0014ddb250").fadeIn();
+  });
+{% endjavascript %}
+
+{% schema %}
+  {
+    "name": "Color Mask Image",
+    "settings": [
+      {
+        "type":"image_picker",
+        "id":"image",
+        "label":"Image"
+      },
+	  {
+        "type":"text",
+        "id":"header_title",
+        "label":"Heading"
+      },
+      {
+        "type":"richtext",
+        "id":"header_text",
+        "label":"Text"
+      },
+	  {
+        "type":"url",
+        "id":"button_link",
+        "label":"Quiz Link"
+      },
+      {
+        "type":"text",
+        "id":"button_label",
+        "label":"Button Label"
+      }
+    ]
+  }
+{% endschema %}

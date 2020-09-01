@@ -1,0 +1,1030 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- if section.settings.carousel_layout -%}{%- assign _type = 'carousel' -%}{%- else -%}{%- assign _type = 'row' -%}{%- endif -%}
+{%- assign _lazyload              = settings.use_lazyload -%}
+{%- assign _bg_color              = section.settings.section_bg_color -%}
+{%- assign _bg_image              = section.settings.section_bg_image -%}
+{%- assign _padding               = section.settings.section_padding -%}
+{%- assign _item_bg_color         = section.settings.item_bg_color -%}
+{%- assign _item_bg_transparent   = section.settings.item_bg_opacity | times: 0.01 -%}
+{%- assign _item_bd_color         = section.settings.item_border_color -%}
+{%- assign _item_bg_image         = section.settings.item_bg_image -%}
+{%- assign _item_padding          = section.settings.item_padding -%}
+{%- assign _spacing_items         = section.settings.padding_item -%}
+{%- assign item_layout            = section.settings.item_layout -%}
+{%- assign _text_align            = section.settings.text_align -%}
+{%- assign big_image              = section.settings.big_image -%}
+{%- assign tes_subtitle           = section.settings.subtitle -%}
+{%- assign round_image            = section.settings.round_image -%}
+
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+{%- unless _item_bg_color == 'rgba(0,0,0,0)' -%}
+  {%- assign _item_bg_color = _item_bg_color | color_modify: 'alpha', _item_bg_transparent -%}
+{%- endunless -%}
+{%- capture _item_bg_image -%}{% if _item_bg_image != blank %}{{_item_bg_image | img_url: '1024x'}}{% endif %}{%- endcapture -%}
+{%- capture section_ID -%}.section-show-{{section.id}}{%- endcapture -%}
+
+{% include 'include-item-per-row' %}
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="home-customer layout-{{_layout }} section-show-{{section.id}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="customer" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+    {%- include 'head-title' -%}
+    {%- unless big_image == blank -%}
+      <div class="big-image">
+        <div class="image">{%- include 'image-style', image: big_image -%}</div>
+      </div>
+    {%- endunless -%}
+
+    {%- unless tes_subtitle == blank -%}
+      {%- assign sub_text_align   = section.settings.sub_text_align -%}
+      {%- assign sub_color        = section.settings.sub_color -%}
+      {%- assign sub_fw           = section.settings.sub_font_weight -%}
+
+      <div class="customer-subtitle text-{{sub_text_align}} fw-{{sub_fw}}">{{tes_subtitle}}</div>
+      {%- capture subtitle_tes_css -%}
+        {%- unless sub_color == 'rgba(0,0,0,0)' -%}{{section_ID}} .customer-subtitle{color: {{sub_color}};}{%- endunless -%}
+        {%- include 'css-responsive', classID: section_ID, nextClassID: ' .customer-subtitle', css_value: section.settings.sub_font_size, css_property: 'font-size' -%}
+      {%- endcapture -%}
+      {%- assign section_css = section_css | append: subtitle_tes_css -%}
+    {%- endunless -%}
+
+    <div class="wrapper-customer">
+      {% if section.blocks.size > 0 %}
+        <div class="{% unless _spacing_items %}no-padding {% endunless %}{% if _type == 'row' %}row{% else %}customer-carousel owl-carousel nav-style-{{section.settings.nav_style}}{% endif %}"{% include 'include-carousel-attr' %}>
+
+          {%- capture cus_item_class -%}customer-item{% if _type == 'row' %} {{ items_class }}{% endif %}{%- endcapture -%}
+
+          {%- if item_layout != '4' -%}
+            {%- for block in section.blocks -%}
+              <div class="{{cus_item_class}}"{{ block.shopify_attributes }}>
+                {%- include 'customer-item' -%}
+              </div>
+            {%- endfor -%}
+
+          {%- else -%}
+            {%- assign block_size = section.blocks.size | divided_by: 2 -%}
+
+            {%- for i in (0..block_size) -%}
+              {%- assign index = i | times: 2 -%}
+              {%- if section.blocks[index] -%}
+                <div class="{{cus_item_class}}">
+                  {%- for j in (1..2) -%}
+                    {%- assign block = section.blocks[index] -%}
+                    {%- if block -%}{%- include 'customer-item' -%}{%- endif -%}
+                    {%- assign index = index | plus: j -%}
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+        {%- include 'include-button', btn_type: 'section' -%}
+      {% endif %}
+    </div>
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+
+  {%- assign _item_head_color = section.settings.item_head_color | default: 'rgba(0,0,0,0)' -%}
+  {%- assign _item_sub1_color = section.settings.item_sub1_color | default: 'rgba(0,0,0,0)' -%}
+  {%- assign _item_sub2_color = section.settings.item_sub2_color | default: 'rgba(0,0,0,0)' -%}
+  {%- assign _item_mess_color = section.settings.item_mess_color | default: 'rgba(0,0,0,0)' -%}
+
+  {%- capture section_final_css -%}
+  
+    {%- include 'section-general-css' -%}
+    {{- section_css}}
+    {{- section_ID}} .customer-item-inner{border: 1px solid {{_item_bd_color}};}
+    {{- section_ID}} .customer-item-inner.layout-3 .cs-header-inner:after{content: '';border-top-color : {{_item_bg_color}};}
+    {%- if _item_max_w != blank -%}.section-show-{{section.id}}{max-width: {{_item_max_w}};}{%- endif -%}
+
+    {%- if _item_bg_image != blank and _lazyload == false -%}{{section_ID}} .wrapper-customer .bg-image{background-image: url({{_item_bg_image}});}{%- endif -%}
+    {%- if _item_bg_color != blank -%}{{section_ID}} {% if item_layout == '3' %}.cs-header-inner{% elsif item_layout == '5' %}.cs-body{% else %}.customer-item-inner{%- endif -%}{background-color: {{_item_bg_color}};
+    }{%- endif -%}
+
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .customer-item-inner', css_value: _item_padding -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .wrapper-customer'   , css_value: section.settings.item_max_width, css_property: 'max-width' -%}
+
+    {%- include 'css-responsive', classID: section_ID, nextClassID: '  .customer-item .customer-item-inner .cs-header .cs-image img' ,css_value: section.settings.item_img_w, css_property: 'width' -%}
+
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .name'      ,css_value: section.settings.item_head_margin, css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption'   ,css_value: section.settings.item_sub1_margin, css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption-2' ,css_value: section.settings.item_sub2_margin, css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .message'   ,css_value: section.settings.item_mess_margin, css_property: 'margin' -%}
+
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .name'      ,css_value: section.settings.item_head_fsize, css_property: 'font-size' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption'   ,css_value: section.settings.item_sub1_fsize, css_property: 'font-size' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption-2' ,css_value: section.settings.item_sub2_fsize, css_property: 'font-size' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .message'   ,css_value: section.settings.item_mess_fsize, css_property: 'font-size' -%}
+
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .name'      ,css_value: section.settings.item_head_lsp, css_property: 'letter-spacing' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption'   ,css_value: section.settings.item_sub1_lsp, css_property: 'letter-spacing' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption-2' ,css_value: section.settings.item_sub2_lsp, css_property: 'letter-spacing' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .message'   ,css_value: section.settings.item_mess_lsp, css_property: 'letter-spacing' -%}
+
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .name'      ,css_value: section.settings.item_head_fw, css_property: 'font-weight' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption'   ,css_value: section.settings.item_sub1_fw, css_property: 'font-weight' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption-2' ,css_value: section.settings.item_sub2_fw, css_property: 'font-weight' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .message'   ,css_value: section.settings.item_mess_fw, css_property: 'font-weight' -%}
+    
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .name'      ,css_value: section.settings.item_head_lh, css_property: 'line-height' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption'   ,css_value: section.settings.item_sub1_lh, css_property: 'line-height' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption-2' ,css_value: section.settings.item_sub2_lh, css_property: 'line-height' -%}
+    {%- include 'css-responsive', classID: section_ID, nextClassID: ' .message'   ,css_value: section.settings.item_mess_lh, css_property: 'line-height' -%}
+
+    {%- if _item_head_color != 'rgba(0,0,0,0)' -%}{%- include 'css-responsive', classID: section_ID, nextClassID: ' .name'      ,css_property: 'color', css_value: _item_head_color -%}{%- endif -%}
+    {%- if _item_sub1_color != 'rgba(0,0,0,0)' -%}{%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption'   ,css_property: 'color', css_value: _item_sub1_color -%}{%- endif -%}
+    {%- if _item_sub2_color != 'rgba(0,0,0,0)' -%}{%- include 'css-responsive', classID: section_ID, nextClassID: ' .caption-2' ,css_property: 'color', css_value: _item_sub2_color -%}{%- endif -%}
+    {%- if _item_mess_color != 'rgba(0,0,0,0)' -%}{%- include 'css-responsive', classID: section_ID, nextClassID: ' .message'   ,css_property: 'color', css_value: _item_mess_color -%}{%- endif -%}
+  {%- endcapture -%}
+  <style>{{section_final_css}}</style>
+</div>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Created by 'Customer' section"
+    },
+    {
+      "type": "text","id": "title","label": "Section Label","info": "Section label [:id]","default": "Testimonials"
+    },
+    {
+      "type": "header",
+      "content": "LAYOUT"
+    },
+    {
+      "type": "checkbox",
+      "id": "boxed_layout",
+      "label": "Boxed layout",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "section_padding",
+      "label": "Section Padding",
+      "placeholder": "E.g: 5px 20px 5px 20px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "select",
+      "id": "section_bg_size",
+      "label": "Background Size",
+      "default": "cover",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_repeat",
+      "label": "Background Image Repeat:",
+      "default": "no-repeat",
+      "options": [
+        {
+          "value": "no-repeat",
+          "label": "No Repeat"
+        },
+        {
+          "value": "repeat",
+          "label": "Repeat"
+        },
+        {
+          "value": "repeat-x",
+          "label": "Repeat X"
+        },
+        {
+          "value": "repeat-y",
+          "label": "Repeat Y"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_position",
+      "label": "Background Image Position:",
+      "default": "center center",
+      "options": [
+        {
+          "value": "left top",
+          "label": "Left Top"
+        },
+        {
+          "value": "center top",
+          "label": "Center Top"
+        },
+        {
+          "value": "right top",
+          "label": "Right Top"
+        },
+        {
+          "value": "left center",
+          "label": "Left Center"
+        },
+        {
+          "value": "center center",
+          "label": "Center Center"
+        },
+        {
+          "value": "right center",
+          "label": "Right Center"
+        },
+        {
+          "value": "left bottom",
+          "label": "Left Bottom"
+        },
+        {
+          "value": "center bottom",
+          "label": "Center Bottom"
+        },
+        {
+          "value": "right bottom",
+          "label": "Right Bottom"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "LAYOUT CONTENT"
+    },
+    {
+      "type": "text",
+      "id": "items_resp",
+      "label": "Max number of items per row",
+      "placeholder": "xl,lg,md,sm,xs,xxs",
+      "info": "E.g: 4,3,2",
+      "default": "4,3,2"
+    },
+    {
+      "type": "checkbox",
+      "id": "padding_item",
+      "label": "Spacing items",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "item_layout",
+      "label": "Layout Item",
+      "options": [
+        {
+          "value": "1",
+          "label": "#1"
+        },
+        {
+          "value": "2",
+          "label": "#2"
+        },
+        {
+          "value": "3",
+          "label": "#3"
+        },
+        {
+          "value": "4",
+          "label": "#4 Column content"
+        },
+        {
+          "value": "5",
+          "label": "#5 Overlay content"
+        }
+      ],
+      "default": "1",
+      "info": "#5. Required Image in Testimonial item"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text align for Item content",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "round_image",
+      "label": "Round Image"
+    },
+    {
+      "type": "text",
+      "id": "item_padding",
+      "label": "Item Padding",
+      "placeholder": "E.g: 5px 20px 5px 20px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "text",
+      "id": "item_max_width",
+      "label": "Item Max Width",
+      "placeholder": "E.g: 1440px"
+    },
+    {
+      "type": "text",
+      "id": "item_img_w",
+      "label": "Item Image Width"
+    },
+    {
+      "type": "color",
+      "id": "item_border_color",
+      "label": "Item Border color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "item_bg_color",
+      "label": "Item Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "item_bg_opacity",
+      "label": "Background color transparent",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "image_picker",
+      "id": "item_bg_image",
+      "label": "Item Background image"
+    },
+    {
+      "type": "header",
+      "content": "Heading Settings"
+    },
+    {
+      "type": "text",
+      "id": "item_head_fsize",
+      "label": "Heading font size",
+      "default": "20px"
+    },
+    {
+      "type": "color",
+      "id": "item_head_color",
+      "label": "Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "item_head_fw",
+      "label": "Heading font weight",
+      "default": "400",
+      "options": [
+        {
+          "value": "100",
+          "label": "100 Thin (Hairline)"
+        },
+        {
+          "value": "200",
+          "label": "200 Extra Light (Ultra Light)"
+        },
+        {
+          "value": "300",
+          "label": "300 Light"
+        },
+        {
+          "value": "400",
+          "label": "400 Normal"
+        },
+        {
+          "value": "500",
+          "label": "500 Medium"
+        },
+        {
+          "value": "600",
+          "label": "600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value": "700",
+          "label": "700 Bold"
+        },
+        {
+          "value": "800",
+          "label": "800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value": "900",
+          "label": "900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "item_head_margin",
+      "label": "Heading margin",
+      "placeholder": "E.g: 5px 10px 5px 10px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "text",
+      "id": "item_head_lh",
+      "label": "Heading line height",
+      "placeholder": "E.g: 20px"
+    },
+    {
+      "type": "text",
+      "id": "item_head_lsp",
+      "label": "Heading letter spacing",
+      "placeholder": "E.g: 2px"
+    },
+    {
+      "type": "header",
+      "content": "Subheading 1 Settings"
+    },
+    {
+      "type": "text",
+      "id": "item_sub1_fsize",
+      "label": "Subheading 1 font size",
+      "default": "16px"
+    },
+    {
+      "type": "color",
+      "id": "item_sub1_color",
+      "label": "Subheading 1 color",
+      "default": "#888888"
+    },
+    {
+      "type": "select",
+      "id": "item_sub1_fw",
+      "label": "Subheading 1 font weight",
+      "default": "400",
+      "options": [
+        {
+          "value": "100",
+          "label": "100 Thin (Hairline)"
+        },
+        {
+          "value": "200",
+          "label": "200 Extra Light (Ultra Light)"
+        },
+        {
+          "value": "300",
+          "label": "300 Light"
+        },
+        {
+          "value": "400",
+          "label": "400 Normal"
+        },
+        {
+          "value": "500",
+          "label": "500 Medium"
+        },
+        {
+          "value": "600",
+          "label": "600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value": "700",
+          "label": "700 Bold"
+        },
+        {
+          "value": "800",
+          "label": "800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value": "900",
+          "label": "900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "item_sub1_margin",
+      "label": "Subheading 1 margin",
+      "placeholder": "E.g: 5px 10px 5px 10px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "text",
+      "id": "item_sub1_lh",
+      "label": "Subheading 1 line height",
+      "placeholder": "E.g: 20px"
+    },
+    {
+      "type": "text",
+      "id": "item_sub1_lsp",
+      "label": "Subheading 1 letter spacing",
+      "placeholder": "E.g: 2px"
+    },
+    {
+      "type": "header",
+      "content": "Subheading 2 Settings"
+    },
+    {
+      "type": "text",
+      "id": "item_sub2_fsize",
+      "label": "Subheading 2 font size",
+      "default": "16px"
+    },
+    {
+      "type": "color",
+      "id": "item_sub2_color",
+      "label": "Subheading 2 color",
+      "default": "#888888"
+    },
+    {
+      "type": "select",
+      "id": "item_sub2_fw",
+      "label": "Subheading 2 font weight",
+      "default": "400",
+      "options": [
+        {
+          "value": "100",
+          "label": "100 Thin (Hairline)"
+        },
+        {
+          "value": "200",
+          "label": "200 Extra Light (Ultra Light)"
+        },
+        {
+          "value": "300",
+          "label": "300 Light"
+        },
+        {
+          "value": "400",
+          "label": "400 Normal"
+        },
+        {
+          "value": "500",
+          "label": "500 Medium"
+        },
+        {
+          "value": "600",
+          "label": "600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value": "700",
+          "label": "700 Bold"
+        },
+        {
+          "value": "800",
+          "label": "800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value": "900",
+          "label": "900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "item_sub2_margin",
+      "label": "Subheading 2 margin",
+      "placeholder": "E.g: 5px 10px 5px 10px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "text",
+      "id": "item_sub2_lh",
+      "label": "Subheading 2 line height",
+      "placeholder": "E.g: 20px"
+    },
+    {
+      "type": "text",
+      "id": "item_sub2_lsp",
+      "label": "Subheading 2 letter spacing",
+      "placeholder": "E.g: 2px"
+    },
+    {
+      "type": "header",
+      "content": "Message Settings"
+    },
+    {
+      "type": "text",
+      "id": "item_mess_fsize",
+      "label": "Message font size",
+      "default": "16px"
+    },
+    {
+      "type": "color",
+      "id": "item_mess_color",
+      "label": "Message color",
+      "default": "#888888"
+    },
+    {
+      "type": "select",
+      "id": "item_mess_fw",
+      "label": "Message font weight",
+      "default": "400",
+      "options": [
+        {
+          "value": "100",
+          "label": "100 Thin (Hairline)"
+        },
+        {
+          "value": "200",
+          "label": "200 Extra Light (Ultra Light)"
+        },
+        {
+          "value": "300",
+          "label": "300 Light"
+        },
+        {
+          "value": "400",
+          "label": "400 Normal"
+        },
+        {
+          "value": "500",
+          "label": "500 Medium"
+        },
+        {
+          "value": "600",
+          "label": "600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value": "700",
+          "label": "700 Bold"
+        },
+        {
+          "value": "800",
+          "label": "800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value": "900",
+          "label": "900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "item_mess_margin",
+      "label": "Message margin",
+      "placeholder": "E.g: 5px 10px 5px 10px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "text",
+      "id": "item_mess_lh",
+      "label": "Message line height",
+      "placeholder": "E.g: 20px"
+    },
+    {
+      "type": "text",
+      "id": "item_mess_lsp",
+      "label": "Message letter spacing",
+      "placeholder": "E.g: 2px"
+    },
+    {
+      "type": "header",
+      "content": "Big Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "big_image",
+      "label": "Big Image"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle for content"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "select",
+      "id": "sub_text_align",
+      "label": "Text align for Subtitle",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "sub_color",
+      "label": "Subtitle color",
+      "default": "#000000"
+    },
+    {
+      "type": "text",
+      "id": "sub_font_size",
+      "label": "Subtitle font size",
+      "default": "24px"
+    },
+    {
+      "type": "select",
+      "id": "sub_font_weight",
+      "label": "Subtitle font weight",
+      "default": "300",
+      "options": [
+        {
+          "value": "100",
+          "label": "100 Thin (Hairline)"
+        },
+        {
+          "value": "200",
+          "label": "200 Extra Light (Ultra Light)"
+        },
+        {
+          "value": "300",
+          "label": "300 Light"
+        },
+        {
+          "value": "400",
+          "label": "400 Normal"
+        },
+        {
+          "value": "500",
+          "label": "500 Medium"
+        },
+        {
+          "value": "600",
+          "label": "600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value": "700",
+          "label": "700 Bold"
+        },
+        {
+          "value": "800",
+          "label": "800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value": "900",
+          "label": "900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Section Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading_text",
+      "label": "Subheading"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading2_text",
+      "label": "Subheading 2"
+    },
+    {
+      "type": "select",
+      "id": "heading_content_align",
+      "label": "Heading alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "section_heading_color",
+      "label": "Heading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "color",
+      "id": "section_subheading_color",
+      "label": "Subheading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "color",
+      "id": "section_subheading2_color",
+      "label": "Subheading 2 color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "header",
+      "content": "Section button"
+    },
+    {
+      "type": "text",
+      "id": "button",
+      "label": "Button Label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link",
+      "info": "Remove link to hide"
+    },
+    {
+      "type": "select",
+      "id": "button_align",
+      "label": "Horizontal alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_corner",
+      "label": "Button Rounded Corners"
+    },
+    {
+      "type": "range",
+      "id": "button_inherit_style",
+      "label": "Inherit Button style:",
+      "min": 0,
+      "max": 3,
+      "default": 1,
+      "info": "Set 0 to customize button"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_border",
+      "label": "Button Border color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Slider settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "carousel_layout",
+      "label": "Enable Slider"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Enable Loop"
+    },
+    {
+      "type": "checkbox",
+      "id": "nav",
+      "label": "Show Next & Prev arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "dot",
+      "label": "Show Dots",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "nav_style",
+      "label": "Navigation style",
+      "options": [
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "circle",
+          "label": "Circle"
+        },
+        {
+          "value": "border",
+          "label": "Border radius"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Testimonial"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Subheading #1"
+        },
+        {
+          "type": "textarea",
+          "id": "caption_2",
+          "label": "Subheading #2"
+        },
+        {
+          "type": "textarea",
+          "id": "message",
+          "label": "Message",
+          "default": "The idea that beautiful and functional everydayobjects should not only be affordable to the wealthy"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Required in Layout #5"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "category": "Advanced layout",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

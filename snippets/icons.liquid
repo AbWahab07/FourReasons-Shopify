@@ -1,0 +1,242 @@
+{%- assign account            = shop.customer_accounts_enabled -%}
+{%- assign wishlist           = settings.enable_product_wishlist -%}
+{%- assign compare            = settings.enable_product_compare -%}
+{%- assign use_ic_app_wl      = settings.use_ic_app_wl -%}
+{%- assign search_type        = settings.search_type -%}
+{%- assign cart_styles        = settings.cart_styles -%}
+{%- assign mobile_curr_lang   = section.settings.mobile_curr_lang -%}
+{%- assign mobile_show_popup  = section.settings.mobile_show_popup -%}
+
+{%- case type -%}
+  {%- comment -%} ---------   Account    ---------  {%- endcomment-%}
+  {%- when 'account' -%}
+    {%- if account -%}
+      <div class="m-customer-account no-popup{% unless use_content == blank %} icon-type--{{use_content}}{% endunless %}">
+        <a href="/account/" title="{{ 'general.header.signin' | t }}" data-target="account-drawer">
+          {%- if use_content == 'icon' or use_content == 'all' or use_content == blank -%}
+            {%- include 'icons', type: 'icon_type', f: 'account' -%}
+          {%- endif -%}
+
+          {%- if use_content == 'text' or use_content == 'all' or use_content == blank -%}
+            <span class="icon-text{% if show_label == false %} hide{% endif %}">
+              {%- if customer -%}{{ 'general.header.account_with_name' | t: name: customer.first_name }}
+              {%- else -%}{{ 'general.header.signin' | t }}{%- endif -%}
+            </span>
+          {%- endif -%}
+        </a>
+      </div>
+    {%- endif -%}
+
+  {%- comment -%} ---------   Account_logout    ---------  {%- endcomment-%}
+  {%- when 'account_logout' -%}
+    {%- if customer -%}
+      <a href="/account/logout" title="{{ 'general.header.logout' | t }}"><span>{{ 'general.header.logout' | t }}</span></a>
+    {%- endif -%}
+
+  {%- comment -%} ---------   Account_popup    ---------  {%- endcomment-%}
+  {%- when 'account_popup' -%}
+    {%- unless template contains 'customer' -%}
+      {%- if mobile_show_popup -%}
+        <div class="m-customer-account">
+          {%- include 'icons', type: 'icon_type', f: 'account' -%}
+        </div>
+      {%- endif -%}
+    {%- endunless -%}
+
+  {%- comment -%} ---------   Cart-mobile    ---------  {%- endcomment-%}
+  {%- when 'cart-mobile' -%}
+    <div class="m-cart-icon cart-target">
+      <a class="mobile-basket" href="/cart" title="{{ 'cart.header.title' | t }}">
+        {%- include 'icons', type: 'icon_type', f: 'cart' -%}
+        {%- if show_label -%}<span class="icon-text">{{'general.header.cart' | t }}</span>{%- endif -%}
+        <span class="number"><span class="n-item">{{ cart.item_count }}</span></span>
+        {%- if show_label -%}<span class="cart-tt-price">({{ 0 | money }})</span>{%- endif -%}
+      </a>
+    </div>
+
+  {%- comment -%} ---------   Cart    ---------  {%- endcomment-%}
+  {%- when 'cart' -%}
+    <div class="top-cart-holder{% if cart_styles == 'dropdown' %} hover-dropdown{% endif %}">
+      <div class="cart-target">
+        {%- if cart_styles == 'dropdown' -%}
+          <a href="javascript:void(0);" class="basket dropdown-toggle" title="{{ 'cart.header.title' | t }}">
+            <span>Cart</span>
+            <span class="number"><span class="n-item">{{ cart.item_count }}</span></span>
+          </a>
+          {%- unless template contains 'cart' -%}
+            <div class="cart-dd cart-layer-content">
+              <form action="/cart" method="post">
+                <div class="cart-info">
+                  <div class="cart-content">
+                    <div class="loading"></div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          {%- endunless -%}
+        {%- else -%}
+          <a href="javascript:void(0);" class="basket cart-toggle" title="{{ 'cart.header.title' | t }}">
+            <span class="cart-title">Cart</span>
+            <span class="number"><span class="n-item">{{ cart.item_count }}</span></span>
+          </a>
+        {%- endif -%}
+
+      </div>
+    </div>
+
+  {%- comment -%} ---------   Currencies    ---------  {%- endcomment-%}
+  {%- when 'currencies' -%}{% render 'currencies' ,type: 'icon2' %}  
+
+  {%- comment -%} ---------   Languages    ---------  {%- endcomment-%}
+  {%- when 'languages' -%}
+
+    <div class="topbar-popup{% if is_nav_mobile %} flex-fill text-right{% endif %}"{% if settings.lang_type != 'none' %} data-toggle="modal" data-target="#popup_languages"{% endif %}>
+      <div class="topbar-config">
+        <span>{{ shop.published_locales[0].name }}</span>
+      </div>
+    </div>
+
+  {%- comment -%} ---------   Navbar    ---------  {%- endcomment-%}
+  {%- when 'navbar' -%}
+    <div class="navbar navbar-responsive-menu responsive-menu-{% if desktop %}desktop{% else %}mobile{% endif %}">
+      <div class="responsive-menu">
+        {%- include 'icons', type: 'icon_type', f: 'hamburger' -%}
+      </div>
+    </div>
+
+  {%- comment -%} ---------   Search    ---------  {%- endcomment-%}
+  {%- when 'search' -%}
+
+    <div class="search-icon{% unless use_content == blank %} icon-type--{{use_content}}{% endunless %}" data-toggle="modal" data-target="#searchModal">
+      <a href="javascript:;">
+        {%- if use_content == 'icon' or use_content == 'all' or use_content == blank -%}
+          {%- include 'icons', type: 'icon_type', f: 'search' -%}
+        {%- endif -%}
+        {%- if use_content == 'text' or use_content == 'all' -%}
+          <span class="icon-text">{{- 'general.header.search' | t -}}</span>
+        {%- endif -%}
+      </a>
+    </div>
+
+  {%- comment -%} ---------   Sidebar-icon    ---------  {%- endcomment-%}
+  {%- when 'sidebar-icon' -%}
+    {%- if block.settings.icon != 'none' and c != blank-%}
+      {%- assign col_handle = c.handle -%}
+
+      <span class="icon">
+        {%- case block.settings.icon -%}%}
+          {%- when 'upload' -%}    <img {% if _lazyload %}class="lazyload" data-{% endif %}src = "{{ col_handle | append: '.png' | asset_url }}" alt="" />
+          {%- when 'upload-svg' -%}<img {% if _lazyload %}class="lazyload" data-{% endif %}src = "{{ col_handle | append: '.svg' | asset_url }}" alt="" />
+          {%- else -%}<img {% if _lazyload %}class="lazyload" data-{% endif %}src="{{ c.image.src | collection_img_url: 'icon' }}" alt="{{ _collection.title | escape }}" />
+        {%- endcase -%}
+      </span>
+    {%- endif -%}
+
+  {%- comment -%} ---------   Icon_type    ---------  {%- endcomment-%}
+  {%- when 'icon_type' -%}
+    <span class="icon-type">
+      {%- assign i_type   = f | append: '_icon_type' -%}
+      {%- assign i_image  = f | append: '_icon'      -%}
+      {%- assign i_name   = f | append: '_font_icon' -%}
+
+      {%- if settings[i_type] == 'image' -%}
+        {%- assign icon_image = settings[i_image] -%}
+        {%- unless icon_image == blank -%}
+          <img {% if _lazyload %}class="lazyload" data-srcset="{{ icon_image | img_url: '20x'}} 1x, {{ icon_image | img_url: '40x'}} 2x"{% else %}src="{{ icon_image | img_url: '20x'}}"{% endif %}/>
+        {%- endunless -%}
+      {%- else -%}
+        <i class="demo-icon {{ settings[i_name] }}"></i>
+      {%- endif -%}
+    </span>
+
+  {%- comment -%} ---------   Icon_free    ---------  {%- endcomment-%}
+  {%- when 'icon_free' -%}
+    {%- unless name == blank -%}
+      <span class="icon-type"><i class="demo-icon {{name}}"></i></span>
+    {%- endunless -%}
+
+  {%- when 'icon_menu_metafield' -%}
+    {%- assign cf_menu_array   = shop.metafields.c_f.menu_name -%}
+    {%- assign menu_name       = menu_title | strip -%}
+    {%- if cf_menu_array contains menu_name -%}
+      {%- for i in cf_menu_array -%}
+        {%- capture menu_item -%}{{i | strip }}{%- endcapture -%}
+        {%- if menu_item == menu_name -%}
+          {%- assign cf_icon = shop.metafields.c_f.menu_icon[forloop.index0] -%}
+          {%- capture c_f_icon_menu -%}
+            {%- unless cf_icon == blank -%}
+              <span class="cf-metafields--menu-icon" data-metafields-1="c_f.menu_name"data-metafields-2="c_f.menu_icon">
+                {%- if cf_icon contains '<svg' -%}{{- cf_icon -}}
+                {%- elsif cf_icon contains '.png' or cf_icon contains '.jpg' or cf_icon contains '.jpeg' -%}<img src="{{cf_icon}}">
+                {%- else -%}<i class="{{cf_icon}}"></i>
+                {%- endif -%}
+              </span>
+            {%- endunless -%}
+          {%- endcapture -%}
+          {{- c_f_icon_menu -}}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+
+  {%- comment -%} ---------   Compare    ---------  {%- endcomment-%}
+  {%- when 'compare' -%}
+    {%- if compare -%}
+      {%- capture wl_cp_btn_content -%}
+        {%- if action_type == 'add' -%}
+          {%- assign _action_type = 'cp_add_btn' -%}
+
+          {%- unless use_ic_app_wl -%}
+            {%- include 'icons', type: 'icon_type', f: 'compare' -%}
+          {%- endunless -%}
+          <span class="icon-text{% unless show_label %} hide{% endunless %}">{%- if text == blank -%}{{'general.header.compare' | t }}{%- else -%}{{ text }}{%- endif -%}</span>
+
+        {%- else -%}
+          {%- assign _action_type = 'cp_show_btn' -%}
+
+          {%- unless use_ic_app_wl -%}
+            {%- include 'icons', type: 'icon_type', f: 'compare' -%}
+          {%- endunless -%}
+          <span class="icon-text{% unless show_label %} hide{% endunless %}">{%- if text == blank -%}{{'general.header.compare' | t }}{%- else -%}{{ text }}{%- endif -%}</span>
+
+          {%- if shop.metafields.arena.wl_cp_settings.general_settings.show_number_status == true -%}
+            <span class="number"><span class="n-item">0</span></span>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endcapture -%}
+
+      <div class="compare-target">
+        {%- render 'arn_wl_cp_custom_button' ,type: _action_type ,product_handle: product.handle ,button_content: wl_cp_btn_content -%}
+      </div>
+
+    {%- endif -%}
+
+  {%- comment -%} ---------   Wishlist    ---------  {%- endcomment-%}
+  {%- when 'wishlist' -%}
+    {%- if wishlist -%}
+      {%- capture wl_cp_btn_content -%}
+        {%- if action_type == 'add' -%}
+          {%- assign _action_type = 'wl_add_btn' -%}
+          {%- unless use_ic_app_wl -%}
+            {%- include 'icons', type: 'icon_type', f: 'wishlist' -%}
+          {%- endunless -%}
+          <span class="icon-text{% unless show_label %} hide{% endunless %}">{%- if text == blank -%}{{'general.header.wish_list' | t }}{%- else -%}{{ text }}{%- endif -%}</span>
+
+        {%- else -%}
+          {%- assign _action_type = 'wl_show_btn' -%}
+          {%- unless use_ic_app_wl -%}
+            {%- include 'icons', type: 'icon_type', f: 'wishlist' -%}
+          {%- endunless -%}
+          <span class="icon-text{% unless show_label %} hide{% endunless %}">{%- if text == blank -%}{{'general.header.wish_list' | t }}{%- else -%}{{ text }}{%- endif -%}</span>
+          {%- if shop.metafields.arena.wl_cp_settings.general_settings.show_number_status == true -%}
+            <span class="number"><span class="n-item">0</span></span>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endcapture -%}
+
+      <div class="wishlist-target">
+        {%- render 'arn_wl_cp_custom_button' ,type: _action_type ,product_handle: product.handle ,button_content: wl_cp_btn_content -%}
+      </div>
+    {%- endif -%}
+
+{%- endcase -%}

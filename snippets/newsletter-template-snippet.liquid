@@ -1,0 +1,54 @@
+{%- assign _lazyload            = settings.use_lazyload -%}
+{%- assign _style               = section.settings.newsletter_style -%}
+{%- assign _scroll_position     = section.settings.scroll_position -%}
+{%- assign _delay_time          = section.settings.delay_time -%}
+{%- assign _expires             = section.settings.expires -%}
+{%- assign _text_box_position   = section.settings.text_box_position -%}
+{%- assign _close_color         = section.settings.close_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign _close_bg_color      = section.settings.close_bg_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign _block_image         = false -%}
+
+{%- for block in section.blocks -%}
+  {%- if block.type == 'image' -%}
+    {%- assign _block_image = true -%} 
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<div class="modal fade" id="newsletter_popup">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background-color: {{section.settings.section_bg_color | default: '#0000' }}">
+
+      <div class="modal-body">
+        <div  id="newsletter-popup"
+              data-style="{{ _style }}"
+              data-scroll="{{ _scroll_position }}"
+              data-expires="{{ _expires }}"
+              data-delay="{{ _delay_time | times: 1000 }}">
+
+          <div class="newsletter-popup-content block-image-{{ _block_image }}" data-image="{{_block_image}}">
+
+              <span class="np-close" title="Close" data-dismiss="modal"></span>
+
+              {%- if _text_box_position == 'bottom' -%}
+                {%- include 'newsletter-block-image' -%}
+              {%- endif -%}
+
+              <div class="text-box-image">
+                {%- include 'newsletter-block-textbox' -%}
+
+                {%- unless _text_box_position == 'bottom' -%}
+                  {%- include 'newsletter-block-image' -%}
+                {%- endunless -%}
+              </div>
+
+              {%- include 'newsletter-block-subscribe-result' -%}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style type="text/css">{{section_css | strip_newlines }}</style>

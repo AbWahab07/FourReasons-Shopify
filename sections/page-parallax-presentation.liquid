@@ -1,0 +1,404 @@
+{%- include 'breadcrumb' -%}
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _lazyload        = settings.use_lazyload -%}
+{%- assign _banner_image    = section.settings.banner_image -%}
+{%- assign _right_padding   = section.settings.right_padding -%}
+
+<div id="col-main" class="page-parallax">
+  <div class="page-content">
+    {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+      <div class="content-container">
+        {%- if section.blocks.size > 0 -%}
+          <div class="row">
+            {%- for block in section.blocks -%}
+              {%- assign block_type     = block.type -%}
+              {%- assign _b_hor_align   = block.settings.hor_align -%}
+              {%- assign b_order       = block.settings.order_on_mobile -%}
+
+              {%- capture _b_order -%}{%- unless b_order == blank -%}order-{{b_order}}{% endunless %} order-md-{{forloop.index0}}{%- endcapture -%}
+
+
+              {%- capture _blockID -%}.block-{{block_type}}.block-id-{{block.id}}{%- endcapture -%}
+              {%- capture b_class -%}{%- include 'set-width-bootstrap',in_type: 'width', number: block.settings.width_resp -%}{{_out}}{%- endcapture -%}
+              {%- capture _blockAlign -%}{%- unless _b_hor_align == blank -%}{{_b_hor_align | prepend: ' text-' }}{%- endunless -%}{%- endcapture -%}
+
+              <div class="{{b_class}} {{_b_order}}"{{block.shopify_attributes}}>
+                <div class="item-content block-{{block_type}} block-id-{{block.id}}{{_blockAlign}}">
+
+                {%- case block_type -%}
+                  {%- when 'parallax_image' -%}
+                    {%- capture _banner_bg -%}{{block.settings.image | img_url: '1920x'}}{%- endcapture -%}
+
+                    <div class="parallax-image{% if _lazyload %} lazyload" data-bgset="{{_banner_bg}} 1920w{%- endif -%}"></div>
+                    {%- capture _parallaxImg -%}.block-id-{{block.id}} .parallax-image{%- endcapture -%}
+                      <style>
+                        {%- include 'css-responsive', classID: _parallaxImg, css_value: block.settings.min_height, css_property: 'min-height' -%}
+                        {%- unless _lazyload -%}{{_parallaxImg}}{background-image: url({{_banner_bg}});}{%- endunless -%}
+                      </style>
+
+                  {%- when 'text' -%}
+                    {%- assign _b_heading       = block.settings.heading -%}
+                    {%- assign _b_content       = block.settings.content -%}
+                    {%- assign _b_heading_size  = block.settings.heading_font_size -%}
+                    {%- assign _b_item_padding  = block.settings.item_padding -%}
+
+                    {%- unless _b_heading == blank -%}
+                      <div class="heading h{{_b_heading_size}}">
+                        <span>{{_b_heading}}</span>
+                      </div>
+                    {%- endunless -%}
+
+                    {%- unless _b_content == blank -%}
+                      <div class="content">{{_b_content}}</div>
+                    {%- endunless -%}
+
+                    {%- unless _b_item_padding == blank -%}
+                      <style>{%- include 'css-responsive', classID: _blockID, css_value: _b_item_padding -%}</style>
+                    {%- endunless -%}
+
+                  {%- when 'grid_text' -%}
+                    {%- assign _b_heading       = block.settings.heading -%}
+                    {%- assign _b_content       = block.settings.content -%}
+                    {%- assign _b_heading_size  = block.settings.heading_font_size -%}
+                    {%- assign _b_item_padding  = block.settings.item_padding -%}
+                    {%- assign _b_block_index   = block.settings.show_index -%}
+
+                    {%- unless _b_heading == blank -%}
+                      <div class="heading h{{_b_heading_size}}">
+                        <span>{{_b_heading}}</span>
+                      </div>
+                    {%- endunless -%}
+
+                    {%- unless _b_content == blank -%}
+                      <div class="content">{{_b_content}}</div>
+                    {%- endunless -%}
+
+
+                    <div class="grid-text-container">
+                      <div class="row">
+                        {%- for i in (1..4) -%}
+                          {%- assign t_btext = 'btext_'     | append: i -%}
+                          {%- assign t_bcont = 'bcontent_'  | append: i -%}
+                          {%- assign _btext = block.settings[t_btext] -%}
+                          {%- assign _bcont = block.settings[t_bcont] -%}
+
+                          {%- unless _btext == blank and _bcont == blank -%}
+                            <div class="col-md-6 col-12">
+                              <div class="grid-text-item grid-text-{{i}}">
+                                <div class="g-text-heading">
+                                  {%- if _b_block_index -%}<span class="index">0{{i}}.</span>{%- endif -%}
+                                  <span>{{_btext}}</span>
+                                </div>
+                                <div class="g-text-content">{{_bcont}}</div>
+                              </div>
+                            </div>
+                          {%- endunless -%}
+                        {%- endfor -%}
+                      </div>
+                    </div>
+
+                    {%- unless _b_item_padding == blank -%}
+                      <style>{%- include 'css-responsive', classID: _blockID, css_value: _b_item_padding -%}</style>
+                    {%- endunless -%}
+
+                  {%- else -%}
+                {%- endcase -%}
+
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+
+        {%- else -%}
+          <div class="row align-items-center">
+            <div class="col-md-6 col-12">{%- include 'svgset', type: 'collection' -%}</div>
+            <div class="col-md-6 col-12">
+              <div class="empty-content m-3">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tellus at urna condimentum mattis pellentesque id nibh. Sed arcu non odio euismod lacinia at. Congue nisi vitae suscipit tellus mauris a diam maecenas sed. In arcu cursus euismod quis viverra nibh. Pharetra vel turpis nunc eget. Sagittis id consectetur purus ut faucibus. Erat nam at lectus urna duis convallis convallis tellus id. Ac tortor vitae purus faucibus ornare suspendisse sed nisi. Fames ac turpis egestas integer eget aliquet nibh. Nisi quis eleifend quam adipiscing vitae proin. Cursus sit amet dictum sit. Dignissim sodales ut eu sem integer vitae justo eget. Odio eu feugiat pretium nibh ipsum. Eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis. Cursus euismod quis viverra nibh cras pulvinar. Netus et malesuada fames ac turpis egestas. Habitasse platea dictumst quisque sagittis purus sit amet volutpat consequat. Semper risus in hendrerit gravida.
+
+                Bibendum neque egestas congue quisque egestas diam in arcu. Lacus suspendisse faucibus interdum posuere lorem ipsum. Bibendum enim facilisis gravida neque convallis a. Neque egestas congue quisque egestas diam. Ut venenatis tellus in metus vulputate eu scelerisque felis imperdiet. Vel eros donec ac odio tempor orci dapibus ultrices. Nulla posuere sollicitudin aliquam ultrices sagittis orci a scelerisque. Ultricies leo integer malesuada nunc vel risus commodo. Aliquam eleifend mi in nulla posuere sollicitudin aliquam ultrices. Eget lorem dolor sed viverra ipsum nunc aliquet bibendum. Congue quisque egestas diam in arcu cursus euismod.
+              </div>
+            </div>
+
+            <div class="col-md-6 col-12">
+              <div class="empty-content m-3">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl nisi scelerisque eu ultrices vitae auctor eu augue ut. Orci porta non pulvinar neque. Nec nam aliquam sem et tortor consequat id. Pellentesque sit amet porttitor eget. Tincidunt vitae semper quis lectus nulla. Luctus accumsan tortor posuere ac ut consequat semper viverra. Nibh nisl condimentum id venenatis a condimentum vitae. Bibendum enim facilisis gravida neque. Sodales neque sodales ut etiam sit. Lectus arcu bibendum at varius. Molestie nunc non blandit massa enim nec dui. Velit euismod in pellentesque massa placerat duis. Enim nec dui nunc mattis enim ut tellus. Convallis tellus id interdum velit. Nisi lacus sed viverra tellus.
+              </div>
+            </div>
+            <div class="col-md-6 col-12">{%- include 'svgset', type: 'lifestyle' -%}</div>
+          </div>
+        {%- endif -%}
+      </div>
+
+    {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+  </div>
+  <style>#col-main{background-color:{{section.settings.background_color | default: 'rgba(0,0,0,0)' }};</style>
+</div>
+
+{% schema %}
+{
+   "name":"Parallax Presentation",
+   "tag": "section",
+   "max_blocks":50,
+   "settings":[
+      {
+        "type":"checkbox",
+        "id":"boxed_layout",
+        "label":"Boxed layout"
+      },
+      {
+         "type":"color",
+         "id"    :"background_color",
+         "label":"Background color",
+         "default": "rgba(0,0,0,0)"
+      },
+      {
+         "type":"header",
+         "content":"Breadcrumb"
+      },
+      {
+         "type":"checkbox",
+         "id":"show_breabcrumb",
+         "label":"Show Breadcrumb",
+         "default":true
+      },
+      {
+         "type":"image_picker",
+         "id":"breadcrumb_image",
+         "label":"Breadcrumb image"
+      }
+   ],
+   "blocks":[
+   {
+      "type":"parallax_image",
+      "name":"Parallax Image",
+      "settings": [
+        {
+           "type":"image_picker",
+           "id"   :"image",
+           "label":"Image"
+        },
+        {
+          "type":"text",
+          "id":"min_height",
+          "label":"Min height",
+          "default": "500px, 250px",
+          "info": "Support breakpoint"
+        },
+        {
+           "type":"text",
+           "id"   :"width_resp",
+           "label":"Width (1->12)",
+           "placeholder": "xl,lg,md,sm,xs,xxs",
+           "info": "0 to hide. E.g: 4,6,12",
+           "default": "6,12"
+        },
+        {
+           "type":"text",
+           "id"   :"order_on_mobile",
+           "label":"Order on Mobile devices"
+        }
+      ]
+   },
+   {
+      "type":"text",
+      "name":"Simple Text",
+      "settings": [
+        {
+          "type":"text",
+          "id"   :"heading",
+          "label":"Heading content",
+          "default": "Sapien pellentesque"
+        },
+        {
+           "type":"range",
+           "id"   :"heading_font_size",
+           "label":"Heading font size (h1-h6)",
+           "min"   :1,
+           "max"   :6,
+           "default":4
+        },
+        {
+          "type":"richtext",
+          "id"   :"content",
+          "label":"Content",
+          "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis risus sed vulputate odio ut enim blandit volutpat maecenas.</p>"
+        },
+        {
+          "type":"select",
+          "id":"hor_align",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "options":[
+            {
+              "value":"left",
+              "label":"Left"
+            },
+            {
+              "value":"center",
+              "label":"Center"
+            },
+            {
+              "value":"right",
+              "label":"Right"
+            }
+          ]
+        },
+        {
+           "type":"text",
+           "id"   :"width_resp",
+           "label":"Width (1->12)",
+           "placeholder": "xl,lg,md,sm,xs,xxs",
+           "info": "0 to hide. E.g: 4,6,12",
+           "default": "6,12"
+        },
+        {
+           "type":"text",
+           "id"   :"order_on_mobile",
+           "label":"Order on Mobile devices"
+        },
+        {
+          "type":"text",
+          "id":"item_padding",
+          "label":"Item Padding",
+          "placeholder":"E.g: 5px 20px 5px 20px",
+          "info":"Order: Top Right Bottom Left"
+        }
+      ]
+   },
+   {
+      "type":"grid_text",
+      "name":"Grid Text",
+      "settings": [
+        {
+          "type":"text",
+          "id"   :"heading",
+          "label":"Heading content",
+          "default": "Sapien pellentesque"
+        },
+        {
+           "type":"range",
+           "id"   :"heading_font_size",
+           "label":"Heading font size (h1-h6)",
+           "min"   :1,
+           "max"   :6,
+           "default":4
+        },
+        {
+          "type":"richtext",
+          "id"   :"content",
+          "label":"Content",
+          "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis risus sed vulputate odio ut enim blandit volutpat maecenas.</p>"
+        },
+        {
+          "type":"select",
+          "id":"hor_align",
+          "label":"Horizontal alignment",
+          "default":"left",
+          "options":[
+            {
+              "value":"left",
+              "label":"Left"
+            },
+            {
+              "value":"center",
+              "label":"Center"
+            },
+            {
+              "value":"right",
+              "label":"Right"
+            }
+          ]
+        },
+        {
+           "type":"text",
+           "id"   :"width_resp",
+           "label":"Width (1->12)",
+           "placeholder": "xl,lg,md,sm,xs,xxs",
+           "info": "0 to hide. E.g: 4,6,12",
+           "default": "6,12"
+        },
+        {
+           "type":"text",
+           "id"   :"order_on_mobile",
+           "label":"Order on Mobile devices"
+        },
+        {
+          "type":"text",
+          "id":"item_padding",
+          "label":"Item Padding",
+          "placeholder":"E.g: 5px 20px 5px 20px",
+          "info":"Order: Top Right Bottom Left"
+        },
+        {
+           "type":"checkbox",
+           "id"   :"show_index",
+           "label":"Show index of Grid text items",
+           "default": true
+        },
+        {
+           "type":"header",
+           "content":"Block #1"
+        },
+        {
+           "type":"text",
+           "id"   :"btext_1",
+           "label":"Heading",
+           "default": "PASSION"
+        },
+        {
+           "type":"textarea",
+           "id"   :"bcontent_1",
+           "label":"Content",
+           "default": "Etiam nulla nunc, aliquet vel metus nec, scelerisque tempus enim. Sed eget blandit lectus. Donec facilisis."
+        },
+        {
+           "type":"header",
+           "content":"Block #2"
+        },
+        {
+           "type":"text",
+           "id"   :"btext_2",
+           "label":"Heading",
+           "default": "PASSION"
+        },
+        {
+           "type":"textarea",
+           "id"   :"bcontent_2",
+           "label":"Content",
+           "default": "Etiam nulla nunc, aliquet vel metus nec, scelerisque tempus enim. Sed eget blandit lectus. Donec facilisis."
+        },
+        {
+           "type":"header",
+           "content":"Block #3"
+        },
+        {
+           "type":"text",
+           "id"   :"btext_3",
+           "label":"Heading"
+        },
+        {
+           "type":"textarea",
+           "id"   :"bcontent_3",
+           "label":"Content"
+        },
+        {
+           "type":"header",
+           "content":"Block #4"
+        },
+        {
+           "type":"text",
+           "id"   :"btext_4",
+           "label":"Heading"
+        },
+        {
+           "type":"textarea",
+           "id"   :"bcontent_4",
+           "label":"Content"
+        }
+      ]
+   }
+   ]
+}
+{% endschema %}

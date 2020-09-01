@@ -1,0 +1,6 @@
+{%- capture _menu_label -%}
+{%- if _sal_title contains l_title -%}{{_sal_menu_html}}{%- endif -%}
+{%- if _new_title contains l_title -%}{{_new_menu_html}}{%- endif -%}
+{%- if _hot_title contains l_title -%}{{_hot_menu_html}}{%- endif -%}
+{%- endcapture -%}
+{%- if _menu_label != blank -%}<span class="labels-wrapper notranslate">{{_menu_label}}</span>{%- endif -%}

@@ -1,0 +1,37 @@
+{%- assign _w = block.settings.width_resp -%}
+{%- if _w != blank -%}
+    {%- include 'set-width-bootstrap',in_type: 'width', number: _w -%}
+    {%- assign _collection_width = _out -%}
+{%- else -%}
+  {%- assign _collection_width = items_class -%}
+{%- endif -%}
+
+<div class="collection-item {{ _collection_width }}"{{ block.shopify_attributes }}>
+  <div class="category text-center">
+    <div class="category-image">
+      <a href="{{ collection.url }}">
+        {%- if block.settings.collection_image != blank -%}
+          {%- include 'image-style' with image: block.settings.collection_image, set_padding: set_padding -%}          
+        {%- elsif collection.image -%}
+          {%- include 'image-style' with image: collection.image, set_padding: set_padding -%}
+        {%- else -%}
+          {%- assign image = 'default-image.jpg' | asset_img_url: 'master' -%}
+          <span class="image--style" style="position:relative;padding-top:{% if set_padding == blank %}100%{% else %}{{set_padding}}{% endif %};">
+            <img src="{{ image }}" class="lazyload img-lazy blur-up" />
+          </span>
+        {%- endif -%}
+      </a>
+    </div>
+
+    {%- if _show_collection_info -%}
+      <div class="category-info">
+        <a class="category-name" href="{{ collection.url }}" title="{{ collection.title | escape }}">{{ collection.title }}</a>
+        {%- if collection.products_count > 0 -%}
+          {%- capture _item  -%}{{'collections.general.product'  | t }}{%- endcapture -%}
+          {%- capture _items -%}{{'collections.general.products' | t }}{%- endcapture -%}
+          <p>{{ collection.products_count }} {{ collection.products_count | pluralize: _item, _items }}</p>
+        {% endif %}
+      </div>
+    {%- endif -%}
+  </div>
+</div>

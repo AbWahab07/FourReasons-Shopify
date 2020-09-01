@@ -1,0 +1,183 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _lazyload        = settings.use_lazyload -%}
+{%- assign _bg_image        = section.settings.section_bg_image -%}
+{%- assign _spacing_items   = section.settings.spacing_items -%}
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+{%- capture _bg_lazy -%}{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endcapture -%}
+
+<div class="custom-content-wrapper layout-{{_layout}} section-show-{{section.id}}{% if _bg_image != blank %} bg-image{{_bg_lazy}}{%- endif -%}" data-section-type="custom-content" data-section-id="{{ section.id }}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+    {%- include 'head-title' -%}
+
+    <div class="custom-content">
+      <div class="{% unless _spacing_items %} no-padding{% endunless %}" style="display: grid;">
+        {%- if section.blocks.size > 0 -%}
+
+          {%- for block in section.blocks -%}
+
+            {%- if block.type == 'merge' -%}
+              {%- if block.settings.type == 'start' -%}
+                {%- assign is_nested_group = true -%}
+                {%- if block.settings.nested -%}{% continue %}{%- endif -%}
+              {%- else -%}
+                {%- assign is_nested_group = false -%}
+                {% continue %}
+              {%- endif -%}
+            {%- else -%}
+
+              {%- if block.settings.nested or is_nested_group -%}{% continue %}{%- endif -%}
+            {%- endif -%}
+
+            {%- assign _width_resp        = block.settings.width_resp -%}
+            {%- assign _v_align           = block.settings.alignment -%}
+            {%- assign _nested_padding    = block.settings.nested_padding -%}
+            {%- assign _nested_corners    = block.settings.nested_corners -%}
+            {%- assign _bg_nested         = block.settings.background_nested -%}
+            {%- assign _as_overlayContent = false-%}
+
+            {%- assign b_index            = forloop.index -%}
+            {%- assign next_block         = section.blocks[b_index] -%}
+            {%- assign is_next_nested     = next_block.settings.nested -%}
+
+            {%- if next_block.type == 'merge' and next_block.settings.type == 'start' and is_next_nested -%}
+              {%- assign _as_overlayContent = next_block.settings.use_as_content_overlay -%}
+              {%- assign bnest_posX         = next_block.settings.position_left | append: '%' -%}
+              {%- assign bnest_posY         = next_block.settings.position_top  | append: '%' -%}
+              {%- assign bnest_overlay_content_width = next_block.settings.overlay_content_width  | append: '%' -%}
+            {%- endif -%}
+
+            {%- capture b_class -%}{%- include 'set-width-bootstrap',in_type: 'width', number: _width_resp -%}{{_out}}{%- endcapture -%}
+
+            <div class="custom-item custom-item-{{ block.id }} {{b_class}}{% unless _v_align == blank  %} align-{{_v_align}}{% endunless %}{% if is_next_nested or nested_group %} has-nested{% endif %}"{{ block.shopify_attributes }}>
+              <div class="custom-item-inner item-type-{{ block.type }}">
+                  {%- include 'include-custom-content' -%}
+
+                  {%- if block.type == 'merge' and block.settings.type == 'start'-%}
+                    {%- assign nested_group                 = true -%}
+                    {%- assign e_carousel                   = block.settings.carousel_layout -%}
+                  {%- else -%}
+                    {%- assign e_carousel             = false -%}
+                  {%- endif -%}
+
+                  {%- if is_next_nested or nested_group -%}
+                    <div class="custom-content-nested{% if e_carousel %} content-nested-carousel owl-carousel{% else %} row no-gutters{% endif %}{% if _as_overlayContent %} is-overlay{% endif %}"
+                          {%- if e_carousel == true -%}{%- include 'include-carousel-attr',_type: 'carousel', block_type: 'block' -%}{%- endif -%}>
+
+                      {%- for block in section.blocks offset: b_index -%}
+                        {%- if block.type == 'merge' -%}
+                          {%- if block.settings.type == 'start' -%}
+                            {%- assign nested_group               = true -%}
+                            {%- assign _nested_padding            = block.settings.nested_padding -%}
+                            {%- assign _nested_corners            = block.settings.nested_corners -%}
+                            {%- assign _bg_nested                 = block.settings.background_nested -%}
+                            {%- assign _mergeBlock_shadow         = block.settings.nested_shadow -%}
+
+                            {%- unless  block.settings.nested -%}
+                              {%- if _nested_padding != blank or _nested_corners != blank or _bg_nested != blank -%}
+                                <style>
+                                  {%- capture nestedID -%}.section-show-{{section.id}} .custom-item-{{ block.id }} .custom-content-nested{%- endcapture -%}
+                                  {%- unless _nested_padding == blank -%}{%- include 'css-responsive', classID: nestedID, css_value: _nested_padding -%}{%- endunless -%}
+                                  {%- unless _nested_corners == blank and _bg_nested == blank -%}
+                                  {{nestedID}}{
+                                    {%- unless _nested_corners == blank -%}border-radius:{{_nested_corners}};{%- endunless -%}
+                                    {%- unless _bg_nested == blank -%}background-color:{{_bg_nested}};{%- endunless -%}
+                                  }{%- endunless -%}
+                                </style>
+                              {%- endif -%}
+                            {%- endunless -%}
+                          {%- else -%}
+                            {%- assign nested_group = false -%}{% break %}
+                          {%- endif -%}
+
+                          {% continue %}
+                        {%- endif -%}
+
+                        {%- unless nested_group -%}
+                          {%- if block.settings.nested != true -%}{% break %}{%- endif -%}
+                        {%- endunless -%}
+                        {%- assign n_width_resp   = block.settings.width_resp -%}
+                        {%- assign n_v_align      = block.settings.alignment -%}
+                        {%- assign n_h_align      = block.settings.align_text -%}
+
+                        {%- unless e_carousel -%}
+                          {%- capture n_b_class -%}{%- include 'set-width-bootstrap',in_type: 'width', number: n_width_resp -%}{{_out}}{%- endcapture -%}
+                        {%- endunless -%}
+                        <div class="item-nested custom-item custom-item-{{ block.id }} {{n_b_class}}{% unless n_v_align == blank %} align-{{n_v_align}}{% endunless %}"{{ block.shopify_attributes }}>
+                          <div class="custom-item-inner item-type-{{ block.type }}">
+                            {%- include 'include-custom-content' -%}
+                          </div>
+                        </div>
+                      {%- endfor -%}
+
+                        {% comment %}{%- if _nested_padding != blank or _nested_corners != blank or _bg_nested != blank -%}{%- endif -%}{% endcomment %}
+                        {%- capture nestedID -%}.section-show-{{section.id}} .custom-item-{{ block.id }} .custom-content-nested{%- endcapture -%}
+                        <style>
+                          {%- include 'css-responsive', classID: nestedID, css_value: _nested_padding -%}
+                          {%- unless _nested_corners == blank and _bg_nested == blank -%}
+                          {{nestedID}}{
+                            {%- unless _nested_corners == blank -%}border-radius:{{_nested_corners}};{%- endunless -%}
+                            {%- unless _bg_nested == blank -%}background-color:{{_bg_nested}};{%- endunless -%}
+                          }{%- endunless -%}
+                          {%- if _mergeBlock_shadow != blank -%}{{nestedID}}{box-shadow:{{_mergeBlock_shadow}};}{%- endif -%}
+                          {%- if _as_overlayContent -%}
+                            {{nestedID}}.is-overlay{
+                              left:{{bnest_posX}}; 
+                              top: {{bnest_posY}};
+                              transform: translate(-{{bnest_posX}},-{{bnest_posY}});
+                              width: {{bnest_overlay_content_width}};
+                            }
+                          {%- endif -%}
+                          
+                        </style>
+                    </div>
+                  {%- endif -%}
+              </div>
+
+            </div>
+          {%- endfor -%}
+
+        {%- else -%}
+          <div class="block-item align-center">
+            <div class="custom-block-text text-left">
+              <div class="custom-block-heading-text h2">Talk about your brand</div>
+              <div class="custom-block-body-text h4">Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</div>
+            </div>
+          </div>
+
+          <div class="block-item">
+            <div class="custom-block-image">
+              {%- include 'image-style' ,image: _image -%}
+            </div>
+          </div>
+
+          <div class="block-item align-center">
+            <div class="custom-block-text text-left">
+              <div class="custom-block-heading-text h2">Talk about your brand</div>
+              <div class="custom-block-body-text h4">Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</div>
+            </div>
+          </div>
+
+          <div class="block-item">
+            <div class="custom-block-image">
+              {%- include 'svgset', type: 'lifestyle' -%}
+            </div>
+          </div>
+          
+          <div class="block-item align-center">
+            <div class="custom-block-text text-left">
+              <div class="custom-block-heading-text h2">Talk about your brand</div>
+              <div class="custom-block-body-text h4">Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</div>
+            </div>
+
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- include 'include-button', btn_type: 'section' -%}
+
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+  <style>{%- include 'section-general-css' -%}</style>
+
+</div>

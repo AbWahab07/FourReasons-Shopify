@@ -1,0 +1,55 @@
+{% comment %}{%- assign price_range_symbol = 'products.product.price_to_price' | t -%}{% endcomment %}
+{%- assign price_range_symbol = ' - ' -%}
+
+<div class="product-price notranslate {{settings.card_price_font_family}}">
+  {%- if settings.dynamic_cart_btn -%}
+
+    {%- if settings.show_range_price -%}
+      <div class="product-price-items product-variants-price" data-id="">
+        {%- if product.price_varies -%}
+          {{- product.price_min | money -}} <span class="price-label">{{ price_range_symbol }}</span> {{- product.price_max | money -}}
+        {%- elsif product.available -%}
+          <span class="price-single">{{ product.price | money }}</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- for variant in product.variants -%}
+      <div class="product-price-items product-variants-price{% if variant != product.selected_or_first_available_variant or settings.show_range_price %} hide{% endif %}" data-id="{{variant.id}}" datatest="{{ variant.price }}">
+        {%- if variant.available -%}
+          {%- assign compare_price = variant.compare_at_price -%}
+          {%- assign price         = variant.price -%}
+          {%- if compare_price > price -%}
+            <span class="price-compare">{{ compare_price | money }}</span>
+            <span class="price-sale">{{ price | money }}</span>
+          {%- else -%}
+            <span class="price-single">{{ price | money }}</span>
+          {%- endif -%}
+        {%- else -%}
+          <span class="price-single">{{- 'products.product.sold_out' | t -}}</span>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+
+    {%- else -%}
+
+      {%- assign compare_price = product.selected_or_first_available_variant.compare_at_price -%}
+      {%- assign price         = product.selected_or_first_available_variant.price -%}
+
+      {%- if product.available -%}
+        {%- if product.price_varies and settings.show_range_price -%}
+          {{- product.price_min | money -}} <span class="price-label">{{ price_range_symbol }}</span> {{- product.price_max | money -}}
+
+        {%- elsif compare_price > price -%}
+
+          <span class="price-compare">{{ compare_price | money }}</span>
+          <span class="price-sale" style="color: #FD672D; opacity: 1;">{{ price | money }}</span>
+        {%- else -%}
+          <span class="price-single">{{ price | money }}</span>
+        {%- endif -%}
+      {%- else -%}
+        <span class="price-single">{{- 'products.product.sold_out' | t -}}</span>
+      {%- endif -%}
+
+  {%- endif -%}
+</div>

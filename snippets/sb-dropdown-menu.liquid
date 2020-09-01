@@ -1,0 +1,57 @@
+{%- unless template == 'index' -%}
+  <li class="dropdown{% if l.active or l.child_active %} match active{% endif %}">
+    {%- unless no_icon -%}{% include 'icons' ,type: 'sidebar-icon', c: n_col  %}{%- endunless -%}
+
+    <a href="{{ l.url }}" class="dropdown-link">
+      {{- l.title -}}
+      {%- if categories_items_count and l.type == 'collection_link' and l.object.all_products_count > 0 -%}
+        <span>({{ l.object.all_products_count }})</span>
+      {%- endif -%}
+    </a>
+    <span class="expand"></span>
+
+    <ul class="dropdown-menu">
+      {% for l in linklists[submenu].links %}
+        {%- assign n_submenu = l.title | handleize -%}
+        {%- if linklists[n_submenu].links.size > 0 -%}
+          {%- include 'sb-dropdown-menu', submenu: n_submenu -%}
+        {%- else -%}
+        	<li {% if l.active %}class="match"{% endif %}>
+        		<a href="{{ l.url }}">
+              {{- l.title -}}
+              {%- if categories_items_count and l.type == 'collection_link' and l.object.all_products_count > 0 -%}
+                <span>({{ l.object.all_products_count }})</span>
+              {%- endif -%}
+        		</a>
+        	</li>
+        {%- endif -%}
+      {% endfor %}
+    </ul>
+  </li>
+
+{%- else -%}
+  {%- assign categories_lv = linklists[submenu].levels -%}
+  {%- capture categories_ID -%}category-{{block.id}}_{{categories_lv}}_{%- endcapture -%}
+
+  <span id="category-expand{{foploop.index0}}" class="expand collapse" data-target="#{{categories_ID | append: forloop.index0}}" aria-expanded="true" aria-controls="{{categories_ID | append: forloop.index0}}"></span>
+
+  <ul id="{{categories_ID | append: forloop.index0}}" class="list-sub-category collapse" aria-labelledby="category-expand{{foploop.index0}}">
+    {%- for l in linklists[submenu].links -%}
+      <li class="list-item{% if l.active %} active{% endif %}">
+        <a href="{{l.url}}">
+          {{- l.title -}}
+
+          {%- if categories_items_count and l.type == 'collection_link' and l.object.all_products_count > 0 -%}
+            <span class="count">({{l.object.all_products_count}})</span>
+          {%- endif -%}
+        </a>
+
+        {%- assign submenu = l.title | handle -%}
+        {%- if linklists[submenu].links.size > 0 -%}
+          {%- include 'sb-dropdown-menu' -%}
+        {%- endif -%}
+
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endunless -%}

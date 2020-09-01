@@ -1,0 +1,735 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- if section.settings.carousel_layout -%}{%- assign _type = 'carousel' -%}{%- else -%}{%- assign _type = 'row' -%}{%- endif -%}
+{%- assign _blog_style        = '2' -%}
+{%- assign _lazyload          = settings.use_lazyload -%}
+{%- assign blog               = blogs[section.settings.blog] -%}
+{%- assign _spacing_items     = section.settings.padding_item -%}
+{%- assign _text_align        = section.settings.text_align -%}
+{%- assign _limit             = section.settings.total_items -%}
+{%- assign _hide_article_info = section.settings.hide_article_info -%}
+{%- assign blog_layout        = section.settings.blog_layout -%}
+{%- assign hover_style        = section.settings.hover_style -%}
+{%- assign ar_image_type      = section.settings.ar_image_type -%}
+{%- assign ar_border          = section.settings.ar_border -%}
+{%- assign ar_title_bold      = section.settings.ar_title_bold -%}
+{%- assign ar_label           = section.settings.ar_label -%}
+{%- assign ar_item_bg         = section.settings.ar_item_bg -%}
+{%- assign ar_content_bg      = section.settings.ar_content_bg -%}
+{%- assign show_ar_btn        = section.settings.show_article_button -%}
+{%- assign show_excerpt       = section.settings.show_excerpt -%}
+{%- assign border_type        = section.settings.border_type -%}
+{%- assign highlight_type     = section.settings.highlight_type -%}
+{%- assign faq_postion        = section.settings.faq_postion -%}
+{%- assign ar_tit_color       = section.settings.ar_tit_color -%}
+{%- assign ar_con_color       = section.settings.ar_con_color -%}
+{%- assign ar_title_ff        = section.settings.ar_title_font_family -%}
+{%- assign ar_title_up        = section.settings.ar_title_uppercase -%}
+{%- assign ar_tit_fw          = section.settings.tit_fw -%}
+
+{%- assign _bg_image          = section.settings.section_bg_image -%}
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+{%- if show_ar_btn -%}
+  {%- assign ar_as_btn      = section.settings.ar_as_btn -%}
+  {%- assign ar_btn_inherit = section.settings.ar_btn_inherit -%}
+  {%- assign ar_btn_corner  = section.settings.ar_btn_corner -%}
+
+  {%- unless ar_btn_inherit -%}
+    {%- assign ar_btn_color    = section.settings.ar_btn_color -%}
+    {%- assign ar_btn_border   = section.settings.ar_btn_border -%}
+    {%- assign ar_btn_bg_color = section.settings.ar_btn_bg_color -%}
+  {%- endunless -%}
+{%- endif -%}
+
+{%- if blog_layout == '3' -%}
+  {%- assign _blog_style = '1' -%}
+{%- endif -%}
+
+{%- include 'include-item-per-row' -%}
+{%- capture emptyBlog -%}
+  {%- for i in (1.._limit)  -%}
+    <div class="post-item {{ items_class }}">
+      <div class="post-item-inner">
+
+        <div class="post-image">
+          {%- include 'svgset',type: 'collection' -%}
+        </div>
+
+        <div class="post-content text-center">
+          <div class="meta-data">
+            <span class="date">{{ 'homepage.onboarding.blog_title' | t }}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+<div class="{% if faq_postion == 'none' %}blog-v2{% else %}blog-faq{% endif %} blog-container layout-{{_layout }} section-show-{{section.id}} hover-style-{{hover_style}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="blog-section" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+    {%- unless faq_postion == 'none' -%}
+      {% comment %}{%- assign _blog_style = '' -%}{% endcomment %}
+      <div class="row">
+        {%- if faq_postion == 'left' -%}
+          <div class="col-md-4 col-12">
+            {%- include 'faq-column' -%}
+          </div>
+        {%- endif -%}
+        <div class="col-md-8 col-12">
+    {%- endunless -%}
+
+      <div class="blog-content">
+        {%- include 'head-title' -%}
+        <div class="{% unless _spacing_items %}no-padding {% endunless %}{% if _type == 'row' %}row{% else %}blog-carousel owl-carousel{% endif %}"{% include 'include-carousel-attr' %}>
+          {%- if blog != blank and blog.articles_count > 0 -%}
+            {%- for article in blog.articles limit: _limit -%}
+              {%- include 'featured-blog-item', style: _blog_style -%}
+            {%- endfor -%}
+          {%- else -%}{{ emptyBlog }}
+          {%- endif -%}
+        </div>
+      </div>
+
+    {%- unless faq_postion == 'none' -%}
+      </div>
+        {%- if faq_postion == 'right' -%}
+          <div class="col-md-4 col-12">
+            {%- include 'faq-column' -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endunless -%}
+
+    {%- include 'include-button', btn_type: 'section' -%}
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+
+   <style>{%- include 'section-general-css' -%}
+      {%- if show_ar_btn and ar_btn_inherit == false -%}
+        {{_secionID}} .btn-article{
+        {%- if ar_btn_color != blank -%}color: {{ar_btn_color}};{%- endif -%}
+        {%- if ar_btn_border != blank -%}border: 1px solid {{ar_btn_border}};{%- endif -%}
+        {%- if ar_btn_bg_color != blank -%}background-color: {{ar_btn_bg_color}};{%- endif -%}
+      }
+      {%- endif -%}
+      {% if border_type != 'none' and ar_border != blank and ar_border != 'rbga(0,0,0,0)' %}
+      {{_secionID}} .post-item-inner{border{% if border_type == 'top' %}-top{% endif %}: 1px solid {{ar_border}};}{%- endif -%}
+      {%- if highlight_type == 'icon' -%}{{_secionID}} .post-info .icon-type{color: {{settings.main_color}};}{%- endif -%}
+      {% if ar_item_bg != blank and ar_item_bg != 'rbga(0,0,0,0)' %}{{_secionID}} .post-item{background-color: {{ar_item_bg}};}{%- endif -%}
+      {% if ar_content_bg != blank and ar_content_bg != 'rbga(0,0,0,0)' %}{{_secionID}} .post-body{background-color: {{ar_content_bg}};}{%- endif -%}
+      {%- if ar_tit_color != blank and ar_tit_color != 'rgba(0,0,0,0)' -%}{{_secionID}} article .post-title >*{color: {{ar_tit_color}};}{%- endif -%}
+      {%- if ar_con_color != blank and ar_con_color != 'rgba(0,0,0,0)' -%}
+        {{_secionID}} article.post-item .post-body .post-info, {{_secionID}} article.post-item .post-body .post-excerpt{color: {{ar_con_color}};}
+      {%- endif -%}
+      
+      {%- include 'css-responsive', classID: _secionID, nextClassID: ' .post-title'  ,css_value: section.settings.tit_fs    , css_property: 'font-size' -%}
+      {%- include 'css-responsive', classID: _secionID, nextClassID: ' .post-title'  ,css_value: section.settings.item_title_margin    , css_property: 'margin' -%}
+      {%- include 'css-responsive', classID: _secionID, nextClassID: ' .post-info'   ,css_value: section.settings.item_info_margin     , css_property: 'margin' -%}
+      {%- include 'css-responsive', classID: _secionID, nextClassID: ' .post-excerpt',css_value: section.settings.item_excerpt_margin  , css_property: 'margin' -%}
+      {%- include 'css-responsive', classID: _secionID, nextClassID: ' .post-button' ,css_value: section.settings.item_btn_margin      , css_property: 'margin' -%}
+   </style>
+
+</div>
+{% schema %}
+{
+   "name":"Blog with FAQ",
+   "tag": "section",
+   "settings":[
+      {
+         "type":"paragraph",
+         "content":"Created by 'Blog & FAQ' section"
+      },
+      {
+         "id":"title",
+         "type":"text",
+         "label":"Section Label [:id]","default": "Blog v2"
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT"
+      },
+      {
+         "type":"checkbox",
+         "id":"boxed_layout",
+         "label":"Boxed layout",
+         "default":true
+      },
+      {
+         "type"  :"text",
+         "id"    :"section_padding",
+         "label" :"Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"color",
+         "id":"section_bg_color",
+         "label":"Background color",
+         "default": "#FFFFFF"
+      },
+      {
+        "type":"image_picker",
+        "id":"section_bg_image",
+        "label":"Background image"
+      },
+      {
+        "type":"select",
+        "id"   :"section_bg_size",
+        "label":"Background Size",
+        "default": "cover",
+        "options":[
+        {"value":"auto","label":"Auto"},
+        {"value":"cover","label":"Cover"},
+        {"value":"contain","label":"Contain"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_repeat",
+        "label": "Background Image Repeat:",
+        "default": "no-repeat",
+        "options": [
+        {"value":"no-repeat","label":"No Repeat"},
+        {"value":"repeat","label":"Repeat"},
+        {"value":"repeat-x","label":"Repeat X"},
+        {"value":"repeat-y","label":"Repeat Y"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_position",
+        "label": "Background Image Position:",
+        "default": "center center",
+        "options": [
+        {"value":"left top","label":"Left Top"},
+        {"value":"center top","label":"Center Top"},
+        {"value":"right top","label":"Right Top"},
+        {"value":"left center","label":"Left Center"},
+        {"value":"center center","label":"Center Center"},
+        {"value":"right center","label":"Right Center"},
+        {"value":"left bottom","label":"Left Bottom"},
+        {"value":"center bottom","label":"Center Bottom"},
+        {"value":"right bottom","label":"Right Bottom"}
+        ]
+      },
+      {
+         "type":"header",
+         "content":"Layout content"
+      },
+      {
+         "type":"blog",
+         "id":"blog",
+         "label":"Blog"
+      },
+      {
+         "type"  :"text",
+         "id"    :"items_resp",
+         "label":"Max number of items per row",
+         "placeholder": "xl,lg,md,sm,xs,xxs",
+         "info": "E.g: 4,3,2",
+         "default": "3,2"
+      },
+      {
+         "type":"range",
+         "id":"total_items",
+         "label":"Total items",
+         "min":1,
+         "max":30,
+         "default":6
+      },
+      {
+         "type":"checkbox",
+         "id":"padding_item",
+         "label":"Spacing items",
+         "default":true
+      },
+      {
+         "type"  :"select",
+         "id"    :"blog_layout",
+         "label" :"Blog Layout Item",
+         "options":[
+           {"value":"1","label":"Layout 1"},
+           {"value":"2","label":"Layout 2"},
+           {"value":"3","label":"Layout 3"}
+         ]
+      },
+      {
+         "type":"select",
+         "id":"text_align",
+         "label":"Text align for Item content",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"left"
+      },
+      {
+         "type"  :"select",
+         "id"    :"hover_style",
+         "label" :"Hover Style:",
+         "default": "none",
+         "options":[
+           {"value":"none","label":"None"},
+           {"value":"zoom","label":"Zoom Image"},
+           {"value":"overlay","label":"Layer Overlay"}
+         ]
+      },
+      {
+         "type"  :"select",
+         "id"    :"border_type",
+         "label" :"Border type",
+         "options":[
+           {"value":"none","label":"None"},
+           {"value":"top","label":"Top"},
+           {"value":"all","label":"All"}
+         ]
+      },
+      {
+         "type"  :"color",
+         "id"    :"ar_border",
+         "label" :"Border color",
+         "default":"#FFFFFF"
+      },
+      {
+         "type"  :"header",
+         "content": "ARTICLE Title settings"
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"ar_title_uppercase",
+         "label" :"Show Title Uppercase"
+      },
+      {
+         "type":"text",
+         "id":"tit_fs",
+         "label":"Title font size (optional)",
+         "placeholder": "E.g: 18px"
+      },
+      {
+        "type":"select",
+        "id":"tit_fw",
+        "label":"Title font weight",
+        "default":"300",
+        "options":[
+          {"value":"100","label":"100 Thin (Hairline)"},
+          {"value":"200","label":"200 Extra Light (Ultra Light)"},
+          {"value":"300","label":"300 Light"},
+          {"value":"400","label":"400 Normal"},
+          {"value":"500","label":"500 Medium"},
+          {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+          {"value":"700","label":"700 Bold"},
+          {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+          {"value":"900","label":"900 Black (Heavy)"}
+        ]
+      },
+      {
+        "type":"select",
+        "id":"ar_title_font_family",
+        "label":"Title font family",
+        "default":"ff-body",
+        "options":[
+          {
+            "value":"ff-head",
+            "label":"Header font"
+          },
+          {
+            "value":"ff-body",
+            "label":"Body font"
+          },
+          {
+            "value":"ff-1",
+            "label":"Custom font 1"
+          },
+          {
+            "value":"ff-2",
+            "label":"Custom font 2"
+          },
+          {
+            "value":"ff-3",
+            "label":"Custom font 3"
+          },
+          {
+            "value":"ff-4",
+            "label":"Custom font 4"
+          },
+          {
+            "value":"ff-5",
+            "label":"Custom font 5"
+          }
+        ],
+        "info":"Before use Custom font, make sure custom font had added in \"Custom css\" section"
+      },
+      {
+         "type":"header",
+         "content":"Article content settings"
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"show_excerpt",
+         "label" :"Show Article Excerpt",
+         "default": true
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"hide_article_info",
+         "label" :"Hide Article info"
+      },
+      {
+         "type"  :"select",
+         "id"    :"ar_image_type",
+         "label" :"Article Image",
+         "default": "normal",
+         "options":[
+           {"value":"hide","label":"Hide"},
+           {"value":"normal","label":"Normal"},
+           {"value":"rounded","label":"Rounded Image"}
+         ]
+      },
+      {
+         "type"  :"select",
+         "id"    :"highlight_type",
+         "label" :"Which content will be highlighted ?",
+         "default": "none",
+         "options":[
+           {"value":"none","label":"Nothing"},
+           {"value":"title","label":"Article Title"},
+           {"value":"info","label":"Article Info"},
+           {"value":"icon","label":"Article Font icon"}
+         ]
+      },
+      {
+         "type"  :"select",
+         "id"    :"ar_label",
+         "label" :"Article label",
+         "default": "tag",
+         "options":[
+           {"value":"none","label":"Hide"},
+           {"value":"date","label":"Date Created"},
+           {"value":"tag","label":"Tag"}
+         ]
+      },
+      {
+         "type"  :"header",
+         "content": "ARTICLE Content color"
+      },
+      {
+         "type"  :"color",
+         "id"    :"ar_tit_color",
+         "label" :"Article Title color"
+      },
+      {
+         "type"  :"color",
+         "id"    :"ar_con_color",
+         "label" :"Article Content color"
+      },
+      {
+         "type"  :"color",
+         "id"    :"ar_content_bg",
+         "label" :"Article Content Background color"
+      },
+      {
+         "type"  :"color",
+         "id"    :"ar_item_bg",
+         "label" :"Article Background color"
+      },
+      {
+         "type"  :"header",
+         "content": "ARTICLE BUTTON"
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"show_article_button",
+         "label" :"Show Button",
+         "default": true
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"ar_as_btn",
+         "label" :"Style as Button",
+         "default": true
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"ar_btn_corner",
+         "label" :"Button Rounded Corners"
+      },
+      {
+         "type"  :"range",
+         "id"    :"ar_btn_inherit",
+         "label" :"Inherit Button style",
+         "min"   :0,
+         "max"   :3,
+         "step"  :1,
+         "default":1,
+         "info": "0 to customize"
+      },
+      {
+         "type"  :"color",
+         "id"    :"ar_btn_color",
+         "label" :"Button Text color",
+         "default":"#000000"
+      },
+      {
+         "type"  :"color",
+         "id"    :"ar_btn_border",
+         "label" :"Button Border color",
+         "default":"#FFFFFF"
+      },
+      {
+         "type"  :"color",
+         "id"    :"ar_btn_bg_color",
+         "label" :"Button Background color",
+         "default":"#FFFFFF"
+      },
+      {
+        "type":"header",
+        "content":"Blog content Margin"
+      },
+      {
+         "type":"paragraph",
+         "content":"Break point: xl,lg,md,sm,xs,xxs"
+      },
+      {
+         "type":"paragraph",
+         "content":"Order: Top Right Bottom Left"
+      }, 
+      {
+        "type":"text",
+        "id":"item_title_margin",
+        "label":"Blog title margin"
+      },
+      {
+        "type":"text",
+        "id":"item_info_margin",
+        "label":"Blog info margin"
+      },
+      {
+        "type":"text",
+        "id":"item_excerpt_margin",
+        "label":"Blog excerpt margin"
+      },
+      {
+        "type":"text",
+        "id":"item_btn_margin",
+        "label":"Blog button/link margin"
+      },
+      {
+         "type":"header",
+         "content":"Section Heading"
+      },
+      {
+         "type":"select",
+         "id":"heading_content_align",
+         "label":"Heading alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type":"text",
+         "id":"heading_text",
+         "label":"Heading",
+         "default": "LAST NEWS"
+      },
+      {
+         "type":"textarea",
+         "id":"subheading_text",
+         "label":"Subheading"
+      },
+      {
+         "type":"color",
+         "id":"section_heading_color",
+         "label":"Heading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading_color",
+         "label":"Subheading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type"  :"header",
+         "content" :"Section button"
+      },
+      {
+         "type"  :"text",
+         "id"    :"button",
+         "label" :"Button Label"
+      },
+      {
+         "type"  :"url",
+         "id"    :"button_link",
+         "label" :"Button Link",
+         "info": "Remove link to hide"
+      },
+      {
+         "type":"select",
+         "id":"button_align",
+         "label":"Horizontal alignment",
+         "options":[
+         {"value":"left","label":"Left"},
+         {"value":"center","label":"Center"},
+         {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"button_corner",
+         "label" :"Button Rounded Corners"
+      },
+      {
+         "type":"range",
+         "id"   :"button_inherit_style",
+         "label":"Inherit Button style:",
+         "min"   :0,
+         "max"   :3,
+         "default":1,
+         "info": "Set 0 to customize button"
+      },
+      {
+         "type"  :"color",
+         "id"    :"button_color",
+         "label" :"Button Text color",
+         "default":"#000000"
+      },
+      {
+         "type"  :"color",
+         "id"    :"button_border",
+         "label" :"Button Border color",
+         "default":"#000000"
+      },
+      {
+         "type"  :"color",
+         "id"    :"button_bg_color",
+         "label" :"Button Background color",
+         "default":"#FFFFFF"
+      },
+      {
+         "type":"header",
+         "content":"Slider settings"
+      },
+      {
+         "type":"checkbox",
+         "id":"carousel_layout",
+         "label":"Enable Slider"
+      },
+      {
+         "type":"checkbox",
+         "id":"autoplay",
+         "label":"Enable Autoplay"
+      },
+      {
+         "type":"checkbox",
+         "id":"loop",
+         "label":"Enable Loop"
+      },
+      {
+         "type":"checkbox",
+         "id":"nav",
+         "label":"Show Next & Prev arrows",
+         "default":true
+      },
+      {
+         "type":"checkbox",
+         "id":"dot",
+         "label":"Show Dots",
+         "default":false
+      },
+      {
+         "type"  :"header",
+         "content": "FAQ Section"
+      },
+      {
+         "type"  :"select",
+         "id"    :"faq_postion",
+         "label" :"Position",
+         "options":[
+           {"value":"none","label":"None"},
+           {"value":"left","label":"Left"},
+           {"value":"right","label":"Right"}
+         ],
+         "default": "left"
+      },
+      {
+         "type":"select",
+         "id":"faq_heading_content_align",
+         "label":"Heading alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type":"text",
+         "id":"faq_heading_text",
+         "label":"Heading",
+         "default": "FAQ"
+      },
+      {
+         "type":"textarea",
+         "id":"faq_subheading_text",
+         "label":"Subheading"
+      },
+      {
+         "type":"select",
+         "id":"faq_text_align",
+         "label":"Text align for Item content",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"left"
+      }
+   ],
+   "blocks":[
+      {
+         "type":"faq",
+         "limit": 5,
+         "name":"FAQ Content",
+         "settings": [
+           {
+              "type"  :"text",
+              "id"    :"title",
+              "label" :"Block label",
+              "default": "FAQ Block label"
+           },
+           {
+              "type"  :"text",
+              "id"    :"heading",
+              "label" :"Heading",
+              "default": "FAQ Heading"
+           },
+           {
+              "type"  :"textarea",
+              "id"    :"content",
+              "label" :"Content",
+              "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod lorem solo tempor incididunt ut labore et dolore magna aliqua."
+           }
+         ]
+      }
+   ],
+   "presets":[
+      {
+         "name":"Blog with FAQ",
+         "category":"Advanced layout",
+         "blocks":[
+          {"type": "faq"},
+          {"type": "faq"},
+          {"type": "faq"}
+         ]
+      }
+   ]
+}
+{% endschema %}
+

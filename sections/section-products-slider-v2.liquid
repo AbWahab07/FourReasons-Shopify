@@ -1,0 +1,556 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _s_type    		     = 'product-slider-v2' -%}
+{%- assign _lazyload  		     = settings.use_lazyload -%}
+{%- assign _padding   		     = section.settings.section_padding -%}
+{%- assign _bg_color  		     = section.settings.section_bg_color -%}
+{%- assign _bg_image           = section.settings.section_bg_image -%}
+{%- assign _collection  	     = section.settings.collection -%}
+{%- assign collection 		     = collections[_collection] -%}
+{%- assign _product_style	     = section.settings.product_style -%}
+{%- assign _text_align 		     = section.settings.text_align -%}
+{%- assign _total		  		     = section.settings.total -%}
+{%- assign _show_description   = section.settings.show_description -%}
+{%- assign _p_cart_rounded     = section.settings.product_cart_rd -%}
+{%- assign _p_cart_icon        = section.settings.product_cart_icon | default: 'd-none' -%}
+{%- assign _p_cart_pos         = section.settings.product_cart_position -%}
+{%- assign _btn_icon_bg        = section.settings.button_icon_bg -%}
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+{%- capture _empty_product -%}
+	{%- for i in (1..3) -%}
+		<div class="product-item p-1">
+			<div class="product-item-inner row">
+				<div class="col-6 product-image">{%- include 'svgset', type: 'product' -%}</div>
+				<div class="col-6 product-content align-self-center">
+					<div class="pc-inner">
+						<h5 class="product-name{% if settings.card_name_uppercase %} text-uppercase{% endif %}">{{ 'homepage.onboarding.product_title' | t }}</h5>
+						<div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="home-product-slider-v2  layout-{{_layout }} section-show-{{section.id}}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="{{_s_type}}" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    {%- include 'head-title' -%}
+
+    <div class="p-slider-content product-style-{{_product_style}}">
+    	<div class="row">
+    		{%- if _collection != blank and collection.products_count > 0 -%}
+	    		<div class="col-lg-8 col-12">
+	    			<div class="main-slider{% if _btn_icon_bg != 'rgba(0,0,0,0)' and _btn_icon_bg != blank %} icon-has-bg{% endif %}">
+		    			{%- for product in collection.products limit: _total -%}
+		    				<div class="product-slider-item">
+		    					<div class="product-item-inner">
+			    					<div class="product-header">
+			    						<div class="product-image">
+			    							<a href="{{ product.url | within: collection }}">
+			    								{% include 'image-style' with image: product.featured_image, image_size: '390x', image_class: 'featured-image', _type: 'product' %}
+			    								{%- unless product.available -%}
+			    									<span class="label-soldout">{{- 'products.label.sold_out' | t -}}</span>
+			    								{%- else -%}
+			    									{%- include 'product-label' -%}
+			    								{%- endunless -%}
+			    							</a>
+			    						</div>
+			    					</div>
+			    					<div class="product-body">
+			    						<div class="product-info text-{{_text_align}}">
+			    							<div class="product-tag">
+			    								<div class="tags"><span>{{product.tags[0]}}</span></div>
+			    								{% if settings.product_review_type != 'none' and settings.show_product_review and _product_style == '2' %}
+			    									<div class="product-review">{% include 'include-reviews' with type: 'preview_badge' %}</div>
+			    								{% endif %}
+			    							</div>
+			    							<div class="product-name{% if settings.card_name_uppercase %} text-uppercase{% endif %}">
+			    								<a href="{{ product.url | within: collection }}">{{product.title}}</a>
+			    							</div>
+
+			    							{%- if _show_description -%}
+				    							{%- assign meta_shortdes = product.metafields.c_f -%}
+				    							{%- unless meta_shortdes.description_excerpt == blank -%}
+				    							<div class="card-sh-description">
+				    								<div class="product-description"><p>{{ meta_shortdes.description_excerpt }}</p></div>
+				    							</div>
+				    							{%- endunless -%}
+			    							{%- endif -%}
+
+			    							<div class="product-wrap-price">
+			    								<div class="price-label"><span>{{- 'products.product.best_price' | t -}}</span></div>
+			    								{%- include 'product-price' -%}
+			    							</div>
+
+  											<div class="product-button">
+  											  {%- assign btn_class = 'btn-' | append: section.settings.cart_btn_inherit -%}
+                          {%- capture _p_cartIcon -%}
+                            {%- unless _p_cart_icon == blank -%}
+                              {%- include 'icons', type: 'icon_free', name: _p_cart_icon -%}
+                            {%- else -%}
+                              {%- include 'icons', type: 'icon_type', f: 'cart' -%}
+                            {%- endunless -%}
+                          {%- endcapture -%}
+
+  											  <div class="product-add-cart{% unless product.available %} sold-out{% endunless %} {{settings.card_btn_label_font_family}}">
+  											    {%- if product.available -%}
+  											      {%- unless settings.disable_ajax_cart -%}
+  											        {%- if product.variants.size > 1 -%}
+  											          <a href="{{ product.url | within: collection }}" class="btn-add-cart btn {{btn_class}} select-options" title="{{ 'products.product.select_options' | t }}">
+
+                                    {%- if _p_cart_pos == 'left' -%}{{_p_cartIcon}}{%- endif -%}
+  											            <span>{{- 'products.product.select_options' | t -}}</span>
+                                    {%- if _p_cart_pos == 'right' -%}{{_p_cartIcon}}{%- endif -%}
+  											          </a>
+
+  											        {%- else -%}
+  											          <form action="/cart/add" method="post" enctype="multipart/form-data">
+  											            <a href="javascript:void(0);" class="btn-add-cart btn {{btn_class}} add-to-cart" title="{{ 'products.product.add_to_cart' | t }}">
+                                     {%- if _p_cart_pos == 'left' -%}{{_p_cartIcon}}{%- endif -%}
+  											              <span>{{- 'products.product.add_to_cart' | t -}}</span>
+                                      {%- if _p_cart_pos == 'right' -%}{{_p_cartIcon}}{%- endif -%}
+  											            </a>
+  											            <select class="d-none" name="id">
+  											              {%- for variant in product.variants -%}
+  											              <option value="{{ variant.id }}">{{ variant.title | escape }}</option>
+  											              {%- endfor -%}
+  											            </select>
+  											          </form>
+  											        {%- endif -%}
+
+  											      {%- else -%}
+  											        <a href="{{ product.url | within: collection }}" class="btn-add-cart btn {{btn_class}} select-options" title="{{ 'products.product.select_options' | t }}">
+                                 {%- if _p_cart_pos == 'left' -%}{{_p_cartIcon}}{%- endif -%}
+  											          <span>{{- 'products.product.select_options' | t -}}</span>
+                                  {%- if _p_cart_pos == 'right' -%}{{_p_cartIcon}}{%- endif -%}
+  											        </a>
+  											      {%- endunless -%}
+  											    {%- else -%}
+  											      <a href="javascript:void(0);" class="btn-add-cart btn {{btn_class}} sold-out">
+                               {%- if _p_cart_pos == 'left' -%}{{_p_cartIcon}}{%- endif -%}
+  											      <span>{{ 'products.product.sold_out' | t }}</span>
+                              {%- if _p_cart_pos == 'right' -%}{{_p_cartIcon}}{%- endif -%}
+  											    </a>
+  											    {%- endif -%}
+  											  </div>
+  											</div>
+			    						</div>
+			    					</div>
+		    					</div>
+		    				</div>
+		    			{%- endfor -%}
+	    			</div>
+	    		</div>
+	    		<div class="col-lg-4 d-none d-lg-block">
+	    			<div class="thumb-slider">
+		    			{%- for product in collection.products limit: _total -%}
+		    				<div class="product-slider-item">
+		    					<div class="product-item-inner">
+			    					<div class="product-header">
+			    						<div class="product-image">
+			    							<a href="{{ product.url | within: collection }}">
+			    								{% include 'image-style' with image: product.featured_image, image_size: '390x', image_class: 'featured-image', _type: 'product' %}
+			    							</a>
+			    						</div>
+			    					</div>
+			    					<div class="product-body">
+			    						<div class="product-info text-{{_text_align}}">
+		    								{% if settings.product_review_type != 'none' and settings.show_product_review and _product_style == '1' %}
+		    									<div class="product-review">{% include 'include-reviews' with type: 'preview_badge' %}</div>
+		    								{% endif %}
+
+			    							<div class="product-name{% if settings.card_name_uppercase %} text-uppercase{% endif %}"><a href="{{ product.url | within: collection }}">{{product.title}}</a></div>
+
+			    							<div class="product-tag">
+			    								<div class="tags">{% for tag in product.tags limit: 2 %}<span>{{tag}}</span>{% endfor %}</div>
+			    							</div>
+			    							{%- include 'product-price' -%}
+			    						</div>
+			    					</div>
+		    					</div>
+		    				</div>
+
+		    			{%- endfor -%}
+	    			</div>
+	    		</div>
+    		{%- else -%}
+	    		<div class="col-lg-8 col-12 align-self-center">
+	    			<div class="product-item">
+	    				<div class="product-item-inner row">
+	    					<div class="col-6 product-image">{%- include 'svgset', type: 'product' -%}</div>
+	    					<div class="col-6 product-content align-self-center">
+	    						<div class="pc-inner">
+	    							<h5 class="product-name{% if settings.card_name_uppercase %} text-uppercase{% endif %}">{{ 'homepage.onboarding.product_title' | t }}</h5>
+	    							<div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+	    							<div class="product-descript">
+	    								Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+	    							</div>
+	    						</div>
+	    					</div>
+	    				</div>
+	    			</div>
+	    		</div>
+	    		<div class="col-lg-4 d-none d-lg-block">{{_empty_product}}</div>
+    		{%- endif -%}
+    	</div>
+        {%- include 'include-button', btn_type: 'section' -%}
+    </div>
+
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+  <style>{%- include 'section-general-css' -%}
+  .section-show-{{section.id}} .main-slider .btn-add-cart .icon-type{color: {{section.settings.cart_button_icon_color}};background-color: {{section.settings.cart_button_icon_bg}};font-size: {{section.settings.cart_button_icon_size}}px;}
+  {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .main-slider .btn-add-cart' ,css_value: _p_cart_rounded ,css_property: 'border-radius' -%}
+  </style>
+</div>
+{% schema %}{
+  "name":"Product Slider v2",
+  "tag":"section",
+  "settings":[
+    {
+      "type":"paragraph",
+      "content":"Created by 'Products Slider v2' section"
+    },
+    {
+      "type":"text",
+      "id":"title",
+      "label":"Section Label [:id]","default": "Product slider v2"
+    },
+    {
+      "type":"header",
+      "content":"LAYOUT"
+    },
+    {
+      "type":"checkbox",
+      "id":"boxed_layout",
+      "label":"Boxed layout",
+      "default":true
+    },
+      {
+         "type"  :"text",
+         "id"    :"section_padding",
+         "label" :"Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+    {
+      "type":"color",
+      "id":"section_bg_color",
+      "label":"Background color",
+      "default":"#FFFFFF"
+    },
+    {
+      "type":"image_picker",
+      "id":"section_bg_image",
+      "label":"Background image"
+    },
+    {
+      "type":"select",
+      "id"   :"section_bg_size",
+      "label":"Background Size",
+      "default": "cover",
+      "options":[
+      {"value":"auto","label":"Auto"},
+      {"value":"cover","label":"Cover"},
+      {"value":"contain","label":"Contain"}
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_repeat",
+      "label": "Background Image Repeat:",
+      "default": "no-repeat",
+      "options": [
+      {"value":"no-repeat","label":"No Repeat"},
+      {"value":"repeat","label":"Repeat"},
+      {"value":"repeat-x","label":"Repeat X"},
+      {"value":"repeat-y","label":"Repeat Y"}
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_position",
+      "label": "Background Image Position:",
+      "default": "center center",
+      "options": [
+      {"value":"left top","label":"Left Top"},
+      {"value":"center top","label":"Center Top"},
+      {"value":"right top","label":"Right Top"},
+      {"value":"left center","label":"Left Center"},
+      {"value":"center center","label":"Center Center"},
+      {"value":"right center","label":"Right Center"},
+      {"value":"left bottom","label":"Left Bottom"},
+      {"value":"center bottom","label":"Center Bottom"},
+      {"value":"right bottom","label":"Right Bottom"}
+      ]
+    },
+    {
+       "type":"header",
+       "content":"Layout Content"
+    },
+    {
+       "type":"collection",
+       "id"  :"collection",
+       "label":"Collection"
+    },
+    {
+       "type":"select",
+       "id"	 :"product_style",
+       "label":"Layout style",
+       "default": "1",
+       "options":[
+       	{
+       	  "value": "1",
+       	  "label": "#1"
+       	},
+       	{
+       	  "value": "2",
+       	  "label": "#2"
+       	}
+       ]
+    },
+    {
+      "type":"select",
+      "id":"text_align",
+      "label":"Text align for Item content",
+      "options":[
+        {"value":"left","label":"Left"},
+        {"value":"center","label":"Center"},
+        {"value":"right","label":"Right"}
+      ],
+      "default":"left"
+    },
+    {
+       "type"	:"range",
+       "id"	 	:"total",
+       "label"	:"Total items",
+       "min"	:1,
+       "max"	:30,
+       "step"	:1,
+       "default":3
+    },
+    {
+       "type":"checkbox",
+       "id"   :"show_description",
+       "label":"Show Short Description"
+    },
+    {
+       "type":"range",
+       "id":"cart_btn_inherit",
+       "label":"Button cart inherit button style",
+       "min":1,
+       "max":3,
+       "default":1
+    },
+    {
+       "type":"text",
+       "id"   :"product_cart_rd",
+       "label":"Button cart rounded corners",
+       "placeholder": "E.g: 5px 5px 5px 5px"
+    },
+    {
+       "type":"text",
+       "id"   :"product_cart_icon",
+       "label":"Button cart font icon",
+       "default": "icon-uniE90C-1"
+    },
+    {
+       "type":"color",
+       "id"   :"cart_button_icon_color",
+       "label":"Button icon color",
+       "default": "#000000"
+    },
+    {
+       "type":"color",
+       "id"   :"cart_button_icon_bg",
+       "label":"Button icon background color",
+       "default": "rgba(0,0,0,0)"
+    },
+    {
+       "type":"range",
+       "id"   :"cart_button_icon_size",
+       "label":"Button icon font size",
+       "min"   :10,
+       "max"   :100,
+       "step"  :1,
+       "unit"  :"px",
+       "default":29
+    },
+    {
+       "type":"select",
+       "id"   :"product_cart_position",
+       "label":"Icon cart position",
+       "default": "left",
+       "options":[
+         {
+           "value": "left",
+           "label": "Left"
+         },
+         {
+           "value": "right",
+           "label": "Right"
+         }
+       ]
+      },
+      {
+         "type":"header",
+         "content":"Section Heading"
+      },
+      {
+         "type":"text",
+         "id":"heading_text",
+         "label":"Heading"
+      },
+      {
+         "type":"text",
+         "id":"subheading_text",
+         "label":"Subheading"
+      },
+      {
+         "type":"textarea",
+         "id":"subheading2_text",
+         "label":"Subheading 2"
+      },
+      {
+         "type":"select",
+         "id":"heading_content_align",
+         "label":"Heading alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type":"color",
+         "id":"section_heading_color",
+         "label":"Heading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading_color",
+         "label":"Subheading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading2_color",
+         "label":"Subheading 2 color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type"  :"header",
+         "content" :"Section button"
+      },
+      {
+         "type"  :"text",
+         "id"    :"button",
+         "label" :"Button Label"
+      },
+      {
+         "type"  :"url",
+         "id"    :"button_link",
+         "label" :"Button Link",
+         "info": "Remove link to hide"
+      },
+      {
+         "type":"select",
+         "id":"button_align",
+         "label":"Horizontal alignment",
+         "options":[
+         {"value":"left","label":"Left"},
+         {"value":"center","label":"Center"},
+         {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"button_corner",
+         "label" :"Button Rounded Corners"
+      },
+      {
+         "type":"range",
+         "id"   :"button_inherit_style",
+         "label":"Inherit Button style:",
+         "min"   :0,
+         "max"   :3,
+         "default":1,
+         "info": "Set 0 to customize button"
+      },
+      {
+         "type"  :"color",
+         "id"    :"button_color",
+         "label" :"Button Text color",
+         "default":"#000000"
+      },
+      {
+         "type"  :"color",
+         "id"    :"button_border",
+         "label" :"Button Border color",
+         "default":"#000000"
+      },
+      {
+         "type"  :"color",
+         "id"    :"button_bg_color",
+         "label" :"Button Background color",
+         "default":"#FFFFFF"
+      },
+      {
+         "type":"text",
+         "id"   :"button_icon",
+         "label":"Button font icon name"
+      },
+      {
+         "type":"color",
+         "id"   :"button_icon_color",
+         "label":"Button icon color",
+         "default": "#000000"
+      },
+      {
+         "type":"color",
+         "id"   :"button_icon_bg",
+         "label":"Button icon background color",
+         "default": "#ffffff"
+      },
+      {
+         "type":"range",
+         "id"   :"button_icon_size",
+         "label":"Button icon font size",
+         "min"   :10,
+         "max"   :100,
+         "step"  :1,
+         "unit"  :"px",
+         "default":29
+      },
+      {
+         "type":"select",
+         "id"   :"button_icon_position",
+         "label":"Button icon position",
+         "default": "left",
+         "options":[
+           {
+             "value": "left",
+             "label": "Left"
+           },
+           {
+             "value": "right",
+             "label": "Right"
+           }
+         ]
+      }
+  ],
+  "presets":[
+    {
+      "name":"Product Slider v2",
+      "category":"Collection",
+      "blocks":[
+
+      ]
+    }
+  ]
+}
+{% endschema %} 

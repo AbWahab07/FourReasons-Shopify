@@ -1,0 +1,18 @@
+{%- if l.url == '#' -%}
+  {%- assign l_url = 'javascript:void(0);' -%}
+{%- else -%}
+  {%- assign l_url = l.url -%}
+{%- endif -%}
+
+<li nav-dropdown-menu class="dropdown{% if l.active %} active{% endif %}">
+  	<a href="{{ l_url }}" class="dropdown-link">
+  		{%- if vertical or main_menu -%}{%- render 'icons' ,type: 'icon_menu_metafield' ,menu_title: l.title -%}{%- endif -%}
+  		<span>{{ l.title }}</span>
+		{%- include 'include-label-handle' with l_title:l.title -%}
+  	</a>
+  	<span class="expand"></span> 
+	<ul class="dropdown-menu">
+		<li class="back-prev-menu"><span class="expand">Back</span></li>
+		{%- for l in linklists[submenu].links -%}{%- include 'nav-sub-link' -%}{%- endfor -%}
+	</ul>
+</li>

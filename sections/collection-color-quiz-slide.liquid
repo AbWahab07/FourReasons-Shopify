@@ -1,0 +1,35 @@
+<div class="slide-wrapper">
+  {%- if section.blocks.size > 0 -%}
+  	{%- for block in section.blocks -%}
+  	  <div class="slide-item">
+  		<img class="lazyautosizes lazyloaded" src="{{ block.settings.image | img_url: 'master' }}">
+      </div>
+  	{%- endfor -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+  {
+    "name": "Color Quiz Slider",
+    "settings": [
+	  {
+        "type":"text",
+        "id":"title",
+        "label":"Section Id"
+      }
+    ],
+    "blocks":[
+      {
+        "type":"image",
+        "name":"image",
+        "settings":[
+		  {
+            "type":"image_picker",
+            "id":"image",
+            "label":"Image"
+          }
+		]
+      }
+    ]
+  }
+{% endschema %}

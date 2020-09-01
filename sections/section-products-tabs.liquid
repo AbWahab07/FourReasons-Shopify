@@ -1,0 +1,819 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- if section.settings.carousel_layout -%}{%- assign _type = 'carousel' -%}{%- else -%}{%- assign _type = 'row' -%}{%- endif -%}
+{%- assign _lazyload                = settings.use_lazyload -%}
+{%- assign _padding_item            = section.settings.padding_item -%}
+{%- assign _text_align              = section.settings.text_align -%}
+{%- assign _tab_title_align         = section.settings.text_align_title -%}
+{%- assign _total                   = section.settings.total_items | plus: 0 -%}
+{%- assign _number_active           = section.settings.number_active | plus: 0 -%}
+{%- assign _show_btn_more           = section.settings.show_more_button -%}
+{%- assign _btn_more_label          = section.settings.button_more_label -%}
+{%- assign _tab_title_pos           = section.settings.tab_title_pos -%}
+{%- assign _tab_title_color         = section.settings.tab_title_color -%}
+{%- assign _spacing_title           = section.settings.spacing_tab_title -%}
+{%- assign _show_shadow             = section.settings.show_shadow -%}
+{%- assign _tab_title_fw            = section.settings.tab_title_fw -%}
+{%- assign _prod_border_color       = section.settings.product_border_color | default: 'rgba(0,0,0,0)' -%}
+
+{%- unless _prod_border_color == 'rgba(0,0,0,0)' -%}
+  {%- assign show_border_product = true -%}
+{%- endunless -%}
+
+{%- include 'include-item-per-row' -%}
+{%- assign _bg_image          = section.settings.section_bg_image -%}
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+
+{%- capture emptyProduct -%}
+  {%- for i in (1.._total) -%}
+    <div class="{{ items_class }}">
+      <div class="product-card">
+        <div class="card-image">{%- include 'svgset', type: 'product' -%}</div>
+        <div class="card-body text-{{ _text_align }}">
+          <div class="pc-inner">
+            <h5 class="product-name">{{ 'homepage.onboarding.product_title' | t }}</h5>
+            <div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- endfor -%}
+{%- endcapture -%}
+{%- capture _tab_title -%}
+  <!-- Begin nav tabs -->
+  <div class="nav-tab-wrapper">
+    <ul class="nav nav-tabs tab-heading text-{{ _tab_title_align }}" role="tablist">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'big_content' -%}{%- assign has_big = true -%} {%- assign big_index = forloop.index0 -%}{%- endif -%}
+        {%- if block.type == 'collection' -%}
+          {%- assign tab_title  = block.settings.tab_title -%}
+          {%- assign collection = collections[block.settings.collection] -%}
+
+          <li class="tab-title nav-item"{{ block.shopify_attributes }}>
+            <a class="nav-link fw-{{_tab_title_fw}}{% if _number_active == forloop.index %} active {% endif %}" href="#hp-tabs-{{ section.id }}-{{ forloop.index }}" aria-controls="hp-tabs-{{ section.id }}-{{ forloop.index }}" role="tab" data-toggle="tab">
+              {%- unless block.settings.collection == blank or collection.products_count == 0 -%}
+                {%- unless tab_title == blank -%}{{- tab_title -}}{%- else -%}{{- collection.title -}}{%- endunless -%}
+                {%- else -%}{{- 'homepage.onboarding.tab_title' | t -}}
+              {%- endunless -%}
+            </a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+  <!-- End nav tabs -->
+{%- endcapture -%}
+
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div id="hp-tabs-{{ section.id }}" class="hp-tabs-section layout-{{_layout }} section-show-{{section.id}}{% if _show_shadow %} has-shadow{% endif %}{% if _tab_title_color %} tab-title-bg{% endif %}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="product-tabs" data-section-id="{{section.id}}" role="tabpanel">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    {%- unless _tab_title_pos == 'inline_title' -%}
+      {%- include 'head-title' -%}
+
+    {%- else -%}
+      <div class="d-md-flex align-items-md-center">
+        {%- include 'head-title' -%}
+        {{- _tab_title -}}
+      </div>
+
+    {%- endunless -%}
+
+    {%- if section.blocks.size > 0 -%}
+      {%- if _tab_title_pos == 'block' -%}{{_tab_title}}{%- endif -%}
+      {%- if has_big -%}
+        {%- assign _big_section  = section.blocks[big_index] -%}
+        {%- assign _big_pos      = _big_section.settings.big_pos -%}
+        {%- assign _big_width    = _big_section.settings.big_width -%}
+        {%- assign _big_type     = _big_section.settings.big_type -%}
+        {%- assign _title        = _big_section.settings.title -%}
+
+        <div class="row">
+          <div class="col-md-{{_big_width}} col-12{% if _big_pos == 'right' %} order-md-2{% endif %}">
+            <div class="hp-big-content">
+              {%- unless _title == blank -%}<div class="big-heading">{{_title}}</div>{%- endunless -%}
+              <div class="big-content-{{_big_type}}">
+                {%- if _big_type == 'product' -%}
+                  {%- assign _big_product = all_products[_big_section.settings.big_product] -%}
+
+                  {%- unless _big_product == blank -%}
+                    {%- assign _big_product_sold  = _big_section.settings.sold_count | strip -%}
+                    {%- assign _sold_count_pos    = _big_section.settings.sold_count_pos -%}
+                    {%- assign _cart_showing      = _big_section.settings.card_btn_cart_display -%}
+                    {%- assign _big_product_style = _big_section.settings.product_item_style | plus: 0 -%}
+
+                    {%- if _big_product_sold == 'metafield' -%}
+                      {%- assign _sold_count    = _big_product.metafields.c_f.sold_count | times: 1 -%}
+                    {%- else -%}
+                      {%- assign _sold_count    = _big_product_sold | times: 1 -%}
+                    {%- endif -%}
+
+                    {%- assign _available     = _big_product.selected_or_first_available_variant.inventory_quantity -%}
+                    {%- assign t_available    = _sold_count | times: 100.0 -%}
+                    {%- assign progress_width = t_available | divided_by: _available | round: 2 -%}
+
+                    {%- if _sold_count > 0 and progress_width > 0 and _sold_count_pos == '1' -%}
+                      {%- assign _show_progress = false -%}
+                      <div class="card-progress">
+                        <div class="d-flex justify-content-between">
+                          <div class="pg-available">Available: <span class="number">{{ _available }}</span></div>
+                          <div class="pg-soldout">Already sold: <span class="number">{{ _sold_count }}</span></div>
+                        </div>
+                        <div class="progress-bar">
+                          <span class="progress-width" style="width:{{ progress_width }}%;"></span>
+                        </div>
+                      </div>
+                    {%- elsif _sold_count > 0 and progress_width > 0 -%}
+                      {%- assign _show_progress = true -%}
+                      {%- if _sold_count_pos == '2' -%}
+                        {%- assign _progress_position = 'top' -%}
+                      {%- else -%}
+                        {%- assign _progress_position = 'bottom' -%}
+                        {%- if _big_product_style == 1 -%}
+                          {%- assign _progress_position = 'bottom-2' -%}
+                        {%- endif -%}
+                      {%- endif -%}
+                    {%- else -%}
+                      {%- assign _show_progress = false -%}
+                    {%- endif -%}
+
+                    {%- if _big_product_style > 0 -%}
+                      {%- assign big_card_style = _big_product_style -%}
+                    {%- else -%}
+                      {%- assign big_card_style = settings.product_item_style -%}
+                    {%- endif -%}
+
+                    {%- include 'product-item' ,product: _big_product
+                                               ,sold_count: _sold_count
+                                               ,progress_position: _progress_position
+                                               ,show_progress: _show_progress
+                                               ,product_style: big_card_style
+                                               ,cart_btn_display: _cart_showing -%}
+
+
+                  {%- else -%}
+                    {%- assign i = big_index | plus: 1 -%}
+                    <div class="product-card">
+                      <div class="card-image">
+                        {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                      <div class="card-body text-{{ _text_align }}">
+                        <div class="pc-inner">
+                          <h5 class="product-name">{{ 'homepage.onboarding.product_title' | t }}</h5>
+                          <div class="product-price"><span class="price">{{ 1999 | money }}</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  {%- endunless -%}
+                {%- else -%}
+                  {%- assign _image         = _big_section.settings.image -%}
+                  {%- assign _heading       = _big_section.settings.heading -%}
+                  {%- assign _subheading    = _big_section.settings.subheading -%}
+                  {%- assign _subheading2   = _big_section.settings.subheading2 -%}
+                  {%- assign _button_label  = _big_section.settings.button_label -%}
+                  {%- assign _button_link   = _big_section.settings.button_link -%}
+                  <div class="image">
+                    {%- unless _image == blank -%}
+                      {%- include 'image-style',image: _image -%}
+                    {%- else -%}
+                      {%- include 'svgset' -%}
+                    {%- endunless -%}
+                  </div>
+                  <div class="big-image-content">
+                    {%- unless _heading == blank -%}<div class="heading">{{_heading}}</div>{%- endunless -%}
+                    {%- unless _subheading == blank -%}<div class="subheading">{{_subheading}}</div>{%- endunless -%}
+                    {%- unless _subheading2 == blank -%}<div class="subheading-2">{{_subheading2}}</div>{%- endunless -%}
+                    {%- unless _button_label == blank -%}
+                      <div class="btn-group">
+                        <a href="{{ _button_link }}" class="btn btn-1" aria-label="bigImageButton">{{ _button_label }}</a>
+                      </div>
+                    {%- endunless -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+          <div class="col-md-{% if _big_width == '4' %}8{% else %}6{% endif %} col-12{% if _big_pos == 'right' %} order-md-1{% endif %}">
+      {%- endif -%}
+      {%- if _tab_title_pos == 'tab' -%}{{_tab_title}}{%- endif -%}
+      <!-- Begin tab content -->
+      <div class="tab-content{% if show_border_product %} has-product-border{% endif %}">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'collection' -%}
+            {%- assign collection = collections[block.settings.collection] -%}
+            {%- assign b_product  = all_products[block.settings.product]   -%}
+            {%- assign big_pos    = block.settings.big_pos -%}
+            {%- assign big_width  = block.settings.big_width -%}
+
+            <div id="hp-tabs-{{ section.id }}-{{ forloop.index }}" class="{% if _number_active == forloop.index %}show active {% endif %}tab-pane" role="tabpanel"{{ block.shopify_attributes }}>
+
+              {%- unless block.settings.collection == blank or collection.products_count == 0 -%}
+                <div class="hp-tabs-list{% unless _padding_item %} no-padding{% endunless %}{% if _type == 'row' %} row{% else %} tabs-list-carousel{% endif %}"{%- include 'include-carousel-attr' -%}>
+                  {%- if b_product == blank -%}
+
+                    {%- for product in collection.products limit: _total -%}
+                      {%- if _type == 'row' -%}<div class="{{items_class}}">{% endif %}{%- include 'product-item' -%}
+                      {%- if _type == 'row' -%}</div>{% endif %}
+                    {%- endfor -%}
+
+                  {%- elsif _type == 'row' -%}
+
+                    <div class="col-md-{{big_width}} col-12{% if big_pos == 'right' %} order-md-2{% endif %}">
+                      <div class="big-product-wrapper">
+                        {%- include 'product-item', product: b_product -%}
+                      </div>
+                    </div>
+                    <div class="col-md-{% if big_width == '4' %}8{% else %}6{% endif %} col-12 p-tab-wrap-items{% if big_pos == 'right' %} order-md-1{% endif %}">
+                      <div class="p-tab-items">
+                        {%- for product in collection.products limit: _total -%}
+                          <div class="p-tab-item {{items_class}}">
+                          {% include 'product-item' %}
+                          </div>
+                        {%- endfor -%}
+                      </div>
+                    </div>
+                  {%- endif -%}
+                </div>
+
+                  {%- if collection.all_products_count > _total and _show_btn_more -%}
+                  <div class="button-section text-center">
+                    <a href="{{collection.url}}" class="btn btn-{{section.settings.button_more_inherit}}">{{_btn_more_label}}</a>
+                  </div>
+                  {%- endif -%}
+
+              {%- else -%}
+                <div class="hp-tabs-list tabs-list-row row">{{ emptyProduct }}</div>
+              {%- endunless  -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- if has_big -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      <!-- End tab content -->
+
+    {%- else -%}
+
+      <div class="nav-tab-wrapper">
+        <ul class="nav nav-tabs tab-heading text-{{ _tab_title_align }}" role="tablist">
+          {%- for i in (1..3) -%}
+            <li class="tab-title nav-item">
+              <a class="nav-link{% if forloop.first %} active{% endif %}{% if _lazyload %} lazyload{% endif %}" href="#hp-tabs-{{ section.id }}-{{ forloop.index }}" aria-controls="hp-tabs-{{ section.id }}-{{ forloop.index }}" role="tab" data-toggle="tab">
+                {{ 'homepage.onboarding.tab_title' | t }}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+      <div class="tab-content">
+        {%- for i in (1..3) -%}
+          <div role="tabpanel" class="{% if _number_active == forloop.index %}show active {% endif %}tab-pane no-big-product" id="hp-tabs-{{ section.id }}-{{ forloop.index }}">
+            <div class="hp-tabs-list tabs-list-row row">
+              {{ emptyProduct }}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+</div>
+
+{%- capture _tab_content_id -%}#hp-tabs-{{ section.id }} .tab-content,#hp-tabs-{{ section.id }} .hp-big-content{%- endcapture -%}
+{%- capture _tab_title_id -%}#hp-tabs-{{ section.id }} ul.nav-tabs a.nav-link{%- endcapture -%}
+<style>
+  {%- include 'section-general-css' -%}
+  {%- include 'css-responsive', classID: _tab_title_id, css_value: section.settings.tab_title_padding -%}
+  {%- include 'css-responsive', classID: _tab_title_id, css_value: section.settings.tab_title_fs, css_property: 'font-size' -%}
+  {%- include 'css-responsive', classID: _tab_content_id, css_value: section.settings.tab_content_margin, css_property: 'margin' -%}
+  #hp-tabs-{{ section.id }} ul.nav-tabs > li:not(:last-child){margin-right: {{_spacing_title}}px;}
+  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .container', css_value: section.settings.section_bg_color, css_property: 'background-color' -%}
+  {%- include 'css-responsive', classID: _tab_title_id, css_value: section.settings.tab_title_border_rd, css_property: 'border-radius' -%}
+  {%- if show_border_product -%}{{_secionID}} .product-card{border: 1px solid {{_prod_border_color}};}{%- endif -%}
+</style>
+{% schema %}
+{
+   "name":"Product Tabs",
+   "max_blocks":7,
+   "tag":"section",
+   "settings":[
+      {
+         "type":"paragraph",
+         "content":"Created by 'Products Tabs' section"
+      },
+      {
+         "id":"title",
+         "type":"text",
+         "label":"Section Label [:id]","default": "Product tab"
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT"
+      },
+      {
+         "type":"checkbox",
+         "id":"boxed_layout",
+         "label":"Boxed layout",
+         "default":true
+      },
+      {
+         "type"  :"text",
+         "id"    :"section_padding",
+         "label" :"Section Padding",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+        "type":"color",
+        "id":"section_bg_color",
+        "label":"Background color"
+      },
+      {
+        "type":"image_picker",
+        "id":"section_bg_image",
+        "label":"Background image"
+      },
+      {
+        "type":"select",
+        "id"   :"section_bg_size",
+        "label":"Background Size",
+        "default": "cover",
+        "options":[
+        {"value":"auto","label":"Auto"},
+        {"value":"cover","label":"Cover"},
+        {"value":"contain","label":"Contain"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_repeat",
+        "label": "Background Image Repeat:",
+        "default": "no-repeat",
+        "options": [
+        {"value":"no-repeat","label":"No Repeat"},
+        {"value":"repeat","label":"Repeat"},
+        {"value":"repeat-x","label":"Repeat X"},
+        {"value":"repeat-y","label":"Repeat Y"}
+        ]
+      },
+      {
+        "type": "select",
+        "id": "section_bg_position",
+        "label": "Background Image Position:",
+        "default": "center center",
+        "options": [
+        {"value":"left top","label":"Left Top"},
+        {"value":"center top","label":"Center Top"},
+        {"value":"right top","label":"Right Top"},
+        {"value":"left center","label":"Left Center"},
+        {"value":"center center","label":"Center Center"},
+        {"value":"right center","label":"Right Center"},
+        {"value":"left bottom","label":"Left Bottom"},
+        {"value":"center bottom","label":"Center Bottom"},
+        {"value":"right bottom","label":"Right Bottom"}
+        ]
+      },
+      {
+         "type":"header",
+         "content":"Section Heading"
+      },
+      {
+         "type":"select",
+         "id":"heading_content_align",
+         "label":"Heading alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type":"text",
+         "id":"heading_text",
+         "label":"Heading"
+      },
+      {
+         "type":"text",
+         "id":"subheading_text",
+         "label":"Subheading"
+      },
+      {
+         "type":"textarea",
+         "id":"subheading2_text",
+         "label":"Subheading 2"
+      },
+      {
+         "type":"color",
+         "id":"section_heading_color",
+         "label":"Heading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading_color",
+         "label":"Subheading color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"color",
+         "id":"section_subheading2_color",
+         "label":"Subheading 2 color",
+         "info": "Blank to inherit color"
+      },
+      {
+         "type":"header",
+         "content":"Slider settings"
+      },
+      {
+         "type":"checkbox",
+         "id":"carousel_layout",
+         "label":"Enable Slider"
+      },
+      {
+         "type":"checkbox",
+         "id":"autoplay",
+         "label":"Enable Autoplay"
+      },
+      {
+         "type":"checkbox",
+         "id":"loop",
+         "label":"Enable Loop"
+      },
+      {
+         "type":"checkbox",
+         "id":"nav",
+         "label":"Show Next & Prev arrows",
+         "default":true
+      },
+      {
+         "type":"checkbox",
+         "id":"dot",
+         "label":"Show Dots",
+         "default":false
+      },
+      {
+         "type":"header",
+         "content":"Tab Settings"
+      },
+      {
+         "type":"range",
+         "id":"number_active",
+         "label":"Set active tab by default",
+         "info":"Value is the tab order number.",
+         "min":1,
+         "max":7,
+         "step":1,
+         "default":1
+      },
+      {
+         "type":"text",
+         "id"   :"tab_content_margin",
+         "label":"Tab content margin",
+         "placeholder":"E.g: 5px 20px 5px 20px",
+         "info":"Order: Top Right Bottom Left"
+      },
+      {
+         "type":"header",
+         "content":"Tab title Settings"
+      },
+      {
+         "type"  :"select",
+         "id"    :"tab_title_pos",
+         "label" :"Position",
+         "options":[
+           {
+             "value": "block",
+             "label": "Separate block"
+           },
+           {
+             "value": "tab",
+             "label": "Inside Tab"
+           },
+           {
+             "value": "inline_title",
+             "label": "Same line with section heading"
+           }
+         ]
+      },
+      {
+         "type":"select",
+         "id":"text_align_title",
+         "label":"Item alignment",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"tab_title_color",
+         "label" :"Use Main color as Background color"
+      },
+      {
+         "type":"text",
+         "id":"tab_title_border_rd",
+         "label":"Title border radius",
+         "placeholder": "E.g: 4px"
+      },
+      {
+         "type":"range",
+         "id":"spacing_tab_title",
+         "label":"Spacing between Title items",
+         "min":0,
+         "max":50,
+         "step":1,
+         "unit": "px",
+         "default":8
+      },
+      {
+         "type"  :"text",
+         "id"    :"tab_title_padding",
+         "label" :"Item padding",
+         "default": "5px 20px 5px 20px",
+         "placeholder": "E.g: 5px 20px 5px 20px",
+         "info": "Order: Top Right Bottom Left"
+      },
+      {
+         "type":"text",
+         "id":"tab_title_fs",
+         "label":"Title item font size",
+         "default": "16px",
+         "placeholder": "E.g: 16px"
+      },
+      {
+          "type":"select",
+          "id":"tab_title_fw",
+          "label":"Title item font weight",
+          "default":"300",
+          "options":[
+              {"value":"100","label":"100 Thin (Hairline)"},
+              {"value":"200","label":"200 Extra Light (Ultra Light)"},
+              {"value":"300","label":"300 Light"},
+              {"value":"400","label":"400 Normal"},
+              {"value":"500","label":"500 Medium"},
+              {"value":"600","label":"600 Semi Bold (Demi Bold)"},
+              {"value":"700","label":"700 Bold"},
+              {"value":"800","label":"800 Extra Bold (Ultra Bold)"},
+              {"value":"900","label":"900 Black (Heavy)"}
+          ]
+      },
+      {
+         "type":"header",
+         "content":"LAYOUT CONTENT"
+      },
+      {
+         "type":"checkbox",
+         "id"   :"show_shadow",
+         "label":"Show Shadow Items"
+      },
+      {
+         "type":"select",
+         "id":"text_align",
+         "label":"Text align for product title",
+         "options":[
+            {"value":"left","label":"Left"},
+            {"value":"center","label":"Center"},
+            {"value":"right","label":"Right"}
+         ],
+         "default":"center"
+      },
+      {
+         "type"  :"text",
+         "id"    :"items_resp",
+         "label":"Max number of items per row",
+         "placeholder": "xl,lg,md,sm,xs,xxs",
+         "info": "E.g: 4,3,2",
+         "default": "4,3,2"
+      },
+      {
+         "type":"text",
+         "id":"total_items",
+         "label":"Total items",
+         "default":"4"
+      },
+      {
+         "type":"checkbox",
+         "id":"padding_item",
+         "label":"Padding items",
+         "default":true
+      },
+      {
+         "type":"color",
+         "id":"product_border_color",
+         "label":"Product border color"
+      },
+      {
+         "type":"paragraph",
+         "content"  :"When products count in Collection is greater than Total items showing"
+      },
+      {
+         "type"  :"checkbox",
+         "id"    :"show_more_button",
+         "label" :"Show Button "
+      },
+      {
+         "type"  :"text",
+         "id"    :"button_more_label",
+         "label" :"Button Label",
+         "default": "MORE PRODUCTS"
+      },
+      {
+         "type":"range",
+         "id":"button_more_inherit",
+         "label":"Inherit Button style",
+         "min":1,
+         "max":3,
+         "default":1
+      }
+   ],
+   "blocks":[
+      {
+         "type":"collection",
+         "name":"Collection",
+         "settings":[
+            {
+               "type":"text",
+               "id":"tab_title",
+               "label":"Title",
+               "info":"By default is Collection Title"
+            },
+            {
+               "id":"collection",
+               "type":"collection",
+               "label":"Collection item"
+            },
+            {
+               "id": "product",
+               "type": "product",
+               "label": "Big product item"
+            },
+            {
+               "type":"select",
+               "id":"big_pos",
+               "label":"Big product position",
+               "options":[
+                  {"value":"left","label":"Left"},
+                  {"value":"right","label":"Right"}
+               ],
+               "default":"left"
+            },
+            {
+               "type"  :"select",
+               "id"    :"big_width",
+               "label" :"Width",
+               "options":[
+                 {"value":"4","label":"33,3%"},
+                 {"value":"6","label":"50%"}
+               ]
+               ,"default": "4"
+            }
+         ]
+      },
+      {
+        "type": "big_content",
+        "limit": 1,
+        "name": "Big Content",
+        "settings": [
+          {
+             "type"  :"select",
+             "id"    :"big_width",
+             "label" :"Width",
+             "options":[
+               {"value":"4","label":"33,3%"},
+               {"value":"6","label":"50%"}
+             ]
+             ,"default": "4"
+          },
+          {
+             "type":"select",
+             "id":"big_pos",
+             "label":"Big product position",
+             "options":[
+                {"value":"left","label":"Left"},
+                {"value":"right","label":"Right"}
+             ],
+             "default":"left"
+          },
+          {
+             "type"  :"select",
+             "id"    :"big_type",
+             "label" :"Big content type",
+             "default": "product",
+             "options":[
+               {"value":"product","label":"Product"},
+               {"value":"image","label":"Image"}
+             ]
+          },
+          {
+             "type"  :"text",
+             "id"    :"title",
+             "label" :"Heading"
+          },
+          {
+             "type"  :"header",
+             "content" :"Big Product"
+          },
+          {
+             "type"  :"product",
+             "id"    :"big_product",
+             "label" :"Product"
+          },
+          {
+            "type": "select",
+            "id": "product_item_style",
+            "label": "Product Styles:",
+            "options": [
+              {"value":"0","label":"Auto"},
+              {"value":"1","label":"Style 1"},
+              {"value":"2","label":"Style 2"},
+              {"value":"3","label":"Style 3"},
+              {"value":"4","label":"Style 4"},
+              {"value":"5","label":"Style 5"},
+              {"value":"6","label":"Style 6"}
+            ]
+          },
+          {
+            "type": "select",
+            "id": "card_btn_cart_display",
+            "label": "How button cart to display?",
+            "default": "icon",
+            "options": [
+              {"value":"icon","label":"Icon (1,2,3,5)"},
+              {"value":"text","label":"Text (1,2,3,5)"},
+              {"value":"all","label":"Icon & Text (1,5)"},
+              {"value":"all-2","label":"Text & Icon circle (1,5)"}
+            ],
+            "info": "Content (Card style available)"
+          },
+          {
+             "type"  :"text",
+             "id"    :"sold_count",
+             "label" :"Sold Out among",
+             "default":"0",
+             "info": "Type \"metafield\" to get sold count value from metafield or set a number for sold count"
+          },
+          {
+             "type":"select",
+             "id":"sold_count_pos",
+             "label":"Sold count position",
+             "options":[
+               {"value":"1","label":"1. Top (Outside Product card)"},
+               {"value":"2","label":"2. Top (Inside Product card)"},
+               {"value":"3","label":"3. Bottom (Inside Product card)"}
+             ]
+          },
+          {
+             "type"  :"header",
+             "content" :"Big Image"
+          },
+          {
+             "type"  :"image_picker",
+             "id"    :"image",
+             "label" :"Image"
+          },
+          {
+             "type":"text",
+             "id":"heading",
+             "label":"Heading"
+          },
+          {
+             "type":"text",
+             "id":"subheading",
+             "label":"Subheading"
+          },
+          {
+             "type":"textarea",
+             "id":"subheading2",
+             "label":"Subheading 2"
+          },
+          {
+             "type":"text",
+             "id":"button_label",
+             "label":"Button label"
+          },
+          {
+             "type":"url",
+             "id":"button_link",
+             "label":"Button link"
+          }
+        ]
+      }
+   ],
+   "presets":[
+      {
+         "name":"Product Tabs",
+         "category":"Collection",
+         "blocks":[
+            {"type":"collection"},
+            {"type":"collection"},
+            {"type":"collection"}
+         ]
+      }
+   ]
+}
+{% endschema %}

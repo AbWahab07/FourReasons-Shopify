@@ -1,0 +1,229 @@
+{%- if section.settings.show_breabcrumb and settings.show_breabcrumb -%}{%- include 'breadcrumb' -%}{%- endif -%}
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+
+{%- assign i_fil = 0 -%}
+{%- capture _all_tags -%}
+{%- for tag in collection.all_tags -%}
+{%- capture _tag -%}{{ tag | strip | downcase | prepend: '+++' | append: '+++' }}{%- endcapture -%}{{_tag}}{%- endfor -%}
+{%- endcapture -%}
+
+{%- assign _lazyload             = settings.use_lazyload -%}
+{%- assign _catalog_sb_placement = section.settings.catalog_sb_placement -%}
+{%- assign _filter_pos           = section.settings.filter_pos -%}
+{%- assign _filter_logic         = section.settings.and_logic -%}
+{%- assign _ib_position          = section.settings.ib_position -%}
+{%- assign _sb_class             = 'col-lg-3 col-12' -%}
+{%- assign _main_class           = 'col-lg-9 col-12' -%}
+{%- assign _collectionurl        = '/collections/' | append: collection.handle -%}
+{%- assign _slide_banner_height  = section.settings.banner_height  -%}
+{%- assign _show_short_des       = section.settings.show_short_description  -%}
+{%- assign _short_des_limit      = section.settings.short_description_limit  -%}
+{%- assign _banner_slider_pos    = section.settings.banner_slider_position  -%}
+{%- assign _blur_color           = section.settings.sidebar_blur_color | default: 'rgba(0,0,0,0)' -%}
+
+{%- if cart.attributes.pagination == blank -%}
+  {%- assign limit = section.settings.item_per_page -%}
+{%- else -%}
+  {%- assign limit = cart.attributes.pagination -%}
+{%- endif -%}
+
+{%- if _catalog_sb_placement == 'none' and _filter_pos != 'none' -%}
+  {%- assign _filter_pos = 'body_filter' -%}
+{%- endif -%}
+
+{%- if _filter_pos == 'body_filter' -%}
+  {%- assign _filters_style = section.settings.body_filter_style -%}
+{%- else -%}
+  {%- assign _filters_style = section.settings.sidebar_filter_style -%}
+{%- endif -%}
+
+{%- include 'include-item-per-row', item_resp: section.settings.items_resp -%}
+{%- assign _grid_class = items_class -%}
+
+{%- include 'include-item-per-row', item_resp: section.settings.list_items_resp -%}
+{%- assign _list_class = items_class -%}
+
+<div class="page-cata{% if _layout == 'full' %} layout-full{% endif %} sidebar-{{_catalog_sb_placement}}{% if _show_short_des != 'hide' and _show_short_des != false %} short-des-show-{{_short_des_limit}}{% endif %} {{ type }}" data-logic="{{ _filter_logic }}" data-mode-view="{{section.settings.show_col_gl}}" data-section-type="collectionPage" data-section-id="{{section.id}}">
+
+  <input type="hidden" class="hide" name="collection_data" data-view-default="{{section.settings.view_default | default: 'grid' }}" data-grid="{{_grid_class}}" data-list="{{_list_class}}">
+
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+  	<h2 class="collection_sub_title">Today deals <span>/ {{ collection.title }}</span></h2>
+  
+  	<div class="back-to-deal-mobile">
+      <a href="#">
+        {%- include 'icon-left-arrow' -%}
+        Back to all deals
+      </a>
+    </div>
+  
+    {%- if _banner_slider_pos == '1' and _slide_banner_height != blank -%}
+      {%- include 'collection-template-snippet', type: 'slider' -%}
+    {%- endif -%}
+
+    <div class="row product--grid-container">
+      {%- if _catalog_sb_placement == 'left' -%}{%- include 'sidebar-catalog' -%}{%- endif -%}
+
+      {%- paginate collection.products by 12 -%}
+        <div class="product--grid-wrapper {% if _catalog_sb_placement == 'none' %}col-12{% else %}{{ _main_class }}{% endif %}">
+
+          {%- if _banner_slider_pos == '2' and _slide_banner_height != blank -%}
+            {%- include 'collection-template-snippet', type: 'slider' -%}
+          {%- endif -%}
+
+          {%- include 'include-subcollection' -%}
+          {%- if _ib_position == 'top' -%}{%- include 'icon-box' -%}{%- endif -%}
+          {%- include 'cata-sub-toolbar' -%}
+
+          {%- if _filter_pos == 'body_filter' -%}
+            <div class="filter-component {{_filter_pos | replace: '_','-'}} {{ _filters_style }}">
+              <div class="filter-heading">
+                <a id="clear-all-filter" class="clear-filter hidden float-right" href="javascript:void(0);">{{'collections.general.clear_all' | t }}</a>
+              </div>
+              <div class="sb-filter-wrapper">
+                <div class="f-close{% if _filters_style != 'drawer' %} d-lg-none {% endif %}">
+                  {%- include 'icons', type: 'icon_free', name: 'icon-uniE90A' -%}
+                </div>
+
+                {%- if section.settings.sb_filters == 'groups' -%}
+                  {%- for block in section.blocks -%}
+
+                    {%- if block.type == 'filter_group' -%}
+                      {%- include 'filter-group' -%}
+
+                    {%- elsif _catalog_sb_placement == 'none' -%}
+
+                      {%- if _filters_style == 'select' and block.type != 'filter_group' -%}
+                        {%- continue -%}
+                      {%- else -%}
+                        {%- include 'block-type-snippet' -%}
+                      {%- endif -%}
+
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- else -%}
+                  {%- include 'filter-tag' -%}
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- include 'include-products-grid' with grid_type: type -%}
+
+          {%- if type == 'infinite' -%}
+            {%- if paginate.next -%}
+              <div class="loading_img" style="display:none;"><i class="demo-icon icon-spinner"></i></div>
+              <div class="load_more"{% if section.settings.infinite_auto %} style="opacity: 0;"{% endif %}>
+                <a href="{{ paginate.next.url }}" class="btn btn-1 btn-load-more">{{'collections.general.load_more' | t }}</a>
+              </div>
+              <div class="load-more-text text-center hide">
+                <p>{{- 'collections.general.no_more_product' | t -}}</p>
+              </div>
+            {%- endif -%}
+          {%- else -%}
+            {%- unless type contains 'order-form-2' -%}
+              {%- include 'pagination' -%}
+            {%- endunless -%}
+          {%- endif -%}
+
+          {%- if section.settings.show_description and collection.description != blank -%}
+            <div class="cata-description">{{ collection.description }}</div>
+          {%- endif -%}
+
+          {%- if _ib_position == 'bottom' -%}{%- include 'icon-box' -%}{%- endif -%}
+        </div>
+      {%- endpaginate -%}
+
+      {%- if _catalog_sb_placement == 'right' -%}{%- include 'sidebar-catalog' -%}{%- endif -%}
+
+    </div>
+
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+</div>
+
+<style>
+{{- section_css | strip_newlines -}}
+{%- include 'css-responsive', classID: '.page-cata', css_value: section.settings.section_padding -%}
+{%- include 'css-responsive', classID: '.page-cata .slider-container .slide-item', css_property: 'height', css_value: _slide_banner_height -%}
+{%- include 'css-responsive', classID: '.page-cata .pagination-holder li > *', css_value: section.settings.pagination_radius ,css_property: 'border-radius' -%}
+{{- -}}.sb-title,.filter-block-title{color: {{section.settings.heading_sb_color | default: 'rgba(0,0,0,0)'}};font-weight: {{section.settings.heading_sb_fw | default: 400}};}
+{{- -}}.page-cata{background-color:{{section.settings.section_bg_color}};}
+{{- -}}.sidebar-column .sb-widget .overflow-element:after,
+{{- -}}.filter-component.body-filter .sb-widget .overflow-element:after{background: linear-gradient(to bottom, #fff0 0%, {{_blur_color}} 80%);}
+</style>
+ 
+{%- case type -%}
+  {%- when 'infinite' -%}
+    <script type="text/javascript">
+
+      var pInfScrLoading = false;
+      var pInfScrMore = true;
+
+      function pInfScrExecute() {
+        pInfScrNode = jQuery('.load_more').last();
+        pInfScrURL = jQuery('.load_more a').attr("href");
+        if(!pInfScrLoading && pInfScrNode.length > 0 && pInfScrMore) {
+          jQuery.ajax({
+            type: 'GET',
+            url: pInfScrURL,
+            beforeSend: function() {
+              pInfScrLoading = true;
+              jQuery('.load_more').fadeOut();
+              jQuery('.loading_img').fadeIn();
+            },
+            success: function(data) {
+              var filteredData = $(data).find(".mode-view-item");
+              jQuery(".cata-product").append(filteredData);
+              AT_Main.handleGridList();              
+              jQuery('.loading_img').fadeOut();
+              pInfScrLoading = false;
+              AT_Main.init_CountDown();
+
+              if(jQuery(data).find(".load_more a").length){
+                jQuery('.load_more a').last().attr("href", jQuery(data).find(".load_more a").last().attr("href"));
+                jQuery('.load_more').fadeIn();
+              }
+              else{
+                pInfScrMore = false;
+                jQuery('.load_more').hide();
+                $('.load-more-text').removeClass('hide');
+              }
+            },
+            dataType: "html"
+          });
+        }
+      }
+
+      {%- unless section.settings.infinite_auto -%}
+      jQuery(document).on('click','.load_more a',function(e){
+        e.preventDefault();
+        pInfScrExecute();
+      });
+      {%- else -%}
+      $(window).scroll(function(){
+        let infinitePosition = $('.load_more').offset().top;
+        if(jQuery(document).scrollTop() + jQuery(window).height() > infinitePosition ) {
+          pInfScrExecute();
+        }
+      });
+      {%- endunless -%}
+    </script>
+  {%- when 'order-form' -%}<script>jQuery(document).ready(function($) {AT_Main.handleOrderFormQty();});</script>
+  {%- when 'order-form-2' -%}
+    <script>
+      jQuery(document).ready(function($) {
+        AT_Main.handleOrderFormQty();
+      })
+      .on('click', '.add-all-products', function(){
+        let stop = false;
+        $('#AddToCartForm .product-wrapper').each(function(){
+          let _this = $(this)
+          ,_qty = _this.find('.quantity').val();
+          if(_qty > 0 ){stop = true;}
+        });
+
+        if (stop){$("#AddToCartForm").submit();}
+        else{alert('The total quanlity must be greater than zero');}
+      });
+    </script>
+{%- endcase -%}

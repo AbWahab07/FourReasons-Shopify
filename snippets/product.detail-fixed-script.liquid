@@ -1,0 +1,86 @@
+<script>
+   function fixedContent_handled(select, breakpoint = 768, sibling_selector = null){
+      let elem          = $(select)
+      ,_content         = $('#product-detail_content')
+      ,_fixedElem       = elem.children('div').first()
+      ,_e_Width         = elem.innerWidth() + 'px'
+      ,_firstPos        = $('#col-main').offset().top
+      ,_endPos          = _content.offset().top + _content.innerHeight() - 35
+      ,_lastScroll      = 0
+      ,_o_spacing       = 15
+      ,_spacing         = _o_spacing;
+
+      {%- if _product_layout == 'fixed-content' -%}
+      sibling_selector = null;
+      {%- endif -%}
+
+      if (AT_Main.getWidthBrowser() < breakpoint) {
+         _fixedElem.removeClass('fixed-content').removeAttr('style');
+      }
+
+      $(window).scroll(function(e){
+         if (AT_Main.getWidthBrowser() < breakpoint) {return}
+
+            if ((sibling_selector != null && elem.children().innerHeight() >= sibling_selector.innerHeight()) || AT_Main.getWidthBrowser() < breakpoint) {
+               _fixedElem.removeClass('fixed-content').removeAttr('style');
+               return false;
+            }
+            /*&& _spacing == _o_spacing*/
+
+            if ($('#header-fixed.show').length){
+               _spacing = _o_spacing + $('#header-fixed.show').innerHeight();
+            }else{
+               _spacing = _o_spacing;
+            }
+            let _wd_pos       = $(window).scrollTop()
+            ,_contentPos      = _content.offset().top
+            ,_contentHeight   = _content.outerHeight()
+            ,_endScroll       = _wd_pos + $(window).innerHeight()
+            ,_elemTop         = elem.offset().top
+            ,_left            = elem[0].offsetLeft + 'px';
+
+            if (_wd_pos > _lastScroll){/*Scroll Down*/
+               if ( _wd_pos > (_elemTop - _spacing) && _endScroll < _endPos) {
+                  _fixedElem.addClass('fixed-content').removeClass('fixed-stopping').attr('style', 'top: '+_spacing+'px; max-height: calc(100vh - '+_spacing+'px); left: '+_left+';width: '+_e_Width);
+
+               }else if(_wd_pos <= _firstPos){
+                  _fixedElem.removeClass('fixed-content fixed-stopping').removeAttr('style');
+
+               }else{
+                  if ((_fixedElem.offset().top + _fixedElem.outerHeight()) >= _endPos) {
+                     _fixedElem.removeClass('fixed-content').addClass('fixed-stopping').attr('style', 'top: auto;max-width: 100%;position: absolute;bottom: 0; width: '+_e_Width);
+                  }
+               }
+            }
+            else if(_wd_pos != _lastScroll){/*Scroll Up*/
+               if(_wd_pos <= _firstPos){
+                  _fixedElem.removeClass('fixed-content fixed-stopping').removeAttr('style');
+               }
+               else if(_wd_pos <= (_fixedElem.offset().top - _spacing) && _wd_pos >= _firstPos ){
+                  _fixedElem.addClass('fixed-content').removeClass('fixed-stopping').attr('style', 'top: '+_spacing+'px; max-height: calc(100vh - '+_spacing+'px); left: '+_left+';width: '+_e_Width);
+               }
+
+            }
+
+            _lastScroll = _wd_pos;
+         })
+   }
+   $(document).ready(function(){
+      var i_sections = new theme.Sections();
+      i_sections.register('{{section_type}}', function(){
+         {%- case _product_layout -%}
+         {%- when 'fixed-content' -%}
+         fixedContent_handled('#product-info',768, $('#product-image > div'));
+         $(window).resize(function(){ fixedContent_handled('#product-info',768, $('#product-image > div'))});
+         {%- when 'fixed-image' -%}
+         fixedContent_handled('#product-image', 768, $('#product-info > div'));
+         $(window).resize(function(){ fixedContent_handled('#product-image', 768, $('#product-info > div'))});
+         {%- when 'fixed-center' -%}
+         fixedContent_handled('#product-info',992);
+         fixedContent_handled('#product-form',992);
+         $(window).resize(function(){fixedContent_handled('#product-info',992)});
+         $(window).resize(function(){fixedContent_handled('#product-form',992)});
+         {%- endcase -%}
+      })
+   })
+</script>

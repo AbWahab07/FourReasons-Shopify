@@ -1,0 +1,62 @@
+{%- assign _bg_color = section.settings.bg_color | default: 'rgba(0,0,0,0)' -%}
+<div class="section-separator section-separator-{{ section.id }} section-show-{{section.id}}">
+  {%- for block in section.blocks -%}
+    {%- capture separatorID -%}.section-show-{{section.id}} .spacing-{{block.id}}{%- endcapture -%}
+    <div class="separator spacing-{{block.id}}"{{block.shopify_attributes}}>
+      {%- capture block_css -%}{%- include 'css-responsive', classID: separatorID, css_value: block.settings.height, css_property: 'height' -%}{%- endcapture -%}
+      {%- assign section_css = section_css | append: block_css -%}
+    </div>
+  {%- endfor -%}
+  <style type="text/css">.section-show-{{section.id}}{background-color:{{_bg_color}};}{{section_css}}</style>  
+</div>
+{% schema %}
+{
+  "name": "Separator",
+  "tag": "section",
+  "settings": [
+  {
+    "type": "paragraph",
+    "content": "Seperator Section use to create spacing between sections and add headings to the sections"
+  },
+  {
+    "type": "text",
+    "id": "title",
+    "label": "Section Label"
+  },
+  {
+    "type": "header",
+    "content": "Layout"
+  },
+  {
+    "type": "color",
+    "id": "bg_color",
+    "label": "Background color",
+    "default": "rgba(0,0,0,0)"
+  }
+  ],
+  "blocks": [
+    {
+      "type":"spacing",
+      "name":"Spacing",
+      "settings":[
+        {
+           "type":"text",
+           "id"   :"height",
+           "label":"Height (in px)",
+           "placeholder": "xl,lg,md,sm,xs,xxs",
+           "default": "30px ,15px ,10px"
+        }
+      ]
+    }
+  ],
+  "presets": [{
+  "name": "Separator",
+  "category": "Separator",
+  "blocks":[
+    {
+     "type":"spacing"
+   }
+   ]
+}]
+}
+{% endschema %}

@@ -1,0 +1,7 @@
+{%- if settings.header_font_type == 'google' or settings.body_font_type == 'google' -%}
+	{%- capture gg_font -%}
+		{%- if settings.header_font_type == 'google' -%}|{{ settings.type_header_family	| strip | remove: 'Google_' | replace: ' ', '+' }}{%- endif -%}
+		{%- if settings.body_font_type == 'google' 	 -%}|{{ settings.type_base_family 	| strip | remove: 'Google_' | replace: ' ', '+' }}{%- endif -%}
+	{%- endcapture -%}
+	<link href="//fonts.googleapis.com/css?family={{gg_font | strip_newlines | remove_first: '|' | split: '|' | uniq | join: '|' }}&display=swap" rel="stylesheet" type="text/css"/>
+{%- endif -%}

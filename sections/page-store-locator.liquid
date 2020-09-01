@@ -1,0 +1,237 @@
+{%- include 'breadcrumb' -%}
+{%- assign _api_key   = settings.gg_map_api | strip -%}
+{%- assign _map_ip    = section.settings.use_ip_location -%}
+{%- assign _map_zoom  = section.settings.map_zoom | plus: 9 -%}
+{%- assign _latlong   = section.settings.contact_latlong | split: ',' -%}
+{%- assign _map_style = section.settings.store_style | default: '[]' | strip_newlines | replace: '  ',' ' | replace: ' ', '' -%}
+{%- assign _pin_size  = section.settings.map_pin_size | default: '20px' -%}
+{%- assign _pin_color = section.settings.map_pin_color | default: '#ffffff' -%}
+
+<style>#map-canvas:empty{background: center / cover no-repeat url({{'map-placeholder.jpg' | asset_url }});}
+  {%- include 'css-responsive', classID: '#store-locator', css_value: section.settings.section_padding -%}
+</style>
+
+<div data-section-id="{{section.id}}" data-section-type="store-location" style="background-color:{{section.settings.background_color | default: 'rgba(0,0,0,0)' }};">
+  <div id="store-locator">
+    <input type="hidden" name="store-locator-data"
+            data-ip-location="{{ _map_ip }}"
+            data-map-zoom="{{ _map_zoom }}"
+            data-latitude="{{ _latlong[0] | strip }}"
+            data-longitude="{{ _latlong[1] | strip }}"
+            data-pin-size= "{{ _pin_size }}"
+            data-pin-color= "{{ _pin_color }}"
+            data-active="{%- if _api_key != blank -%}true{%- else -%}false{%- endif -%}">
+
+    <div class="container">
+      <div class="row">
+
+        {%- unless _api_key == blank -%}
+          <div id="panel" class="col-lg-4 col-12"></div>
+          <div class="col-lg-8 col-12"><div id="map-canvas"></div></div>
+        {%- else -%}
+          <div class="container"><p>Please make sure you already inserted API Key in Theme settings > App Integrations > Google Map</p></div>
+        {%- endunless -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- unless _api_key == blank -%}
+<script id="api_map_key" src="//maps.googleapis.com/maps/api/js?key={{settings.gg_map_api}}"></script>
+<script crossorigin="anonymous" src="{{ 'store-locator.min.js' | asset_url }}" sync defer></script>
+<script id="map__style" type="application/json">{{- _map_style -}}</script>
+<script id="store_info" type="application/json">[
+  {%- for block in section.blocks -%}
+    {%- assign __store_name     = block.settings.title -%}
+    {%- assign __store_address  = block.settings.store_address -%}
+    {%- assign __store_features = block.settings.store_features -%}
+    {%- assign __store_latlong  = block.settings.store_latlong | split: ',' -%}
+    {"title":"{{__store_name}}","address":"{{__store_address}}","features":"{{__store_features}}","latitude":{{__store_latlong[0] | strip | plus: 0 }},"longitude":{{__store_latlong[1] | strip | plus: 0 }} }{%- unless forloop.last -%},{%- endunless -%}
+{%- endfor -%}]</script>
+<script>
+  jQuery(document).ready(function($) {
+    var i_sections = new theme.Sections();
+    i_sections.register('store-location' ,function(){
+      var myLati
+          ,myLongi
+          ,myCountry
+          ,storeData = $('#store-locator input[name="store-locator-data"]')
+          ,_pin_size = storeData.attr('data-pin-size')
+          ,_pin_color = storeData.attr('data-pin-color')
+          ,store_info = JSON.parse($('#store_info').html());
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+      if ($.parseJSON(storeData.attr('data-ip-location'))) {
+        var get_LatLong = ()=>{
+          return $.ajax({
+            url: 'https://get.geojs.io/v1/ip/geo.js',
+            type: 'POST',
+            dataType: 'jsonp',
+            success: function(location) {
+              myLati = location.latitude;
+              myLongi = location.longitude;
+              myCountry = location.country;
+              console.log('Get Latitude and Longitude by IP');
+            }
+          });
+        }
+      }else{
+          myLati = Number(storeData.attr('data-latitude'))
+          myLongi = Number(storeData.attr('data-longitude'))
+        }
+      let map_initialize = async ()=>{
+
+        if ($.parseJSON(storeData.attr('data-ip-location'))) {
+          let _awaitResp = await get_LatLong();
+        }
+        var map = new google.maps.Map(document.getElementById('map-canvas'), {
+          center         : new google.maps.LatLng(myLati,myLongi),
+          zoom           : Number(storeData.attr('data-map-zoom')),
+          scrollwheel    : true,
+          styles         : JSON.parse($('#map__style').html()),
+          mapTypeId      : google.maps.MapTypeId.ROADMAP
+        });
+
+        var panelDiv  = document.getElementById('panel')
+            ,data     = new PlacesDataSource(map)
+            ,view     = new storeLocator.View(map, data);
+
+        view.createMarker = function(store) {
+          return new RichMarker({
+            position: store.getLocation(),
+            map: map,
+            draggable: false,
+            anchor: RichMarkerPosition.MIDDLE,
+            shadow:false,
+            content: `<i class="icon-location" style="font-size:${_pin_size};color:${_pin_color}"></i>`
+          });
+        };
+
+        new storeLocator.Panel(panelDiv,{view: view});
+        $('#panel .location-search input').val(myCountry);
+    }
+
+      function PlacesDataSource() {}
+      PlacesDataSource.prototype.getStores = function(bounds, features, callback) {
+        if (store_info.length) {
+          let stores = [];
+          store_info.forEach((i,v)=>{
+            let latLng = new google.maps.LatLng(i.latitude, i.longitude)
+              ,store   = new storeLocator.Store(i.title, latLng, null, {title: i.title, address: i.address, misc: i.features});
+
+            store.getInfoPanelContent = function() {
+              let details = this.getDetails();
+              return '<div class="list-loca-stores"><i class="icon-location"></i><b>' + details.title + '</b><br>' + details.address + '</div>';
+            };
+            stores.push(store);
+          })
+          this.sortByDistance_(bounds.getCenter(),stores);
+          callback(stores);
+        }
+      };
+      PlacesDataSource.prototype.sortByDistance_ = function(latLng, stores) {stores.sort(function(a, b){return a.distanceTo(latLng) - b.distanceTo(latLng);});};
+
+      $.parseJSON(storeData.attr('data-active')) && map_initialize();
+    });
+  });
+</script>
+{%- endunless -%}
+{% schema %}
+{
+  "name":"Store Locator Page",
+  "tag":"section",
+  "settings":[
+    {
+       "type": "text",
+       "id": "section_padding",
+       "label": "Section Padding",
+       "placeholder": "E.g: 5px 20px 5px 20px",
+       "info": "Order: Top Right Bottom Left"
+    },
+    {
+       "type":"header",
+       "content":"Map config"
+    },
+    {
+      "type":"paragraph",
+      "content":"Please make sure you already inserted API Key in Theme settings > App Integrations > Google Map"
+    },
+    {
+      "type":"checkbox",
+      "id":"use_ip_location",
+      "label":"Geolocation service",
+      "default":true
+    },
+    {
+      "type":"text",
+      "id":"contact_latlong",
+      "label":"Configure store locator",
+      "info":"When you disable 'Geolocation services'. Type by [Latitude and Longitude](http:\/\/latlong.net)",
+      "placeholder":"E.g: 51.514863,-0.133689",
+      "default": "51.514863,-0.133689"
+    },
+    {
+       "type":"range",
+       "id":"map_zoom",
+       "label":"Zoom",
+       "min":1,
+       "max":5,
+       "step":1,
+       "default":1
+    },
+    {
+      "type":"textarea",
+      "id":"store_style",
+      "label":"Map style",
+      "info":"Add json data here. [How to get json data](http:\/\/snazzymaps.com) or [Here](https:\/\/mapstyle.withgoogle.com)"
+    },
+    {
+       "type":"text",
+       "id":"map_pin_size",
+       "label":"Pin size",
+       "default": "20px",
+       "placeholder": "E.g: 20px"
+    },
+    {
+       "type":"color",
+       "id":"map_pin_color",
+       "label":"Pin color",
+       "default": "#888888"
+    }
+  ],
+  "blocks":[
+    {
+      "type":"store",
+      "name":"Stores",
+      "settings":[
+        {
+          "type":"text",
+          "id":"title",
+          "label":"Store name"
+        },
+        {
+          "type":"textarea",
+          "id":"store_address",
+          "label":"Store info"
+        },
+        {
+          "type":"textarea",
+          "id":"store_features",
+          "label":"Operating hour"
+        },
+        {
+          "type":"text",
+          "id":"store_latlong",
+          "label":"Store location",
+          "info":"Type by [Latitude and Longitude](http:\/\/latlong.net)"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

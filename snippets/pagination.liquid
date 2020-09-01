@@ -1,0 +1,24 @@
+{%- if paginate.pages > 1 -%}
+  <div class="pagination-holder">
+    <ul class="pagination">
+      {% assign total_page_num = paginate.pages %}
+      {% assign current_page_num = paginate.current_page %}
+      
+      <li class="pagination-prev {% if current_page_num == 1 %}pagination-prev-disable{% endif %}"><a href="{{ paginate.previous.url }}" title="{{'general.pagination.previous' | t }}" class="prev">Previous</a></li>
+
+      {%- for part in paginate.parts -%}
+        {%- if part.is_link -%}
+          <li><a href="{{ part.url }}">{{ part.title }}</a></li>
+        {%- else -%}
+          {%- if part.title == '&hellip;' -%}
+          <li class="ellipsis"><span>{{ part.title }}</span></li>
+          {%- else -%}
+          <li class="active"><a href="javascript:;">{{ part.title }}</a></li>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      <li class="pagination-next {% if current_page_num == total_page_num %}pagination-next-disable{% endif %}"><a href="{{ paginate.next.url }}" title="{{'general.pagination.next' | t }}" class="next">Next</a></li>
+    </ul>
+  </div>
+{%- endif -%}

@@ -1,0 +1,258 @@
+{%- assign font_count = 0 -%}
+{%- if settings.header_font_type == 'google' -%}
+	{%- assign ff_head 	= settings.type_header_family | strip | remove: 'Google_' | replace: '+', ' ' | split: ':' | first -%}
+{%- else -%}
+	{%- assign ff_head 	= settings.header_font_1_1.family -%}
+{%- endif -%}
+
+{%- if settings.body_font_type == 'google' -%}
+	{%- assign ff_body 	= settings.type_base_family | strip | remove: 'Google_' | replace: '+', ' ' | split: ':' | first -%}
+{%- else -%}
+	{%- assign ff_body 	= settings.general_font_1_1.family -%}
+{%- endif -%}
+{%- capture ff_default -%}
+.ff-head{font-family: {{ff_head}}, 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;}.ff-body{font-family: {{ff_body}}, 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;}{%- endcapture -%}
+
+{%- assign _content_css = _content_css | append: ff_default -%}
+
+{%- if section.blocks.size > 0 -%}
+	{%- for block in section.blocks -%}
+		{%- assign _class 	= block.settings.title -%}
+		{%- assign _content	= block.settings.content -%}
+
+		{%- case block.type -%}
+		  	{%- when 'content' -%}
+				{%- assign _image 	= block.settings.image -%}
+				{%- capture itemCss -%}
+					{%- unless _class == blank -%}
+					{{_class}}{
+						{%- unless _image == blank -%}background-image: url({{_image | img_url: '100x' }});{%- endunless -%}
+						{{- _content | strip_newlines -}}
+					}
+					{%- endunless -%}
+				{%- endcapture -%}
+
+		  	{%- when 'big_content' -%}{%- capture itemCss -%}{{- _content | strip_newlines  -}}{%- endcapture -%}
+
+		  	{%- when 'ipx_theme' -%}
+			  	{%- assign header_bg_desk = settings.header_bg_color -%}
+			  	{%- assign header_bg_mobi = settings.header_bg_color_mobile -%}
+			  	{%- capture itemCss -%}{{_content | replace: '[header_desk_bg]', header_bg_desk | replace: '[header_mobi_bg]',header_bg_mobi  }}{%- endcapture -%}
+
+		  	{%- when 'custom_color' -%}
+
+				{%- assign ar_color 	 = block.settings.color_code | downcase | strip_newlines | split: ';' -%}
+				{%- assign color_setting = '' -%}
+
+				{%- for i_color in ar_color -%}
+					{%- assign temp 	= i_color | strip -%}
+					{%- assign _color 	= temp | split: ':' | first | strip | handleize -%}
+					{%- assign _cl_code = temp | split: ':' | last | strip -%}
+
+					{%- if _color.size > 0 and _cl_code.size > 0 -%}
+						{%- capture temp_color %}label.cf-{{_color}},.cf-{{_color}}{background: {{_cl_code}};}{% endcapture -%}
+						{%- assign color_setting = color_setting | strip | append: temp_color -%}
+					{%- endif -%}
+				{%- endfor -%}
+		  		{%- capture itemCss -%}{{color_setting}}{%- endcapture -%}
+
+			{%- when 'custom_font' -%}
+				{%- assign font_type 	= block.settings.font_type -%}
+				{%- assign font_name 	= block.settings.font_family -%}
+				{%- assign font_count 	= font_count | plus: 1 -%}
+
+				{%- if font_type == 'google' -%}
+					{%- assign custom_font 	= true -%}
+					{%- capture font_item -%}|{{ font_name | replace: 'Google_', '' | replace: '+', ' ' }}{%- endcapture -%}
+					{%- assign custom_font_item = custom_font_item | append: font_item -%}
+				{%- endif -%}
+
+		        {%- capture ff_i -%}ff-{{font_count}}{%- endcapture -%}
+
+		        {%- for i in (1..3) -%}
+		          {%- assign _btn_ff = 'btn' | append: i | append: '_ff' -%}
+		          {%- if settings[_btn_ff] == ff_i -%}
+		            {%- assign ff_i = ff_i | append: ',.btn-' | append: i -%}
+		          {%- endif -%}
+		        {%- endfor -%}
+
+				{%- capture itemCss -%}
+					{%- if font_type == 'google' -%}
+						.{{ff_i}}{font-family: {{ font_name | replace: 'Google_', '' | replace: '+', ' ' | split: ':' | first }}, 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;}
+					{%- else -%}
+						{%- assign header__font                 = block.settings.shopify_font -%}
+						{%- assign header__font-thin            = header_font | font_modify: 'weight', '100' -%}
+						{%- assign header__font-extra-light     = header_font | font_modify: 'weight', '200' -%}
+						{%- assign header__font-light           = header_font | font_modify: 'weight', '300' -%}
+						{%- assign header_font-regular          = header_font | font_modify: 'weight', '400' -%}
+						{%- assign header_font-medium           = header_font | font_modify: 'weight', '500' -%}
+						{%- assign header_font-semi_bold        = header_font | font_modify: 'weight', '600' -%}
+						{%- assign header_font-bold             = header_font | font_modify: 'weight', '700' -%}
+						{%- assign header_extra-bold            = header_font | font_modify: 'weight', '800' -%}
+						{%- assign header_black                 = header_font | font_modify: 'weight', '900' -%}
+						{{- header__font             | font_face: font_display: 'swap' -}}
+						{{- header__font             | font_face: font_display: 'swap' -}}
+						{{- header__font             | font_face: font_display: 'swap' -}}
+						{{- header__font-light       | font_face: font_display: 'swap' -}}
+						{{- header_font-regular      | font_face: font_display: 'swap' -}}
+						{{- header_font-medium       | font_face: font_display: 'swap' -}}
+						{{- header_font-semi_bold    | font_face: font_display: 'swap' -}}
+						{{- header_font-bold         | font_face: font_display: 'swap' -}}
+						{{- header_extra-bold        | font_face: font_display: 'swap' -}}
+						{{- header_black             | font_face: font_display: 'swap' -}}
+						.{{ff_i}}{font-family: {{header__font.family}}, 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, {{header__font.fallback_families}} !important;}
+					{%- endif -%}
+				{%- endcapture -%}
+		{%- endcase -%}
+
+		{%- assign _content_css = _content_css | append: itemCss -%}
+	{%- endfor -%}
+	{%- if custom_font -%}
+		    <link href="//fonts.googleapis.com/css?family={{custom_font_item | remove_first: '|'}}&display=swap" rel="stylesheet" type="text/css" />
+	{%- endif -%}
+
+{%- else -%}
+	{%- assign ar_color_eg = 'red: #FF0000;pink: #FFC0CB;black: #000000;white:#ffffff;silver:#c0c0c0;grey:#808080;gray:#808080;black:#000000;red:#ff0000;maroon:#800000;yellow:#ffff00;olive:#808000;lime:#00ff00;green:#008000;aqua:#00ffff;teal:#008080;blue:#0000ff;navy:#000080;fuchsia:#ff00ff;purple:#800080;orange:#ffa500;brown: #654321;gold: #FFD700;' -%}
+	{%- assign ar_color 	 = ar_color_eg | downcase | strip_newlines | split: ';' -%}
+	{%- assign color_setting = '' -%}
+
+	{%- for i_color in ar_color -%}
+		{%- assign temp 	= i_color | strip -%}
+		{%- assign _color 	= temp | split: ':' | first | strip | handleize -%}
+		{%- assign _cl_code = temp | split: ':' | last | strip -%}
+
+		{%- if _color.size > 0 and _cl_code.size > 0 -%}
+			{%- capture temp_color %}label.cf-{{_color}},.cf-{{_color}}{background: {{_cl_code}};}{% endcapture -%}
+			{%- assign color_setting = color_setting | strip | append: temp_color -%}			
+		{%- endif -%}
+	{%- endfor -%}
+	{%- capture itemCss -%}{{color_setting}}{%- endcapture -%}
+	{%- assign _content_css = _content_css | append: itemCss -%}
+{%- endif -%}
+
+{%- unless _content_css == blank -%}<style>{{ _content_css | strip_newlines }}</style>{%- endunless -%}
+{% schema %}
+{
+	"name":"Custom CSS",
+	"tag": "section",
+	"settings":[
+		{
+			"type":"paragraph",
+			"content":"Created by 'Custom CSS' section"
+		},
+		{
+			"type":"paragraph",
+			"content":"Use class \"ff-1\" -> \"ff-5\" to custom font, order by block custom font"
+		}
+	],
+	"blocks":[
+	{
+		"type":"content",
+		"name":"CSS Single Selector",
+		"settings":[
+			{
+				"type":"text",
+				"id"  :"title",
+				"label":"Class Name",
+				"placeholder": ".yourSelector"
+			},
+			{
+				"type":"image_picker",
+				"id"  :"image",
+				"label":"Image"
+			},
+			{
+			   "type":"html",
+			   "id"	 :"content",
+			   "label":"CSS Content",
+			   "placeholder": "font-size: 15px;\ncolor: #000000;\n..."
+			}
+		]
+	},
+	{
+		"type":"big_content",
+		"name":"CSS Multi Selectors",
+		"settings":[
+			{
+				"type":"text",
+				"id"  :"title",
+				"label":"Block label"
+			},
+			{
+			   "type":"html",
+			   "id"	 :"content",
+			   "label":"CSS Content",
+			   "placeholder": ".yourFirstSelector{\nfont-size: 15px;\ncolor: #000000; ...\n}\n.yourSecondSelector{\nfont-size: 15px;\ncolor: #000000; ...\n}"
+			}
+		]
+	},
+	{
+		"type":"ipx_theme",
+		"name":"Iphone X Theme",
+		"limit": 1,
+		"settings": [
+			{
+			   "type":"html",
+			   "id"	 :"content",
+			   "label":"CSS Content",
+			   "default": "#header-style,#topbar{background: none!important}.header-mobile{background: [header_mobi_bg]}header .header-inner{position: absolute!important;z-index: 99999;width: 100%}@media(min-width: 768px){header .header-inner{width: 80%!important;margin: 0 auto;border-radius: 0 0 200px 200px;left: 50% !important;transform: translateX(-50%) !important;position: absolute!important;background: [header_desk_bg]!important}#page-body{padding-top: 30px}#body-content{background: #ffffff;overflow: hidden;margin: 0 30px 30px;border-radius: 20px}}@media(max-width: 767px){#body-content{overflow: hidden;margin: 0 15px 15px;border-radius: 0px;background: #ffffff}}header.is-fixed .header-inner{position: fixed!important;top: 0;width: 100%;z-index: 99999}header.is-fixed #header-fixed.show{display: none!important}.x-phone-title:after, ul.breadcrumb li.active:after{position: relative;right: -10px;bottom: 0;content: '';width: 10px;height: 10px;display: inline-block;background-size: cover;background-repeat: no-repeat;background: #F02073;border-radius: 50%}"
+			}
+		]
+	},
+	{
+		"type":"custom_color",
+		"name":"Color Code",		
+		"settings": [
+			{
+				"type": "html",
+				"id": "color_code",
+				"label": "Color Hex Code",				
+				"default": "red: #FF0000;pink: #FFC0CB;black: #000000;white:#ffffff;silver:#c0c0c0;grey:#808080;gray:#808080;black:#000000;red:#ff0000;maroon:#800000;yellow:#ffff00;olive:#808000;lime:#00ff00;green:#008000;aqua:#00ffff;teal:#008080;blue:#0000ff;navy:#000080;fuchsia:#ff00ff;purple:#800080;orange:#ffa500;brown: #654321;gold: #FFD700;",
+				"info": "E.g: Red: #FF0000, Black: #000000, ..."
+			}
+		]
+	},
+	{
+	   "type":"custom_font",
+	   "name":"Custom Font",
+	   "limit":5,
+	   "settings": [
+	      {
+	         "type":"select",
+	         "id":"font_type",
+	         "label":"Font type",
+	         "default":"shopify",
+	         "options":[
+	         	{
+	         	  "value":"google",
+	         	  "label":"Google"
+	         	},
+	         	{
+	         	  "value":"shopify",
+	         	  "label":"Shopify"
+	         	}
+	         ]
+	      },
+	      {
+	         "type":"text",
+	         "id":"title",
+	         "label":"Block label",
+	         "default": "Custom font"
+	      },
+	      {
+	        "type": "font_picker",
+	        "id": "shopify_font",
+	        "label": "Shopify Font",
+	        "default": "poppins_n4"
+	      },
+        {
+          "type": "text",
+          "id": "font_family",
+          "label": "Google Font",
+          "placeholder": "E.g: Roboto"
+        }
+	   ]
+	}
+	]
+}
+{% endschema %}

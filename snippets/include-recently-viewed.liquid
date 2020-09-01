@@ -1,0 +1,119 @@
+{{ "jquery.tmpl.min.js" 	| asset_url | script_tag }}
+{{ "jquery.product.min.js" 	| asset_url | script_tag }}
+
+{%- assign card_padding   = settings.card_padding -%}
+{%- assign card_shadow    = settings.card_shadow -%}
+
+{%- if template contains 'collection' -%}
+	{%- assign _recently_viewed_title = block.settings.sb_recently_viewed_heading -%}
+	{%- assign _recently_viewed_limit = block.settings.sb_recently_viewed_limit -%}
+
+{%- elsif template contains 'product' -%}
+	{%- assign _recent_items 		 	= section.settings.recent_items_resp -%}
+	{%- assign _recently_viewed_limit 	= section.settings.recent_product_limit -%}
+	{%- assign _recent_title		 	= section.settings.rencent_title -%}
+	{%- assign _recently_title_align  	= section.settings.recent_title_align -%}
+
+{%- else -%}
+	{%- assign _recently_viewed_title = section.settings.sb_recently_viewed_product_title -%}
+	{%- assign _recently_viewed_limit = section.settings.sb_recently_viewed_product_limit -%}
+
+{%- endif -%}
+
+{%- if _recently_title_align == blank -%}{%- assign _recently_title_align = 'left' -%}{%- endif -%}
+{%- if _recent_title == blank -%}{% assign _recent_title = 'products.product.recently_viewed' | t %}{%- endif -%}
+
+<div class="widget-recently-viewed hide d-none d-lg-block">
+	<div class="{% if template contains 'collection' %}sb-product sb-recently-viewed{% else %}recent-wrapper{% endif %}">
+
+		{%- if template contains 'collection' -%}
+			<p class="{{sb_title}}">{{ _recently_viewed_title }}</p>
+		{%- else -%}
+			{%- if section.settings.block_heading_style == 'inherit' -%}
+				{% include 'head-title' ,_title: _recent_title ,_title_alignment: _recently_title_align %}
+			{%- else -%}
+				{% include 'head-title' ,_title: _recent_title ,_title_alignment: _recently_title_align ,s_heading_style: '0' %}
+			{%- endif -%}
+		{%- endif -%}
+
+		<div id="recently-viewed-products" class="{% if template contains 'collection' %} collection clearfix{% else %}cata-product{% endif %}{% if template contains 'product' %}{% if card_padding %} p-card-padding{% endif %} row{% endif %}" data-handle="{{ product.handle }}"></div>
+
+		{%- unless template contains 'collection' -%}
+			{%- if _text_align == blank -%}{%- assign _text_align = settings.text_align_product_item -%}{%- endif -%}
+
+			{%- if template contains 'product' -%}
+				{%- include 'include-item-per-row', item_resp: _recent_items -%}
+				{%- assign _grid_class = items_class -%}
+
+				{%- if settings.collections_product_ratio == 'custom' -%}				
+					{%- assign customRatio = settings.grid_sample_ratio -%}
+					{%- capture block_css -%}
+						#recently-viewed-products .product-card .card-header .card-image:before{padding-bottom:{%- unless customRatio 	== blank -%}{{- 1 | divided_by: customRatio.aspect_ratio | times: 100 | append: '%' -}}{%- else -%}100%{%- endunless -%};}
+					{%- endcapture -%}
+					{%- assign section_css = section_css | append: block_css -%}
+				{%- endif -%}
+			{%- endif -%}
+			
+			<script id="recently-viewed-product-template"  type="text/x-jquery-tmpl">
+				<div id="product-${handle}" class="mode-view-item products-grid-item check-product {{_grid_class}}" data-rwhandle="${handle}">
+					<div class="card product-card{% if card_padding %} card-padding{% endif %}{% if card_shadow %} card-shadow{% endif %}">
+					  <div class="card-content">
+					    <div class="card-header">
+					      <div class="card-image">
+					        <a href="${url}">
+					        	<span class="image--style">
+					        		<img class="lazyload img-lazy" data-src="${Shopify.Products.resizeImage(featured_image, "390x")}"/>
+					        	</span>
+					        </a>
+					      </div>
+					    </div>
+
+					    <div class="card-body text-{{ _text_align }}">
+					      <div class="card-body-grid">
+					        <div class="card-title">
+					        	<h5 class="product-name {{settings.card_name_font_family}}{% if settings.card_name_uppercase %} text-uppercase{% endif %}"><a href="${url}" title="${title}">${title}</a></h5>
+					        </div>
+					      </div>
+					    </div>
+					  </div>
+					</div>
+				</div>
+			</script>
+		{%- else -%}
+			<script id="recently-viewed-product-template"  type="text/x-jquery-tmpl">
+				<div id="product-${handle}" class="product listing-item check-product" data-rwhandle="${handle}">
+					<div class="container">
+						<div class="row">
+							<div class="sb-product-head col-4">
+								<a href="${url}">
+									<img class="lazyload img-lazy" data-src="${Shopify.Products.resizeImage(featured_image, "390x")}"/>
+								</a>
+							</div>
+							<div class="sb-product-content col-8">
+								<div class="bp-content-inner">
+									<a href="${url}">${title}</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</script>
+		{%- endunless -%}
+		<script>			
+			Shopify.Products.showRecentlyViewed({
+				howManyToShow: +"{{ _recently_viewed_limit | default: 5 }}",
+				onComplete: function() {
+					let _handle = $('#recently-viewed-products').data('handle');
+					$('.check-product').each(function(){
+						let _rwhandle = $(this).data('rwhandle')
+						_rwhandle === _handle && $(this).remove();
+					});
+					{%- if show -%}
+					jQuery('#recently-viewed-products').children().length && $('.widget-recently-viewed').fadeIn().removeClass('hide');
+					{%- endif -%}
+				}
+			});
+			Shopify.Products.recordRecentlyViewed();
+		</script>
+	</div>
+</div>

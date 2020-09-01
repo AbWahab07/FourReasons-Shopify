@@ -1,0 +1,225 @@
+{%- assign block_type             = block.settings.content_type -%}
+{%- assign b_product              = block.settings.bproduct -%}
+{%- assign b_text_align           = block.settings.text_align -%}
+{%- assign image_block            = block.settings.image -%}
+{%- assign image_link             = block.settings.link -%}
+{%- assign image_height           = block.settings.image_height -%}
+{%- assign deal_title             = block.settings.b_title -%}
+{%- assign b_subtitle             = block.settings.b_subtitle -%}
+{%- assign deal_subtitle          = block.settings.b_content -%}
+{%- assign button_text            = block.settings.button_text -%}
+{%- assign button_link            = block.settings.button_link | default: 'javascript:void(0);' -%}
+{%- assign border                 = block.settings.border_content -%}
+{%- assign tb_position            = block.settings.textbox_position -%}
+{%- assign bg_color               = block.settings.bg_color_content -%}
+{%- assign bg_image               = block.settings.bg_image_content -%}
+{%- assign c_padding              = block.settings.content_padding -%}
+{%- assign position_top           = block.settings.position_top  | append: '%' -%}
+{%- assign position_left          = block.settings.position_left | append: '%' -%}
+{%- assign spc_tit_color          = block.settings.title_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign spc_sub_color          = block.settings.subtitle_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign spc_con_color          = block.settings.content_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign spc_btn_inherit        = block.settings.buttons_inherit -%}
+{%- assign spc_btn_color          = block.settings.button_color -%}
+{%- assign spc_btn_border         = block.settings.button_border -%}
+{%- assign spc_btn_bg_color       = block.settings.button_bg_color -%}
+
+{%- if block.settings.position and block_type == 'image' -%}
+            {%- assign _grid_v1 = true -%}
+{%- else -%}{%- assign _grid_v1 = false -%}{%- endif -%}
+{%- if _grid_v1 -%}{%- assign tb_position = '2' -%}{%- endif -%}
+{%- if image_height == 'fill' -%}{%- assign img_padding = '100%' -%}{%- endif -%}
+
+{%- capture i_class -%}{%- include 'set-width-bootstrap',in_type: 'width', number: block.settings.width_resp -%}{{_out}}{%- endcapture -%}
+
+{%- if tb_position == '1' -%}
+  {%- assign _po_class = 'top-content' -%}
+{%- elsif tb_position == '2' -%}
+  {%- assign _po_class = 'content-overlay' -%}
+{%- endif -%}
+
+{%- capture content -%}
+  {%- unless tb_position == '0' -%}
+    {%- capture contentSize -%}{{deal_title}}{{b_subtitle}}{{deal_subtitle}}{%- endcapture -%}
+
+    <div class="content-group b-{{block.id}}{% if tb_position == '1' %} d-flex justify-content-between align-items-center{% endif %}">
+      {%- unless contentSize.size == 0 -%}
+        <div class="content-text">
+          {%- unless deal_title     == blank -%}<div class="b-title">{{deal_title}}</div>{%- endunless -%}
+          {%- unless b_subtitle     == blank -%}<div class="b-subtitle">{{b_subtitle}}</div>{%- endunless -%}
+          {%- unless deal_subtitle  == blank -%}<div class="b-content">{{deal_subtitle}}</div>{%- endunless -%}
+        </div>
+        {%- if button_text != blank -%}
+          <div class="btn-group">
+            <a class="btn{% if spc_btn_inherit != 0 %} btn-{{spc_btn_inherit}}{% else %} btn-spc{% endif %}" href="{{ button_link }}">
+              <span class="btn-text">{{ button_text }}</span>
+            </a>
+          </div>
+        {%- endif -%}
+        {%- capture contentID -%}.section-show-{{section.id}} {% if _grid_v1 %}.spc-{{block.id}} .big-content-body{%- else -%}.b-{{block.id}}{%- endif -%}{%- endcapture -%}
+        {%- capture textContainertID -%}.section-show-{{section.id}} .product-slider-content .spc-type-{{block_type}}{% if tb_position == '1' %} .big-content-head{% else %} .big-content-body{% endif %} .b-{{block.id}}{%- endcapture -%}
+
+        <style>
+          {%- if tb_position == '2' and block_type != 'text' -%}
+            {{- contentID}}{left:{{position_left}};top:{{position_top}};transform: translate(-{{position_left}} ,-{{position_top}});position: absolute;}
+          {%- endif -%}
+
+          {%- if spc_sub_color != 'rgba(0,0,0,0)' -%}{{- textContainertID}} .b-subtitle{color: {{spc_sub_color}};}{%- endif -%}
+          {%- if spc_btn_inherit == 0 and button_text != blank -%}{{- textContainertID}} .btn-spc{background-color: {{spc_btn_bg_color}};color: {{spc_btn_color}};border: 1px solid {{spc_btn_border}};}{%- endif -%}
+
+          {%- include 'css-responsive' ,classID: contentID ,css_value: c_padding -%}
+          {%- include 'css-responsive' ,classID: textContainertID ,css_value: block.settings.content_align  ,css_property: 'text-align'-%}
+
+          {%- unless deal_title == blank -%}
+            {%- if spc_tit_color != 'rgba(0,0,0,0)' -%}{{- textContainertID}} .b-title{color: {{spc_tit_color}};}{%- endif -%}
+            {%- include 'css-responsive' ,classID: textContainertID ,nextClassID:  ' .b-title'   ,css_value: block.settings.tit_fs  ,css_property: 'font-size'-%}
+            {%- include 'css-responsive' ,classID: textContainertID ,nextClassID:  ' .b-title'   ,css_value: block.settings.tit_fw  ,css_property: 'font-weight'-%}
+            {%- include 'css-responsive' ,classID: textContainertID ,nextClassID:  ' .b-title'   ,css_value: block.settings.tit_margin  ,css_property: 'margin'-%}
+            {%- include 'css-responsive' ,classID: textContainertID ,nextClassID:  ' .b-title'   ,css_value: block.settings.tit_lsp  ,css_property: 'letter-spacing'-%}
+            {%- include 'css-responsive' ,classID: textContainertID ,nextClassID:  ' .b-title'   ,css_value: block.settings.tit_lh  ,css_property: 'line-height'-%}
+          {%- endunless -%}
+          {%- unless deal_subtitle == blank -%}
+          {%- if spc_con_color != 'rgba(0,0,0,0)' -%}{{- textContainertID}} .b-content{color: {{spc_con_color}};}{%- endif -%}
+            {%- include 'css-responsive' ,classID: textContainertID ,nextClassID:  ' .b-content' ,css_value: block.settings.con_fs  ,css_property: 'font-size'-%}
+            {%- include 'css-responsive' ,classID: textContainertID ,nextClassID:  ' .b-content' ,css_value: block.settings.con_fw  ,css_property: 'font-weight'-%}
+            {%- include 'css-responsive' ,classID: textContainertID ,nextClassID:  ' .b-content' ,css_value: block.settings.con_margin  ,css_property: 'margin'-%}
+            {%- include 'css-responsive' ,classID: textContainertID ,nextClassID:  ' .b-content' ,css_value: block.settings.con_lsp  ,css_property: 'letter-spacing'-%}
+            {%- include 'css-responsive' ,classID: textContainertID ,nextClassID:  ' .b-content' ,css_value: block.settings.con_lh  ,css_property: 'line-height'-%}
+          {%- endunless -%}
+          {%- unless button_text == blank -%}
+            {%- include 'css-responsive' ,classID: textContainertID ,nextClassID:  ' .btn-group a' ,css_value: block.settings.button_rd  ,css_property: 'border-radius'-%}
+          {%- endunless -%}
+
+        </style>
+      {%- endunless -%}
+    </div>
+  {%- endunless -%}
+{%- endcapture -%}
+
+{%- if _type == 'row' -%}<div class="{{i_class}}">{%- endif -%}
+{%- capture spc_class -%}spc-{{block.id}} {{_po_class}}{% if border %} has-border{% endif %}{% unless block_type == 'product' %} image-height-{{image_height}} text-{{b_text_align}}{% endunless %}{%- endcapture -%}
+
+<div class="spc-block spc-type-{{block_type}} {{spc_class}}"{{block.shopify_attributes}}>
+
+  {%- if block_type == 'slider' -%}
+    <div class="spc-slider spc-carousel" data-owl-xxs="1" data-dot="true" data-loop="true">
+      <div class="spc-slider-item">
+        <div class="big-content-head spc-slider-image">
+          <a href="{{image_link}}">{%- include 'image-style',image:image_block  -%}</a>
+        </div>
+        <div class="big-content-body">{{content}}</div>
+      </div>
+      {%- assign i = forloop.index -%}
+      {%- if section.blocks.size > 1 -%}
+        {%- for block in section.blocks offset: i -%}
+          {%- assign slider_image        = block.settings.image -%}
+          {%- unless slider_image == blank -%}
+            {%- assign slider_link         = block.settings.link -%}
+            {%- assign b_title             = block.settings.b_title -%}
+            {%- assign b_content           = block.settings.b_content -%}
+            {%- assign button_text         = block.settings.button_text -%}
+            {%- assign button_link         = block.settings.button_link | default: 'javascript:void(0);' -%}
+            {%- assign position_top        = block.settings.position_top  | append: '%' -%}
+            {%- assign position_left       = block.settings.position_left | append: '%' -%}
+            {%- assign spc_tit_color       = block.settings.title_color | default: 'rgba(0,0,0,0)' -%}
+            {%- assign spc_con_color       = block.settings.content_color | default: 'rgba(0,0,0,0)' -%}
+            {%- assign spc_btn_inherit     = block.settings.buttons_inherit -%}
+            {%- assign spc_btn_color       = block.settings.button_color | default: 'rgba(0,0,0,0)' -%}
+            {%- assign spc_btn_border      = block.settings.button_border | default: 'rgba(0,0,0,0)' -%}
+            {%- assign spc_btn_bg_color    = block.settings.button_bg_color | default: 'rgba(0,0,0,0)' -%}
+
+            {%- capture blockID -%}.section-show-{{section.id}} .b-{{block.id}}{%- endcapture -%}
+
+            <div class="spc-slider-item"{{block.shopify_attributes}}>
+              <div class="big-content-head spc-slider-image">
+                <a href="{{slider_link}}">{%- include 'image-style',image:slider_image  -%}</a>
+              </div>
+
+              <div class="big-content-body">
+                <div class="content-group b-{{block.id}}">
+                  <div class="content-text">
+                    {%- unless b_title   == blank -%}<p class="b-title">{{b_title}}</p>{%- endunless -%}
+                    {%- unless b_content == blank -%}<div class="b-content">{{b_content}}</div>{%- endunless -%}
+                  </div>
+                  {%- if button_text != blank -%}
+                  <div class="btn-group">
+                    <a class="btn{% if spc_btn_inherit != 0 %} btn-{{spc_btn_inherit}}{% else %} btn-spc{% endif %}" href="{{ button_link }}">{{ button_text }}</a>
+                  </div>
+                  {%- endif -%}
+                  {%- capture block_css -%}
+                    {%- if tb_position == '2' or c_padding != blank -%}
+                    .section-show-{{section.id}} .b-{{block.id}}{
+                      {%- if tb_position == '2' -%}left:{{position_left}};top:{{position_top}};transform: translate(-{{position_left}} ,-{{position_top}});{%- endif -%}
+                      {%- unless c_padding == blank -%}padding:{{c_padding}};{%- endunless -%}
+                    }{%- endif -%}
+
+                    {%- include 'css-responsive' ,classID: blockID ,css_value: block.settings.content_align  ,css_property: 'text-align'-%}
+
+                    {%- unless b_title == blank -%}
+                      {%- if spc_tit_color != 'rgba(0,0,0,0)' -%}{{- blockID}} .b-title{color: {{spc_tit_color}};}{%- endif -%}
+                      {%- include 'css-responsive' ,classID: blockID ,nextClassID:  ' .b-title'   ,css_value: block.settings.tit_fs      ,css_property: 'font-size'-%}
+                      {%- include 'css-responsive' ,classID: blockID ,nextClassID:  ' .b-title'   ,css_value: block.settings.tit_fw      ,css_property: 'font-weight'-%}
+                      {%- include 'css-responsive' ,classID: blockID ,nextClassID:  ' .b-title'   ,css_value: block.settings.tit_margin  ,css_property: 'margin'-%}
+                      {%- include 'css-responsive' ,classID: blockID ,nextClassID:  ' .b-title'   ,css_value: block.settings.tit_lsp     ,css_property: 'letter-spacing'-%}
+                      {%- include 'css-responsive' ,classID: blockID ,nextClassID:  ' .b-title'   ,css_value: block.settings.tit_lh      ,css_property: 'line-height'-%}
+                    {%- endunless -%}
+                    {%- unless b_content == blank -%}
+                    {%- if spc_con_color != 'rgba(0,0,0,0)' -%}{{- blockID}} .b-content{color: {{spc_con_color}};}{%- endif -%}
+                      {%- include 'css-responsive' ,classID: blockID ,nextClassID:  ' .b-content' ,css_value: block.settings.con_fs       ,css_property: 'font-size'-%}
+                      {%- include 'css-responsive' ,classID: blockID ,nextClassID:  ' .b-content' ,css_value: block.settings.con_fw       ,css_property: 'font-weight'-%}
+                      {%- include 'css-responsive' ,classID: blockID ,nextClassID:  ' .b-content' ,css_value: block.settings.con_margin   ,css_property: 'margin'-%}
+                      {%- include 'css-responsive' ,classID: blockID ,nextClassID:  ' .b-content' ,css_value: block.settings.con_lsp      ,css_property: 'letter-spacing'-%}
+                      {%- include 'css-responsive' ,classID: blockID ,nextClassID:  ' .b-content' ,css_value: block.settings.con_lh       ,css_property: 'line-height'-%}
+                    {%- endunless -%}
+                    {%- unless button_text == blank -%}
+                      {%- if spc_btn_inherit == 0 -%}{{blockID}} .btn-spc{background-color: {{spc_btn_bg_color}};color: {{spc_btn_color}};border: 1px solid {{spc_btn_border}};}{%- endif -%}
+                      {%- include 'css-responsive' ,classID: blockID ,nextClassID:  ' .btn-group a' ,css_value: block.settings.button_rd  ,css_property: 'border-radius'-%}
+                    {%- endunless -%}
+                  {%- endcapture -%}
+                  <style>{{block_css | strip_newlines }}</style>
+                </div>
+              </div>
+            </div>
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  {%- else -%}
+
+    {%- capture image_content -%}
+      {%- if b_product != blank and block_type == 'product' -%}
+        {%- assign _product = all_products[b_product] -%}
+        {%- assign _product_spc_style = block.settings.product_item_style | default: 0 | times: 1 -%}
+        {%- if _product_spc_style > 0 -%}
+          {%- assign _big_card_style = _product_spc_style -%}
+        {%- else -%}
+          {%- assign _big_card_style = settings.product_item_style -%}
+        {%- endif -%}
+        {%- include 'product-item', product: _product, _text_align: b_text_align, product_style: _big_card_style -%}
+
+      {%- elsif block_type == 'image' and image_block != blank -%}
+        <a href="{{image_link}}">{% include 'image-style' with image: image_block, set_padding: img_padding %}</a>
+
+      {%- elsif block_type != 'text' -%}
+        {%- include 'svgset', type: block_type -%}
+      {%- endif -%}
+    {%- endcapture -%}
+
+
+    <div class="big-content-head">
+      {%- if tb_position == '1' -%}
+        {{content}}
+      {%- else -%}
+        {{image_content}}
+      {%- endif -%}
+    </div>
+    <div class="big-content-body">
+      {%- if tb_position == '1' -%}
+        {{image_content}}
+      {%- else -%}
+        {{content}}
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</div>
+{%- if _type == 'row' -%}</div>{%- endif -%}

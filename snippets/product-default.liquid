@@ -1,0 +1,296 @@
+{%- unless section.settings.breadcrumb_in_info_column -%}{%- include 'breadcrumb' -%}{%- endunless -%}
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign section_type                 = 'productPage' -%}
+{%- assign _lazyload                    = settings.use_lazyload -%}
+{%- assign _enable_rtl                  = settings.enable_rtl -%}
+{%- assign icon_cart                    = settings.cart_font_icon -%}
+{%- assign ts_review_type               = settings.product_review_type -%}
+{%- assign _product_metafields          = product.metafields.c_f -%}
+{%- assign _productSelected             = product.selected_or_first_available_variant -%}
+{%- assign _section_bg_color            = section.settings.background_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign _product_img_pos             = section.settings.image_pos -%}
+{%- assign _thumb_pos                   = section.settings.thumbnail_pos -%}
+{%- assign _image_size_chart            = section.settings.image_size_chart -%}
+{%- assign _shaking_button              = section.settings.shaking_cart -%}
+{%- assign _enable_order_btn            = section.settings.enable_pre_order_button -%}
+{%- assign _enable_dynamic_btn          = section.settings.enable_payment_button -%}
+{%- assign _zoom_type                   = section.settings.zoom_type -%}
+{%- assign _product_tax_text            = section.settings.tax_text -%}
+{%- assign _product_shortDes            = section.settings.meta_description_excerpt -%}
+{%- assign _product_countDown           = section.settings.meta_countdown_timer -%}
+{%- assign _show_recent_view            = section.settings.enable_recently_viewd -%}
+{%- assign _show_related                = section.settings.enable_related_product -%}
+{%- assign _review_pos                  = section.settings.product_tab_review -%}
+{%- assign _product_tab_style           = section.settings.product_tab_style -%}
+{%- assign _product_tab_auto            = section.settings.product_tab_trigger_first_tab -%}
+{%- assign _show_sticky_cart            = section.settings.show_sticky_cart -%}
+{%- assign _show_brand                  = section.settings.show_prod_brand -%}
+{%- assign _show_sku                    = section.settings.show_prod_sku -%}
+{%- assign _show_category               = section.settings.show_prod_category -%}
+{%- assign _show_tags                   = section.settings.show_prod_tags -%}
+{%- assign _show_prod_info_middle       = section.settings.show_prod_info_middle | default: false -%}
+{%- assign _show_next_prev_product      = section.settings.show_next_prev_product -%}
+{%- assign _product_bundled_style       = section.settings.product_bundled_style | times: 1 | default: 1 -%}
+{%- assign _nav_des_cl                  = section.settings.nav_des_cl             | default: 'rgba(0,0,0,0)' -%}
+{%- assign _nav_active_des_cl           = section.settings.nav_active_des_cl      | default: 'rgba(0,0,0,0)' -%}
+{%- assign _nav_active_des_bg_cl        = section.settings.nav_active_des_bg_cl   | default: 'rgba(0,0,0,0)' -%}
+{%- assign _nav_active_des_border_bt    = section.settings.nav_active_des_border_bottom   | default: 'rgba(0,0,0,0)' -%}
+{%- assign _tabStyle                    = _product_tab_style | plus: 0 -%}
+{%- assign _thumbnail_view_number       = section.settings.thumbnail_view_number | default: 5 -%}
+{%- assign _thumbnail_view_number_mobi  = section.settings.thumbnail_view_number_mobi | default: 4 -%}
+
+{%- if product.type == 'Color Mask' -%}
+{%- assign _type_class = 'type-color-mask' -%}
+{%- assign _type_font_color = '#C7979E' -%}
+{%- assign _type_button_color = '#FD672D' -%}
+{%- assign _type_background_bold = '#F5E7E7' -%}
+{%- assign _type_background_light = '#FAF3F3' -%}
+{%- elsif  product.type == 'Natural' or product.type == 'Nature' -%}
+{%- assign _type_class = 'type-nature' -%}
+{%- assign _type_font_color = '#AAB06E' -%}
+{%- assign _type_button_color = '#AAB06E' -%}
+{%- assign _type_background_bold = '#ECE2D5' -%}
+{%- assign _type_background_light = '#F6F4F2' -%}
+{%- elsif product.type == 'Optima' -%}
+{%- assign _type_class = 'type-optima' -%}
+{%- assign _type_font_color = '#FD672D' -%}
+{%- assign _type_button_color = '#FD672D' -%}
+{%- assign _type_background_bold = '#EBEDF0' -%}
+{%- assign _type_background_light = '#F5F6F7' -%}
+{%- else product.type == 'Professional' -%}
+{%- assign _type_class = 'type-professional' -%}
+{%- assign _type_font_color = '#8FB6CC' -%}
+{%- assign _type_button_color = '#7D6BAE' -%}
+{%- assign _type_background_bold = '#EBEDF0' -%}
+{%- assign _type_background_light = '#F5F6F7' -%}
+{%- endif -%}
+
+{%- capture sectionID -%}#section-{{section.id}}{%- endcapture -%}
+{%- capture navID -%}.page-product .product-detail_tab-content ul > li > a{%- endcapture -%}
+
+{%- if settings.product_review_type == 'none' -%}{%- assign _review_pos = 'none' -%}{%- endif -%}
+
+{%- if _thumb_pos contains 'bottom' -%}
+  {%- assign _slick_num = '03' -%}
+{%- else -%}
+  {%- assign _slick_num = '06' -%}
+{%- endif -%}
+
+{%- case _product_layout -%}
+  {%- when 'full-width-image' -%}
+    {%- assign _product_info_border_size    = section.settings.product_info_border_size | default: 0 -%}
+  {%- when 'large-image' -%}
+    {%- assign p_image_class  = 'col-lg-9 col-md-8 col-12' -%}
+    {%- assign p_info_class   = 'col-lg-3 col-md-4 col-12' -%}
+  {%- when 'small-image' -%}
+
+    {%- if section.settings.small_type == '1' -%}
+      {%- assign p_image_class    = 'col-lg-3 col-md-12 col-12' -%}
+      {%- assign p_info_class     = 'col-lg-6 col-md-6 col-12' -%}
+      {%- assign p_sidebar_class  = 'col-lg-3 col-md-6 col-12' -%}
+
+    {%- elsif section.settings.small_type == '2' -%}
+      {%- assign p_image_class    = 'col-lg-4 col-md-12 col-12' -%}
+      {%- assign p_info_class     = 'col-lg-4 col-md-6 col-12' -%}
+      {%- assign p_sidebar_class  = 'col-lg-4 col-md-6 col-12' -%}
+
+    {%- else -%}
+      {%- assign p_image_class    = 'col-lg-6 col-12' -%}
+      {%- assign p_info_class     = 'col-lg-6 col-12' -%}
+      {%- assign p_sidebar_class  = 'col-lg-3 col-12' -%}
+    {%- endif -%}
+
+  {%- else -%}
+    {%- assign p_image_class  = 'col-md-6 col-12' -%}
+    {%- assign p_info_class   = 'col-md-6 col-12' -%}
+{%- endcase -%}
+
+{%- if section.settings.block_heading_style == 'default' -%}
+  {%- capture block_css -%}
+    {%- if _show_recent_view or _show_related -%}
+      {%- capture section_heading_id -%}{{sectionID}} .section-heading{%- endcapture -%}
+      {%- assign s_head_fw                     = section.settings.section_heading_fw -%}
+      {%- assign s_head_ff                     = section.settings.section_heading_ff -%}
+      {%- assign s_sub1_fw                     = section.settings.section_subheading_fw -%}
+      {%- assign s_sub1_ff                     = section.settings.section_subheading_ff -%}
+      {%- assign __section_heading_fs          = section.settings.section_heading_fs -%}
+      {%- assign __section_subheading_fs       = section.settings.section_subheading_fs -%}
+      {%- assign __section_h_container_margin  = section.settings.section_heading_container_margin | default: 0 -%}
+      {%- assign __section_heading_margin      = section.settings.section_heading_margin    | default: 0 -%}
+      {%- assign __section_subheading_margin   = section.settings.section_subheading_margin | default: 0 -%}
+      {%- assign __section_heading_lsp         = section.settings.section_heading_lsp       | default: 0 -%}
+      {%- assign __section_subheading_lsp      = section.settings.section_subheading_lsp    | default: 0 -%}
+
+      {%- include 'css-responsive' ,classID: section_heading_id ,css_value: __section_h_container_margin  ,css_property: 'margin' -%}
+      {%- include 'css-responsive' ,classID: section_heading_id ,nextClassID: ' > .title'     ,css_value: __section_heading_fs          ,css_property: 'font-size' -%}
+      {%- include 'css-responsive' ,classID: section_heading_id ,nextClassID: ' > .subtitle'  ,css_value: __section_subheading_fs       ,css_property: 'font-size' -%}
+      {%- include 'css-responsive' ,classID: section_heading_id ,nextClassID: ' > .title'     ,css_value: __section_heading_margin      ,css_property: 'margin' -%}
+      {%- include 'css-responsive' ,classID: section_heading_id ,nextClassID: ' > .subtitle'  ,css_value: __section_subheading_margin   ,css_property: 'margin' -%}
+      {%- include 'css-responsive' ,classID: section_heading_id ,nextClassID: ' > .title'     ,css_value: __section_heading_lsp         ,css_property: 'letter-spacing' -%}
+      {%- include 'css-responsive' ,classID: section_heading_id ,nextClassID: ' > .subtitle'  ,css_value: __section_subheading_lsp      ,css_property: 'letter-spacing' -%}
+    {%- endif -%}
+  {%- endcapture -%}
+  {%- assign section_css = section_css | append: block_css -%}
+{%- endif -%}
+
+{%- include 'product.detail-snippet', ptype: 'css_preload' -%}
+{%- include 'product.detail-snippet', ptype: 'structured_data' -%}
+
+<div id="shopify-product--{{product.handle}}" style="background: {{ _type_background_light }};">
+  <input type="hidden" id="product-detail--data" value="{{ _product_layout }}" data-thumb-position="{{_thumb_pos | split: '_' | first }}" data-slider-type="{{ _slick_num }}">
+
+  <div id="section-{{section.id}}" data-section-type="{{section_type}}" data-section-id="{{section.id}}">
+
+    <div id="col-main" class="page-product layout-{{ _product_layout }} layout-{{_layout}}{% if _product_img_pos != blank %} product-image-{{_product_img_pos}}{% endif %}">
+
+      {%- if _layout == 'boxed' and _product_layout != 'full-width-image' -%}<div class="container">{%- endif -%}
+
+
+        {%- comment -%}
+          ============
+            Product Layout
+          ============
+        {%- endcomment-%}
+        <div style="position: absolute; top: 0px; left: 0px; right: 0px; height: 500px; background: {{ _type_background_bold }};"></div>
+        <div style="height: 180px;">&nbsp;</div>
+        <div class="product-content{% if _show_prod_info_middle %} product-info--middle-align{% endif %}">
+          <div id="product-main">
+            {%- case _product_layout -%}
+              {%- when 'full-width-image' -%}{%- include 'product.detail_full-width-layout' -%}
+              {%- else -%}
+            
+              {%- include 'product.detail-main-layout' -%}
+            
+            
+            
+            {%- endcase -%}
+            {%- include 'product.detail-snippet', ptype: 'image_filter' -%}
+          </div>
+        </div>
+      
+        {%- comment -%} ============ End ============ {%- endcomment-%}
+      </div>
+      
+      <div style="background: {{ _type_background_bold }};">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              {%- include 'product-detail-learn-more' -%}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {%- include 'product-detail-more-photo' -%}      
+      
+      {%- if product.metafields.product.video_url != '' -%}
+      <div>
+        <div class="container">      
+          <div class="col-12">
+            {%- include 'product-detail-sleek' -%}
+          </div>   
+        </div>
+      </div>
+      {%- endif -%}
+      
+      
+    <div class="container">
+      {%- if _layout == 'boxed' and _product_layout == 'full-width-image' -%}<div class="container">{%- endif -%}
+      
+      <!-- RYVIU APP :: WIDGET -->
+      <div class="lt-block-reviews"> 
+          <ryviu-widget  
+              handle="{{product.handle}}"
+              product_id="{{product.id}}"
+              title_product="{{product.title}}"
+              total_meta="{{ product.metafields.ryviu.r_count }}"
+              image_product="{{ product.featured_image.src | img_url: '180x' }}"></ryviu-widget>
+      </div>
+      <!-- / RYVIU APP -->
+      
+        {%- include 'product.detail-snippet', ptype: 'related_products' -%}
+      <div style="height: 150px;">&nbsp;</div>
+      
+        {%- comment -%}
+        {%- include 'product.detail-snippet', ptype: 'recent_view' -%}
+        {%- endcomment -%}
+
+        {%- if _show_sticky_cart -%}{%- include 'product.detail-sticky-cart' -%}{%- endif -%}
+        {%- include 'product.detail-snippet', ptype: 'discount_code' -%}
+
+      {%- if _layout == 'boxed' and _product_layout == 'full-width-image' -%}</div>{%- endif -%}
+      {%- if _layout == 'boxed' and _product_layout != 'full-width-image' -%}</div>{%- endif -%}
+
+      {%- include 'product.detail-snippet', ptype: 'prev_next_product' -%}
+
+    </div>
+    
+    
+  </div>
+  {%- include 'product.detail-script' -%}
+</div>
+
+{%- comment -%}
+  ============
+    CSS Handle
+  ============
+{%- endcomment-%}
+{%- capture block_css -%}
+  {{- sectionID }}{background-color: {{_section_bg_color}};}
+  {%- include 'css-responsive' ,classID: sectionID ,css_value: section.settings.section_padding -%}
+
+  {%- comment -%}
+    ============
+      Tab title
+    ============
+  {%- endcomment-%}
+  {{- navID }}:not(.active){font-weight: {{section.settings.nav_des_fw}};{%- unless _nav_des_cl == 'rgba(0,0,0,0)' -%}color: {{_nav_des_cl}};{%- endunless -%}}
+  {{- navID }}.active{font-weight: {{section.settings.nav_active_des_fw}};
+    {%- unless _nav_active_des_cl     == 'rgba(0,0,0,0)' -%}color: {{_nav_active_des_cl}}!important;{%- endunless -%}
+    {%- unless _nav_active_des_bg_cl  == 'rgba(0,0,0,0)' -%}background-color: {{_nav_active_des_bg_cl}}!important;{%- endunless -%}
+  }
+  {%- unless _nav_active_des_border_bt == 'rgba(0,0,0,0)' -%}
+  .page-product .product-detail_tab-content .nav>li>a.active:after {background-color: {{ _nav_active_des_border_bt }};}
+  {%- endunless -%}
+
+  {%- if section.settings.nav_des_margin != blank and _tabStyle != 2 -%}
+    {%- capture nav_link_ID -%}.page-product .product-detail_tab-content .product-detail_tab-style-{{_tabStyle}} ul > li{%- endcapture -%}
+    {%- include 'css-responsive', classID: nav_link_ID, css_value: section.settings.nav_des_margin ,css_property: 'margin' -%}
+  {%- endif -%}
+  {%- include 'css-responsive', classID: navID, css_value: section.settings.nav_des_padding  -%}
+  {%- include 'css-responsive', classID: navID, css_value: section.settings.nav_des_ls ,css_property: 'letter-spacing' -%}
+  {%- include 'css-responsive', classID: navID, nextClassID: ':not(.active)' ,css_value: section.settings.nav_des_fs ,css_property: 'font-size' -%}
+  {%- include 'css-responsive', classID: navID, nextClassID: '.active' ,css_value: section.settings.nav_active_des_padding -%}
+  {%- include 'css-responsive', classID: navID, nextClassID: '.active' ,css_value: section.settings.nav_active_des_fs ,css_property: 'font-size' -%}
+
+  {%- comment -%}
+    ============
+      Bundle title
+    ============
+  {%- endcomment-%}
+  {%- if _product_metafields.bundle_1 != blank or _product_metafields.bundle_2 != blank -%}
+    {%- capture __bundle_title -%}.page-product #product-detail_tabs .product-detail_group-bundled .bundled-title{%- endcapture -%}
+
+    {{- __bundle_title }}{font-weight: {{section.settings.nav_des_fw}};{%- unless _nav_des_cl == 'rgba(0,0,0,0)' -%}color: {{_nav_des_cl}};{%- endunless -%}}
+    {%- include 'css-responsive', classID: __bundle_title, css_value: section.settings.nav_des_fs ,css_property: 'font-size' -%}
+    {%- include 'css-responsive', classID: __bundle_title, css_value: section.settings.nav_des_ls ,css_property: 'letter-spacing' -%}
+  {%- endif -%}
+  {%- comment -%}
+    ============
+
+    ============
+  {%- endcomment-%}
+  {%- case _product_layout -%}
+    {%- when 'fixed-content'  -%}{%- include 'css-responsive' ,classID: sectionID ,nextClassID: ' #product-info .product-info-inner > div'    ,css_value: section.settings.fixed_padding  -%}
+    {%- when 'fixed-image'    -%}{%- include 'css-responsive' ,classID: sectionID ,nextClassID: ' #product-image .product-image-inner > div'  ,css_value: section.settings.fixed_padding  -%}
+    {%- when 'fixed-center'   -%}{%- include 'css-responsive' ,classID: sectionID ,nextClassID: ' #product-info .product-info-inner > div'    ,css_value: section.settings.fixed_padding  -%}
+                                 {%- include 'css-responsive' ,classID: sectionID ,nextClassID: ' #product-form .product-form-inner > div'    ,css_value: section.settings.fixed_padding  -%}
+  {%- endcase -%}
+
+  {%- include 'css-responsive', classID: '#col-main .product-info .product-info-inner' ,css_value: _product_info_border_size ,css_property: 'border-width' -%}
+  {{- -}}img.image-zoom, img.image-thumbnail-item{height: 100%!important; object-fit: contain;}
+  {{- -}}.btn.disabled.first_disabled, .btn.first_disabled:disabled{opacity: 1;}
+{%- endcapture -%}
+{%- assign section_css = section_css | append: block_css -%}
+
+{%- unless section_css == blank -%}<style>{{- section_css | strip_newlines -}}</style>{%- endunless -%}

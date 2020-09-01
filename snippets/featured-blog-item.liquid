@@ -1,0 +1,90 @@
+{%- if style == '2' -%}
+  {%- if blog_layout == '1' -%}
+    {%- assign _t = 1 -%}
+  {%- else -%}
+    {% assign _t = forloop.index | modulo: 2 %}
+  {%- endif -%}
+{%- endif -%}
+<article class="post-item border-type-{{border_type}}{% if _type == 'row' %}{% if style == '2' and forloop.first and blog_layout == '1' %} col-12{% else %} {{ items_class }}{% endif %}{% endif %}">
+  <div class="post-item-inner{% if ar_image_type == 'hide' %} no-post-image{% endif %}{% if post_info_overlay %} content-overlay{% endif %}{% if style == '2' %} d-lg-flex{% endif %}">
+    {%- unless ar_image_type == 'hide' -%}
+      <div class="post-header{% if style == '2' %} col-lg-6 col-12{% if _t == 0 %} order-lg-2{% endif %}{% endif %}">
+        <div class="post-header-inner">
+          <div class="post-image{% if ar_image_type == 'rounded' %} image-rd{% endif %}">
+            <a href="{{ article.url }}">
+              {%- if article.image -%}
+                {%- include 'image-style' with image: article.image -%}
+              {%- else -%}
+                {%- include 'svgset',type: 'image' -%}
+              {%- endif -%}
+            </a>
+          </div>
+          {%- unless ar_label == 'none' -%}
+            <span class="post-label pos-{{_text_align}}{% if ar_btn_corner %} label-rd{% endif %}">
+              {%- if ar_label == 'tag' and article.tags.size > 0 -%}
+                <span class="post-tag">{{article.tags[0]}}</span>
+              {%- endif -%}
+              {%- if 'date date_2 date_3 date_4' contains ar_label -%}
+                {%- if ar_label == 'date' -%}
+                  {%- assign label_date_style = '1' -%}
+                {%- else -%}
+                  {%- assign label_date_style = ar_label | replace: 'date_', '' -%}
+                {%- endif -%}
+
+                <span class="post-created style-{{label_date_style}}">
+                    <span class="day">{{ article.published_at | date: '%d' }}</span>
+                    <span class="mon">{{ article.published_at | date: '%b' | upcase }}</span>
+                </span>
+              {%- endif -%}
+            </span>
+          {%- endunless -%}
+        </div>
+      </div>
+    {%- endunless -%}
+
+    <div class="post-body{% if style == '2' %} col-lg-6 col-12{% if _t == 0 %} order-lg-1{% endif %}{% endif %}">
+      <div class="post-body-inner{% unless mega_menu_blog %} text-{{_text_align}}{% endunless %}{% if border_type == 'content' %} has-border{% endif %}">
+        <p class="post-title{% if highlight_type == 'title' %} hl_primary{% endif %}{% if ar_title_up %} text-uppercase{% endif %}{% unless ar_tit_fw == blank %} fw-{{ar_tit_fw}}{% endunless %}{% unless ar_title_ff == blank %} {{ar_title_ff}}{% endunless %}">
+          <a href="{{ article.url }}">{{article.title}}</a>
+        </p>
+
+        {%- unless _hide_article_info -%}
+          <div class="post-info{% if highlight_type == 'info' %} hl_primary{% endif %}{% unless ar_info_ff == blank %} {{ar_info_ff}}{% endunless %}">
+            {%- if ar_label == 'date' -%}
+              <span class="post-author">
+                <span class="p-by">{{- 'blogs.article.posted_by' | t -}}</span>
+                <span class="p-author">{{article.author}}</span>
+              </span>
+            {%- else -%}
+              <span class="post-created">
+                {%- include 'icons', type: 'icon_free', name: 'icon-uniE937-1' -%}
+                <span class="date-create">{{ article.published_at | date: '%b %d, %Y' }}</span>
+              </span>
+            {%- endif -%}
+            <span class="post-comment">
+              {%- include 'icons', type: 'icon_free', name: 'icon-uniE938-1' -%}
+              {%- if settings.disqus_enabled -%}
+                <a href="{{ article.url }}#disqus_thread" class="disqus-comment-count comment_count">0</a>
+              {%- else -%}
+                <span class="post-cmt">{{ article.comments_count }}</span>
+              {%- endif -%}
+            </span>
+          </div>
+        {%- endunless -%}
+
+
+        {%- if show_excerpt and article.excerpt != blank -%}
+          <div class="post-excerpt{% unless ar_exc_ff == blank %} {{ar_exc_ff}}{% endunless %}">{{ article.excerpt }}</div>
+        {%- endif -%}
+
+        {%- if show_ar_btn -%}
+          <div class="post-button">
+            <a href="{{article.url}}" class="btn-article{% if ar_as_btn %} btn btn-{{ar_btn_inherit}}{% if ar_btn_corner %} btn-rd{% endif %}{% endif %}{% unless ar_btn_ff == blank %} {{ar_btn_ff}}{% endunless %}" aria-label="Article_Button">
+              {{- 'blogs.article.countinute' | t -}}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</article>

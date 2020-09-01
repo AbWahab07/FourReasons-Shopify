@@ -1,0 +1,1018 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- assign _lazyload              = settings.use_lazyload -%}
+{%- assign _bg_image              = section.settings.section_bg_image -%}
+{%- assign _spacing_items         = section.settings.spacing_items -%}
+{%- assign _blocks_padding        = section.settings.blocks_padding -%}
+{%- assign p_type                 = section.settings.poli_heading_type -%}
+{%- assign p_align_hor            = section.settings.content_align -%}
+{%- assign p_align_ver            = section.settings.content_ver_align -%}
+{%- assign p_h_pos                = section.settings.heading_position -%}
+{%- assign p_h_img_align          = section.settings.heading_img_align -%}
+{%- assign p_h_color              = section.settings.heading_color    | default: 'rgba(0,0,0,0)' -%}
+{%- assign h_content_color        = section.settings.h_content_color  | default: 'rgba(0,0,0,0)' -%}
+{%- assign content_color          = section.settings.content_color    | default: 'rgba(0,0,0,0)' -%}
+
+{%- assign _heading_fs          = section.settings.heading_fs -%}
+{%- assign _content_fs0         = section.settings.content_fs0 -%}
+{%- assign _content_fs1         = section.settings.content_fs1 -%}
+{%- assign _content_fs2         = section.settings.content_fs2 -%}
+
+{%- assign _section_overlay       = section.settings.section_pos_overlay -%}
+{%- assign _show_shadow           = section.settings.show_shadow -%}
+{%- assign _btn_style             = section.settings.btn_inherit -%}
+{%- assign _text_1_bold           = section.settings.text_1_bold -%}
+{%- assign _bg_item_hover         = section.settings.bg_item_hover -%}
+{%- assign _item_text_hover       = section.settings.item_text_hover -%}
+{%- assign _border_style          = section.settings.border_style -%}
+
+{%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+{%- capture image_empty -%}<div class="empty-image" style="max-width: 80px;">{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}</div>{%- endcapture -%}
+
+{%- include 'include-item-per-row' -%}
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="policies-wrapper layout-{{_layout }} section-show-{{section.id}}{% if _show_shadow %} has-shadow{% endif %}{% if _section_overlay != blank %} section-overlay{% endif %}{% if _bg_image != blank %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endif -%}" data-section-type="policies" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+    <div class="ib-container">
+      {%- include 'head-title' -%}
+      <div class="policies-content{% if _border_style != 'hide' %} border-style-{{_border_style}}{% endif %}{% unless _spacing_items %} no-padding{% endunless %}">
+        <div class="row justify-content-center">
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              {%- assign b_bg_color   = block.settings.block_bg_color | default: 'rgba(0,0,0,0)' -%}
+              {%- assign p_heading    = block.settings.policy_heading -%}
+              {%- assign p_h_content  = block.settings.heading_color | default: 'rgba(0,0,0,0)' -%}
+              {%- assign p_image      = block.settings.image -%}
+              {%- assign p_icon       = block.settings.icon -%}
+              {%- assign p_title      = block.settings.title -%}
+              {%- assign p_content    = block.settings.content -%}
+              {%- assign p_btn_text   = block.settings.button -%}
+              {%- assign p_btn_link   = block.settings.button_link | default: 'javascript:void(0);' -%}
+              {%- assign ib_content2  = block.settings.content2 -%}
+
+              <div class="policy-item-{{block.id}} policy-wrap-item {{items_class}}"{{ block.shopify_attributes }}>
+                <div class="policy-item text-{{p_align_hor}} ib-content_align-{{p_align_ver}}{% if p_h_pos =='left' and p_type != 'none' %} heading-left{% endif %}">
+
+                  {%- unless p_type == 'none' -%}
+                    <div class="policy-heading policy-{{p_type}}{% if p_h_pos =='left' %} align-{{p_h_img_align}}{% endif %}">
+                      {%- case p_type -%}
+                        {%- when 'image' -%}
+                          <div class="image">
+                            {%- unless p_image == blank -%}
+                              <img {% if _lazyload %}class="lazyload" data-{% endif %}src="{{p_image | img_url: 'master' }}">
+                            {%- else -%}{{image_empty}}{%- endunless -%}
+                          </div>
+
+                        {%- when 'icon' -%}
+                          {%- unless p_icon == blank -%}
+                            {% include 'icons', type: 'icon_free', name: p_icon %}
+                          {%- else -%}{{image_empty}}{%- endunless -%}
+                        {%- when 'text' -%}
+                          {%- unless p_heading == blank -%}<p class="ib-heading--text{% if _heading_fs contains 'h' %} {{_heading_fs}}{% endif %} fw-{{section.settings.heading_text_fw}}">{{p_heading}}</p>{%- endunless -%}
+                        {%- else -%}
+                      {%- endcase -%}
+                    </div>
+                  {%- endunless -%}
+
+                  <div class="policy-content">
+                    <div class="title fw-{{_text_1_bold}}{% if _content_fs0 contains 'h' %} {{_content_fs0}}{% endif %}">{{p_title}}</div>
+                    {%- unless p_content == blank -%}
+                      <div class="content{% if _content_fs1 contains 'h' %} {{_content_fs1}}{% endif %}">{{p_content}}</div>
+                    {%- endunless -%}
+                    {%- unless ib_content2 == blank -%}
+                      <div class="content-2{% if _content_fs2 contains 'h' %} {{_content_fs2}}{% endif %}">{{ib_content2}}</div>
+                    {%- endunless -%}
+                    {%- unless p_btn_text == blank -%}
+                      <div class="btn-group">
+                        <a href="{{ p_btn_link }}" class="btn btn-{{_btn_style}}" aria-label="buttonIconbox">
+                          <span class="button-label">{{ p_btn_text }}</span>
+                        </a>
+                      </div>
+                    {%- endunless -%}
+                  </div>
+                </div>
+
+                {%- if b_bg_color != 'rgba(0,0,0,0)' or p_h_content != 'rgba(0,0,0,0)' -%}
+                  <style>
+                    {%- if b_bg_color != 'rgba(0,0,0,0)' -%}.policy-item-{{block.id}} > div{ background-color: {{b_bg_color}};}{%- endif -%}
+                    {%- if p_h_content != 'rgba(0,0,0,0)' -%}.policies-wrapper.section-show-{{section.id}} .policy-item-{{block.id}} .policy-content .title{color: {{p_h_content}};}{%- endif -%}
+                  </style>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <div class="row">
+              {%- for i in (1..3) -%}
+                <div class="{{items_class}}">
+                  <div class="policy-item">
+                    <div class="policy-image">
+                      {{image_empty}}
+                    </div>
+                    <div class="text">
+                      <div class="title">Policy content</div>
+                    </div>
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+  {%- capture section_css -%}
+    {%- include 'section-general-css' -%}
+    {%- if _bg_color != 'rgba(0,0,0,0)' and section.settings.bg_color_for == 'content' -%}{{_secionID}} .ib-container{background-color: {{_bg_color}};}{%- endif -%}
+    {%- if p_h_color         != 'rgba(0,0,0,0)' -%}{{- _secionID}} .policy-heading{color: {{p_h_color}};}{%- endif -%}
+    {%- if h_content_color   != 'rgba(0,0,0,0)' -%}{{- _secionID}} .policy-content .title{color:{{h_content_color}};}{%- endif -%}
+    {%- if content_color     != 'rgba(0,0,0,0)' -%}{{- _secionID}} .policy-content .content{color:{{content_color}};}{%- endif -%}
+
+    {%- unless _heading_fs  contains 'h' -%}
+    {%- if p_type == 'image' -%}
+      {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-heading > *' ,css_value: _heading_fs  ,css_property: 'width' -%}
+    {%- else -%}
+      {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-heading > *' ,css_value: _heading_fs  ,css_property: 'font-size' -%}
+      {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-heading > *' ,css_value: section.settings.heading_lh  ,css_property: 'line-height' -%}
+    {%- endif -%}
+    {%- endunless -%}
+
+    {%- unless _content_fs0 contains 'h' -%}{%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-content .title'    ,css_value: _content_fs0 ,css_property: 'font-size' -%}{%- endunless -%}
+    {%- unless _content_fs1 contains 'h' -%}{%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-content .content'  ,css_value: _content_fs1 ,css_property: 'font-size' -%}{%- endunless -%}
+    {%- unless _content_fs2 contains 'h' -%}{%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .content-2', css_value: _content_fs2,css_property: 'font-size' -%}{%- endunless -%}
+    {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-content .title'    ,css_value: section.settings.content_lh0 ,css_property: 'line-height' -%}
+    {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-content .content'  ,css_value: section.settings.content_lh1 ,css_property: 'line-height' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .content-2', css_value: section.settings.content_lh2,css_property: 'line-height' -%}
+
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-item'      ,css_value: _blocks_padding -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .ib-container'     ,css_value: _section_overlay, css_property: 'top' -%}
+    {%- unless _section_overlay == blank -%}
+      {%- include 'css-responsive', classID: _secionID, css_value: section.settings.section_height, css_property: 'height' -%}
+    {%- endunless -%}{{section_css}}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-wrap-item' ,css_value: section.settings.blocks_margin ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .title'     ,css_value: section.settings.ib_title_margin     ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .content'   ,css_value: section.settings.ib_content_margin   ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .content-2' ,css_value: section.settings.ib_content_margin2  ,css_property: 'margin' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .btn-group' ,css_value: section.settings.ib_button_margin    ,css_property: 'margin' -%}
+
+    {%- include 'css-responsive' ,classID: _secionID ,nextClassID: ' .policy-heading .ib-heading--text' ,css_value: section.settings.heading_lsp   ,css_property: 'letter-spacing' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .title'            ,css_value: section.settings.content_lsp0  ,css_property: 'letter-spacing' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .content'          ,css_value: section.settings.content_lsp1  ,css_property: 'letter-spacing' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .policy-content .content-2'        ,css_value: section.settings.content_lsp2  ,css_property: 'letter-spacing' -%}
+
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .ib-container', css_value: section.settings.content_padding -%}
+
+    {%- if _btn_style == 0 -%}
+      {%- assign _i_btn_color           = section.settings.i_btn_color    | default: 'rgba(0,0,0,0)' -%}
+      {%- assign _i_btn_border          = section.settings.i_btn_border   | default: 'rgba(0,0,0,0)' -%}
+      {%- assign _i_btn_bg_color        = section.settings.i_btn_bg_color | default: 'rgba(0,0,0,0)' -%}
+
+      {{- _secionID}} .btn-group .btn-0{font-weight: {{section.settings.i_btn_fw}};
+          {%- unless _i_btn_color == 'rgba(0,0,0,0)'    -%}color: {{_i_btn_color}};{%- endunless -%}
+          {%- unless _i_btn_border == 'rgba(0,0,0,0)'   -%}border: 1px solid {{_i_btn_border}};{%- endunless -%}
+          {%- unless _i_btn_bg_color == 'rgba(0,0,0,0)' -%}background-color: {{_i_btn_bg_color}}{%- endunless -%}
+      }
+      {%- include 'css-responsive', classID: _secionID ,nextClassID: ' .btn-group .btn-0' ,css_value: section.settings.ib_button_padding -%}
+      {%- include 'css-responsive', classID: _secionID ,nextClassID: ' .btn-group .btn-0' ,css_value: section.settings.i_btn_fs              ,css_property: 'font-size' -%}
+      {%- include 'css-responsive', classID: _secionID ,nextClassID: ' .btn-group .btn-0' ,css_value: section.settings.ib_button_lh          ,css_property: 'line-height' -%}
+      {%- include 'css-responsive', classID: _secionID ,nextClassID: ' .btn-group .btn-0' ,css_value: section.settings.ib_button_lsp         ,css_property: 'letter-spacing' -%}
+      {%- include 'css-responsive', classID: _secionID ,nextClassID: ' .btn-group .btn-0' ,css_value: section.settings.i_btn_border_radius   ,css_property: 'border-radius' -%}
+    {%- endif -%}
+
+    {%- unless _bg_item_hover == 'rgba(0,0,0,0)' -%}{{- _secionID}} .policy-item:hover{background-color: {{_bg_item_hover}};}{%- endunless -%}
+    {%- unless _item_text_hover == 'rgba(0,0,0,0)' -%}
+      {{- _secionID}} .policy-item:hover .policy-heading,
+      {{- _secionID}} .policy-item:hover .policy-content .title,
+      {{- _secionID}} .policy-item:hover .policy-content .content,
+      {{- _secionID}} .policy-item:hover .policy-content .content-2{color:{{_item_text_hover}};}
+    {%- endunless -%}
+    {{- _secionID}} .policy-content .content-2{color:{{section.settings.content_color2 | default: 'rgba(0,0,0,0)' }};}
+  {%- endcapture -%}
+  <style>{{section_css | strip_newlines  }}</style>
+</div>
+{% schema %}
+{
+  "name": "Icon Box",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Created by 'Icon Box' section"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Label [:id]","default": "Icon box"
+    },
+    {
+      "type": "header",
+      "content": "LAYOUT"
+    },
+    {
+      "type": "checkbox",
+      "id": "boxed_layout",
+      "label": "Boxed layout",
+      "default": true
+    },
+    {
+      "type":"text",
+      "id":"section_padding",
+      "label":"Section Padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "select",
+      "id": "bg_color_for",
+      "label": "Background color for:",
+      "default": "section",
+      "options": [
+        {
+          "value": "section",
+          "label": "Section"
+        },
+        {
+          "value": "content",
+          "label": "Content"
+        }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "select",
+      "id": "section_bg_size",
+      "label": "Background Size",
+      "default": "cover",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_repeat",
+      "label": "Background Image Repeat:",
+      "default": "no-repeat",
+      "options": [
+        {
+          "value": "no-repeat",
+          "label": "No Repeat"
+        },
+        {
+          "value": "repeat",
+          "label": "Repeat"
+        },
+        {
+          "value": "repeat-x",
+          "label": "Repeat X"
+        },
+        {
+          "value": "repeat-y",
+          "label": "Repeat Y"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_bg_position",
+      "label": "Background Image Position:",
+      "default": "center center",
+      "options": [
+        {
+          "value": "left top",
+          "label": "Left Top"
+        },
+        {
+          "value": "center top",
+          "label": "Center Top"
+        },
+        {
+          "value": "right top",
+          "label": "Right Top"
+        },
+        {
+          "value": "left center",
+          "label": "Left Center"
+        },
+        {
+          "value": "center center",
+          "label": "Center Center"
+        },
+        {
+          "value": "right center",
+          "label": "Right Center"
+        },
+        {
+          "value": "left bottom",
+          "label": "Left Bottom"
+        },
+        {
+          "value": "center bottom",
+          "label": "Center Bottom"
+        },
+        {
+          "value": "right bottom",
+          "label": "Right Bottom"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "content_padding",
+      "label": "Content Padding",
+      "placeholder": "E.g: 5px 20px 5px 20px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+       "type":"header",
+       "content":"Section overlay"
+    },
+    {
+      "type": "text",
+      "id": "section_pos_overlay",
+      "label": "Position overlay of section (in px)",
+      "placeholder": "E.g: 10px"
+    },
+    {
+       "type":"text",
+       "id":"section_height",
+       "label":"Section height",
+       "placeholder": "E.g: 100px"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shadow",
+      "label": "Show Shadow"
+    },
+    {
+      "type": "header",
+      "content": "Section Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading_text",
+      "label": "Subheading"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading2_text",
+      "label": "Subheading 2"
+    },
+    {
+      "type": "select",
+      "id": "heading_content_align",
+      "label": "Heading alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "section_heading_color",
+      "label": "Heading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "color",
+      "id": "section_subheading_color",
+      "label": "Subheading color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "color",
+      "id": "section_subheading2_color",
+      "label": "Subheading 2 color",
+      "info": "Blank to inherit color"
+    },
+    {
+      "type": "header",
+      "content": "Layout content"
+    },
+    {
+      "type": "text",
+      "id": "items_resp",
+      "label": "Max number of items per row",
+      "placeholder": "xl,lg,md,sm,xs,xxs",
+      "info": "E.g: 4,3,2",
+      "default": "3,1"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_items",
+      "label": "Spacing items",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Border style",
+      "default": "hide",
+      "options": [
+        {
+          "value": "hide",
+          "label": "Hide"
+        },
+        {
+          "value": "1",
+          "label": "Between items"
+        },
+        {
+          "value": "2",
+          "label": "Container"
+        }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "bg_item_hover",
+      "label": "Background color on Hover item",
+      "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type": "color",
+      "id": "item_text_hover",
+      "label": "Item text color on Hover item",
+      "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type": "text",
+      "id": "blocks_padding",
+      "label": "Item padding",
+      "placeholder": "E.g: 5px 20px 5px 20px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "text",
+      "id": "blocks_margin",
+      "label": "Item margin",
+      "placeholder": "E.g: 5px 20px 5px 20px"
+    },
+    {
+      "type": "paragraph",
+      "content": "+ Content item settings"
+    },
+    {
+      "type": "select",
+      "id": "content_align",
+      "label": "Content horizontal alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_ver_align",
+      "label": "Content vertical alignment",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "middle",
+          "label": "Middle"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "top"
+    },
+    {
+      "type": "header",
+      "content": "Heading settings"
+    },
+    {
+      "type": "select",
+      "id": "poli_heading_type",
+      "label": "Heading items type:",
+      "default": "icon",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "icon",
+          "label": "Use icon"
+        },
+        {
+          "value": "image",
+          "label": "Use image"
+        },
+        {
+          "value": "text",
+          "label": "Use text"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_position",
+      "label": "Heading items position:",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ],
+      "default": "top"
+    },
+    {
+      "type": "select",
+      "id": "heading_img_align",
+      "label": "Heading items vertical align:",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "middle",
+          "label": "Middle"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "top"
+    },
+    {
+      "type": "select",
+      "id": "heading_text_fw",
+      "label": "Heading Text font weight",
+      "default": "900",
+      "options": [
+        {
+          "value": "100",
+          "label": "100 Thin (Hairline)"
+        },
+        {
+          "value": "200",
+          "label": "200 Extra Light (Ultra Light)"
+        },
+        {
+          "value": "300",
+          "label": "300 Light"
+        },
+        {
+          "value": "400",
+          "label": "400 Normal"
+        },
+        {
+          "value": "500",
+          "label": "500 Medium"
+        },
+        {
+          "value": "600",
+          "label": "600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value": "700",
+          "label": "700 Bold"
+        },
+        {
+          "value": "800",
+          "label": "800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value": "900",
+          "label": "900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading text color",
+      "default": "#000000"
+    },
+    {
+      "type": "text",
+      "id": "heading_fs",
+      "label": "Heading font size/ Image width",
+      "default": "28px"
+    },
+    {
+      "type": "text",
+      "id": "heading_lh",
+      "label": "Heading line height"
+    },
+    {
+      "type": "text",
+      "id": "heading_lsp",
+      "label": "Heading letter spacing"
+    },
+    {
+      "type": "header",
+      "content": "Text 1 settings"
+    },
+    {
+      "type": "text",
+      "id": "content_fs0",
+      "label": "Text 1 font size",
+      "default": "h4"
+    },
+    {
+      "type": "color",
+      "id": "h_content_color",
+      "label": "Text 1 color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "text_1_bold",
+      "label": "Text 1 font weight",
+      "default": "300",
+      "options": [
+        {
+          "value": "100",
+          "label": "100 Thin (Hairline)"
+        },
+        {
+          "value": "200",
+          "label": "200 Extra Light (Ultra Light)"
+        },
+        {
+          "value": "300",
+          "label": "300 Light"
+        },
+        {
+          "value": "400",
+          "label": "400 Normal"
+        },
+        {
+          "value": "500",
+          "label": "500 Medium"
+        },
+        {
+          "value": "600",
+          "label": "600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value": "700",
+          "label": "700 Bold"
+        },
+        {
+          "value": "800",
+          "label": "800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value": "900",
+          "label": "900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "ib_title_margin",
+      "label": "Text 1 margin",
+      "placeholder": "E.g: 5px 20px 5px 20px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "text",
+      "id": "content_lh0",
+      "label": "Text 1 line height"
+    },
+    {
+      "type": "text",
+      "id": "content_lsp0",
+      "label": "Text 1 letter spacing"
+    },
+    {
+      "type": "header",
+      "content": "Text 2 settings"
+    },
+    {
+      "type": "text",
+      "id": "content_fs1",
+      "label": "Text 2 font size",
+      "default": "h5"
+    },
+    {
+      "type": "color",
+      "id": "content_color",
+      "label": "Text 2 color",
+      "default": "#000000"
+    },
+    {
+      "type": "text",
+      "id": "ib_content_margin",
+      "label": "Text 2 margin",
+      "placeholder": "E.g: 5px 20px 5px 20px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "text",
+      "id": "content_lh1",
+      "label": "Text 2 line height"
+    },
+    {
+      "type": "text",
+      "id": "content_lsp1",
+      "label": "Text 2 letter spacing"
+    },
+    {
+      "type": "header",
+      "content": "Text 3 settings"
+    },
+    {
+      "type": "text",
+      "id": "content_fs2",
+      "label": "Text 3 font size",
+      "default": "h6"
+    },
+    {
+      "type": "color",
+      "id": "content_color2",
+      "label": "Text 3 color",
+      "default": "#888888"
+    },
+    {
+      "type": "text",
+      "id": "ib_content_margin2",
+      "label": "Text 3 margin",
+      "placeholder": "E.g: 5px 20px 5px 20px",
+      "info": "Order: Top Right Bottom Left"
+    },
+    {
+      "type": "text",
+      "id": "content_lh2",
+      "label": "Text 3 line height"
+    },
+    {
+      "type": "text",
+      "id": "content_lsp2",
+      "label": "Text 3 letter spacing"
+    },
+    {
+      "type": "header",
+      "content": "Button settings"
+    },
+    {
+      "type": "range",
+      "id": "btn_inherit",
+      "label": "Inherit Button style:",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+       "type":"text",
+       "id":"i_btn_fs",
+       "label":"Button font size",
+       "default": "14px"
+    },
+    {
+      "type":"select",
+      "id":"i_btn_fw",
+      "label":"Button font weight",
+      "default":"400",
+      "options":[
+        {
+          "value":"100",
+          "label":"100 Thin (Hairline)"
+        },
+        {
+          "value":"200",
+          "label":"200 Extra Light (Ultra Light)"
+        },
+        {
+          "value":"300",
+          "label":"300 Light"
+        },
+        {
+          "value":"400",
+          "label":"400 Normal"
+        },
+        {
+          "value":"500",
+          "label":"500 Medium"
+        },
+        {
+          "value":"600",
+          "label":"600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value":"700",
+          "label":"700 Bold"
+        },
+        {
+          "value":"800",
+          "label":"800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value":"900",
+          "label":"900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type":"color",
+      "id":"i_btn_color",
+      "label":"Button Text color",
+      "default":"#000000"
+    },
+    {
+      "type":"color",
+      "id":"i_btn_bg_color",
+      "label":"Button Background color",
+      "default":"#FFFFFF"
+    },
+    {
+      "type":"color",
+      "id":"i_btn_border",
+      "label":"Button Border color",
+      "default":"#000000"
+    },
+    {
+      "type":"text",
+      "id":"i_btn_border_radius",
+      "label":"Button Border radius",
+      "placeholder":"E.g: 4px 4px 4px 4px"
+    },
+    {
+      "type":"text",
+      "id":"ib_button_padding",
+      "label":"Button padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"text",
+      "id":"ib_button_margin",
+      "label":"Button margin",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "info":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"text",
+      "id":"ib_button_lh",
+      "label":"Button line height"
+    },
+    {
+      "type":"text",
+      "id":"ib_button_lsp",
+      "label":"Button letter spacing"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "block_content",
+      "name": "Block Content",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "policy_heading",
+          "label": "Text",
+          "default": "Block Heading"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Font icon name",
+          "default": "icon-uniE93A"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Text 1",
+          "default": "Dolor purus"
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Text 2"
+        },
+        {
+          "type": "textarea",
+          "id": "content2",
+          "label": "Text 3"
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "header",
+          "content": "Layout"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Text 1 color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "color",
+          "id": "block_bg_color",
+          "label": "Background color",
+          "default": "rgba(0,0,0,0)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Icon Box",
+      "category": "Banner",
+      "blocks": [
+        {
+          "type": "block_content",
+          "settings": {
+            "icon": "icon-uniE93A"
+          }
+        },
+        {
+          "type": "block_content",
+          "settings": {
+            "icon": "icon-uniE945"
+          }
+        },
+        {
+          "type": "block_content",
+          "settings": {
+            "icon": "icon-uniE939"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

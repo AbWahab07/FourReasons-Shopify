@@ -1,0 +1,108 @@
+{%- if type == 'init' -%}
+    
+  {%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+  {%- assign _lazyload        = settings.use_lazyload -%}
+  {%- assign _bg_image        = section.settings.section_bg_image -%}
+
+  {%- capture _bg_image -%}{% if _bg_image != blank %}{{_bg_image | img_url: '1920x'}}{% endif %}{%- endcapture -%}
+  {%- capture _bg_lazy -%}{% if _lazyload %} lazyload" data-bgset="{{_bg_image}} 1920w{%- endif -%}{%- endcapture -%}
+  {%- capture _sectionID -%}.sid-{{section.id}}{%- endcapture -%}
+
+  {%- capture block_css -%}
+  <style>
+    {%- include 'css-responsive' ,classID: _sectionID ,nextClassID: ' .grid-row--content' ,css_value: section.settings.col_resp ,css_property: 'grid-template-columns' ,css_value_before: 'repeat(' ,css_value_after: ', 1fr)' -%}
+    {%- include 'css-responsive' ,classID: _sectionID ,nextClassID: ' .grid-row--content' ,css_value: section.settings.col_spc ,css_property: 'grid-gap' -%}
+    .grid-row--content{display: grid;}
+    .d-grid-center{display: flex;flex-flow: column;justify-content: center;height: 100%;}
+  </style>
+  {%- endcapture -%}
+  {%- assign section_css = section_css | append: block_css -%}
+
+  <div class="section-custom-content-v2 layout-{{_layout}} sid-{{section.id}}{% if _bg_image != blank %} bg-image{{_bg_lazy}}{%- endif -%}" data-section-type="custom-content" data-section-id="{{ section.id }}">
+    {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+      {%- include 'head-title' -%}
+
+      <div class="custom-content">
+          {%- if section.blocks.size > 0 -%}
+
+            {%- for block in section.blocks -%}
+              {%- case block.type -%}
+                {%- when 'block_row' -%}
+                  {% comment %}<div class="grid-row--content">{% endcomment %}
+                  
+                {%- else -%}
+                  {%- include 'snippet-custom-content-v2' ,type: 'block_content' -%}
+              {%- endcase -%}
+            {%- endfor -%}
+
+          {%- else -%}
+
+            <div class="grid-row--content">
+              <div class="block-item d-grid-center">
+                <div class="custom-block-text text-left">
+                  <div class="custom-block-heading-text h2">Talk about your brand</div>
+                  <div class="custom-block-body-text h4">Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</div>
+                </div>
+              </div>
+
+              <div class="block-item">
+                <div class="custom-block-image">{%- include 'image-style' ,image: _image -%}</div>
+              </div>
+
+              <div class="block-item">
+                <div class="custom-block-image">{%- include 'svgset', type: 'lifestyle' -%}</div>
+              </div>
+
+              {%- capture block_css -%}
+                <style>
+                  .block-item:nth-child(3){grid-column: span 2;}
+                  @media (max-width: 767px) {.block-item:nth-child(3){grid-column: span 1;}}
+                </style>
+              {%- endcapture -%}
+              {%- assign section_css = section_css | append: block_css -%}
+            </div>
+          {%- endif -%}
+      </div>
+
+      {%- include 'include-button', btn_type: 'section' -%}
+
+    {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+    <style>
+      {%- include 'section-general-css' -%}
+      {{- section_css | replace: 'style>', '>' | remove: '<>' | remove: '</>' -}}
+    </style>
+  </div>
+
+{%- else -%}
+
+  {%- case type -%}
+
+    {%- when 'block_content' -%}
+      
+      <div class="block-item block-{{block.id}}"{{block.shopify_attributes}}>
+        <div class="custom-block-{{block.type}}">
+
+          {%- capture blockID -%}{{_sectionID}} .block-{{block.id}}{%- endcapture -%}
+          {%- capture block_css -%}
+
+          {%- endcapture -%}
+          {%- assign section_css = section_css | append: block_css -%}
+
+          {%- case block.type -%}
+            {%- when 'block_image' -%}
+
+              {%- assign __image_link = block.settings.image_link | default: 'javascript:void(0);' -%}
+              <a href="{{__image_link}}" class="d-block">
+                {%- include 'image-style' ,image: block.settings.image -%}
+              </a>
+
+
+            {%- else -%}
+          {%- endcase -%}
+        </div>
+      </div>
+
+    {%- else -%}
+  {%- endcase -%}
+{%- endif -%}

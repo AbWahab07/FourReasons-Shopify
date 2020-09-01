@@ -1,0 +1,126 @@
+{%- unless settings.breadcrumb_styles == 'none' -%}{%- include 'breadcrumb' -%}{%- endunless -%}
+{%- assign _page_heading  = 'general.header.my_account'   | t -%}
+{%- assign _heading_0     = 'customer.general.dashboard'  | t -%}
+{%- assign _heading_1     = 'customer.general.orders'     | t -%}
+{%- assign _heading_2     = 'customer.general.address'    | t -%}
+
+<div id="col-main" class="page-account">
+  <div class="container">
+    <div class="page-headding">
+      <p class="page-title h1 text-center">{{_page_heading}}</p>
+    </div>
+
+
+    <div class="row">
+      <aside class="col-md-3 d-none d-md-block">
+        <div class="nav-container">
+          <ul class="nav nav-tabs" id="nav_infomation" role="tablist">
+
+            <li class="nav-item">{%- comment -%}  ============    ACCOUNT DASHBOARD  ============{%- endcomment-%}
+              <a class="nav-link active" id="nav-0" data-toggle="tab" href="#tab-0" role="tab" aria-controls="nav" aria-selected="true">
+                <span>{{_heading_0}}</span>
+              </a>
+            </li>
+
+            <li class="nav-item">{%- comment -%}  ============    ACCOUNT ORDERS  ============{%- endcomment-%}
+              <a class="nav-link" id="nav-1" data-toggle="tab" href="#tab-1" role="tab" aria-controls="nav" aria-selected="false">
+                <span>{{_heading_1}}</span>
+              </a>
+            </li>
+
+            <li class="nav-item">{%- comment -%}  ============    ACCOUNT DETAIL INFORMATION  ============{%- endcomment-%}
+              <a class="nav-link" id="nav-2" data-toggle="tab" href="#tab-2" role="tab" aria-controls="nav" aria-selected="false">
+                <span>{{_heading_2}}</span>
+              </a>
+            </li>
+
+            <li class="nav-item">{%- comment -%}  ============    ACCOUNT LOGOUT  ============{%- endcomment-%}
+              <a class="nav-link" href="/account/logout">
+                <span>{{ 'general.header.logout' | t }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+
+
+      <div class="tab-content-container col-md-9 col-12">
+        <div class="tab-content" id="tab_information">
+
+          {%- comment -%}  ============    ACCOUNT DASHBOARD  ============{%- endcomment-%}
+
+          <div class="tab-heading-mobile d-md-none">
+            <a class="mnav-link active" id="mnav-0" data-target="#nav-0" href="javascript:void(0);"><span>{{_heading_0}}</span></a>
+          </div>
+          <div class="tab-pane fade show active" id="tab-0" role="tabpanel" aria-labelledby="home-tab-0">
+            
+              <div id="as-root"></div>
+              <script>
+              (function(e,t,n){var r,i=e.getElementsByTagName(t)[0];if(e.getElementById(n))return;r=e.createElement(t);r.id=n;r.src="//button.aftership.com/all.js";i.parentNode.insertBefore(r,i)})(document,"script","aftership-jssdk")
+              </script>
+              <div class="as-track-button" data-size="medium" data-domain="track.aftership.com"></div>
+
+          </div>
+
+          {%- comment -%}  ============    ACCOUNT ORDERS  ============{%- endcomment-%}
+
+          {%- assign _index = 1 -%}
+          <div class="tab-heading-mobile d-md-none">
+            <a class="mnav-link" id="mnav-{{_index}}" data-target="#nav-{{_index}}" href="javascript:void(0);"><span>{{_heading_1}}</span></a>
+          </div>
+          <div class="tab-pane fade" id="tab-{{_index}}" role="tabpanel" aria-labelledby="home-tab-{{_index}}">
+            {%- if customer.orders.size > 0 -%}
+              {%- include 'account-orders' -%}
+            {%- else -%}
+              <div class="alert alert-success">
+                <button type="button" class="close" title="{{'customer.general.close' | t }}" data-dismiss="alert">×</button>
+                <p>{{'customer.orders.none' | t }}</p>
+              </div>
+            {%- endif -%}
+          </div>
+
+
+          {%- comment -%}  ============    ACCOUNT DETAIL INFORMATION  ============{%- endcomment-%}
+
+          {%- assign _index = 2 -%}
+          <div class="tab-heading-mobile d-md-none">
+            <a class="mnav-link" id="mnav-{{_index}}" data-target="#nav-{{_index}}" href="javascript:void(0);"><span>{{_heading_2}}</span></a>
+          </div>
+          <div class="tab-pane fade" id="tab-{{_index}}" role="tabpanel" aria-labelledby="home-tab-{{_index}}">
+            <div class="account-details">
+              {%- assign _detail_heading = 'customer.account.details' | t -%}
+              {%- include 'head-title' , _title: _detail_heading -%}
+
+              <div class="account-address-container">
+                {{ customer.default_address | format_address }}
+              </div>
+              <a href="/account/addresses" class="btn btn-1">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a>
+
+            </div>
+          </div>
+
+              
+          {%- comment -%}  ============    ACCOUNT LOGOUT  ============{%- endcomment-%}
+          <div class="tab-heading-mobile d-md-none">
+            <a class="mnav-link" href="/account/logout"><span>{{ 'general.header.logout' | t }}</span></a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script>
+    $(document).on('click', '.mnav-link', function(){
+      let _target = $(this).data('target');
+      $(_target).trigger('click');
+    });
+    $('a.nav-link[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      let _target = $(this).attr('id');
+      $('a.mnav-link').removeClass('active');
+      $('a.mnav-link[data-target="#'+_target+'"]').addClass('active');
+
+    });
+  </script>
+</div>

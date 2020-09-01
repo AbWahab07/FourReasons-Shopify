@@ -1,0 +1,197 @@
+{%- assign _cart_styles           = settings.cart_styles -%}
+{%- assign dis_ajax               = settings.disable_ajax_cart -%}
+{%- assign cart_change_qty        = settings.cart_sb_change_qty -%}
+{%- assign enable_term            = settings.enable_term -%}
+{%- assign link_term              = settings.link_term | default: 'javascript:void(0);' -%}
+{%- assign _item_image_size       = '180x' -%}
+{%- assign _free_shipping_success = 'cart.shipping_text.free_shipping_success' | t  -%}
+{%- assign _free_shipping_text_1  = 'cart.shipping_text.free_shipping_text_1' | t -%}
+{%- assign _free_shipping_text_2  = 'cart.shipping_text.free_shipping_text_2' | t -%}
+
+
+<script type="text/javascript">
+  Shopify.updateCartInfo = function(cart, cart_summary_id, cart_count_id, type = null) {
+
+    if (type == 'changeQty') {
+      $('.cart-item-total-price').html(Shopify.formatMoney(cart.total_price, _bc_config.money_format));
+    }
+
+    else if (typeof cart_summary_id === 'string'){
+      let cart_summary = $(cart_summary_id);
+      if (cart_summary.length) {
+
+        cart_summary.empty();
+
+        let value = cart.items;
+
+        if (!value.length) {
+          cart_summary.html($('#cart-item-empty').html())
+        }
+
+        else{
+          let item_HTML = '';
+
+          for(let item of value){
+            let _item_id    = item.id
+            ,_item_image    = Shopify.resizeImage(item.image, '{{ _item_image_size }}')
+            ,_item_url      = item.url
+            ,_item_title    = item.product_title
+            ,_item_v_title  = item.variant_title || ''
+            ,_item_qty      = item.quantity
+            ,_item_price    = Shopify.formatMoney(item.price, _bc_config.money_format)
+            ,_item_layout   = $('#cart-item-html').html()
+            ,item_layout    = _item_layout.replace(/(\[item_id\])/g, _item_id).replace(/(\[item_qty\])/g, _item_qty)
+            ,_this_item     = $(item_layout);
+
+            _this_item.find('img').attr('data-src' ,_item_image).addClass('lazyload');
+            _this_item.find('.cart-item-url').attr('href',_item_url);
+            _this_item.find('.cart-item-title').html(_item_title);
+            _this_item.find('.cart-item--price').html(_item_price);
+            _this_item.find('.cart-item-variant-title').html(_item_v_title);
+
+            item_HTML += _this_item[0].outerHTML;
+          };
+          cart_summary
+          .append(`<div class="cart-item-container">${item_HTML}</div>`)
+          .append($('#cart-layer-footer').html());
+          AT_Main.currenciesFormat(cart_summary_id + ' span.money');
+        }
+      }
+    }
+    updateCartDesc(cart, cart_summary_id);
+  };
+
+  function free_shipping_call(cart ,cart_summary_id){
+    {%- if _cart_styles == 'sidebar' -%}
+      let _cartSB = $('.cart-sb');
+      if (_cartSB.find('.cart-item-container').length) {
+        let h100 = _cartSB.find('form').innerHeight() || 0
+        ,h2 = _cartSB.find('.cart-sb-title').innerHeight() || 0
+        ,h3 = h2 + _cartSB.find('.wrap-total').innerHeight() || 0
+        ,maxH = h100 - h3;
+
+        if (_cartSB.find('.cart-item-container').prop('scrollHeight') > maxH) {
+          _cartSB.find('.cart-item-container').css('max-height', maxH+'px');
+        }
+        else{
+          _cartSB.find('.cart-item-container').removeAttr('style');
+        }
+      }
+      {%- if enable_free_shipping -%}
+        if (!$('.cart-layer-content .wrap-progress').length) {return;}
+
+        let _cart_total = cart.total_price
+        ,_free_shipping_price       = +'{{ _free_shipping_price }}'
+        ,_free_shipping_price_100   = +'{{ _free_shipping_price }}'*100;
+
+        if (_cart_total >= _free_shipping_price_100){
+          $('.sb-progress').html('<span class="sb-progress-bar" style="width: 100%">100%</span>');
+          $('.sb-text').html("{{ _free_shipping_success }}");
+        }
+
+        else{
+          let _progress = Number(_cart_total / _free_shipping_price).toFixed(2)
+          ,_spend = _free_shipping_price_100 - _cart_total
+          ,__spend = Shopify.formatMoney(_spend, _bc_config.money_format);
+
+          $('.sb-progress').html(`<span class="sb-progress-bar" style="width:${_progress}%">${_progress}%</span>`);
+          $('.sb-text').html(`{{ _free_shipping_text_1 }} ${__spend} {{ _free_shipping_text_2 }}`);
+          AT_Main.currenciesFormat('.sb-text span.money');
+        }
+      {%- endif -%}
+    {%- endif -%}
+  }
+
+  function updateCartDesc(cart, cart_summary_id = null){
+    $('.cart-target .number').length && $('.cart-target .number').html('<span class="n-item">' + cart.item_count + '</span>')
+    $('.cart-total-count').length && $('.cart-total-count').html(cart.item_count);
+
+    let $cartPrice = `${Shopify.formatMoney(cart.total_price, _bc_config.money_format)}`;
+    $('.cart-tt-price').length && $('.cart-tt-price').html(`(${$cartPrice})`);
+    $('.cart-layer-content .cart-item-total-price').html($cartPrice);
+    AT_Main.currenciesFormat('.cart-tt-price span.money, .cart-layer-content .cart-item-total-price span.money');
+
+    free_shipping_call(cart ,cart_summary_id);
+  }
+
+  Shopify.onCartUpdate = function(cart) {Shopify.updateCartInfo(cart, '.cart-content', 'shopping-cart');};
+
+  $(window).on('load',function() {
+    Shopify.getCart(function(cart) {Shopify.updateCartInfo(cart, '.cart-content');});
+
+    $('.cart-layer-content').on('click', '.cart-close', e=>{
+      $('body').addClass('cart-loading');
+
+      let prodId = +$(e.currentTarget).data('cart-item-id');
+
+      AT_Main._requestAjax({ quantity: 0, id: prodId })
+      .fail(err=>console.log(err))
+      .done(resp=>{
+        Shopify.updateCartInfo(resp, '.cart-content', 'shopping-cart');
+        if(typeof cartObj != "undefined") {cartObj.syncCartSB(resp, prodId)}
+          $('body').removeClass('cart-loading');
+      })
+    })
+  });
+</script>
+
+{%- if _cart_styles == 'sidebar' -%}
+  {%- unless template contains 'cart' -%}
+    {%- if cart_change_qty and dis_ajax == false -%}
+      <script src="{{ 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js' }}"></script>
+      <script>
+        var cartObj = (function($,_){
+
+          var cartPage = {
+            init: function() {
+                this.qtyUp      = $('.qty-up');
+                this.qtyDown    = $('.qty-down');
+                this.totalPrice = $('.cart-total');
+                this.actionHandle();
+            },
+            showLoading: function() {$('body').addClass('cart-loading');},
+            hideLoading: function() {$('body').removeClass('cart-loading');},
+            actionHandle: function() {
+                let _this = this;
+                $(document).on('click','.ajax-up',   _.debounce(function(e){cartPage.updateCart($(this));}, 250));
+                $(document).on('click','.ajax-down', _.debounce(function(e){cartPage.updateCart($(this));}, 250));
+            },
+            updateCart: function(elem){
+              let _this  = this
+              ,jqElem    = $(elem)
+              ,patt      = /\d+/g
+              ,_class    = jqElem.attr('class')
+              ,prodId    = patt.exec(_class)[0]
+              ,qtyInput  = jqElem.closest('.quantity').find('.input-cart-qty')
+              ,qtyVal    = qtyInput.val()
+
+              _this.showLoading();
+
+              if (_class.indexOf('up') != -1) {
+                qtyInput.val(++qtyVal);
+              }
+              else {
+                if (--qtyVal < 1) {
+                  qtyInput.val(1);
+                  /*jqElem.closest('.items-inner').find('.cart-close').trigger('click');*/
+                  return;
+                }
+                else{
+                  qtyInput.val(qtyVal);
+                }
+              }
+
+              let postData = {quantity: qtyVal,id: prodId};
+              AT_Main._requestAjax(postData)
+              .always(resp=>{Shopify.updateCartInfo(resp, '.cart-content', 'shopping-cart', 'changeQty');})
+              .fail(err=>console.log(err))
+              .done(()=>{_this.hideLoading()})
+            }
+          }
+
+          cartPage.init();
+        })(jQuery,_)
+      </script>
+    {%- endif -%}
+  {%- endunless -%}
+{%- endif -%}

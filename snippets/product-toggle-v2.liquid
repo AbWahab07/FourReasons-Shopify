@@ -1,0 +1,99 @@
+{%- assign description = product.description -%}
+{%- assign _nav_des_ff = section.settings.nav_des_ff | default: 'auto' -%}
+{%- assign _nav_des_tt = section.settings.nav_des_tt | default: 'none' -%}
+
+{%- capture _navTitle_style -%}{% unless _nav_des_ff == 'auto' %} {{_nav_des_ff}}{% endunless %}{% unless _nav_des_tt == 'none' %} text-{{_nav_des_tt}}{% endunless %}{%- endcapture -%}
+{%- capture _navExpand -%}<span class="nav-expand">{%- include 'icons', type: 'icon_free', name: 'icon-uniE905-1' -%}</span>{%- endcapture -%}
+
+<div class="description-product">
+  <ul class="nav-ver-2">
+    {%- unless description == blank -%}
+      {%- if section.settings.multi-tab -%}
+        {%- assign description_parts = description | split: "<h5" -%}
+        {%- assign temp_des          = product.description | split: '<h5>' | first | strip -%}
+
+        {%- if temp_des.size > 0 -%}
+          <li class="nav-item">
+            <a class="nav-link{{_navTitle_style}}" href="javascript:void(0);">
+              <span class="nav-label">{{ 'products.product.description' | t }}</span>
+              {{- _navExpand -}}
+            </a>
+            <div class="tab-content">
+              <div class="tab-pane">{{ temp_des }}</div>
+            </div>
+          </li>
+        {%- endif -%}
+
+        {%- for part in description_parts -%}
+          {%- if part contains "</h5>" -%}
+            {%- assign remove = part | split: ">" | first | append: ">" -%}
+            {%- capture ind -%}{{ forloop.index | plus: 0}}{% endcapture %}
+            {%- assign tab_title = part | split: "</h5>" | first | strip_html | replace: remove, "" -%}
+
+            <li class="nav-item">
+              <a class="nav-link{{_navTitle_style}}" href="javascript:void(0);">
+                <span class="nav-label">{{ tab_title }}</span>
+                {{- _navExpand -}}
+              </a>
+
+              {%- assign fp = part | append: " " | split: "</h5>" | last -%}
+              {%- assign p  = part | append: " " | split: "</h5>" | last | strip_html | replace: "&nbsp;", "" | replace: " ", "" | strip_newlines -%}
+              {%- capture ind -%}{{ forloop.index | plus: 0}}{%- endcapture -%}
+
+              {%- if p != "" or fp contains "<img " or fp contains "<iframe " -%}
+                <div class="tab-content">
+                  <div class="tab-pane">{{ part | split: "</h5>" | last | replace: "<div", "<span" | replace: "</div", "</span" }}</div>
+                </div>
+              {%- endif -%}
+
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+
+      {%- else -%}
+        <li class="nav-item">
+          <a class="nav-link{{_navTitle_style}}">
+            <span class="nav-label">{{ 'products.product.description' | t }}</span>
+            {{- _navExpand -}}
+          </a>
+          <div class="tab-content">
+            <div class="tab-pane">{{ product.description }}</div>
+          </div>
+        </li>
+      {%- endif -%}
+    {%- endunless -%}
+
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'page' -%}
+            {%- if block.settings.page != blank and pages[block.settings.page].content.size > 0 -%}
+          		<li class="nav-item"{{ block.shopify_attributes }}>
+                <a class="nav-link{{_navTitle_style}}" href="javascript:void(0);">
+                  <span class="nav-label">{{ block.settings.page_title }}</span>
+                  {{- _navExpand -}}
+                </a>
+                <div class="tab-content">
+                  <div class="tab-pane">
+                    {{ pages[block.settings.page].content }}
+                  </div>
+                </div>
+              </li>
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    {%- endif -%}
+
+    {%- if _review_pos == 'inside' -%}
+      <li class="nav-item">
+        <a class="nav-link{{_navTitle_style}}" href="javascript:void(0);">
+          <span class="nav-label">{{'products.product.customer_reviews' | t }}</span>
+          {{- _navExpand -}}
+        </a>
+        <div class="tab-content">
+          <div class="tab-pane">{% include 'include-reviews' %}</div>
+        </div>
+      </li>
+    {%- endif -%}
+  </ul>
+</div>

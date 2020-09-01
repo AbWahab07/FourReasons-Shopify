@@ -1,0 +1,57 @@
+{%- unless _product_metafields.bundle_1 == blank -%}
+  {%- assign accessory_1 = all_products[_product_metafields.bundle_1] -%}
+{%- endunless -%}
+
+{%- unless _product_metafields.bundle_2 == blank -%}
+  {%- assign accessory_2 = all_products[_product_metafields.bundle_2] -%}
+{%- endunless -%}
+
+
+<div id="product-bundled">
+  {%- if bundled_v2 -%}
+    {% include 'product.detail-bundled-items' with p_variant: accessory_1, p_id: 1 %}
+    {% include 'product.detail-bundled-items' with p_variant: accessory_2, p_id: 2 %}
+
+  {%- else -%}
+
+    <p class="bundled-title text-center text-{{section.settings.nav_des_tt | default: 'capitalize' }}">{{'products.product.bundled_title' | t}}</p>
+    <form action="/cart/add" method="post" id="bundledAddToCart_meta">
+
+      <div id="crust-items" class="crust-items">
+        <div class="bundled-container--top">
+          <ul class="list-inline">
+            <li>{% include 'product.detail-bundled-items' with p_variant: product, p_id: 0 %}</li>
+
+
+            {%- if accessory_1.available -%}
+              <li>{% include 'product.detail-bundled-items' with p_variant: accessory_1, p_id: 1 %}</li>
+            {%- endif -%}
+
+            {%- if accessory_2.available -%}
+              <li>{% include 'product.detail-bundled-items' with p_variant: accessory_2, p_id: 2 %}</li>
+            {%- endif -%}
+          </ul>
+
+          <div class="b-total-price">
+            <div class="bundled-total-price">
+              <div id="bundled-tp-{{ product.id }}" class="total-price">
+                <span>{{- "cart.header.subtotal" | t -}}:</span>
+                <span class="price">{{ product.price | money }}</span>
+              </div>
+              <button id="add-bundle-to-cart" class="add-bundle-to-cart btn btn-2" type="button">
+                <span>{{ 'products.product.bundled_button' | t }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="bundled-container--bottom">
+          <ul class="bundled-items-list">
+            <li>{% include 'product.detail-bundled-items' ,type: 'bundled_info' ,bundled_item: product, p_id: 0 %}</li>
+            {%- if accessory_1.available -%}<li>{% include 'product.detail-bundled-items' ,type: 'bundled_info' ,bundled_item: accessory_1, p_id: 1 %}</li>{%- endif -%}
+            {%- if accessory_2.available -%}<li>{% include 'product.detail-bundled-items' ,type: 'bundled_info' ,bundled_item: accessory_2, p_id: 2 %}</li>{%- endif -%}
+          </ul>
+        </div>
+      </div>
+    </form>
+  {%- endif -%}
+</div>

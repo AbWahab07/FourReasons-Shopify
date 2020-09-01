@@ -1,0 +1,16 @@
+{%- assign __enable_brcumbs = section.settings.show_breabcrumb | append: '' -%}
+{%- if __enable_brcumbs == '' -%}{%- assign __enable_brcumbs = settings.show_breabcrumb | append: '' -%}{%- endif -%}
+
+{%- if __enable_brcumbs == 'true' -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'breadcrumb' -%}
+      {%- include 'breadcrumb-layout' , type: 'block', brc_root: block -%}
+      {%- assign has_breadcrumb = true -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- unless has_breadcrumb -%}
+    {%- include 'breadcrumb-layout' -%}
+  {%- endunless -%}
+{%- endif -%}

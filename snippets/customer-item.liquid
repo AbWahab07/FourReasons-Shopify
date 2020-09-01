@@ -1,0 +1,47 @@
+{%- assign image      = block.settings.image    -%}
+{%- assign _name      = block.settings.title    -%}
+{%- assign _subtitle  = block.settings.caption  -%}
+{%- assign _caption   = block.settings.caption_2  -%}
+{%- assign _message   = block.settings.message  -%}
+{%- assign __img_size = '130x130x' -%}
+
+{%- capture cus_name -%}
+  <div class="cs-name">
+    {%- unless _name == blank     -%}<div class="name">{{ _name }}</div>{%- endunless -%}
+    {%- unless _subtitle == blank -%}<div class="caption">{{ _subtitle }}</div>{%- endunless -%}
+    {%- unless _caption == blank  -%}<div class="caption-2">{{ _caption }}</div>{%- endunless -%}
+  </div>
+{%- endcapture -%}
+
+
+{%- capture cus_mess -%}{%- unless _message == blank -%}<div class="message"><span>{{ _message }}</span></div>{%- endunless -%}{%- endcapture -%}
+
+<div class="customer-item-inner{% if round_image %} image-rd{% endif %}{% unless c_type %} text-{{_text_align}} layout-{{item_layout}}{% if _item_bg_image != blank and item_layout != '3' %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_item_bg_image}} 10240w{%- endif -%}{%- endif -%}{% endunless %}">
+  {%- if item_layout == '5' -%}{%- assign __img_size = '480x' -%}{%- endif -%}
+  {%- unless image == blank -%}
+    <div class="cs-header">
+      <div class="cs-header-inner{% if _item_bg_image != blank and item_layout == '3' %} bg-image{% if _lazyload %} lazyload" data-bgset="{{_item_bg_image}}{%- endif -%}{%- endif -%}">
+        {%- unless item_layout == '3' -%}
+          <div class="cs-image">{% include 'image-style', image_size: __img_size %}</div>
+        {%- else -%}
+          {{cus_mess}}
+        {%- endunless -%}
+      </div>
+    </div>
+  {%- elsif item_layout == '5' -%}
+    <div class="cs-header">
+      <div class="cs-header-inner">
+        <div class="cs-image">{% include 'svgset', type: 'image' %}</div>
+      </div>
+    </div>
+  {%- endunless -%}
+  <div class="cs-body">
+    <div class="cs-body-inner">
+      {%- case item_layout -%}
+        {%- when '2' -%}{{cus_mess}}{{cus_name}}
+        {%- when '3' -%}<div class="cs-image">{% include 'image-style', image_size: '130x130x' %}</div>{{cus_name}}
+        {%- else -%}{{cus_name}}{{cus_mess}}
+      {%- endcase -%}
+    </div>
+  </div>
+</div>

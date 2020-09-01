@@ -1,0 +1,44 @@
+{%- case type -%}
+
+  {%- when 'bundled_info' -%}
+
+    <div class="bundled-item bundled-product-{{p_id}}">
+      <input type="checkbox" checked="checked" class="bundled-item-checkbox">
+      <div class="bundled-item--info">
+        <input type="hidden" name="price" class="bundled-price-{{p_id}}" value="{{ bundled_item.selected_or_first_available_variant.price }}">      
+        
+        <div class="pb-title"><p class="h4"><a href="{{bundled_item.url}}">{{ bundled_item.title }}</a></p></div>
+
+        <div class="b-prod-select{% unless bundled_item.variants.size > 1 %} hide{% endunless %}">
+          <select id="bundled_item_{{ bundled_item.id }}" name="id">
+            {%- for bundled_variant in bundled_item.variants -%}
+              {%- if bundled_variant.available -%}
+                <option {% if bundled_variant == bundled_item.selected_or_first_available_variant %}selected="selected"{% endif %}value="{{ bundled_variant.id }}" data-price="{{bundled_variant.price }}">{{ bundled_variant.title }}</option>
+              {%- else -%}
+                <option disabled="disabled">{{ bundled_variant.title }} - {{'products.product.sold_out' | t }}</option>
+              {%- endif -%}
+            {%- endfor -%}
+          </select>
+        </div>
+        <div class="pb-price pb-price-{{p_id}}"><span class="price">{{ bundled_item.selected_or_first_available_variant.price | money }}</span></div>
+      </div>
+    </div>
+
+
+  {%- else -%}
+
+    <div class="bundled-product bundled-product-{{p_id}}">
+      {%- if bundled_v2 -%}
+        <div class="pb-title"><p class="h4"><a href="{{p_variant.url}}">{{ p_variant.title }}</a></p></div>
+        {%- include 'product-price', product: p_variant -%}
+
+      {%- else -%}
+        {%- assign bundle_featured_image = p_variant.selected_or_first_available_variant.featured_image | default: p_variant.featured_image -%}
+        <div class="pd-image">
+          <a href="{{p_variant.url}}">
+            {% include 'image-style' ,image: bundle_featured_image, _type: '' %}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+{%- endcase -%}

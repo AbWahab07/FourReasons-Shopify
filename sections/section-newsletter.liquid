@@ -1,0 +1,945 @@
+{%- if section.settings.boxed_layout -%}{%- assign _layout = 'boxed' -%}{%- else -%}{%- assign _layout = 'full' -%}{%- endif -%}
+{%- capture _secionID -%}.section-show-{{section.id}}{%- endcapture -%}
+
+{%- assign _lazyload          = settings.use_lazyload -%}
+{%- assign _padding           = section.settings.section_padding -%}
+{%- assign _bg_color          = section.settings.section_bg_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign _bg_image          = section.settings.section_bg_image -%}
+{%- assign _bg_color_for      = section.settings.bg_color_for -%}
+{%- assign _bg_img_for        = section.settings.bg_img_for -%}
+{%- assign _content_align     = section.settings.content_align -%}
+{%- assign _content_pos       = section.settings.content_pos -%}
+{%- assign form_title         = section.settings.form_title -%}
+{%- assign form_subtitle      = section.settings.form_subtitle -%}
+{%- assign form_content       = section.settings.form_content -%}
+{%- assign form_inline        = section.settings.form_title_inline -%}
+{%- assign border_style       = section.settings.border_style -%}
+{%- assign frm_height         = section.settings.form_height -%}
+{%- assign frm_type           = section.settings.action_type -%}
+{%- assign frm_action         = section.settings.action -%}
+{%- assign frm_placeholder    = section.settings.placeholder -%}
+{%- assign frm_corner         = section.settings.form_rounded -%}
+{%- assign frm_btn_type       = section.settings.form_btn_display -%}
+{%- assign frm_btn_label      = section.settings.btn_text -%}
+{%- assign frm_btn_icon       = section.settings.btn_icon -%}
+{%- assign frm_btn_style      = section.settings.btn_inherit -%}
+{%- assign frm_btn_corner     = section.settings.btn_rounded -%}
+{%- assign first_block        = section.blocks[0] -%}
+
+{%- assign frm_color_form_text    = section.settings.form_text_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign frm_color_form_border  = section.settings.form_border_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign frm_color_form_bg      = section.settings.form_bg_color | default: 'rgba(0,0,0,0)' -%}
+{%- assign frm_border_size        = section.settings.form_border_size -%}
+
+{%- capture bg_lazyload -%}{%- unless _bg_image == blank -%}{{_bg_image | img_url: '1366x'}} 1366w, {{_bg_image | img_url: '1920x'}} 1920w{%- endunless -%}{%- endcapture -%}
+
+{%- render 'theme-snippet' ,type: 'section_id' -%}
+
+<div class="newsletter-section layout-{{ _layout }} section-show-{{section.id}}{% if _bg_img_for == 'section' %} bg-image{% if _lazyload %} lazyload" data-bgset="{{bg_lazyload}}{% endif %}{% endif %}" data-section-type="newsletter" data-section-id="{{section.id}}">
+  {%- if _layout == 'boxed' -%}<div class="container">{%- endif -%}
+
+    <div class="newsletter-section-content newsletter-{{_content_pos}}-content">
+      <div class="news-content-wrap{% if _bg_img_for == 'content' %} bg-image{% if _lazyload %} lazyload" data-bgset="{{bg_lazyload}}{% endif %}{% endif %}">
+        <div class="heading-wrap text-{{section.settings.heading_content_align}}">
+          {%- include 'head-title' -%}
+          {%- if first_block -%}
+            <div class="newsletter-image">{%- include 'image-style', image: first_block.settings.image -%}</div>
+
+            {%- capture image_css -%}
+              {%- include 'css-responsive', classID: _secionID, nextClassID: ' .newsletter-image', css_value: first_block.settings.image_max_width, css_property: 'max-width' -%}
+            {%- endcapture -%}
+            {%- assign section_css = section_css | append: image_css -%}
+          {%- endif -%}
+        </div>
+
+        <div class="newsletter-form-wrap{% if form_inline %} form-inline{% endif %}">
+
+          {%- unless form_title == blank and form_subtitle == blank -%}
+
+            <div class="form-header text-{{_content_align}}">
+              {%- unless form_title == blank -%}
+                <div class="form-title">{{form_title}}</div>
+
+                {%- assign form_tit_color = section.settings.form_title_color -%}
+
+                {%- capture frm_title_style -%}
+                  {%- capture frm_title_tempt -%}
+                    font-weight: {{section.settings.form_tit_weight}};
+                    {%- unless form_tit_color == 'rgba(0,0,0,0)' -%}color: {{form_tit_color}};{%- endunless -%}
+                  {%- endcapture -%}
+
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-title', css_values: frm_title_tempt -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-title', css_value: section.settings.form_tit_size   ,css_property: 'font-size' -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-title', css_value: section.settings.form_tit_margin ,css_property: 'margin' -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-title', css_value: section.settings.form_tit_lsp    ,css_property: 'letter-spacing' -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-title', css_value: section.settings.form_tit_lh     ,css_property: 'line-height' -%}
+                {%- endcapture -%}
+                {%- assign section_css = section_css | append: frm_title_style -%}
+              {%- endunless -%}
+
+              {%- unless form_subtitle == blank -%}
+                <div class="form-subtitle">{{form_subtitle}}</div>
+
+                {%- assign form_sub_color = section.settings.form_subtitle_color -%}
+
+                {%- capture frm_subtitle_style -%}
+                  {%- capture frm_sub_tempt -%}
+                    font-weight: {{section.settings.form_sub_weight}};
+                    {%- unless form_sub_color == 'rgba(0,0,0,0)' -%}color: {{form_sub_color}};{%- endunless -%}
+                  {%- endcapture -%}
+
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-subtitle', css_values: frm_sub_tempt -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-subtitle', css_value: section.settings.form_sub_size   ,css_property: 'font-size' -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-subtitle', css_value: section.settings.form_sub_margin ,css_property: 'margin' -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-subtitle', css_value: section.settings.form_sub_lsp    ,css_property: 'letter-spacing' -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-subtitle', css_value: section.settings.form_sub_lh     ,css_property: 'line-height' -%}
+                {%- endcapture -%}
+                {%- assign section_css = section_css | append: frm_subtitle_style -%}
+              {%- endunless -%}
+
+              {%- unless form_content == blank -%}
+                <div class="form-caption">{{form_content}}</div>
+
+                {%- assign form_con_color = section.settings.form_content_color -%}
+
+                {%- capture frm_content_style -%}
+                  {%- capture frm_con_tempt -%}
+                    font-weight: {{section.settings.form_con_weight}};
+                    {%- unless form_con_color == 'rgba(0,0,0,0)' -%}color: {{form_con_color}};{%- endunless -%}
+                  {%- endcapture -%}
+
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-caption', css_values: frm_con_tempt -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-caption', css_value: section.settings.form_con_size   ,css_property: 'font-size' -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-caption', css_value: section.settings.form_con_margin ,css_property: 'margin' -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-caption', css_value: section.settings.form_con_lsp    ,css_property: 'letter-spacing' -%}
+                  {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-header .form-caption', css_value: section.settings.form_con_lh     ,css_property: 'line-height' -%}
+                {%- endcapture -%}
+                {%- assign section_css = section_css | append: frm_content_style -%}
+              {%- endunless -%}
+            </div>
+          {%- endunless -%}
+
+          <div class="form-content">
+            {%- include 'include-form', type: frm_type  -%}
+          </div>
+          {%- capture block_css -%}
+            {%- assign frm_btn0_color       = section.settings.button_color     | default: 'rgba(0,0,0,0)'  -%}
+            {%- assign frm_btn0_bg_color    = section.settings.button_bg_color  | default: 'rgba(0,0,0,0)'  -%}
+            {%- assign frm_btn0_border      = section.settings.button_border    | default: 'rgba(0,0,0,0)'  -%}
+            {%- assign frm_btn0_border_w    = section.settings.btn_border_width | append: 'px' -%}
+
+
+            {%- include 'css-responsive', classID: _secionID, nextClassID: '  .newsletter-form-wrap form button.btn-0', css_value: section.settings.btn_padding -%}
+            {%- include 'css-responsive', classID: _secionID, nextClassID: '  .newsletter-form-wrap form button.btn-0', css_value: section.settings.btn_radius   ,css_property: 'border-radius' -%}
+
+            {{_secionID}} .newsletter-form-wrap form button.btn-0{
+              color: {{frm_btn0_color}};
+              background-color: {{frm_btn0_bg_color}};
+              {%- unless frm_btn0_border == 'rgba(0,0,0,0)' -%}border: {{frm_btn0_border_w}} solid {{frm_btn0_border}};{%- endunless -%}
+            }
+          {%- endcapture -%}
+          {%- assign section_css = section_css | append: block_css -%}
+        </div>
+      </div>
+    </div>
+  {%- if _layout == 'boxed' -%}</div>{%- endif -%}
+
+  <style>
+    {%- include 'css-responsive', classID: _secionID, css_value: _padding -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .news-content-wrap', css_value: section.settings.content_padding -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .form-content input[type="email"]', css_value: frm_height, css_property: 'height' -%}
+    {%- include 'css-responsive', classID: _secionID, nextClassID: ' .newsletter-form-wrap', css_value: section.settings.content_max_width, css_property: 'max-width' -%}
+    {%- if border_style != 'none' -%}{{_secionID}} .news-content-wrap:before{content: '';border: {{section.settings.border_size}}px {{border_style}} {{section.settings.border_color}};}{%- endif -%}
+    {%- if _bg_color != 'rgba(0,0,0,0)' -%}{{_secionID}}{% if _bg_color_for == 'content' %} .news-content-wrap{% endif %}{background-color: {{_bg_color}};}{%- endif -%}
+    {%- unless _bg_image == blank -%}
+    {{_secionID}}{% if _bg_img_for == 'content' %} {% endif %}.bg-image{
+      {%- unless _lazyload -%}background-image:url({{ _bg_image | img_url: '1920x' }});{%- endunless -%}
+      background-size: {{section.settings.section_bg_size}};background-repeat: {{section.settings.section_bg_repeat}};background-position: {{section.settings.section_bg_position}};}{%- endunless -%}
+      {{_secionID}} .form-content input[type="email"]{
+        color: {{frm_color_form_text}};
+        background-color: {{frm_color_form_bg}};{%- if frm_border_size > 0 -%}
+        border: {{frm_border_size | append: 'px' }} solid {{frm_color_form_border}};{%- endif -%}
+      }
+    {{- section_css -}}
+  </style>
+    
+</div>
+
+{% schema %}{
+  "name":"Newsletter",
+  "tag":"section",
+  "settings":[
+    {
+      "type":"paragraph",
+      "content":"Created by 'Newsletter' section"
+    },
+    {
+      "id":"title",
+      "type":"text",
+      "label":"Section Label [:id]","default": "Newsletter"
+    },
+    {
+      "type":"header",
+      "content":"LAYOUT"
+    },
+    {
+      "type":"checkbox",
+      "id":"boxed_layout",
+      "label":"Boxed layout",
+      "default":true
+    },
+    {
+      "type":"paragraph",
+      "content":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"text",
+      "id":"content_padding",
+      "label":"Content Padding",
+      "placeholder":"E.g: 5px 20px 5px 20px",
+      "default":"30px 0"
+    },
+    {
+      "type":"text",
+      "id":"section_padding",
+      "label":"Section Padding",
+      "placeholder":"E.g: 5px 20px 5px 20px"
+    },
+    {
+      "type":"color",
+      "id":"section_bg_color",
+      "label":"Background color",
+      "default":"rgba(0,0,0,0)"
+    },
+    {
+      "type":"select",
+      "id":"bg_color_for",
+      "label":"Background color for:",
+      "default":"section",
+      "options":[
+        {
+          "value":"section",
+          "label":"Section"
+        },
+        {
+          "value":"content",
+          "label":"Content"
+        }
+      ]
+    },
+    {
+      "type":"image_picker",
+      "id":"section_bg_image",
+      "label":"Background image"
+    },
+    {
+      "type":"select",
+      "id":"bg_img_for",
+      "label":"Background image for:",
+      "default":"section",
+      "options":[
+        {
+          "value":"section",
+          "label":"Section"
+        },
+        {
+          "value":"content",
+          "label":"Content"
+        }
+      ]
+    },
+    {
+      "type":"select",
+      "id":"section_bg_size",
+      "label":"Background Size",
+      "default":"cover",
+      "options":[
+        {
+          "value":"auto",
+          "label":"Auto"
+        },
+        {
+          "value":"cover",
+          "label":"Cover"
+        },
+        {
+          "value":"contain",
+          "label":"Contain"
+        }
+      ]
+    },
+    {
+      "type":"select",
+      "id":"section_bg_repeat",
+      "label":"Background Image Repeat:",
+      "default":"no-repeat",
+      "options":[
+        {
+          "value":"no-repeat",
+          "label":"No Repeat"
+        },
+        {
+          "value":"repeat",
+          "label":"Repeat"
+        },
+        {
+          "value":"repeat-x",
+          "label":"Repeat X"
+        },
+        {
+          "value":"repeat-y",
+          "label":"Repeat Y"
+        }
+      ]
+    },
+    {
+      "type":"select",
+      "id":"section_bg_position",
+      "label":"Background Image Position:",
+      "default":"center center",
+      "options":[
+        {
+          "value":"left top",
+          "label":"Left Top"
+        },
+        {
+          "value":"center top",
+          "label":"Center Top"
+        },
+        {
+          "value":"right top",
+          "label":"Right Top"
+        },
+        {
+          "value":"left center",
+          "label":"Left Center"
+        },
+        {
+          "value":"center center",
+          "label":"Center Center"
+        },
+        {
+          "value":"right center",
+          "label":"Right Center"
+        },
+        {
+          "value":"left bottom",
+          "label":"Left Bottom"
+        },
+        {
+          "value":"center bottom",
+          "label":"Center Bottom"
+        },
+        {
+          "value":"right bottom",
+          "label":"Right Bottom"
+        }
+      ]
+    },
+    {
+      "type":"select",
+      "id":"border_style",
+      "label":"Border style:",
+      "default":"none",
+      "options":[
+        {
+          "value":"none",
+          "label":"None"
+        },
+        {
+          "value":"dashed",
+          "label":"Dashed"
+        },
+        {
+          "value":"dotted",
+          "label":"Dotted"
+        },
+        {
+          "value":"solid",
+          "label":"Solid"
+        }
+      ]
+    },
+    {
+      "type":"color",
+      "id":"border_color",
+      "label":"Border color",
+      "default":"#FFFFFF"
+    },
+    {
+       "type":"range",
+       "id"   :"border_size",
+       "label":"Border size",
+       "min"   :1,
+       "max"   :10,
+       "unit"  :"px",
+       "default":1
+    },
+    {
+      "type":"header",
+      "content":"Section Heading"
+    },
+    {
+      "type":"text",
+      "id":"heading_text",
+      "label":"Heading"
+    },
+    {
+      "type":"text",
+      "id":"subheading_text",
+      "label":"Subheading"
+    },
+    {
+      "type":"textarea",
+      "id":"subheading2_text",
+      "label":"Subheading 2"
+    },
+    {
+      "type":"select",
+      "id":"heading_content_align",
+      "label":"Heading alignment",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"center",
+          "label":"Center"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ],
+      "default":"center"
+    },
+    {
+      "type":"color",
+      "id":"section_heading_color",
+      "label":"Heading color",
+      "info":"Blank to inherit color"
+    },
+    {
+      "type":"color",
+      "id":"section_subheading_color",
+      "label":"Subheading color",
+      "info":"Blank to inherit color"
+    },
+    {
+      "type":"color",
+      "id":"section_subheading2_color",
+      "label":"Subheading 2 color",
+      "info":"Blank to inherit color"
+    },
+    {
+      "type":"header",
+      "content":"Form Settings"
+    },
+    {
+      "type":"select",
+      "id":"action_type",
+      "label":"Form Type:",
+      "options":[
+        {
+          "value":"mailchimp",
+          "label":"Mailchimp"
+        },
+        {
+          "value":"klaviyo",
+          "label":"Klaviyo"
+        }
+      ],
+      "default":"mailchimp"
+    },
+    {
+      "type":"textarea",
+      "id":"action",
+      "label":"Form Action"
+    },
+    {
+      "type":"paragraph",
+      "content":"Mailchimp: [Where do I get my MailChimp Form Action](http://shopify.barrelny.com/where-do-i-find-the-mailchimp-signup-url)"
+    },
+    {
+      "type":"paragraph",
+      "content":"KLAVIYO: Please copy the hidden input[name='g'] value from the KLAVIYO form and paste here."
+    },
+    {
+      "type":"text",
+      "id":"placeholder",
+      "label":"Placeholder",
+      "default":"Yourmail@email.com"
+    },
+    {
+      "type":"checkbox",
+      "id":"form_rounded",
+      "label":"Form Rounded Corners"
+    },
+    {
+      "type":"text",
+      "id":"form_height",
+      "label":"Form height (in px)",
+      "default":"40px"
+    },
+    {
+       "type":"color",
+       "id":"form_text_color",
+       "label":"Form text color",
+       "default": "#000000"
+    },
+    {
+       "type":"color",
+       "id":"form_bg_color",
+       "label":"Form background color",
+       "default": "#ffffff"
+    },
+    {
+       "type":"color",
+       "id":"form_border_color",
+       "label":"Form border color",
+       "default": "#ffffff"
+    },
+    {
+       "type":"range",
+       "id":"form_border_size",
+       "label":"Form border size",
+       "min":0,
+       "max":10,
+       "step":1,
+       "unit":"px",
+       "default":1
+    },
+    {
+       "type":"header",
+       "content":"Button submit"
+    },
+    {
+      "type":"select",
+      "id":"form_btn_display",
+      "label":"Button type:",
+      "default":"text",
+      "options":[
+        {
+          "value":"all",
+          "label":"Text & Icon"
+        },
+        {
+          "value":"icon",
+          "label":"Icon"
+        },
+        {
+          "value":"text",
+          "label":"Text"
+        }
+      ]
+    },
+    {
+      "type":"text",
+      "id":"btn_icon",
+      "label":"Button Font Icon Name",
+      "default":"icon-uniE910-1"
+    },
+    {
+      "type":"text",
+      "id":"btn_text",
+      "label":"Button Label",
+      "default":"Subcrible"
+    },
+    {
+      "type":"checkbox",
+      "id":"btn_rounded",
+      "label":"Button Rounded Corners"
+    },
+    {
+      "type":"range",
+      "id":"btn_inherit",
+      "label":"Inherit Button style:",
+      "min":0,
+      "max":3,
+      "default":1,
+      "info":"0 to customize"
+    },
+    {
+      "type":"text",
+      "id":"btn_padding",
+      "label":"Button padding",
+      "default":"6px 30px"
+    },
+    {
+      "type":"text",
+      "id":"btn_radius",
+      "label":"Button Rounded Corners (optional)",
+      "placeholder":"E.g: 4px 4px 4px 4px"
+    },
+    {
+      "type":"color",
+      "id":"button_color",
+      "label":"Button Text color",
+      "default":"#ffffff"
+    },
+    {
+      "type":"color",
+      "id":"button_bg_color",
+      "label":"Button Background color",
+      "default":"#000000"
+    },
+    {
+      "type":"color",
+      "id":"button_border",
+      "label":"Button Border color",
+      "default":"#000000"
+    },
+    {
+      "type":"range",
+      "id":"btn_border_width",
+      "label":"Button border size:",
+      "min":0,
+      "max":10,
+      "unit":"px",
+      "default":1
+    },
+    {
+      "type":"header",
+      "content":"Form text content"
+    },
+    {
+      "type":"text",
+      "id":"form_title",
+      "label":"Form title"
+    },
+    {
+      "type":"text",
+      "id":"form_subtitle",
+      "label":"Form subtitle"
+    },
+    {
+      "type":"textarea",
+      "id":"form_content",
+      "label":"Form content"
+    },
+    {
+      "type":"select",
+      "id":"content_align",
+      "label":"Form title alignment",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"center",
+          "label":"Center"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ],
+      "default":"center"
+    },
+    {
+      "type":"checkbox",
+      "id":"form_title_inline",
+      "label":"Show content on same row"
+    },
+    {
+      "type":"header",
+      "content":"Form text color"
+    },
+    {
+      "type":"color",
+      "id":"form_title_color",
+      "label":"Form title color",
+      "default":"#000000"
+    },
+    {
+      "type":"color",
+      "id":"form_subtitle_color",
+      "label":"Form subtitle color",
+      "default":"#000000"
+    },
+    {
+      "type":"color",
+      "id":"form_content_color",
+      "label":"Form content color",
+      "default":"#888888"
+    },
+    {
+      "type":"header",
+      "content":"Form text font size"
+    },
+    {
+      "type":"text",
+      "id":"form_tit_size",
+      "label":"Form title font size",
+      "default":"24px"
+    },
+    {
+      "type":"text",
+      "id":"form_sub_size",
+      "label":"Form subtitle font size",
+      "default":"20px"
+    },
+    {
+      "type":"text",
+      "id":"form_con_size",
+      "label":"Form content font size",
+      "default":"18px"
+    },
+    {
+      "type":"header",
+      "content":"Form text font weight"
+    },
+    {
+      "type":"select",
+      "id":"form_tit_weight",
+      "label":"Form title font weight",
+      "default":"300",
+      "options":[
+        {
+          "value":"100",
+          "label":"100 Thin (Hairline)"
+        },
+        {
+          "value":"200",
+          "label":"200 Extra Light (Ultra Light)"
+        },
+        {
+          "value":"300",
+          "label":"300 Light"
+        },
+        {
+          "value":"400",
+          "label":"400 Normal"
+        },
+        {
+          "value":"500",
+          "label":"500 Medium"
+        },
+        {
+          "value":"600",
+          "label":"600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value":"700",
+          "label":"700 Bold"
+        },
+        {
+          "value":"800",
+          "label":"800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value":"900",
+          "label":"900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type":"select",
+      "id":"form_sub_weight",
+      "label":"Form subtitle font weight",
+      "default":"300",
+      "options":[
+        {
+          "value":"100",
+          "label":"100 Thin (Hairline)"
+        },
+        {
+          "value":"200",
+          "label":"200 Extra Light (Ultra Light)"
+        },
+        {
+          "value":"300",
+          "label":"300 Light"
+        },
+        {
+          "value":"400",
+          "label":"400 Normal"
+        },
+        {
+          "value":"500",
+          "label":"500 Medium"
+        },
+        {
+          "value":"600",
+          "label":"600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value":"700",
+          "label":"700 Bold"
+        },
+        {
+          "value":"800",
+          "label":"800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value":"900",
+          "label":"900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type":"select",
+      "id":"form_con_weight",
+      "label":"Form content font weight",
+      "default":"300",
+      "options":[
+        {
+          "value":"100",
+          "label":"100 Thin (Hairline)"
+        },
+        {
+          "value":"200",
+          "label":"200 Extra Light (Ultra Light)"
+        },
+        {
+          "value":"300",
+          "label":"300 Light"
+        },
+        {
+          "value":"400",
+          "label":"400 Normal"
+        },
+        {
+          "value":"500",
+          "label":"500 Medium"
+        },
+        {
+          "value":"600",
+          "label":"600 Semi Bold (Demi Bold)"
+        },
+        {
+          "value":"700",
+          "label":"700 Bold"
+        },
+        {
+          "value":"800",
+          "label":"800 Extra Bold (Ultra Bold)"
+        },
+        {
+          "value":"900",
+          "label":"900 Black (Heavy)"
+        }
+      ]
+    },
+    {
+      "type":"header",
+      "content":"Form text margin"
+    },
+    {
+      "type":"paragraph",
+      "content":"Order: Top Right Bottom Left"
+    },
+    {
+      "type":"text",
+      "id":"form_tit_margin",
+      "label":"Form title margin"
+    },
+    {
+      "type":"text",
+      "id":"form_sub_margin",
+      "label":"Form subtitle margin"
+    },
+    {
+      "type":"text",
+      "id":"form_con_margin",
+      "label":"Form content margin"
+    },
+    {
+      "type":"header",
+      "content":"Form letters spacing"
+    },
+    {
+      "type":"text",
+      "id":"form_tit_lsp",
+      "label":"Form title letters spacing"
+    },
+    {
+      "type":"text",
+      "id":"form_sub_lsp",
+      "label":"Form subtitle letters spacing"
+    },
+    {
+      "type":"text",
+      "id":"form_con_lsp",
+      "label":"Form content letters spacing"
+    },
+    {
+      "type":"header",
+      "content":"Line height"
+    },
+    {
+      "type":"text",
+      "id":"form_tit_lh",
+      "label":"Form title line height"
+    },
+    {
+      "type":"text",
+      "id":"form_sub_lh",
+      "label":"Form subtitle line height"
+    },
+    {
+      "type":"text",
+      "id":"form_con_lh",
+      "label":"Form content line height"
+    },
+    {
+      "type":"header",
+      "content":"LAYOUT CONTENT"
+    },
+    {
+      "type":"select",
+      "id":"content_pos",
+      "label":"Content position",
+      "default":"left",
+      "options":[
+        {
+          "value":"left",
+          "label":"Left"
+        },
+        {
+          "value":"center",
+          "label":"Center"
+        },
+        {
+          "value":"right",
+          "label":"Right"
+        }
+      ]
+    },
+    {
+      "type":"text",
+      "id":"content_max_width",
+      "label":"Content Max width (in %)",
+      "default":"100%"
+    }
+  ],
+  "blocks":[
+    {
+      "type":"image",
+      "name":"Image",
+      "limit":1,
+      "settings":[
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Image"
+        },
+        {
+          "type":"text",
+          "id":"image_max_width",
+          "label":"Image max width (in %)",
+          "default":"50%"
+        }
+      ]
+    }
+  ],
+  "presets":[
+    {
+      "name":"Newsletter",
+      "category":"Information"
+    }
+  ]
+}
+{% endschema %}

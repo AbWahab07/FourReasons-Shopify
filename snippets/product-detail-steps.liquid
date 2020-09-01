@@ -1,0 +1,14 @@
+<div class="product-detail-steps">
+  <div class="heading">Four Reasons</div>
+</div>
+
+<div class="product-detail-steps" style="color: {{ _type_font_color }}"> 
+  {% assign steps = product.metafields.product.four_reason | split: "," %}  
+  {% assign ind = 0 %}
+  
+  {% for step in steps %}
+    {% assign ind = ind | plus: 1 %}
+    <div class="title">- 0{{ ind }}</div>
+    <div class="text">{{ step | strip }}</div>
+  {% endfor %}
+</div>

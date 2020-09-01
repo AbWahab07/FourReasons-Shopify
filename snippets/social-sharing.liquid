@@ -1,0 +1,52 @@
+{%- if template contains 'article' or template contains 'blog' -%}
+  {%- capture permalinkURL -%}{{ shop.url }}{{ article.url }}{%- endcapture -%}
+  {%- capture shareTitle -%}{{ article.title }}{%- endcapture -%}
+  {%- capture shareHandle -%}{{ article.handle }}{%- endcapture -%}
+
+{%- elsif template contains 'product' -%}
+  {%- capture permalinkURL -%}{{ shop.url }}{{ product.url }}{%- endcapture -%}
+  {%- capture shareTitle -%}{{ product.title }}{%- endcapture -%}
+  {%- capture shareHandle -%}{{ product.handle }}{%- endcapture -%}
+
+{%- elsif template == 'password' -%}
+  {%- capture permalinkURL -%}{{ shop.url }}{%- endcapture -%}
+  {%- capture shareTitle -%}{% unless shop.description == blank %}{{ shop.description | url_param_escape }}{% else %}{{ shop.name | url_param_escape }}{% endunless %}{%- endcapture -%}
+  
+{%- endif -%}
+
+{%- assign _social_share_facebook   = settings.share_facebook -%}
+{%- assign _social_share_twitter    = settings.share_twitter -%}
+{%- assign _social_share_pinterest  = settings.share_pinterest -%}
+
+{%- if _social_share_facebook or _social_share_twitter or _social_share_pinterest -%}
+  <div class="share-links social-sharing" data-permalink="{{ permalinkURL }}">
+    <span class="share-heading">{{ 'general.text.share' | t }}</span>
+
+    <ul class="list-inline">
+      {%- if _social_share_facebook -%}
+        <li class="social-item">
+          <a target="_blank" rel="noopener" href="//www.facebook.com/sharer.php?u={{ permalinkURL }}" onclick="window.open('//www.facebook.com/sharer.php?u={{ permalinkURL }}','name','width=600,height=400')" title="Facebook">
+            {%- include 'icons', type: 'icon_free', name: 'icon-facebook' -%}
+            <span class="social-label">Facebook</span>
+          </a>
+        </li>
+      {%- endif -%}
+      {%- if _social_share_twitter -%}
+        <li class="social-item">
+          <a target="_blank" rel="noopener" href="//twitter.com/share?url={{ permalinkURL }}&amp;text={{ shareHandle }}" onclick="window.open('//twitter.com/share?url={{ permalinkURL }}&amp;text={{ shareHandle }}','name','width=600,height=400')" title="Twitter">
+              {%- include 'icons', type: 'icon_free', name: 'icon-twitter' -%}
+            <span class="social-label">Twitter</span>
+          </a>
+        </li>
+      {%- endif -%}
+      {%- if _social_share_pinterest -%}
+        <li class="social-item">
+          <a target="_blank" rel="noopener" href="//pinterest.com/pin/create/link/?url={{ permalinkURL }}" onclick="window.open('//pinterest.com/pin/create/link/?url={{ permalinkURL }}','name','width=600,height=400')" title="Pinterest">            
+            {%- include 'icons', type: 'icon_free', name: 'icon-pinterest-circled' -%}
+            <span class="social-label">Pinterest</span>
+          </a>
+        </li>
+      {%- endif -%}
+    </ul>
+  </div>
+{%- endif -%}

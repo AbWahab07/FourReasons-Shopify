@@ -1,0 +1,91 @@
+{% comment %}
+  Set the extension of your color files below. Use 'png', 'jpeg', 'jpg' or 'gif'.
+  {% endcomment %}
+{%- assign file_extension = 'png' -%}
+
+{%- if swatch_item == blank -%}
+  <div class="swatch error">
+    <p>You must include the snippet swatch_item.liquid with the name of a product option.</p>
+    <p>Use: <code>{% raw %}{% include 'swatch_item' with 'name of your product option here' %}{% endraw %}</code></p>
+    <p>Example: <code>{% raw %}{% include 'swatch_item' with 'Size' %}{% endraw %}</code></p>
+  </div>
+{%- else -%}
+
+  {%- assign found_option = false -%}
+  {%- assign is_color = false -%}
+  {%- assign option_index = 0 -%}
+  {%- assign array = '' -%}
+
+  {%- for option in product.options -%}
+    {%- if option == swatch_item -%}
+      {%- assign found_option = true -%}
+      {%- assign option_index = forloop.index0 -%}
+      {%- assign downcased_option = swatch_item | downcase -%}
+
+      {%- if downcased_option contains 'color' or downcased_option contains 'colour' -%}
+       {%- assign is_color = true -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- unless found_option -%}
+  {%- else -%}
+    <div class="swatch-col">
+      <div class="swatch swt-grid-type-{{swatch_item | downcase}} swt-size-{{settings.pg_swatch_size}} clearfix" data-option-index="{{ option_index }}">
+
+        {%- assign values = '' -%}
+        {%- for variant in product.variants -%}
+
+          {%- capture _image_html -%}{{ variant.featured_image | img_url: '100x' }}{%- endcapture -%}
+
+          {%- if _image_html contains 'assets/no-image' -%}{%- capture _image_html -%}{{product.featured_image | img_url: '100x'}}{%- endcapture -%}{%- endif -%}
+
+          {%- assign value = variant.options[option_index] -%}
+
+          {%- unless values contains value -%}
+            {%- assign values     = values | join: ',' -%}
+            {%- assign values     = values | append: ',' | append: value -%}
+            {%- assign values     = values | split: ',' -%}
+            {%- assign array      = array  | append: value | append: ',' -%}
+            {%- assign array_size = array  | split: ',' | size -%}
+            {%- assign limit_item = settings.limit_swatch_color -%}            
+
+            {%- if array_size <= limit_item -%}
+              <div class="swatch-element {{swt_shape}} {% if is_color %} color image-{{ settings.swatches_color_image}}{% endif %}{% if variant == product.selected_or_first_available_variant and settings.show_range_price == false %} active{% endif %}" title="{{ value | capitalize }}">
+
+                {%- capture swt_id -%}swatch-{{ variant.id | handle }}-{{ value | handle }}{%- endcapture -%}
+
+                <input id="{{swt_id}}" {% if is_color %} data-swatch-image="{{ _image_html }}"{% endif %} type="radio" name="option-{{ option_index }}" value="{{ value | escape }}"/>
+
+                {%- if is_color -%}
+                  {%- if settings.swatches_color_image -%}
+                    <label for="{{swt_id}}"{% if _lazyload %}class="lazyload" data-bgset="{{ _image_html }} 100w"{% else %} style="background-image: url({{ _image_html }})"{% endif %}></label>
+                  {%- else -%}
+                    {%- capture swt_bg_img -%}{{ value | handle | append: '.' | append: file_extension | asset_img_url: '50x' }}{%- endcapture -%}
+                    {%- capture swt_bg_img -%}{% if _lazyload %} lazyload" data-bgset="{{ swt_bg_img }} 50w{% endif %}{%- endcapture -%}
+                    <label for="{{swt_id}}"class="cf-{{ value | split: ' ' | last | handle }}"  style="background-color: {{ value | split: ' ' | last | handle }};"></label>
+                  {%- endif -%}
+
+                {%- else -%}
+                  <label for="{{swt_id}}" data-swatch-image="{{_image_html}}">{{ value }}</label>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+          {%- endunless -%}
+
+        {%- endfor -%}
+
+        {%- if array_size > limit_item -%}
+        {%- assign temp_size = array_size | minus: limit_item -%}
+          <div class="swatch-element {{swt_shape}} more-swt">
+            <a href="{{ product.url | within: collection }}"><span class="number">+{{temp_size}}</span></a>
+          </div>
+        {%- endif -%}
+
+      </div>
+    </div>
+
+  {%- endunless -%}
+
+{%- endif -%}

@@ -1,0 +1,63 @@
+<div class="collection-gallery-wrapper">
+  <div class="gallery-container">
+    {%- if section.settings.header_title !=blank -%}
+      <div class="section-header">
+        <h2>{{ section.settings.header_title }}</h2>
+      </div>
+    {%- endif -%}
+    
+    {%- if section.blocks.size > 0 -%}
+    
+      <div class="gallery-column-wrapper">
+      {%- assign index = 0 -%}
+
+      {%- for block in section.blocks -%}
+        {%- assign index = index | plus: 1 -%}
+    
+        <div class="gallery-column">
+          {%- if block.settings.title != blank -%}
+          	<span><div class="column-indicator"></div>0{{ index }}</span>
+          	<h3>{{ block.settings.title }}</h3>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+  
+  {%- if section.settings.image != blank -%}
+    <div class="gallery-bg">
+      <img class="lazyautosizes lazyloaded" src="{{ section.settings.image | img_url: 'master' }}">
+    </div>
+  {%- endif -%}
+</div>
+{% schema %}
+  {
+    "name": "Nature Gallery",
+    "settings": [
+	  {
+        "type":"image_picker",
+        "id":"image",
+        "label":"Image"
+      },
+	  {
+        "type":"text",
+        "id":"header_title",
+        "label":"Heading"
+      }
+	],
+	"blocks":[
+      {
+        "type":"text",
+        "name":"column",
+        "settings":[
+		  {
+		 	"type":"text",
+		 	"id":"title",
+		 	"label":"Title"
+	  	  }
+		]
+      }
+    ]
+  }
+{% endschema %}
